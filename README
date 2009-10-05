@@ -1,16 +1,60 @@
-PANDORA is the box that once, opened can never be closed.
-(Prometheus did this)
+Ripple (by the Grateful Dead)
+======
+
+if my words did glow 
+With the gold of sunshine
+and my tunes were played on the harp unstrung
+would you hear my voice 
+come through the music
+would you hold it near 
+as it were your own
+
+its a hand me down
+the thoughts are broken
+perhaps 
+they're better left unsung
+
+ripple, in still water
+where there is no pebble tossed
+nor wind to blow.
+
+reach out your hand, 
+if your cup is empty
+if your cup is full,
+may be be again.
+
+=====
+
+RPL, pronounced Ripple is an IETF protocol that provides connectivity among 
+nodes that can not all hear each other, but rather have to form a multihop
+mesh-like network.
+
+Unless other mesh efforts, this all happens at layer-3, in IPv6
+Router Solicitation messages. 
 
 The authors thinks that once RPL-style "mesh" routing is loose on 
 citizen controlled mobile devices that citizens will no longer be
 held hostage to incumbent telcos that dominate the broadband
 "Internet".
 
-This program is a set of tools that runs under the Linux kernel:
-on netbooks, laptops, and on phones like the Google Android and Nokia N800.  
+This set of programs, plus a test bed/simulation system is a set of tools
+that runs under the Linux kernel:
+	- on netbooks, 
+	- laptops, and 
+	- on phones like the Google Android and Nokia N800.  
 
-Using IETF (to be) standard RPL (a product of the ROLL WG), people can create
-mesh networks in IPv6 space.
+Programs include:
+	sunshine	- run this on root/grounded server to announce
+			routes and on any other well provisioned machines.
+
+	glow		- run this on underpowered machines that just need
+			enough to join the DAG.
+
+	pebble		- insert DIO messages into the network, run from
+			the command line.
+
+	blow		- cmd line utility to control sunshine and glow.
+
 
 Michael Richardson <mcr@sandelman.ca>,
 Ottawa, Ontario, October 2009 (on a train, where Internet is broken)
