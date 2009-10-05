@@ -165,9 +165,7 @@ setup_host_make() {
     # split Debian "interfaces" file into RH ifcfg-* file
     echo "$hostroot/etc/sysconfig/network-scripts/ifcfg-eth0: $hostroot/etc/network/interfaces"
     echo "$TAB mkdir -p $hostroot/etc/sysconfig/network-scripts"
-    echo "$TAB ${TESTINGROOT}/utils/interfaces2ifcfg.pl $hostroot/etc/network/interfaces $hostroot/etc/sysconfig/network-scripts"
     echo
-    depends="$depends $hostroot/etc/sysconfig/network-scripts/ifcfg-eth0"
 
     if [ "X$HOSTTYPE" == "Xopenswan" ]
     then

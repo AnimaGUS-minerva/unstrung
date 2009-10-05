@@ -45,10 +45,9 @@ fi
 . ${PANDORA_SRCDIR}/umlsetup.sh
 . ${PANDORA_SRCDIR}/testing/utils/uml-functions.sh
 
-KERNVER=${KERNVER-}    
 KERNVERSION=2.6;
 
-echo Setting up for kernel KERNVER=$KERNVER and KERNVERSION=$KERNVERSION
+echo Setting up for kernel KERNVERSION=$KERNVERSION
 
 
 # make absolute so that we can reference it from POOLSPACE
@@ -95,7 +94,7 @@ echo '#' built by $0 on $NOW by $USER >|$UMLMAKE
 echo '#' >>$UMLMAKE
 
 # okay, copy the kernel, apply the UML patches, and build a plain kernel.
-UMLPLAIN=$POOLSPACE/plain${KERNVER}
+UMLPLAIN=$POOLSPACE/plain
 mkdir -p $UMLPLAIN
 
 # now, setup up root dir
@@ -105,7 +104,7 @@ NEED_plain=false
 # see if we have to build the local plain kernel.
 for host in $PANDORA_HOSTS
 do
-    kernelvar=UML_plain${KERNVER}_KERNEL
+    kernelvar=UML_plain_KERNEL
     UMLKERNEL=${!kernelvar}
     if [ -z "${UMLKERNEL}" ]
     then
@@ -120,7 +119,7 @@ do
     fi
     echo Using kernel: $UMLKERNEL for $host
 
-    setup_host_make $host $UMLKERNEL regular ${KERNVER} >>$UMLMAKE
+    setup_host_make $host $UMLKERNEL regular >>$UMLMAKE
 done
 
 # build a plain kernel if we need it!
@@ -132,9 +131,9 @@ then
 
     applypatches
 
-    echo Copying kernel config ${TESTINGROOT}/kernelconfigs/umlplain${KERNVER}.config 
+    echo Copying kernel config ${TESTINGROOT}/kernelconfigs/umlplain.config 
     rm -f .config
-    cp ${TESTINGROOT}/kernelconfigs/umlplain${KERNVER}.config .config
+    cp ${TESTINGROOT}/kernelconfigs/umlplain.config .config
     
     (make CC=${CC} ARCH=um $NONINTCONFIG && make CC=${CC} ARCH=um dep && make ARCH=um CC=${CC} linux ) || exit 1 </dev/null 
 fi
@@ -155,7 +154,7 @@ cd $POOLSPACE && make $REGULARHOSTS
 # now, copy the kernel, apply the UML patches.
 # then, make FreeSWAN patches as well.
 #
-UMLSWAN=$POOLSPACE/swan${KERNVER}
+UMLSWAN=$POOLSPACE/pandora
 
 # we could copy the UMLPLAIN to make this tree. This would be faster, as we
 # already built most everything. We could also just use a FreeSWAN-enabled
@@ -175,7 +174,7 @@ NEED_swan=false
 
 # go through each regular host and see what kernel to use, and
 # see if we have to build the local plain kernel.
-for host in $PANDORA_HOSTS
+for host in $SPECIAL_HOSTS
 do
     kernelvar=UML_swan${KERNVER}_KERNEL
     UMLKERNEL=${!kernelvar}
@@ -192,7 +191,7 @@ do
     fi
     echo Using kernel: $UMLKERNEL for $host
 
-    setup_host_make $host $UMLKERNEL pandora ${KERNVER} $NEED_plain >>$UMLMAKE
+    setup_host_make $host $UMLKERNEL pandora ${KERNVER} $NEED_swan >>$UMLMAKE
 done
 
 if $NEED_swan && [ ! -x $UMLSWAN/linux ]
