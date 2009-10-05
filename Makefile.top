@@ -22,7 +22,6 @@ distclean:	clean
 	if [ -f umlsetup.sh ]; then source umlsetup.sh; if [ -d "$$POOLSPACE" ]; then rm -rf $$POOLSPACE; fi; fi
 
 uml:	checkprograms
-	-chmod +x packaging/utils/*.sh 
 	-chmod +x testing/utils/make-uml.sh testing/utils/verify-uml.sh
 	./testing/utils/verify-uml.sh
 	./testing/utils/make-uml.sh `pwd`
