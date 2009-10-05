@@ -7,8 +7,6 @@
 source $env(OPENSWANSRCDIR)/testing/utils/GetOpts.tcl
 source $env(OPENSWANSRCDIR)/testing/utils/netjig.tcl
 
-global env
-
 set netjig_prog $env(OPENSWANSRCDIR)/testing/utils/uml_netjig/uml_netjig
 
 set arpreply ""
@@ -17,9 +15,6 @@ set umlid(extra_hosts) ""
 set env(NETJIGVERBOSE) 1
 
 set netjig1 [netjigstart]
-
-# do this to create the expect_out set of variables.
-expect *
 
 netjigsetup $netjig1
 
@@ -35,16 +30,9 @@ foreach net $managednets {
     newswitch $netjig1 "$net"
 }
 
-set switchvars [open [file join $env(POOLSPACE) ".switches.sh"] "w"]
-foreach net $managednets {
-    set var "UML_${net}_CTL"
-    puts $switchvars "$var=$env($var)\n"
+foreach host $argv {
+    system "$host single &"
 }
-close $switchvars
-
-#foreach host $argv {
-#    system "$host single &"
-#}
 
 foreach net $managednets {
     if {[info exists umlid(net$net,play)] } {
@@ -53,17 +41,11 @@ foreach net $managednets {
     }
 }
 
+
 puts "\r\nExit the netjig when you are done\r\n"
 
 set timeout -1
-interact {
-    -reset
-    -echo
-    -i $netjig1
-    "\r" { send_user "\r\n"
-           exp_send "\n"
-    }
-}
+interact -reset -i $netjig1 
 
 foreach host $argv {
     system "uml_mconsole $host halt"
