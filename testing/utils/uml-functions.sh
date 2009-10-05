@@ -152,7 +152,7 @@ setup_host_make() {
     rm -f makeuml.$$ makeuml2.$$
 
     # setup the mount of /usr/share
-    echo "$hostroot/etc/fstab : ${TESTINGROOT}/baseconfigs/$host/etc/fstab"
+    echo "$hostroot/etc/fstab : "
     echo "$TAB cp ${TESTINGROOT}/baseconfigs/$host/etc/fstab $hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/share		     hostfs   defaults,ro,$SHAREROOT 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /testing		     hostfs   defaults,ro,${TESTINGROOT} 0 0 >>$hostroot/etc/fstab"
@@ -162,10 +162,11 @@ setup_host_make() {
     echo "$TAB echo none	   /var/tmp		     hostfs   defaults,rw,${POOLSPACE}/${hostroot}/var/tmp 0 0 >>$hostroot/etc/fstab"
     depends="$depends $hostroot/etc/fstab"
 
-    # split Debian "interfaces" file into RH ifcfg-* file
-    echo "$hostroot/etc/sysconfig/network-scripts/ifcfg-eth0: $hostroot/etc/network/interfaces"
-    echo "$TAB mkdir -p $hostroot/etc/sysconfig/network-scripts"
-    echo
+    echo "$hostroot/lib/modules/stamp: ${KERNDIR}/.config"
+    echo "${TAB}(cd ${KERNDIR} && make ARCH=um INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules_install)"
+    echo "${TAB}touch ${hostroot}/lib/modules/stamp"
+    echo ""
+    depends="$depends $hostroot/lib/modules/stamp"
 
     if [ "X$HOSTTYPE" == "Xopenswan" ]
     then
@@ -190,11 +191,12 @@ setup_host_make() {
 	    depends="$depends $hostroot/ipsec.o"
 
 	    # make module startup script
-	    startscript=$POOLSPACE/$host/startmodule.sh
+	    startscript=$host/startmodule.sh
 	    echo "$startscript : $PANDORA_SRCDIR/umlsetup.sh $hostroot/ipsec.o initrd.cpio"
 	    echo "$TAB echo '#!/bin/sh' >$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
+	    echo "$TAB echo 'if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
 	    echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB # the umlroot= is a local hack >>$startscript"
@@ -206,10 +208,11 @@ setup_host_make() {
     fi
 
     # make startup script
-    startscript=$POOLSPACE/$host/start.sh
+    startscript=$host/start.sh
     echo "$startscript : $PANDORA_SRCDIR/umlsetup.sh initrd.cpio"
     echo "$TAB echo '#!/bin/sh' >$startscript"
     echo "$TAB echo ''          >>$startscript"
+    echo "$TAB echo 'if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
     echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
     echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
     echo "$TAB echo ''          >>$startscript"
@@ -288,6 +291,7 @@ setup_host() {
 	echo '#!/bin/sh' >$startscript
 	echo ''          >>$startscript
 	echo '# get $net value from baseconfig'          >>$startscript
+	echo 'if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript
 	echo ". ${TESTINGROOT}/baseconfigs/net.$host.sh" >>$startscript
 	echo ''          >>$startscript
 	echo "$KERNEL ubd0=$hostroot umid=$host \$net \$UML_DEBUG_OPT \$UML_$host_OPT \$*" >>$startscript
