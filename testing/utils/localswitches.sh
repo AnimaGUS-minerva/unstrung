@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -x
+#set -x
 
 BUILDTOP=${MYBOX-/c2/freeswan/freeswan-1.92}
 export BUILDTOP
@@ -8,6 +8,7 @@ OPENSWANSRCDIR=$BUILDTOP
 export OPENSWANSRCDIR
 
 . $BUILDTOP/umlsetup.sh
+export POOLSPACE
 
 SWITCHES='UML_ground_CTL UML_n1_CTL UML_n2_CTL'
 for sw in $SWITCHES
@@ -15,6 +16,7 @@ do
   unset $!sw
 done
 
+# suck in local test configuration, if any.
 if [ -f testparams.sh ]
 then
     source testparams.sh
@@ -45,5 +47,5 @@ case $* in
         *) hosts=$@;;
 esac
 
-eval expect -f $BUILDTOP/testing/utils/localswitches.tcl $hosts
+exec expect -f $BUILDTOP/testing/utils/localswitches.tcl $hosts
 
