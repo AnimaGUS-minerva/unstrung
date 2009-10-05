@@ -3,3 +3,4 @@ UMLPOOL
 umlsetup.sh
 *~
 testing/functional/*/OUTPUT
+Makefile.ver

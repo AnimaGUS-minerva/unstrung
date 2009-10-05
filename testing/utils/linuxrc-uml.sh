@@ -7,7 +7,7 @@ PATH="/sbin:/bin"
 tmpfs_size="10M"
 udev_root="/root/dev"
 
-. /funcs.sh
+. funcs.sh
 
 ##############################################################################
 
