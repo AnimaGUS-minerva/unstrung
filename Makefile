@@ -26,7 +26,7 @@ srcdir?=$(shell pwd)
 include ${PANDORA_SRCDIR}/Makefile.top
 -include ${PANDORA_SRCDIR}/Makefile.vendor
 
-checkprograms::
+programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
 		(cd $$d && $(MAKE) srcdir=${PANDORA_SRCDIR}/$$d/ PANDORA_SRCDIR=${PANDORA_SRCDIR} $@ ) || exit 1; \
