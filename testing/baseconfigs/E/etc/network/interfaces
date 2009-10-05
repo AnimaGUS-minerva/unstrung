@@ -1,0 +1,6 @@
+iface lo inet loopback
+
+auto eth0 eth1
+
+iface eth0 inet6 manual
+iface eth1 inet6 manual
