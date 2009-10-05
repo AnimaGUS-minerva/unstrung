@@ -7,6 +7,8 @@
 source $env(OPENSWANSRCDIR)/testing/utils/GetOpts.tcl
 source $env(OPENSWANSRCDIR)/testing/utils/netjig.tcl
 
+global env
+
 set netjig_prog $env(OPENSWANSRCDIR)/testing/utils/uml_netjig/uml_netjig
 
 set arpreply ""
@@ -30,17 +32,23 @@ foreach net $managednets {
     newswitch $netjig1 "$net"
 }
 
-foreach host $argv {
-    system "$host single &"
-}
-
+set switchvars [open [file join $env(POOLSPACE) ".switches.sh"] "w"]
 foreach net $managednets {
-    if {[info exists umlid(net$net,play)] } {
-	puts "Will play pcap file $umlid(net$net,play) to network '$net'\r\n"
-	setupplay $netjig1 $net $umlid(net$net,play) "--rate=ontick"
-    }
+    set var "UML_${net}_CTL"
+    puts $switchvars "$var=$env($var)\n"
 }
+close $switchvars
 
+#foreach host $argv {
+#    system "$host single &"
+#}
+
+#foreach net $managednets {
+#    if {[info exists umlid(net$net,play)] } {
+#	puts "Will play pcap file $umlid(net$net,play) to network '$net'\r\n"
+#	setupplay $netjig1 $net $umlid(net$net,play) "--rate=ontick"
+#    }
+#}
 
 puts "\r\nExit the netjig when you are done\r\n"
 
