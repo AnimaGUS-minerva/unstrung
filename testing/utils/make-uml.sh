@@ -46,17 +46,10 @@ fi
 . ${PANDORA_SRCDIR}/testing/utils/uml-functions.sh
 
 KERNVER=${KERNVER-}    
-
-case $KERNVER in 
-	26) KERNVERSION=2.6;;
-	*) KERNVERSION=2.4;;
-esac
+KERNVERSION=2.6;
 
 echo Setting up for kernel KERNVER=$KERNVER and KERNVERSION=$KERNVERSION
 
-
-# set the default for this
-NATTPATCH=${NATTPATCH-true}
 
 # make absolute so that we can reference it from POOLSPACE
 PANDORA_SRCDIR=`cd $PANDORA_SRCDIR && pwd`;export PANDORA_SRCDIR
@@ -65,24 +58,12 @@ PANDORA_SRCDIR=`cd $PANDORA_SRCDIR && pwd`;export PANDORA_SRCDIR
 #  (if they do not already exist)
 # that will copy everything where it needs to go.
 
-if [ -d $PANDORA_SRCDIR/testing/kernelconfigs ]
+if [ ! -d $PANDORA_SRCDIR/testing ]
 then
-    TESTINGROOT=$PANDORA_SRCDIR/testing
+    echo Where is ${PANDORA_SRCDIR}/testing '????'
+    exit 1
 fi
-TESTINGROOT=${TESTINGROOT-/c2/freeswan/sandbox/testing}
-
-if [ -z "$NONINTPATCH" ]
-then
-    if [ -f ${TESTINGROOT}/kernelconfigs/linux-${KERNVERSION}.0-nonintconfig.patch ]
-    then
-	NONINTPATCH=${TESTINGROOT}/kernelconfigs/linux-${KERNVERSION}.0-nonintconfig.patch
-	echo "Found non-int patch $NONINTPATCH"
-    else
-	echo "Can not find NONINTPATCH: +$NONINTPATCH+"
-	echo "Set to 'none' if it is not relevant"
-	exit 1
-    fi
-fi
+TESTINGROOT=$PANDORA_SRCDIR/testing
 
 # more defaults
 NONINTCONFIG=oldconfig
@@ -92,7 +73,7 @@ UMLVERSION=`basename $UMLPATCH .bz2 | sed -e 's/uml-patch-//'`
 EXTRAPATCH=${TESTINGROOT}/kernelconfigs/extras.$UMLVERSION.patch
 
 # dig the kernel revision out.
-KERNEL_MAJ_VERSION=`${PANDORA_SRCDIR}/packaging/utils/kernelversion-short $KERNPOOL/Makefile`
+KERNEL_MAJ_VERSION=`${PANDORA_SRCDIR}/testing/utils/kernelversion-short $KERNPOOL/Makefile`
 
 
 echo -n Looking for Extra patch at $EXTRAPATCH..
@@ -122,7 +103,7 @@ NEED_plain=false
 
 # go through each regular host and see what kernel to use, and
 # see if we have to build the local plain kernel.
-for host in $REGULARHOSTS
+for host in $PANDORA_HOSTS
 do
     kernelvar=UML_plain${KERNVER}_KERNEL
     UMLKERNEL=${!kernelvar}
@@ -211,7 +192,7 @@ do
     fi
     echo Using kernel: $UMLKERNEL for $host
 
-    setup_host_make $host $UMLKERNEL openswan ${KERNVER} $NEED_plain >>$UMLMAKE
+    setup_host_make $host $UMLKERNEL pandora ${KERNVER} $NEED_plain >>$UMLMAKE
 done
 
 if $NEED_swan && [ ! -x $UMLSWAN/linux ]
@@ -223,7 +204,7 @@ then
     
     # copy the config file
     rm -f .config
-    cp ${TESTINGROOT}/kernelconfigs/umlswan${KERNVER}.config .config
+    cp ${TESTINGROOT}/kernelconfigs/umlpandora${KERNVER}.config .config
 
     # nuke final executable here since we will do FreeSWAN in a moment.
     rm -f linux .depend
@@ -236,7 +217,7 @@ if $NEED_swan && [ ! -x $UMLSWAN/linux ]
 then
     cd $PANDORA_SRCDIR || exit 1
  
-    make KERNMAKEOPTS='ARCH=um' KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR NONINTCONFIG=${NONINTCONFIG} verset kpatch rcf kernel || exit 1 </dev/null 
+    make KERNMAKEOPTS='ARCH=um' KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR verset kpatch rcf kernel || exit 1 </dev/null 
 
     # mark it as read-only, so that we don't edit the wrong files by mistake!
     find $UMLSWAN/net/ipsec $UMLSWAN/include/openswan -name '*.[ch]' -type f -print | xargs chmod a-w

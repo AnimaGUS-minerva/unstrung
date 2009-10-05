@@ -39,6 +39,5 @@ if [ ! -d ${KERNPOOL}/. ]; then echo Your KERNPOOL= is not properly set; exit 1;
 
 if [ "${UMLPATCH}" != "none" ] && [ ! -r ${UMLPATCH} ]; then echo Your UMLPATCH= is not properly set; exit 1; fi
 if [ -z "${PANDORA_HOSTS}" ]; then echo Your PANDORA_HOSTS= is not properly set; exit 1; fi
-if [ -z "${NATTPATCH}" ]; then echo Your NATTPATCH= is not properly set; exit 1; fi 
-if [ ! -d ${BASICROOT}/. ]; then echo Your BASICROOT= is not properly set; exit 1; fi
+if [ ! -d ${BASICROOT}/. ]; then echo Your BASICROOT=${BASICROOT} is not properly set; exit 1; fi
     
