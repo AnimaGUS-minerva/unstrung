@@ -1,0 +1,20 @@
+PANDORA is the box that once, opened can never be closed.
+(Prometheus did this)
+
+The authors thinks that once RPL-style "mesh" routing is loose on 
+citizen controlled mobile devices that citizens will no longer be
+held hostage to incumbent telcos that dominate the broadband
+"Internet".
+
+This program is a set of tools that runs under the Linux kernel:
+on netbooks, laptops, and on phones like the Google Android and Nokia N800.  
+
+Using IETF (to be) standard RPL (a product of the ROLL WG), people can create
+mesh networks in IPv6 space.
+
+Michael Richardson <mcr@sandelman.ca>,
+Ottawa, Ontario, October 2009 (on a train, where Internet is broken)
+
+
+
+
