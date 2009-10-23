@@ -17,7 +17,7 @@ srcdir?=${UNSTRUNG_SRCDIR}/programs/sunshine/
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 PROGRAM=sunshine
-OBJS=sendnd.o
+OBJS=main.o sendnd.o
 EXTRA5PROC=${PROGRAM}.5
 
 include ${srcdir}../Makefile.program

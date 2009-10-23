@@ -8,6 +8,7 @@ RM=rm
 
 INCLUDES+=-I${UNSTRUNG_SRCDIR} -I${KLIPSINC} -I${UNSTRUNG_SRCDIR}/include
 CFLAGS+=${USERCOMPILE} ${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
+CXXFLAGS+=${USERCPPCOMPILE} ${PORTINCLUDE} ${INCLUDES}
 
 ifneq ($(BUILDENV),darwin)
 CFLAGS+= -Wall
@@ -171,8 +172,8 @@ LOADLIBS=${OBJS}
 # ${LIBS} is repeated due to possible circular dependancies among libraries
 LDLIBS=${LIBS} ${USERLINK} ${LIBS} ${EXTRALIBS} 
 
-%: %.o $(OBJS) ${LIBS}
-	$(CC) $(CFLAGS) -o $@ $@.o ${OBJS} $(LDFLAGS) $(LDLIBS) $(USERLINK)
+${PROGRAM}: $(OBJS) ${LIBS}
+	$(CXX) $(CXXFLAGS) -o $@ ${OBJS} $(LDFLAGS) $(LDLIBS) $(USERLINK)
 
 # cancel direct version
 %: %.c
@@ -184,14 +185,14 @@ LDLIBS=${LIBS} ${USERLINK} ${LIBS} ${EXTRALIBS}
 	${CC} -c ${CFLAGS} $<
 
 %.o: ${srcdir}%.cpp
-	${CPP} -c ${CFLAGS} $<
+	${CXX} -c ${CXXFLAGS} $<
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.manpages
+#include ${UNSTRUNG_SRCDIR}/programs/Makefile.manpages
 
-%.i: %.c 
-	$(CC) $(CFLAGS) -E -o $@ $< 
+#%.i: %.c 
+#	$(CC) $(CFLAGS) -E -o $@ $< 
 
-%: ${srcdir}%.in ${UNSTRUNG_SRCDIR}/Makefile.inc ${UNSTRUNG_SRCDIR}/Makefile.ver
+${SCRIPT}: ${srcdir}%.in ${UNSTRUNG_SRCDIR}/Makefile.inc ${UNSTRUNG_SRCDIR}/Makefile.ver
 	@echo  $< '->' $@
 	@cat $< | sed -e "s/xxx/$(UNSTRUNG_VERSION)/" \
                         -e "s:@MODPROBE@:$(MODPROBE):" \
@@ -220,6 +221,9 @@ UNSTRUNG_SRCDIRREL?=../..
 # Gather dependencies caused by explicit #includes within .c files
 depend: ${DISTSRC}
 	@(ls $(DISTSRC) | grep '\.c' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},${UNSTRUNG_SRCDIRREL},g' >Makefile.depend
+
+Makefile.depend:
+Makefile.inc:
 
 -include ${srcdir}Makefile.depend
 
