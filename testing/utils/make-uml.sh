@@ -11,7 +11,7 @@
 set -e
 
 case $# in
-    1) PANDORA_SRCDIR=$1; shift;;
+    1) UNSTRUNG_SRCDIR=$1; shift;;
 esac
 
 CC=${CC-cc}
@@ -27,23 +27,23 @@ export USE_OBJDIR=true
 
 # include this dir, in particular so that we can get the local "touch"
 # program.
-export PATH=$PANDORA_SRCDIR/testing/utils:$PATH 
+export PATH=$UNSTRUNG_SRCDIR/testing/utils:$PATH 
 
 
 #
-# configuration for this file has moved to $PANDORA_SRCDIR/umlsetup.sh
+# configuration for this file has moved to $UNSTRUNG_SRCDIR/umlsetup.sh
 # By default, that file does not exist. A sample is at umlsetup-sample.sh
-# in this directory. Copy it to $PANDORA_SRCDIR and edit it.
+# in this directory. Copy it to $UNSTRUNG_SRCDIR and edit it.
 #
-PANDORA_SRCDIR=${PANDORA_SRCDIR-../..}
-if [ ! -f ${PANDORA_SRCDIR}/umlsetup.sh ]
+UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR-../..}
+if [ ! -f ${UNSTRUNG_SRCDIR}/umlsetup.sh ]
 then
     echo No umlsetup.sh. Please read instructions in doc/umltesting.html and testing/utils/umlsetup-sample.sh.
     exit 1
 fi
 
-. ${PANDORA_SRCDIR}/umlsetup.sh
-. ${PANDORA_SRCDIR}/testing/utils/uml-functions.sh
+. ${UNSTRUNG_SRCDIR}/umlsetup.sh
+. ${UNSTRUNG_SRCDIR}/testing/utils/uml-functions.sh
 
 KERNVERSION=2.6;
 
@@ -51,18 +51,18 @@ echo Setting up for kernel KERNVERSION=$KERNVERSION
 
 
 # make absolute so that we can reference it from POOLSPACE
-PANDORA_SRCDIR=`cd $PANDORA_SRCDIR && pwd`;export PANDORA_SRCDIR
+UNSTRUNG_SRCDIR=`cd $UNSTRUNG_SRCDIR && pwd`;export UNSTRUNG_SRCDIR
 
 # what this script does is create some Makefile
 #  (if they do not already exist)
 # that will copy everything where it needs to go.
 
-if [ ! -d $PANDORA_SRCDIR/testing ]
+if [ ! -d $UNSTRUNG_SRCDIR/testing ]
 then
-    echo Where is ${PANDORA_SRCDIR}/testing '????'
+    echo Where is ${UNSTRUNG_SRCDIR}/testing '????'
     exit 1
 fi
-TESTINGROOT=$PANDORA_SRCDIR/testing
+TESTINGROOT=$UNSTRUNG_SRCDIR/testing
 
 # more defaults
 NONINTCONFIG=oldconfig
@@ -72,7 +72,7 @@ UMLVERSION=`basename $UMLPATCH .bz2 | sed -e 's/uml-patch-//'`
 EXTRAPATCH=${TESTINGROOT}/kernelconfigs/extras.$UMLVERSION.patch
 
 # dig the kernel revision out.
-KERNEL_MAJ_VERSION=`${PANDORA_SRCDIR}/testing/utils/kernelversion-short $KERNPOOL/Makefile`
+KERNEL_MAJ_VERSION=`${UNSTRUNG_SRCDIR}/testing/utils/kernelversion-short $KERNPOOL/Makefile`
 
 
 echo -n Looking for Extra patch at $EXTRAPATCH..
@@ -85,7 +85,7 @@ else
 fi
 
 mkdir -p $POOLSPACE
-if [ ! -d ${PANDORA_SRCDIR}/UMLPOOL/. ]; then ln -s $POOLSPACE ${PANDORA_SRCDIR}/UMLPOOL; fi
+if [ ! -d ${UNSTRUNG_SRCDIR}/UMLPOOL/. ]; then ln -s $POOLSPACE ${UNSTRUNG_SRCDIR}/UMLPOOL; fi
 
 UMLMAKE=$POOLSPACE/Makefile
 NOW=`date`
@@ -102,7 +102,7 @@ NEED_plain=false
 
 # go through each regular host and see what kernel to use, and
 # see if we have to build the local plain kernel.
-for host in $PANDORA_HOSTS
+for host in $UNSTRUNG_HOSTS
 do
     kernelvar=UML_plain_KERNEL
     UMLKERNEL=${!kernelvar}
@@ -214,7 +214,7 @@ fi
 
 if $NEED_swan && [ ! -x $UMLSWAN/linux ]
 then
-    cd $PANDORA_SRCDIR || exit 1
+    cd $UNSTRUNG_SRCDIR || exit 1
  
     make KERNMAKEOPTS='ARCH=um' KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR verset kpatch rcf kernel || exit 1 </dev/null 
 
@@ -222,10 +222,10 @@ then
     find $UMLSWAN/net/ipsec $UMLSWAN/include/openswan -name '*.[ch]' -type f -print | xargs chmod a-w
 fi
 
-cd $PANDORA_SRCDIR || exit 1
+cd $UNSTRUNG_SRCDIR || exit 1
 
 make WERROR=-Werror USE_OBJDIR=true programs
 
 # now, execute the Makefile that we have created!
-cd $POOLSPACE && make $PANDORA_HOSTS 
+cd $POOLSPACE && make $UNSTRUNG_HOSTS 
 

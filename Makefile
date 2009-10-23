@@ -1,4 +1,5 @@
-# Pandora master makefile
+# unstrung master makefile
+#
 # Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
 # 
 # This program is free software; you can redistribute it and/or modify it
@@ -13,23 +14,23 @@
 #
 
 
-PANDORA_SRCDIR?=$(shell pwd)
-export PANDORA_SRCDIR
+UNSTRUNG_SRCDIR?=$(shell pwd)
+export UNSTRUNG_SRCDIR
 
 TERMCAP=
 export TERMCAP
 
-include ${PANDORA_SRCDIR}/Makefile.inc
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-include ${PANDORA_SRCDIR}/Makefile.top
--include ${PANDORA_SRCDIR}/Makefile.vendor
+include ${UNSTRUNG_SRCDIR}/Makefile.top
+-include ${UNSTRUNG_SRCDIR}/Makefile.vendor
 
 programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
-		(cd $$d && $(MAKE) srcdir=${PANDORA_SRCDIR}/$$d/ PANDORA_SRCDIR=${PANDORA_SRCDIR} $@ ) || exit 1; \
+		(cd $$d && $(MAKE) srcdir=${UNSTRUNG_SRCDIR}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \
 	done; 
 
 env:

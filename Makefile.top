@@ -16,7 +16,7 @@
 
 
 clean::
-	-(cd ${PANDORA_SRCDIR} && $(MAKE) modclean && $(MAKE) mod26clean)
+	-(cd ${UNSTRUNG_SRCDIR} && $(MAKE) modclean && $(MAKE) mod26clean)
 
 distclean:	clean
 	if [ -f umlsetup.sh ]; then source umlsetup.sh; if [ -d "$$POOLSPACE" ]; then rm -rf $$POOLSPACE; fi; fi
@@ -27,7 +27,7 @@ uml:	checkprograms
 	./testing/utils/make-uml.sh `pwd`
 
 umluserland:
-	(touch ${PANDORA_SRCDIR}/Makefile.inc && source ${PANDORA_SRCDIR}/umlsetup.sh && cd $$POOLSPACE && $(MAKE) $$PANDORA_HOSTS $$REGULARHOSTS ) 
+	(touch ${UNSTRUNG_SRCDIR}/Makefile.inc && source ${UNSTRUNG_SRCDIR}/umlsetup.sh && cd $$POOLSPACE && $(MAKE) $$UNSTRUNG_HOSTS $$REGULARHOSTS ) 
 
 
 check:	uml Makefile.ver

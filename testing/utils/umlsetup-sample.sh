@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # This is the configuration file that helps setup for
-# a kernel pool for UML compilation w/PANDORA.
+# a kernel pool for UML compilation w/UNSTRUNG.
 #
-# Copy this file to the top of your PANDORA source directory as
+# Copy this file to the top of your UNSTRUNG source directory as
 # umlsetup.sh, edit that copy, and populate the paths.
 
 
