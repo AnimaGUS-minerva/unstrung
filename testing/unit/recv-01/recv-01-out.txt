@@ -1,0 +1,10 @@
+IP6 :: > ff02::1:ff66:6602: ICMP6, neighbor solicitation, who has fe80::1000:ff:fe66:6602, length 24
+IP6 fe80::1000:ff:fe66:6602 > ff02::2: ICMP6, router solicitation, length 16
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, router advertisement, length 56
+IP6 :: > ff02::1:ff66:6602: ICMP6, neighbor solicitation, who has 2001:db8::1000:ff:fe66:6602, length 24
+IP6 fe80::1000:ff:fe66:6602 > ff02::16: HBH ICMP6, multicast listener report v2, 1 group record(s), length 28
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, router advertisement, length 56
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, router advertisement, length 56
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, router advertisement, length 56
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, router advertisement, length 56
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, router advertisement, length 56

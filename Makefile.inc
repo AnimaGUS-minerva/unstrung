@@ -1,4 +1,8 @@
 # -*- makefile -*-
 
 # stuff.
+CFLAGS+=-I${UNSTRUNG_SRCDIR}/include
+CXXFLAGS+=-I${UNSTRUNG_SRCDIR}/include
 
+USE_OBJDIR=false
+UNSTRUNG_OBJDIR=${UNSTRUNG_SRCDIR}/.
