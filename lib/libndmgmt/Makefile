@@ -24,8 +24,8 @@ LIBRARY=ndmgmt
 LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
 
-ONEFILE=sockets.cpp
-CXXSRCS=sockets.cpp
+ONEFILE=iface.cpp
+CXXSRCS=iface.cpp
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG

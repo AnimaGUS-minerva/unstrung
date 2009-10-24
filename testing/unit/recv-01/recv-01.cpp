@@ -1,39 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ndmgmt.h"
+#include "iface.h"
 
 extern "C" {
 #include "pcap.h"
 #include <libgen.h>
+#include <string.h>
 
-#if 0
-	external void sunshine_pcap_input(u_char *u,
-					  const struct pcap_pkthdr *h,
-					  const u_char *bytes);
-#endif
 }
 
-class pcap_neighbour_discovery : public neighbour_discovery {
+class pcap_network_interface : public network_interface {
 public:
-	pcap_neighbour_discovery(pcap_dumper_t *pd);
-	pcap_dumper_t *pcap_out;
+	pcap_network_interface(pcap_dumper_t *pd);
+	int send_packet(const u_char *bytes, const int len);
 
 private:
+	pcap_dumper_t *pcap_out;
 };
 
-pcap_neighbour_discovery::pcap_neighbour_discovery(pcap_dumper_t *pd) :
-	neighbour_discovery()
+pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
+	network_interface()
 {
 	pcap_out = pd;
 }
+
+int pcap_network_interface::send_packet(const u_char *bytes, const int len)
+{
+	struct pcap_pkthdr h;
+	memset(&h, 0, sizeof(h));
+	h.caplen = len;
+	h.len    = len;
+	gettimeofday(&h.ts, NULL);
+	
+	pcap_dump((u_char *)this->pcap_out, &h, bytes);
+}
+
 
 void sunshine_pcap_input(u_char *u,
 			 const struct pcap_pkthdr *h,
 			 const u_char *bytes)
 {
-	pcap_neighbour_discovery *pnd = (pcap_neighbour_discovery *)u;
+	pcap_network_interface *pnd = (pcap_network_interface *)u;
 
-	pcap_dump((u_char *)pnd->pcap_out, h, bytes);
+	pnd->receive_packet(bytes, h->len);
 }
 
 int process_infile(char *infile, char *outfile)
@@ -59,7 +68,7 @@ int process_infile(char *infile, char *outfile)
 		exit(1);
 	}
 
-	pcap_neighbour_discovery *ndproc = new pcap_neighbour_discovery(out);
+	pcap_network_interface *ndproc = new pcap_network_interface(out);
 	
 	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)ndproc);
 

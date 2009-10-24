@@ -18,16 +18,27 @@
 
 #include <netinet/ip6.h>
 
-#include "ndmgmt.h"
+#include "iface.h"
 
-neighbour_discovery::neighbour_discovery()
+
+network_interface::network_interface()
 {
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
 }
 
-neighbour_discovery::neighbour_discovery(int fd)
+network_interface::network_interface(int fd)
 {
     nd_socket = fd;
+}
+
+void network_interface::receive_packet(const u_char *bytes, const int len)
+{
+    return;
+}
+
+int network_interface::send_packet(const u_char *bytes, const int len)
+{
+    return len;
 }
 
 
