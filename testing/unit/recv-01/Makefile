@@ -12,8 +12,8 @@ recv-01: recv-01.cpp
 	${CXX} ${CXXFLAGS} -o recv-01 recv-01.cpp ${LDFLAGS}
 
 check:	recv-01
-	./recv-01
-	tcpdump -t -n -r ../OUTPUTS/recv-01-out.pcap -s 0 | diff - recv-01-out.txt
+	./recv-01 ../INPUTS/plainnd.pcap
+	tcpdump -t -n -r ../OUTPUTS/recv-01-plainnd.pcap -s 0 | diff - recv-01-plainnd-out.txt
 
 clean:
 	rm -rf recv-01 *.o

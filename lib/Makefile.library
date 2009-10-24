@@ -1,0 +1,102 @@
+KLIPSD=${UNSTRUNG_SRCDIR}/linux/include
+KLIPSSRCDIR=${UNSTRUNG_SRCDIR}/linux/net/ipsec
+MANSRCDIR=${UNSTRUNG_SRCDIR}/lib/libopenswan
+
+LEX=flex
+RANLIB?=ranlib
+
+ifeq ($(USE_YACC),true)
+BISON=yacc -b parser
+else
+BISON=bison
+endif
+
+VPATH+= ${KLIPSSRCDIR}
+OSDEP?=$(shell uname -s | tr 'A-Z' 'a-z')
+
+# Original flags
+INCLUDES+=-I. -I${KLIPSSRCDIR} -I${KLIPSD} -I${UNSTRUNG_SRCDIR}
+INCLUDES+=-I${UNSTRUNG_SRCDIR}/include 
+CFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
+CXXFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
+
+
+CFLAGS+=-DDEBUG
+CFLAGS+= $(USERCOMPILE)
+ifneq ($(BUILDENV),darwin)
+CFLAGS+= -Wall
+endif
+#CFLAGS+= -Wconversion
+#CFLAGS+= -Wmissing-prototypes
+CFLAGS+= -Wpointer-arith
+CFLAGS+= -Wcast-qual
+#CFLAGS+= -Wmissing-declarations
+CFLAGS+= -Wstrict-prototypes
+#CFLAGS+= -pedantic
+#CFLAGS+= -W
+#CFLAGS+= -Wwrite-strings
+CFLAGS+= -Wbad-function-cast 
+
+ifeq ($(USE_NAT_TRAVERSAL),true)
+CFLAGS+= -DNAT_TRAVERSAL
+endif
+
+ARFLAGS=crvs
+MANS=
+
+.PHONY:	all install clean l t lt tar check depend checkprograms
+
+# we can't do tests with two conditions, but we can concatenate the strings
+SHOULDWERESTART=${USE_OBJDIR}$(wildcard ${ONEFILE})
+ifeq ($(SHOULDWERESTART),true${ONEFILE})
+all programs clean install:
+	cd ${UNSTRUNG_SRCDIR} && cd ${OBJDIRTOP}/lib/lib${LIBRARY} && ${MAKE} $@
+else
+all:	$(LIB) 
+programs: $(LIB) 
+clean:	cleanall
+install: doinstall
+
+endif
+
+doinstall:
+	@for d in $(MANDIR); do mkdir -p $$d; done
+	@for f in $(MANS) ; \
+	do \
+		$(INSTALL) $(INSTMANFLAGS) $(MANSRCDIR)/$$f $(MANDIR)/ipsec_$$f || exit 1 ; \
+	done
+	@$(UNSTRUNG_SRCDIR)/packaging/utils/manlink $(foreach man, $(MANS), ${MANSRCDIR}/$(man)) | \
+	while read from to; \
+	do \
+		ln -s -f ipsec_$$from $(MANDIR)/$$to; \
+	done
+
+
+install_file_list:
+	@for f in $(MANS) ; \
+	do \
+		echo $(MANDIR)/ipsec_$$f;\
+	done;
+	@$(UNSTRUNG_SRCDIR)/packaging/utils/manlink $(foreach man, $(MANS), ${MANSRCDIR}/$(man)) | \
+	while read from to; \
+	do \
+		echo $(MANDIR)/$$to; \
+	done
+
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
+	${RANLIB} ${LIB}
+
+$(OBJS):	$(HDRS)
+
+cleanall::
+	rm -rf ${OBJS}
+
+# Gather dependencies caused by explicit #includes within .c files
+depend: ${DISTSRC}
+	@(ls $(DISTSRC) | grep '\.c' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
+
+-include ${srcdir}Makefile.depend.${OSDEP}
+
+
+

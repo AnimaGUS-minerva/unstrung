@@ -4,6 +4,7 @@
 
 extern "C" {
 #include "pcap.h"
+#include <libgen.h>
 
 #if 0
 	external void sunshine_pcap_input(u_char *u,
@@ -35,11 +36,9 @@ void sunshine_pcap_input(u_char *u,
 	pcap_dump((u_char *)pnd->pcap_out, h, bytes);
 }
 
-int main(int argc, char *argv[])
+int process_infile(char *infile, char *outfile)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
-	const char *infile   = "../INPUTS/plainnd.pcap";
-	const char *outfile  = "../OUTPUTS/recv-01-out.pcap";
 	pcap_t *pol = pcap_open_offline(infile, errbuf);
 
 	if(!pol) {
@@ -64,5 +63,25 @@ int main(int argc, char *argv[])
 	
 	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)ndproc);
 
-	exit(ndproc->errors());
+	if(ndproc->errors() > 0) {
+		exit(ndproc->errors());
+	}
 }
+
+int main(int argc, char *argv[])
+{
+	int i;
+
+	for(i = 1; i < argc; i++) {
+		char b1[256];
+		char *infile = argv[i];
+		char *b;
+		
+		b = basename(infile);
+		snprintf(b1, 256, "../OUTPUTS/recv-01-%s", b);
+		process_infile(infile, b1);
+	}
+	exit(0);
+}
+
+
