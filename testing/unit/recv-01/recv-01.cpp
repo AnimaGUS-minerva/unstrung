@@ -47,6 +47,7 @@ void sunshine_pcap_input(u_char *u,
 			 const u_char *bytes)
 {
 	pcap_network_interface *pnd = (pcap_network_interface *)u;
+	int len = h->len;
 
 	/* validate input packet a bit, before passing to receive layer */
 	/* first, check ethernet, and reject non EthernetII frames 
@@ -67,6 +68,7 @@ void sunshine_pcap_input(u_char *u,
 	}
 
 	bytes += 14;
+	len   -= 14;
 
 	struct ip6_hdr *ip6 = (struct ip6_hdr *)bytes;
 	unsigned int nh = ip6->ip6_nxt;       /* type of next PDU */
@@ -77,6 +79,7 @@ void sunshine_pcap_input(u_char *u,
 	}
 
 	bytes += sizeof(struct ip6_hdr);  /* 40 bytes */
+	len   -= sizeof(struct ip6_hdr);
 
 	struct icmp6_hdr *icmp6 = (struct icmp6_hdr *)bytes;
 	if(icmp6->icmp6_type != ND_ROUTER_SOLICIT &&
@@ -88,7 +91,7 @@ void sunshine_pcap_input(u_char *u,
 		return;
 	}
 
-	pnd->receive_packet(ip6->ip6_src, ip6->ip6_dst, bytes, h->len);
+	pnd->receive_packet(ip6->ip6_src, ip6->ip6_dst, bytes, len);
 }
 
 int process_infile(char *infile, char *outfile)
