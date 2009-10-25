@@ -29,6 +29,7 @@ CXXSRCS=iface.cpp
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
+CXXFLAGS+=-g
 
 OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o} 
 
