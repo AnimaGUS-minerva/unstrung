@@ -1,0 +1,10 @@
+Got neighbour solicitation from ::, looking for fe80::1000:ff:fe66:6602, has 54 bytes of options
+Got router solicitation from fe80::1000:ff:fe66:6602 with 62 bytes of options
+Got router advertisement (reachable=0, retransmit=0) from fe80::1000:ff:fe64:6423 with 94 bytes of options
+Got neighbour solicitation from ::, looking for 2001:db8::1000:ff:fe66:6602, has 54 bytes of options
+packet 5 is not ICMPv6, but=proto:0
+Got router advertisement (reachable=0, retransmit=0) from fe80::1000:ff:fe64:6423 with 94 bytes of options
+Got router advertisement (reachable=0, retransmit=0) from fe80::1000:ff:fe64:6423 with 94 bytes of options
+Got router advertisement (reachable=0, retransmit=0) from fe80::1000:ff:fe64:6423 with 94 bytes of options
+Got router advertisement (reachable=0, retransmit=0) from fe80::1000:ff:fe64:6423 with 94 bytes of options
+Got router advertisement (reachable=0, retransmit=0) from fe80::1000:ff:fe64:6423 with 94 bytes of options

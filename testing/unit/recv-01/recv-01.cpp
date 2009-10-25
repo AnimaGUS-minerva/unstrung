@@ -88,7 +88,7 @@ void sunshine_pcap_input(u_char *u,
 		return;
 	}
 
-	pnd->receive_packet(bytes, h->len);
+	pnd->receive_packet(ip6->ip6_src, ip6->ip6_dst, bytes, h->len);
 }
 
 int process_infile(char *infile, char *outfile)
@@ -115,6 +115,8 @@ int process_infile(char *infile, char *outfile)
 	}
 
 	pcap_network_interface *ndproc = new pcap_network_interface(out);
+
+	ndproc->set_verbose(1, stdout);
 	
 	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)ndproc);
 
