@@ -22,6 +22,7 @@ public:
 		
 
 private:
+	int packet_too_short(const char *thing, const int avail, const int needed);
 	int nd_socket;
 	int error_cnt;
 	int verbose_flag;
