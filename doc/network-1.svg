@@ -57,6 +57,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Pandora Prometheus network</dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
