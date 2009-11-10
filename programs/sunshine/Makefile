@@ -18,7 +18,7 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 PROGRAM=sunshine
 OBJS=main.o sendnd.o
-EXTRA5PROC=${PROGRAM}.5
+LIBS+=${LIBNDMGMT}
 
 include ${srcdir}../Makefile.program
 

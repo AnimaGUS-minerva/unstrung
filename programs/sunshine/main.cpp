@@ -18,10 +18,14 @@
 #include <getopt.h>
 #include <sysexits.h>
 
+#include "iface.h"
+
 char *progname;
 static struct option const longopts[] =
 {
-    { "help", 0, 0, '?'}, 
+    { "help",      0, 0, '?'}, 
+    { "interface", 0, 0, 'i'}, 
+    { "verbose",   0, 0, 'v'}, 
     { name: 0 }, 
 };
 
@@ -34,9 +38,11 @@ void usage()
 int main(int argc, char *argv[])
 {
     int c;
+    char *ifname = NULL;
+    int verbose = 0;
 
     progname = argv[0];
-    while((c = getopt_long(argc, argv, "h?", longopts, 0)) != EOF) {
+    while((c = getopt_long(argc, argv, "i:h?v", longopts, 0)) != EOF) {
 	switch(c) {
 	default:
 	    fprintf(stderr, "Unknown option: %s\n", argv[optind-1]);
@@ -45,8 +51,24 @@ int main(int argc, char *argv[])
 	case '?':
 	    usage();
 	    /* NORETURN */
+
+        case 'v':
+            verbose++;
+            break;
+        case 'i':
+            ifname = optarg;
+            break;
 	}
     }
+
+    if(!ifname) usage();
+
+    network_interface *sc = new network_interface((const char *)ifname);
+    sc->setup();
+    sc->set_verbose(verbose, stderr);
+
+    network_interface::main_loop(stderr);
+
     exit(0);
 }
 
