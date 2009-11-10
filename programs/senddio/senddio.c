@@ -30,6 +30,7 @@
 #include <getopt.h>
 
 #include "pathnames.h"
+#include "rpl.h"
 
 /* open a raw IPv6 socket, and 
    - send a router advertisement for prefix on argv. (-p)
@@ -265,7 +266,86 @@ int check_allrouters_membership(int sock, struct Interface *iface)
 }		
 
 void
-send_ra(unsigned char *icmp_body, unsigned int icmp_len)
+send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
+{
+	unsigned char   buff[2048];
+	uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+	struct sockaddr_in6 addr;
+	struct in6_addr *dest = NULL;
+	struct in6_pktinfo *pkt_info;
+	struct msghdr mhdr;
+	struct cmsghdr *cmsg;
+	struct iovec iov;
+	char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
+
+	int len = 0;
+	int err;
+
+	int sock = open_icmpv6_socket();
+
+	/* Make sure that we've joined the all-routers multicast group */
+	if (check_allrouters_membership(sock, iface) < 0)
+		printf("problem checking all-routers membership on %s\n", iface->Name);
+
+	printf("sending RA on %u\n", sock);
+
+	if (dest == NULL)
+	{
+		struct timeval tv;
+
+		dest = (struct in6_addr *)all_hosts_addr;
+		gettimeofday(&tv, NULL);
+
+		iface->last_multicast_sec = tv.tv_sec;
+		iface->last_multicast_usec = tv.tv_usec;
+	}
+	
+	memset((void *)&addr, 0, sizeof(addr));
+	addr.sin6_family = AF_INET6;
+	addr.sin6_port = htons(IPPROTO_ICMPV6);
+	memcpy(&addr.sin6_addr, dest, sizeof(struct in6_addr));
+
+	memset(buff, 0, sizeof(buff));
+        memcpy(buff, icmp_body, icmp_len);
+
+	iov.iov_len  = len;
+	iov.iov_base = (caddr_t) buff;
+	
+	memset(chdr, 0, sizeof(chdr));
+	cmsg = (struct cmsghdr *) chdr;
+	
+	cmsg->cmsg_len   = CMSG_LEN(sizeof(struct in6_pktinfo));
+	cmsg->cmsg_level = IPPROTO_IPV6;
+	cmsg->cmsg_type  = IPV6_PKTINFO;
+	
+	pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
+	pkt_info->ipi6_ifindex = iface->if_index;
+	memcpy(&pkt_info->ipi6_addr, &iface->if_addr, sizeof(struct in6_addr));
+
+#ifdef HAVE_SIN6_SCOPE_ID
+	if (IN6_IS_ADDR_LINKLOCAL(&addr.sin6_addr) ||
+		IN6_IS_ADDR_MC_LINKLOCAL(&addr.sin6_addr))
+			addr.sin6_scope_id = iface->if_index;
+#endif
+
+	memset(&mhdr, 0, sizeof(mhdr));
+	mhdr.msg_name = (caddr_t)&addr;
+	mhdr.msg_namelen = sizeof(struct sockaddr_in6);
+	mhdr.msg_iov = &iov;
+	mhdr.msg_iovlen = 1;
+	mhdr.msg_control = (void *) cmsg;
+	mhdr.msg_controllen = sizeof(chdr);
+
+	err = sendmsg(sock, &mhdr, 0);
+	
+	if (err < 0) {
+		printf("sendmsg: %s", strerror(errno));
+	}
+}
+
+
+void
+send_dio(unsigned char *icmp_body, unsigned int icmp_len)
 {
 	unsigned char   buff[2048];
 	uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
@@ -308,11 +388,11 @@ send_ra(unsigned char *icmp_body, unsigned int icmp_len)
 	addr.sin6_port = htons(IPPROTO_ICMPV6);
 	memcpy(&addr.sin6_addr, dest, sizeof(struct in6_addr));
 
-	memset(&buff, 0, sizeof(buff));
-	radvert = (struct nd_router_advert *) buff;
+	memset(buff, 0, sizeof(buff));
 
-	radvert->nd_ra_type  = ND_ROUTER_ADVERT;
-	radvert->nd_ra_code  = 0;
+	radvert = (struct nd_router_advert *) buff;
+	radvert->nd_ra_type  = ND_RPL_MESSAGE;
+	radvert->nd_ra_code  = ND_RPL_DAG_IO;
 	radvert->nd_ra_cksum = 0;
 
 	radvert->nd_ra_curhoplimit	= 64;
@@ -539,11 +619,14 @@ int main(int argc, char *argv[])
                 case 'R':
                         fakesend=1;
                         break;
+
 		case 'p':
 			abort();
+
 		case 'v':
 			verbose++;
 			break;
+
 		case '?':
 		case 'h':
 		default:
@@ -551,14 +634,20 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-
+        
 	if(verbose) {
                 printf("Sending ICMP of length: %u\n", icmp_len);
 		hexdump(icmp_body, 0, icmp_len);
 	}
 
-        if(!fakesend)
-                send_ra(icmp_body, icmp_len);
+        if(icmp_len == 0) {
+                usage();
+                exit(1);
+        }
+
+        if(!fakesend && icmp_len > 0) {
+                send_raw_dio(icmp_body, icmp_len);
+        }
 
 	exit(0);
 }
