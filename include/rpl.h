@@ -1,3 +1,5 @@
+#ifndef _RPL_H_
+
 #define ND_RPL_MESSAGE 0x9B
 
 enum ND_RPL_CODE {
@@ -26,3 +28,5 @@ struct nd_rpl_dio {
         
 
 
+#define _RPL_H_
+#endif /* _RPL_H_ */

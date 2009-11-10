@@ -15,11 +15,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 extern "C" {
+#include <errno.h>
+#include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
+#include <poll.h>
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
+#include <linux/if.h>           /* for IFNAMSIZ */
+#include "rpl.h"
+
+#ifndef IPV6_ADDR_LINKLOCAL
+#define IPV6_ADDR_LINKLOCAL   0x0020U
+#endif
 }
 
 #include "iface.h"
@@ -27,12 +37,186 @@ extern "C" {
 
 network_interface::network_interface()
 {
-    nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+    nd_socket = -1;
+    alive = false;
 }
 
 network_interface::network_interface(int fd)
 {
     nd_socket = fd;
+    alive = true;
+}
+
+network_interface::network_interface(const char *if_name)
+{
+    alive = false;
+    nd_socket = -1;
+    this->if_name[0]=0;
+    strncat(this->if_name, if_name, sizeof(this->if_name));
+}
+
+bool network_interface::setup()
+{
+    if(alive && nd_socket != -1) return true;
+
+    if(VERBOSE(this)) {
+        fprintf(this->verbose_file, "Starting setup for %s\n", this->if_name);
+    }
+    
+    nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+    struct icmp6_filter filter;
+    int err, val;
+
+    if (nd_socket < 0)
+    {
+        fprintf(this->verbose_file, "can't create socket(AF_INET6): %s", strerror(errno));
+	return false;
+    }
+
+    val = 1;
+    err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_RECVPKTINFO, &val, sizeof(val));
+    if (err < 0)
+    {
+        fprintf(this->verbose_file, "setsockopt(IPV6_RECVPKTINFO): %s", strerror(errno));
+        return false;
+    }
+
+    val = 2;
+    err = setsockopt(nd_socket, IPPROTO_RAW, IPV6_CHECKSUM, &val, sizeof(val));
+    if (err < 0)
+    {
+        fprintf(this->verbose_file, "setsockopt(IPV6_CHECKSUM): %s", strerror(errno));
+        return false;
+    }
+
+    val = 255;
+    err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_UNICAST_HOPS, &val, sizeof(val));
+    if (err < 0)
+    {
+        fprintf(this->verbose_file, "setsockopt(IPV6_UNICAST_HOPS): %s", strerror(errno));
+        return false;
+    }
+    
+    val = 255;
+    err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &val, sizeof(val));
+    if (err < 0)
+    {
+        fprintf(this->verbose_file, "setsockopt(IPV6_MULTICAST_HOPS): %s", strerror(errno));
+        return false;
+    }
+
+#ifdef IPV6_RECVHOPLIMIT
+    val = 1;
+    err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &val, sizeof(val));
+    if (err < 0)
+    {
+        fprintf(this->verbose_file, "setsockopt(IPV6_RECVHOPLIMIT): %s", strerror(errno));
+        return false;
+    }
+#endif
+
+#if 0
+    /*
+     * setup ICMP filter
+     */
+    
+    ICMP6_FILTER_SETBLOCKALL(&filter);
+    ICMP6_FILTER_SETPASS(ND_RPL_MESSAGE,    &filter);
+    ICMP6_FILTER_SETPASS(ND_ROUTER_SOLICIT, &filter);
+    ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT, &filter);
+    
+    err = setsockopt(nd_socket, IPPROTO_ICMPV6, ICMP6_FILTER, &filter,
+                     sizeof(filter));
+    if (err < 0)
+    {
+        fprintf(this->verbose_file, "setsockopt(ICMPV6_FILTER): %s", strerror(errno));
+        return false;
+    }
+#endif
+    
+    struct ipv6_mreq mreq;                  
+	
+    memset(&mreq, 0, sizeof(mreq));                  
+    mreq.ipv6mr_interface = this->get_if_index();
+	
+    /* ipv6-allrouters: ff02::2 */
+    mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);                                          
+    mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x2);     
+    
+    if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
+    {
+        /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
+        if (errno != EADDRINUSE)
+        {
+            printf("can't join ipv6-allrouters on %s", this->if_name);
+            return false;
+        }
+    }
+
+    alive = true;
+    add_to_list();
+    
+    return true;
+}
+
+class network_interface *network_interface::all_if = NULL;
+void network_interface::add_to_list(void)
+{
+    this->next = network_interface::all_if;
+    network_interface::all_if = this;
+}
+
+/* this searches through /proc to get right ifindex */
+int network_interface::get_if_index(void)
+{
+    if(this->if_index > 0) {
+        return this->if_index;
+    }
+
+    /*
+     * this function extracts the link local address and interface index
+     * from PATH_PROC_NET_IF_INET6. 
+     */
+    FILE *fp;
+    char str_addr[40];
+    unsigned int plen, scope, dad_status, if_idx;
+    char devname[IFNAMSIZ];
+
+    if ((fp = fopen(PATH_PROC_NET_IF_INET6, "r")) == NULL)
+    {
+        fprintf(this->verbose_file, "can't open %s: %s", PATH_PROC_NET_IF_INET6,
+                strerror(errno));
+        return -1;	
+    }
+	
+    while (fscanf(fp, "%32s %x %02x %02x %02x %15s\n",
+                  str_addr, &if_idx, &plen, &scope, &dad_status,
+                  devname) != EOF)
+    {
+        if (scope == IPV6_ADDR_LINKLOCAL &&
+            strcmp(devname, this->if_name) == 0)
+        {
+            struct in6_addr addr;
+            unsigned int ap;
+            int i;
+			
+            for (i=0; i<16; i++)
+            {
+                sscanf(str_addr + i * 2, "%02x", &ap);
+                addr.s6_addr[i] = (unsigned char)ap;
+            }
+            memcpy(&this->if_addr, &addr, sizeof(this->if_addr));
+            
+            this->if_index = if_idx;
+            fclose(fp);
+            return this->if_index;
+        }
+    }
+    
+    fprintf(this->verbose_file, "no linklocal address configured for %s",
+            this->if_name);
+    fclose(fp);
+    return -1;
 }
 
 void network_interface::receive_packet(struct in6_addr ip6_src,
@@ -57,6 +241,20 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     /* XXX should maybe check the checksum? */
 
     switch(icmp6->icmp6_type) {
+    case ND_RPL_MESSAGE:
+        switch(icmp6->icmp6_code) {
+        case ND_RPL_DAG_IO:
+            this->receive_dio(icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
+            break;
+
+        default:
+            if(VERBOSE(this)) {
+                fprintf(this->verbose_file, "Got unknown RPL code: %u\n", icmp6->icmp6_code);
+            }
+            break;
+        }
+        return;
+            
     case ND_ROUTER_SOLICIT:
     {
 	struct nd_router_solicit *nrs = (struct nd_router_solicit *)bytes;
@@ -188,6 +386,24 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	    if(VERBOSE(this)) fprintf(this->verbose_file, " home-agent-info \n");
 	    break;
 
+	case ND_OPT_RPL_PRIVATE_DAO:
+	    /* SHOULD validate that this arrived in an NA */
+	    if(VERBOSE(this)) fprintf(this->verbose_file, " rpl_dao \n");
+            {
+                const u_char *nd_dao = (u_char *)nd_options;
+                this->receive_dao(nd_dao+2, optlen-2);
+            }
+	    break;
+
+	case ND_OPT_RPL_PRIVATE_DIO:
+	    /* SHOULD validate that this arrived in an RA */
+	    if(VERBOSE(this)) fprintf(this->verbose_file, " rpl_dio \n");
+            {
+                const u_char *nd_dio = (u_char *)nd_options;
+                this->receive_dio(nd_dio+2, optlen-2);
+            }
+	    break;
+
 	default:
 	    /* nothing */
 	    break;
@@ -216,11 +432,163 @@ int network_interface::packet_too_short(const char *thing,
     return 0;
 }
 
+void network_interface::receive(void)
+{
+    unsigned char b[2048];
+    struct sockaddr_in6 src_sock;
+    struct in6_addr src, dst;
+    int len, n;
+    struct msghdr mhdr;
+    struct iovec iov;
+    int hoplimit = 0;
+    struct in6_pktinfo *pkt_info;
 
+    if( ! control_msg_hdr )
+    {
+        control_msg_hdrlen = CMSG_SPACE(sizeof(struct in6_pktinfo)) +
+            CMSG_SPACE(sizeof(int));
+        if ((control_msg_hdr = (unsigned char *)malloc(control_msg_hdrlen)) == NULL) {
+            fprintf(this->verbose_file, "recv_rs_ra: malloc: %s", strerror(errno));
+            return;
+        }
+    }
+
+    iov.iov_len = sizeof(b);
+    iov.iov_base = (caddr_t) b;
+
+    memset(&mhdr, 0, sizeof(mhdr));
+    mhdr.msg_name = (caddr_t)&src_sock;
+    mhdr.msg_namelen = sizeof(src_sock);
+    mhdr.msg_iov = &iov;
+    mhdr.msg_iovlen = 1;
+    mhdr.msg_control = (void *)control_msg_hdr;
+    mhdr.msg_controllen = control_msg_hdrlen;
+
+    if((len = recvmsg(this->nd_socket, &mhdr, 0)) >= 0) {
+        struct cmsghdr *cmsg;
+
+        for (cmsg = CMSG_FIRSTHDR(&mhdr); cmsg != NULL; cmsg = CMSG_NXTHDR(&mhdr, cmsg))
+	{
+            if (cmsg->cmsg_level != IPPROTO_IPV6)
+          	continue;
+            
+            switch(cmsg->cmsg_type)
+            {
+#ifdef IPV6_HOPLIMIT
+            case IPV6_HOPLIMIT:
+                if ((cmsg->cmsg_len == CMSG_LEN(sizeof(int))) && 
+                    (*(int *)CMSG_DATA(cmsg) >= 0) && 
+                    (*(int *)CMSG_DATA(cmsg) < 256))
+                {
+                    hoplimit = *(int *)CMSG_DATA(cmsg);
+                }
+                else
+                {
+                    fprintf(this->verbose_file, "received a bogus IPV6_HOPLIMIT from the kernel! len=%d, data=%d",
+                            cmsg->cmsg_len, *(int *)CMSG_DATA(cmsg));
+                    return;	
+                }  
+                break;
+#endif /* IPV6_HOPLIMIT */
+
+            case IPV6_PKTINFO:
+                if ((cmsg->cmsg_len == CMSG_LEN(sizeof(struct in6_pktinfo))) &&
+                    ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex)
+                {
+                    pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
+                }
+                else
+                {
+                    fprintf(this->verbose_file, "received a bogus IPV6_PKTINFO from the kernel! len=%d, index=%d", 
+                            cmsg->cmsg_len, ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex);
+                    return;
+                } 
+                break;
+            }
+	}
+
+        dst = pkt_info->ipi6_addr;
+        src = src_sock.sin6_addr;
+        
+        if(VERBOSE(this)) {
+            char src_addrbuf[INET6_ADDRSTRLEN];
+            char dst_addrbuf[INET6_ADDRSTRLEN];
+
+            inet_ntop(AF_INET6, &src, src_addrbuf, INET6_ADDRSTRLEN);
+            inet_ntop(AF_INET6, &dst, dst_addrbuf, INET6_ADDRSTRLEN);
+
+            fprintf(this->verbose_file, "received packet from %s -> %s[%u]\n",
+                    src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex);
+        }
+
+        this->receive_packet(src, dst, b, len);
+    }
+    
+}
 
 int network_interface::send_packet(const u_char *bytes, const int len)
 {
     return len;
+}
+
+int network_interface::if_count(void)
+{
+    class network_interface *iface = network_interface::all_if;
+    int count = 0;
+
+    while(iface != NULL) {
+        count++;
+        iface = iface->next;
+    }
+    return count;
+}
+
+void network_interface::main_loop(FILE *verbose)
+{
+    bool done = false;
+
+    while(!done) {
+        struct pollfd            poll_if[network_interface::if_count()];
+        class network_interface* all_if[network_interface::if_count()];
+        int pollnum=0;
+        
+        /*
+         * do not really need to build this every time, but, for
+         * now, this is fine.
+         */
+        class network_interface *iface = network_interface::all_if;
+        while(iface != NULL) {
+            poll_if[pollnum].fd = iface->nd_socket;
+            poll_if[pollnum].events = POLLIN;
+            poll_if[pollnum].revents= 0;
+            all_if[pollnum] = iface;
+            
+            pollnum++;
+            iface = iface->next;
+        }
+
+        /* now poll for input */
+        int n = poll(poll_if, pollnum, 60 * 1000);
+        
+        if(n == 0) {
+            /* there was a timeout */
+        } else if(n > 0) {
+            /* there is data ready */
+            for(int i=0; i < pollnum && n > 0; i++) {
+                if(verbose) fprintf(verbose, "checking source %u -> %s\n",
+                                    i,
+                                    poll_if[i].revents & POLLIN ? "ready" : "no-data");
+                                    
+                if(poll_if[i].revents & POLLIN) {
+                    all_if[i]->receive();
+                    n--;
+                }
+            }
+        } else {
+            /* there was an error */
+            perror("sunshine poll");
+        }
+    }
 }
 
 

@@ -13,3 +13,6 @@ MANTREE=${DESTDIR}/usr/share/man
 INSTALL=install
 INSTMANFLAGS=-D
 INSTBINFLAGS=-D
+
+LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
+

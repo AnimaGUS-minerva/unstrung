@@ -25,7 +25,7 @@ LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
 
 ONEFILE=iface.cpp
-CXXSRCS=iface.cpp
+CXXSRCS=iface.cpp dio.cpp
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
