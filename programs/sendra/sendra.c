@@ -26,6 +26,7 @@
 #include <net/if.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
+#include <sys/time.h>
 #include <getopt.h>
 
 #include "pathnames.h"
@@ -39,7 +40,7 @@
 
 #include "hexdump.c"
 
-void usage()
+static void usage(void)
 {
 	fprintf(stderr, "Usage: sendra [-p prefix] [-d datafile]\n");
 	exit(2);
@@ -504,10 +505,8 @@ send_ra(unsigned char *icmp_body, unsigned int icmp_len)
 
 
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	char b[2048];
-	int len, n;
 	int c;
 	char *datafilename;
 	FILE *datafile;
