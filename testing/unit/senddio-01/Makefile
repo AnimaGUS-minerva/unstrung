@@ -7,3 +7,4 @@ check:
 	mkdir -p OUTPUT
 	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-01.sh 
 	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-02.sh 
+	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-03.sh 
