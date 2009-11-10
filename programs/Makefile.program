@@ -96,72 +96,49 @@ ifneq ($(PROGRAM),check)
 check: $(PROGRAM)
 endif
 
+srcdir?=.
+
 
 ifneq ($(NOINSTALL),true)
 
 doinstall:: $(PROGRAM) $(CONFFILES) $(EXTRA8MAN) $(EXTRA5MAN) $(EXTRA5PROC) $(LIBFILES) $(CONFDFILES)
-	@mkdir -p $(PROGRAMDIR) $(MANDIR8) $(MANDIR5) $(LIBDIR) $(CONFDIR) $(CONFDDIR) $(CONFDDIR)/$(CONFDSUBDIR) $(EXAMPLECONFDIR)
-	@if [ -n "$(PROGRAM)" ]; then $(INSTALL) $(INSTBINFLAGS) $(PROGRAM) $(PROGRAMDIR); fi
+	@mkdir -p ${DESTDIR}$(PROGRAMDIR) ${DESTDIR}$(MANDIR8) ${DESTDIR}$(MANDIR5) ${DESTDIR}$(LIBDIR) ${DESTDIR}$(CONFDIR) ${DESTDIR}$(CONFDDIR) ${DESTDIR}$(CONFDDIR)/$(CONFDSUBDIR) ${DESTDIR}$(EXAMPLECONFDIR)
+	@if [ -n "$(PROGRAM)" ]; then $(INSTALL) $(INSTBINFLAGS) $(PROGRAM) ${DESTDIR}$(PROGRAMDIR); fi
 	@$(foreach f, $(addsuffix .8, $(PROGRAM)), \
 		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		$(INSTALL) $(INSTMANFLAGS) $$g $(MANDIR8)/$(MANPROGPREFIX)$f || exit 1; \
-	)
-	@$(foreach f, $(EXTRA8MAN), \
-		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		$(INSTALL) $(INSTMANFLAGS) $$g $(MANDIR8)/ipsec_$f || exit 1; \
-	)
-	@$(foreach f, $(EXTRA5MAN), \
-		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		$(INSTALL) $(INSTMANFLAGS) $$g $(MANDIR5)/$f || exit 1 ;\
-	)
-	@$(foreach f, $(EXTRA5PROC), \
-		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		$(INSTALL) $(INSTMANFLAGS) $$g $(MANDIR5)/ipsec_$f || exit 1 ;\
+		$(INSTALL) $(INSTMANFLAGS) $$g ${DESTDIR}$(MANDIR8)/$(MANPROGPREFIX)$f || exit 1; \
 	)
 	@$(foreach f, $(LIBFILES), \
 		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		$(INSTALL) $(INSTCONFFLAGS) $$g $(LIBDIR)/$f || exit 1 ;\
+		$(INSTALL) $(INSTCONFFLAGS) $$g ${DESTDIR}$(LIBDIR)/$f || exit 1 ;\
 	)
 	@$(foreach f, $(CONFFILES), \
 		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
 		if [ ! -f $(CONFDIR)/$f ]; then $(INSTALL) $(INSTCONFFLAGS) $$g $(CONFDIR)/$f || exit 1; fi;\
-		$(INSTALL) $(INSTCONFFLAGS) $$g $(EXAMPLECONFDIR)/$f-sample || exit 1; \
+		$(INSTALL) $(INSTCONFFLAGS) $$g ${DESTDIR}$(EXAMPLECONFDIR)/$f-sample || exit 1; \
 	)
 	@$(foreach f, $(EXCONFFILES), \
 		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		$(INSTALL) $(INSTCONFFLAGS) $$g $(EXAMPLECONFDIR)/$f-sample || exit 1; \
-	)
-	@$(foreach f, $(CONFDFILES), \
-		g=`if [ -r $f ]; then echo $f; else echo ${srcdir}/$f; fi`; \
-		if [ ! -f $(CONFDDIR)/$(CONFDSUBDIR)/$f ]; then $(INSTALL) $(INSTCONFFLAGS) $$g $(CONFDDIR)/$(CONFDSUBDIR)/$f || exit 1; fi;\
+		$(INSTALL) $(INSTCONFFLAGS) $$g ${DESTDIR}$(EXAMPLECONFDIR)/$f-sample || exit 1; \
 	)
 
 install_file_list::
 	@if [ -n "$(PROGRAM)" ]; then echo $(PROGRAMDIR)/$(PROGRAM); fi
 	@$(foreach f, $(addsuffix .8, $(PROGRAM)), \
-		echo $(MANDIR8)/${MANPROGPREFIX}$f; \
-	)
-	@$(foreach f, $(EXTRA8MAN), \
-		echo $(MANDIR8)/ipsec_$f; \
-	)
-	@$(foreach f, $(EXTRA5MAN), \
-		echo $(MANDIR5)/$f;\
-	)
-	@$(foreach f, $(EXTRA5PROC), \
-		echo $(MANDIR5)/ipsec_$f; \
+		echo ${DESTDIR}$(MANDIR8)/${MANPROGPREFIX}$f; \
 	)
 	@$(foreach f, $(LIBFILES), \
-		echo $(LIBDIR)/$f;\
+		echo ${DESTDIR}$(LIBDIR)/$f;\
 	)
 	@$(foreach f, $(CONFFILES), \
-		echo $(CONFDIR)/$f;\
-		echo $(EXAMPLECONFDIR)/$f-sample;\
+		echo ${DESTDIR}$(CONFDIR)/$f;\
+		echo ${DESTDIR}$(EXAMPLECONFDIR)/$f-sample;\
 	)
 	@$(foreach f, $(EXCONFFILES), \
-		echo $(EXAMPLECONFDIR)/$f-sample;\
+		echo ${DESTDIR}$(EXAMPLECONFDIR)/$f-sample;\
 	)
 	@$(foreach f, $(CONFDFILES), \
-		echo $(CONFDDIR)/${CONFDSUBDIR}/$f;\
+		echo ${DESTDIR}$(CONFDDIR)/${CONFDSUBDIR}/$f;\
 	)
 
 endif
@@ -187,7 +164,7 @@ ${PROGRAM}: $(OBJS) ${LIBS}
 %.o: ${srcdir}%.cpp
 	${CXX} -c ${CXXFLAGS} $<
 
-#include ${UNSTRUNG_SRCDIR}/programs/Makefile.manpages
+include ${UNSTRUNG_SRCDIR}/programs/Makefile.manpages
 
 #%.i: %.c 
 #	$(CC) $(CFLAGS) -E -o $@ $< 
