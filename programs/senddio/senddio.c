@@ -591,7 +591,7 @@ int main(int argc, char *argv[])
 	char *datafilename;
 	FILE *datafile;
 	unsigned char icmp_body[2048];
-	unsigned int  icmp_len;
+	unsigned int  icmp_len = 0;
         unsigned int verbose=0;
         unsigned int fakesend=0;
         struct option longoptions[]={
@@ -637,7 +637,9 @@ int main(int argc, char *argv[])
         
 	if(verbose) {
                 printf("Sending ICMP of length: %u\n", icmp_len);
-		hexdump(icmp_body, 0, icmp_len);
+                if(icmp_len > 0) {
+                        hexdump(icmp_body, 0, icmp_len);
+                }
 	}
 
         if(icmp_len == 0) {
