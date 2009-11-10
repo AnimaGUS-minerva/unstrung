@@ -278,7 +278,6 @@ send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
 	struct iovec iov;
 	char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
 
-	int len = 0;
 	int err;
 
 	int sock = open_icmpv6_socket();
@@ -308,7 +307,7 @@ send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
 	memset(buff, 0, sizeof(buff));
         memcpy(buff, icmp_body, icmp_len);
 
-	iov.iov_len  = len;
+	iov.iov_len  = icmp_len;
 	iov.iov_base = (caddr_t) buff;
 	
 	memset(chdr, 0, sizeof(chdr));
@@ -339,7 +338,7 @@ send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
 	err = sendmsg(sock, &mhdr, 0);
 	
 	if (err < 0) {
-		printf("sendmsg: %s", strerror(errno));
+		printf("send_raw_dio/sendmsg: %s\n", strerror(errno));
 	}
 }
 
@@ -351,26 +350,12 @@ send_dio(unsigned char *icmp_body, unsigned int icmp_len)
 	uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
 	struct sockaddr_in6 addr;
 	struct in6_addr *dest = NULL;
-	struct in6_pktinfo *pkt_info;
-	struct msghdr mhdr;
-	struct cmsghdr *cmsg;
-	struct iovec iov;
-	char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
 
 	struct nd_router_advert *radvert;   /* from icmp6.h */
 	//struct AdvPrefix *prefix;
 	//struct AdvRoute *route;
 	//struct AdvRDNSS *rdnss;
 	int len = 0;
-	int err;
-
-	int sock = open_icmpv6_socket();
-
-	/* Make sure that we've joined the all-routers multicast group */
-	if (check_allrouters_membership(sock, iface) < 0)
-		printf("problem checking all-routers membership on %s\n", iface->Name);
-
-	printf("sending RA on %u\n", sock);
 
 	if (dest == NULL)
 	{
@@ -547,43 +532,9 @@ send_dio(unsigned char *icmp_body, unsigned int icmp_len)
 		memcpy(buff + len, iface->if_hwaddr, i);
 		len += i;
 	}
-	
-	iov.iov_len  = len;
-	iov.iov_base = (caddr_t) buff;
-	
-	memset(chdr, 0, sizeof(chdr));
-	cmsg = (struct cmsghdr *) chdr;
-	
-	cmsg->cmsg_len   = CMSG_LEN(sizeof(struct in6_pktinfo));
-	cmsg->cmsg_level = IPPROTO_IPV6;
-	cmsg->cmsg_type  = IPV6_PKTINFO;
-	
-	pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
-	pkt_info->ipi6_ifindex = iface->if_index;
-	memcpy(&pkt_info->ipi6_addr, &iface->if_addr, sizeof(struct in6_addr));
 
-#ifdef HAVE_SIN6_SCOPE_ID
-	if (IN6_IS_ADDR_LINKLOCAL(&addr.sin6_addr) ||
-		IN6_IS_ADDR_MC_LINKLOCAL(&addr.sin6_addr))
-			addr.sin6_scope_id = iface->if_index;
-#endif
-
-	memset(&mhdr, 0, sizeof(mhdr));
-	mhdr.msg_name = (caddr_t)&addr;
-	mhdr.msg_namelen = sizeof(struct sockaddr_in6);
-	mhdr.msg_iov = &iov;
-	mhdr.msg_iovlen = 1;
-	mhdr.msg_control = (void *) cmsg;
-	mhdr.msg_controllen = sizeof(chdr);
-
-	err = sendmsg(sock, &mhdr, 0);
-	
-	if (err < 0) {
-		printf("sendmsg: %s", strerror(errno));
-	}
+        send_raw_dio(buff, len);
 }
-
-
 
 int main(int argc, char *argv[])
 {
