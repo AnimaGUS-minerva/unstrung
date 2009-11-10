@@ -1,0 +1,19 @@
+# send out a DIO
+# ICMP v6 type
+9B
+# ICMP v6 code
+02
+# ICMP v6 checksum
+00 00
+# DAG options
+# first, the GDA00PRF, values here are: 0x80 = grounded
+80
+# sequence
+01
+# instanceid
+01
+# dagrank
+01
+# dagid
+70 61 6e 64 6f 72 61 20  69 73 20 66 75 6e 0a 6c
+69 62 65 72 61 74 65  20 79 6f 75 72 20 76 36 0a
