@@ -110,6 +110,8 @@ setup_host_make() {
     echo 
     depends="$depends $hostroot/sbin/init"
 
+    touch makeuml-fsname.$$
+
     # copy global configuration files, and make sure that they are up-to-date.
     (cd ${TESTINGROOT}/baseconfigs/all && find . -type f -print) | sed -e 's,^\./,,' >makeuml.$$
     echo -n >makeuml2.$$
@@ -119,7 +121,7 @@ setup_host_make() {
 	    *~) ;;
 	    *CVS/*);;
 	    */.\#*);;
-	    etc/fstab);;
+	    etc/fstab) fsname=baseconfigs/all/etc/fstab; echo ${fsname} >makeuml-fsname.$$;;
 	    *) echo "$hostroot/$file : ${TESTINGROOT}/baseconfigs/all/$file $hostroot"
 	       echo "$TAB rm -f $hostroot/$file && mkdir -p `dirname $hostroot/$file` && cp ${TESTINGROOT}/baseconfigs/all/$file $hostroot/$file"
 	       echo
@@ -138,7 +140,7 @@ setup_host_make() {
         case $file in
 	    *~) ;;
 	    *CVS/*);;
-	    etc/fstab);;
+	    etc/fstab) fsname=baseconfig/$host/etc/fstab; echo ${fsname} >makeuml-fsname.$$;;
 	    */.\#*);;
 	    *) echo "$hostroot/$file : ${TESTINGROOT}/baseconfigs/$host/$file $hostroot"
 	       echo "$TAB rm -f $hostroot/$file && mkdir -p `dirname $hostroot/$file` && cp ${TESTINGROOT}/baseconfigs/$host/$file $hostroot/$file"
@@ -149,11 +151,12 @@ setup_host_make() {
  
     nicelists=`cat makeuml2.$$`
     depends="$depends $nicelists"
-    rm -f makeuml.$$ makeuml2.$$
+    fsname=`cat makeuml-fsname.$$`
+    rm -f makeuml.$$ makeuml2.$$ makeuml-fsname.$$
 
     # setup the mount of /usr/share
     echo "$hostroot/etc/fstab : "
-    echo "$TAB cp ${TESTINGROOT}/baseconfigs/$host/etc/fstab $hostroot/etc/fstab"
+    echo "$TAB cp ${TESTINGROOT}/${fsname} $hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/share		     hostfs   defaults,ro,$SHAREROOT 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /testing		     hostfs   defaults,ro,${TESTINGROOT} 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/src		     hostfs   defaults,ro,${UNSTRUNG_SRCDIR} 0 0 >>$hostroot/etc/fstab"
