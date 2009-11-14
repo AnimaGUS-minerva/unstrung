@@ -84,6 +84,9 @@ struct Interface {
 
         int                     rpl_grounded;
         int                     rpl_sequence;
+        int                     rpl_instanceid;
+        int                     rpl_dagrank;
+        unsigned char           rpl_dagid[16];
 	uint32_t		AdvLinkMTU;
 
 	time_t			last_multicast_sec;
@@ -350,7 +353,10 @@ int build_dio(unsigned char *buff, unsigned int buff_len)
         if(iface->rpl_grounded) {
                 dio->rpl_flags |= ND_RPL_DIO_GROUNDED;
         }
-        dio->rpl_seq   = iface->rpl_sequence;
+        dio->rpl_seq        = iface->rpl_sequence;
+        dio->rpl_instanceid = iface->rpl_instanceid;
+        dio->rpl_dagrank    = iface->rpl_dagrank;
+        memcpy(dio->rpl_dagid, iface->rpl_dagid, 16);
 
         len = ((caddr_t)&dio[1] - (caddr_t)buff);
 
@@ -362,18 +368,23 @@ int main(int argc, char *argv[])
 	int c;
 	char *datafilename;
 	FILE *datafile;
+        char *prefixvalue = NULL;
 	unsigned char icmp_body[2048];
 	unsigned int  icmp_len = 0;
         unsigned int verbose=0;
         unsigned int fakesend=0;
         struct option longoptions[]={
-                {"fake", 0, NULL, 'R'},
+                {"fake",     0, NULL, 'T'},
+                {"testing",  0, NULL, 'T'},
                 {"prefix",   1, NULL, 'p'},
-                {"sequence" ,1, NULL, 'S'},
+                {"sequence", 1, NULL, 'S'},
+                {"instance", 1, NULL, 'I'},
+                {"rank",     1, NULL, 'R'},
+                {"dagid",    1, NULL, 'D'},
                 {0,0,0,0},
         };
 	
-	while((c=getopt_long(argc, argv, "S:Rd:p:h?v", longoptions, NULL))!=EOF){
+	while((c=getopt_long(argc, argv, "D:I:R:S:Td:p:h?v", longoptions, NULL))!=EOF){
 		switch(c) {
 		case 'd':
 			datafilename=optarg;
@@ -390,16 +401,47 @@ int main(int argc, char *argv[])
 			icmp_len = read_hex_values(datafile, icmp_body);
 			break;
 			
-                case 'R':
+                case 'T':
                         fakesend=1;
+                        break;
+
+                case 'D':
+                        if(optarg[0]=='0' && optarg[1]=='x') {
+                                char *digits;
+                                int i;
+                                digits = optarg+2;
+                                for(i=0; i<16 && *digits!='\0'; i++) {
+                                        unsigned int value;
+                                        if(sscanf(digits, "%2x",&value)==0) break;
+                                        iface->rpl_dagid[i]=value;
+
+                                        /* advance two characters, carefully */
+                                        digits++;
+                                        if(digits[0]) digits++;
+                                }
+                        } else {
+                                int len = strlen(optarg);
+                                if(len > 16) len=16;
+
+                                memset(iface->rpl_dagid, 0, 16);
+                                memcpy(iface->rpl_dagid, optarg, len);
+                        }
+                        break;
+
+                case 'R':
+                        iface->rpl_dagrank  = atoi(optarg);
                         break;
 
                 case 'S':
                         iface->rpl_sequence = atoi(optarg);
                         break;
 
+                case 'I':
+                        iface->rpl_instanceid = atoi(optarg);
+                        break;
+
 		case 'p':
-                        icmp_len = build_dio(icmp_body, sizeof(icmp_body));
+                        prefixvalue = optarg;
                         break;
 
 		case 'v':
@@ -414,6 +456,11 @@ int main(int argc, char *argv[])
 		}
 	}
         
+
+        if(prefixvalue) {
+                icmp_len = build_dio(icmp_body, sizeof(icmp_body));
+        }
+
 	if(verbose) {
                 printf("Sending ICMP of length: %u\n", icmp_len);
                 if(icmp_len > 0) {
