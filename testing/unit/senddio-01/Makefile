@@ -8,3 +8,4 @@ check:
 	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-01.sh 
 	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-02.sh 
 	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-03.sh 
+	SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio ./senddio-test-04.sh 
