@@ -43,7 +43,7 @@
 
 static void usage(void)
 {
-	fprintf(stderr, "Usage: sendra [-p prefix] [-d datafile]\n");
+	fprintf(stderr, "Usage: senddio [-p prefix] [-d datafile]\n");
 	exit(2);
 }
 
@@ -81,7 +81,9 @@ struct Interface {
 	int			if_hwaddr_len;
 	int			if_prefix_len;
 	int			if_maxmtu;
-        int                     if_grounded;
+
+        int                     rpl_grounded;
+        int                     rpl_sequence;
 	uint32_t		AdvLinkMTU;
 
 	time_t			last_multicast_sec;
@@ -345,9 +347,10 @@ int build_dio(unsigned char *buff, unsigned int buff_len)
         dio = (struct nd_rpl_dio *)icmp6->icmp6_data8;
 
         dio->rpl_flags = 0;
-        if(iface->if_grounded) {
+        if(iface->rpl_grounded) {
                 dio->rpl_flags |= ND_RPL_DIO_GROUNDED;
         }
+        dio->rpl_seq   = iface->rpl_sequence;
 
         len = ((caddr_t)&dio[1] - (caddr_t)buff);
 
@@ -365,10 +368,12 @@ int main(int argc, char *argv[])
         unsigned int fakesend=0;
         struct option longoptions[]={
                 {"fake", 0, NULL, 'R'},
+                {"prefix",   1, NULL, 'p'},
+                {"sequence" ,1, NULL, 'S'},
                 {0,0,0,0},
         };
 	
-	while((c=getopt_long(argc, argv, "Rd:p:h?v", longoptions, NULL))!=EOF){
+	while((c=getopt_long(argc, argv, "S:Rd:p:h?v", longoptions, NULL))!=EOF){
 		switch(c) {
 		case 'd':
 			datafilename=optarg;
@@ -387,6 +392,10 @@ int main(int argc, char *argv[])
 			
                 case 'R':
                         fakesend=1;
+                        break;
+
+                case 'S':
+                        iface->rpl_sequence = atoi(optarg);
                         break;
 
 		case 'p':
