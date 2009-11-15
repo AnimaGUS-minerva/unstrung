@@ -56,8 +56,8 @@ void sunshine_pcap_input(u_char *u,
 	pnd->increment_packet();
 
 	if(bytes[12]!=0x86 || bytes[13]!=0xdd) {
-		printf("packet %u not ethernet II, dropped\n",
-		       pnd->packet_num());
+		printf("packet %u not ethernet II (is: %02x%02x), dropped\n",
+		       pnd->packet_num(), bytes[12], bytes[13]);
 		return;
 	}
 	
