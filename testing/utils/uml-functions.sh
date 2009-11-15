@@ -63,14 +63,14 @@ setup_host_make() {
     echo "# RULES for host $host"
     echo 
 
-    echo "$hostroot:"
+    echo "$hostroot: $hostroot/sbin/init"
     echo "$TAB mkdir -p $host $hostroot"
     echo
     depends="$depends $host/root"
 
     echo "# make a hard link copy of the ROOT, but"
     echo "# make private copy of /var."
-    echo "$hostroot/sbin/init : ${BASICROOT}/sbin/init"
+    echo "$hostroot/sbin/init : ${BASICROOT}/sbin/init ${BASICROOT}/ROOTVERSION"
     echo "$TAB -(cd ${BASICROOT} && find . -print | cpio -pld $POOLSPACE/$hostroot 2>/dev/null )"
     echo "$TAB rm -rf $hostroot/var"
 
