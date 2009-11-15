@@ -1,0 +1,6 @@
+ processing dio(20)
+packet 2 is not ICMPv6, but=proto:0
+ processing dio(20)
+packet 4 is not ICMPv6, but=proto:0
+ processing dio(20)
+packet 6 is not ICMPv6, but=proto:0
