@@ -23,11 +23,21 @@ private:
 	unsigned int packet_count;
 };
 
+class pcap_linux_network_interface : public pcap_network_interface {
+public:
+	pcap_linux_network_interface(pcap_dumper_t *pd);
+};
+
 pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
 	network_interface()
 {
 	pcap_out = pd;
 	packet_count = 0;
+}
+
+pcap_linux_network_interface::pcap_linux_network_interface(pcap_dumper_t *pd) :
+        pcap_network_interface(pd)
+{
 }
 
 int pcap_network_interface::send_packet(const u_char *bytes, const int len)
@@ -98,6 +108,7 @@ int process_infile(char *infile, char *outfile)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
 	pcap_t *pol = pcap_open_offline(infile, errbuf);
+        pcap_network_interface *ndproc;
 
 	if(!pol) {
 		fprintf(stderr, "can not open input %s: %s\n", infile, errbuf);
@@ -117,7 +128,21 @@ int process_infile(char *infile, char *outfile)
 		exit(1);
 	}
 
-	pcap_network_interface *ndproc = new pcap_network_interface(out);
+        switch(pcap_datalink(pol)) {
+        case DLT_LINUX_SLL:
+                ndproc = new pcap_linux_network_interface(out);
+                break;
+
+        case DLT_EN10MB:
+                ndproc = new pcap_network_interface(out);
+                break;
+                
+        default:
+                fprintf(stderr, "unimplemented dlt type: %s (%u)",
+                        pcap_datalink_val_to_name(pcap_datalink(pol)),
+                        pcap_datalink(pol));
+                exit(1);
+        }
 
 	ndproc->set_verbose(1, stdout);
 	
