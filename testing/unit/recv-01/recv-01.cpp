@@ -22,7 +22,11 @@ public:
 	void increment_packet(void)   { packet_count++; };
 	unsigned int packet_num(void) { return packet_count; };
 
+protected:
+        void filter_and_receive_icmp6(const u_char *bytes, int len);
+
 private:
+
 	pcap_dumper_t *pcap_out;
 	unsigned int packet_count;
 };
@@ -92,6 +96,12 @@ void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
 	bytes += 14;
 	len   -= 14;
 
+        this->filter_and_receive_icmp6(bytes, len);
+}
+
+void pcap_network_interface::filter_and_receive_icmp6(const u_char *bytes,
+                                                      int len)
+{
 	struct ip6_hdr *ip6 = (struct ip6_hdr *)bytes;
 	unsigned int nh = ip6->ip6_nxt;       /* type of next PDU */
 
@@ -107,7 +117,8 @@ void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
 	if(icmp6->icmp6_type != ND_ROUTER_SOLICIT &&
 	   icmp6->icmp6_type != ND_ROUTER_ADVERT  &&
 	   icmp6->icmp6_type != ND_NEIGHBOR_SOLICIT &&
-	   icmp6->icmp6_type != ND_NEIGHBOR_ADVERT) {
+	   icmp6->icmp6_type != ND_NEIGHBOR_ADVERT  &&
+           icmp6->icmp6_type != ND_RPL_MESSAGE) {
 		printf("packet %u is not ICMPv6, but=proto:%u\n",
 		       this->packet_num(), icmp6->icmp6_type);
 		return;
@@ -189,31 +200,8 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
 		return;
 	}
 
-	struct ip6_hdr *ip6 = (struct ip6_hdr *)bytes;
-	unsigned int nh = ip6->ip6_nxt;       /* type of next PDU */
-
-	if(nh != IPPROTO_ICMPV6) {
-		printf("packet %u is not ICMPv6, but=proto:%u\n", this->packet_num(), nh);
-		return;
-	}
-
-	bytes += sizeof(struct ip6_hdr);  /* 40 bytes */
-	len   -= sizeof(struct ip6_hdr);
-
-	struct icmp6_hdr *icmp6 = (struct icmp6_hdr *)bytes;
-	if(icmp6->icmp6_type != ND_ROUTER_SOLICIT &&
-	   icmp6->icmp6_type != ND_ROUTER_ADVERT  &&
-	   icmp6->icmp6_type != ND_NEIGHBOR_SOLICIT &&
-	   icmp6->icmp6_type != ND_NEIGHBOR_ADVERT  &&
-           icmp6->icmp6_type != ND_RPL_MESSAGE) {
-		printf("packet %u is not ND, but=proto:%u\n",
-		       this->packet_num(), icmp6->icmp6_type);
-		return;
-	}
-
-	this->receive_packet(ip6->ip6_src, ip6->ip6_dst, bytes, len);
+        this->filter_and_receive_icmp6(bytes, len);
 }
-
 
 int process_infile(char *infile, char *outfile)
 {
