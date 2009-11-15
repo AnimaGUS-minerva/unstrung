@@ -43,20 +43,20 @@ public:
 
 private:
 	int packet_too_short(const char *thing, const int avail, const int needed);
-	int             nd_socket;
-	int             error_cnt;
-        bool            alive;
+	int                     nd_socket;
+	int                     error_cnt;
+        bool                    alive;
 
         int                     get_if_index(void);
         int                     if_index;      /* cached value for above */
 
-        char            if_name[IFNAMSIZ];
-        struct in6_addr if_addr;
-       int                     if_prefix_len;
+        char                    if_name[IFNAMSIZ];
+        struct in6_addr         if_addr;
+	int			if_prefix_len;
 
-       uint8_t                 if_hwaddr[HWADDR_MAX];
-       int                     if_hwaddr_len;
-       int                     if_maxmtu;
+	uint8_t			if_hwaddr[HWADDR_MAX];
+	int			if_hwaddr_len;
+	int			if_maxmtu;
 
         /* RiPpLe statistics */
         int                     rpl_grounded;
@@ -66,13 +66,13 @@ private:
         unsigned char           rpl_dagid[16];
 
         /* debugging */
-	int             verbose_flag;
-	FILE           *verbose_file;
+	int                     verbose_flag;
+	FILE                   *verbose_file;
 #define VERBOSE(X) ((X)->verbose_flag && (X)->verbose_file!=NULL)
 
 
-        unsigned char  *control_msg_hdr;
-        unsigned int    control_msg_hdrlen;
+        unsigned char          *control_msg_hdr;
+        unsigned int            control_msg_hdrlen;
 
         /* read from our network socket and process result */
         void receive(void);
