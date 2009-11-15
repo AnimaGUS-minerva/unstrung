@@ -29,7 +29,7 @@ public:
 	}
 	int  verboseprint() { return verbose_flag; }
 
-	virtual int send_packet(const u_char *bytes, const int len);
+	virtual int     send_packet(const u_char *bytes, const int len);
 	virtual void receive_packet(struct in6_addr ip6_src,
 				    struct in6_addr ip6_dst,
 				    const u_char *bytes, const int len);
@@ -44,27 +44,32 @@ public:
 private:
 	int packet_too_short(const char *thing, const int avail, const int needed);
         int get_if_index(void);
-        int if_index;
-	int nd_socket;
-	int error_cnt;
-        bool alive;
+        int             if_index;
+	int             nd_socket;
+	int             error_cnt;
+        bool            alive;
         char            if_name[IFNAMSIZ];
         struct in6_addr if_addr;
-	int verbose_flag;
-	FILE *verbose_file;
-        unsigned char *control_msg_hdr;
-        unsigned int control_msg_hdrlen;
+
+        /* debugging */
+	int             verbose_flag;
+	FILE           *verbose_file;
+#define VERBOSE(X) ((X)->verbose_flag && (X)->verbose_file!=NULL)
+
+
+        unsigned char  *control_msg_hdr;
+        unsigned int    control_msg_hdrlen;
 
         /* read from our network socket and process result */
         void receive(void);
 
+
         /* maintain list of all interfaces */
         void add_to_list(void);
 
-        class network_interface *next;
+        class network_interface        *next;
         static class network_interface *all_if;
-        static int if_count(void);
-#define VERBOSE(X) ((X)->verbose_flag && (X)->verbose_file!=NULL)
+        static int                      if_count(void);
 };
 
 #define ND_OPT_RPL_PRIVATE_DAO 200
