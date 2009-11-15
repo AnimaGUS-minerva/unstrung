@@ -31,7 +31,7 @@ static struct option const longopts[] =
 
 void usage()
 {
-    fprintf(stderr, "Usage: %s [-?]\n", progname);
+    fprintf(stderr, "Usage: %s [-?] [-i ifname]\n", progname);
     exit(EX_USAGE);
 }
 
