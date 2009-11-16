@@ -24,6 +24,7 @@ extern "C" {
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
+#include "oswlibs.h"
 #include "rpl.h"
 
 }
@@ -114,7 +115,9 @@ void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp
     }
 }
 
-int network_interface::build_dio(unsigned char *buff, unsigned int buff_len)
+int network_interface::build_dio(unsigned char *buff,
+                                 unsigned int buff_len,
+                                 ip_subnet prefix)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;

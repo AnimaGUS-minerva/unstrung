@@ -30,6 +30,7 @@ extern "C" {
 #include <getopt.h>
 
 #include "pathnames.h"
+#include "oswlibs.h"
 #include "rpl.h"
 
 #include "hexdump.c"
@@ -232,10 +233,14 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-        
 
         if(prefixvalue) {
-                icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body));
+                ip_subnet prefix;
+
+                err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
+                                    AF_INET6, &prefix);
+
+                icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body), prefix);
         }
 
 	if(verbose) {

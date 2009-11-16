@@ -6,6 +6,7 @@ extern "C" {
 #include <sys/time.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>             /* for IFNAMSIZ */
+#include "oswlibs.h"
 #include "rpl.h"
 }
 
@@ -41,7 +42,7 @@ public:
 
         void send_dio(void);
         void send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len);
-        int  build_dio(unsigned char *buff, unsigned int buff_len);
+        int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 
         void set_if_name(const char *ifname);
         void set_rpl_dagid(const char *dagstr);

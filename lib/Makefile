@@ -21,5 +21,5 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=libndmgmt
+SUBDIRS=libndmgmt libosw
 

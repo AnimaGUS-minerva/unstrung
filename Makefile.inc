@@ -17,6 +17,7 @@ INSTMANFLAGS=-D
 INSTBINFLAGS=-D
 
 LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
+LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 
 NEEDCHECK?=check
 
