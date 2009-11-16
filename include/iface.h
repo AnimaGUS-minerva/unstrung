@@ -32,7 +32,6 @@ public:
 	}
 	int  verboseprint() { return verbose_flag; }
 
-	virtual int     send_packet(const u_char *bytes, const int len);
 	virtual void receive_packet(struct in6_addr ip6_src,
 				    struct in6_addr ip6_dst,
 				    const u_char *bytes, const int len);
