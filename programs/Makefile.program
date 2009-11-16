@@ -181,9 +181,10 @@ ${SCRIPT}: ${srcdir}%.in ${UNSTRUNG_SRCDIR}/Makefile.inc ${UNSTRUNG_SRCDIR}/Make
 
 distclean: clean
 
-mostlyclean: clean
-
-realclean: clean
+vars:
+        @echo PROGRAM=${PROGRAM}
+        @echo PWD=`pwd`
+        @echo srcdir=${srcdir}
 
 cleanall::
 ifneq ($(strip $(PROGRAM)),)
@@ -199,12 +200,10 @@ UNSTRUNG_SRCDIRREL?=../..
 
 # Gather dependencies caused by explicit #includes within .c files
 depend: ${DISTSRC}
-	@(ls $(DISTSRC) | grep '\.c' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},${UNSTRUNG_SRCDIRREL},g' >Makefile.depend
+	@(ls $(DISTSRC) | grep '\.c' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
 
 Makefile.depend:
+Makefile.depend.${OSDEP}:
 Makefile.inc:
 
--include ${srcdir}Makefile.depend
-
-
-
+-include ${srcdir}Makefile.depend.${OSDEP}

@@ -224,7 +224,7 @@ fi
 
 cd $UNSTRUNG_SRCDIR || exit 1
 
-make WERROR=-Werror USE_OBJDIR=true programs
+make WERROR=-Werror programs
 
 # now, execute the Makefile that we have created!
 cd $POOLSPACE && make $UNSTRUNG_HOSTS 

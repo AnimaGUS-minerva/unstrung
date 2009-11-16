@@ -1,4 +1,5 @@
-# Makefile for the UNSTRUNG sunshine daemon
+# unstrung master makefile
+#
 # Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
 # 
 # This program is free software; you can redistribute it and/or modify it
@@ -10,15 +11,25 @@
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
+#
 
 
-UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
-srcdir?=${UNSTRUNG_SRCDIR}/programs/sunshine/
+UNSTRUNG_SRCDIR?=$(shell cd ..; pwd)
+export UNSTRUNG_SRCDIR
+
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
-PROGRAM=sunshine
-OBJS=main.o sendnd.o
-LIBS+=${LIBNDMGMT}
+srcdir?=$(shell pwd)
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
+SUBDIRS=peck senddio sunshine
+
+vars check programs checkprograms::
+	@for d in $(SUBDIRS) ; \
+	do \
+		(cd $$d && $(MAKE) srcdir=${UNSTRUNG_SRCDIR}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \
+	done; 
+
+env:
+	@env | sed -e "s/'/'\\\\''/g" -e "s/\([^=]*\)=\(.*\)/\1='\2'/"
+
 

@@ -27,6 +27,8 @@ srcdir?=$(shell pwd)
 include ${UNSTRUNG_SRCDIR}/Makefile.top
 -include ${UNSTRUNG_SRCDIR}/Makefile.vendor
 
+SUBDIRS=programs testing
+
 programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \

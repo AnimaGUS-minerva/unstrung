@@ -5,6 +5,9 @@ INC=${UNSTRUNG_SRCDIR}/include
 
 export SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio
 
+checkprograms:
+programs:
+
 check:
 	@mkdir -p OUTPUT
 	@rm -f core.*

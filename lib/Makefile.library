@@ -96,6 +96,10 @@ cleanall::
 depend: ${DISTSRC}
 	@(ls $(DISTSRC) | grep '\.c' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
 
+Makefile.depend:
+Makefile.depend.${OSDEP}:
+Makefile.inc:
+
 -include ${srcdir}Makefile.depend.${OSDEP}
 
 
