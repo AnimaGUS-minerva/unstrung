@@ -1,5 +1,7 @@
 # -*- makefile -*-
 
+default:: programs
+
 # stuff.
 INC=${UNSTRUNG_SRCDIR}/include
 CFLAGS+=-I${INC}
