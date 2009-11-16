@@ -7,5 +7,6 @@ CFLAGS+=-I/sandel/include -g
 PROGRAM=senddio
 PROGRAMDIR=/sbin
 OBJS=senddio.o
+LIBS+=${LIBNDMGMT}
 
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.program

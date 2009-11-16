@@ -21,6 +21,7 @@ extern "C" {
 #include <errno.h>
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
 #include <poll.h>
+#include <sys/time.h>
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
@@ -51,8 +52,38 @@ network_interface::network_interface(const char *if_name)
 {
     alive = false;
     nd_socket = -1;
+
+    this->set_if_name(if_name);
+}
+
+void network_interface::set_if_name(const char *if_name)
+{
     this->if_name[0]=0;
     strncat(this->if_name, if_name, sizeof(this->if_name));
+}
+
+void network_interface::set_rpl_dagid(const char *dagstr)
+{
+    if(dagstr[0]=='0' && dagstr[1]=='x') {
+        const char *digits;
+        int i;
+        digits = dagstr+2;
+        for(i=0; i<16 && *digits!='\0'; i++) {
+            unsigned int value;
+            if(sscanf(digits, "%2x",&value)==0) break;
+            this->rpl_dagid[i]=value;
+            
+            /* advance two characters, carefully */
+            digits++;
+            if(digits[0]) digits++;
+        }
+    } else {
+        int len = strlen(dagstr);
+        if(len > 16) len=16;
+        
+        memset(this->rpl_dagid, 0, 16);
+        memcpy(this->rpl_dagid, dagstr, len);
+    }
 }
 
 bool network_interface::setup()
@@ -133,31 +164,76 @@ bool network_interface::setup()
         return false;
     }
 #endif
-    
+
+    setup_allrouters_membership();
     struct ipv6_mreq mreq;                  
 	
-    memset(&mreq, 0, sizeof(mreq));                  
-    mreq.ipv6mr_interface = this->get_if_index();
-	
-    /* ipv6-allrouters: ff02::2 */
-    mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);                                          
-    mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x2);     
-    
-    if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
-    {
-        /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
-        if (errno != EADDRINUSE)
-        {
-            printf("can't join ipv6-allrouters on %s", this->if_name);
-            return false;
-        }
-    }
-
     alive = true;
     add_to_list();
     
     return true;
 }
+
+void network_interface::setup_allrouters_membership(void)
+{
+	struct ipv6_mreq mreq;                  
+	
+	memset(&mreq, 0, sizeof(mreq));                  
+	mreq.ipv6mr_interface = this->get_if_index();
+	
+	/* ipv6-allrouters: ff02::2 */
+	mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);
+	mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x2);     
+
+        if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
+        {
+            /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
+            if (errno != EADDRINUSE)
+            {
+                printf("can't join ipv6-allrouters on %s", this->if_name);
+                alive = false;
+                return;
+            }
+        }
+
+	return;
+}
+
+void network_interface::check_allrouters_membership(void)
+{
+	#define ALL_ROUTERS_MCAST "ff020000000000000000000000000002"
+	
+	FILE *fp;
+	unsigned int if_idx, allrouters_ok=0;
+	char addr[32+1];
+	int ret=0;
+
+	if ((fp = fopen(PATH_PROC_NET_IGMP6, "r")) == NULL)
+	{
+		printf("can't open %s: %s", PATH_PROC_NET_IGMP6,
+			strerror(errno));
+		return;	
+	}
+	
+	while ( (ret=fscanf(fp, "%u %*s %32[0-9A-Fa-f] %*x %*x %*x\n", &if_idx, addr)) != EOF) {
+            if (ret == 2) {
+                if (this->if_index == if_idx) {
+                    if (strncmp(addr, ALL_ROUTERS_MCAST, sizeof(addr)) == 0)
+                        allrouters_ok = 1;
+                }
+            }
+	}
+
+	fclose(fp);
+
+	if (!allrouters_ok) {
+            printf("resetting ipv6-allrouters membership on %s\n", this->if_name);
+            setup_allrouters_membership();
+	}	
+
+	return;
+}		
+
 
 class network_interface *network_interface::all_if = NULL;
 void network_interface::add_to_list(void)
@@ -528,6 +604,104 @@ void network_interface::receive(void)
 
 int network_interface::send_packet(const u_char *bytes, const int len)
 {
+    setup();
+
+    check_allrouters_membership();    
+}
+
+void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
+{
+    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+    struct sockaddr_in6 addr;
+    struct in6_addr *dest = NULL;
+    struct in6_pktinfo *pkt_info;
+    struct msghdr mhdr;
+    struct cmsghdr *cmsg;
+    struct iovec iov;
+    char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
+    
+    int err;
+    
+    setup();
+    check_allrouters_membership();    
+
+    printf("sending RA on %u\n", nd_socket);
+    
+    if (dest == NULL)
+    {
+        dest = (struct in6_addr *)all_hosts_addr;
+        update_multicast_time();
+    }
+    
+    memset((void *)&addr, 0, sizeof(addr));
+    addr.sin6_family = AF_INET6;
+    addr.sin6_port = htons(IPPROTO_ICMPV6);
+    memcpy(&addr.sin6_addr, dest, sizeof(struct in6_addr));
+
+    iov.iov_len  = icmp_len;
+    iov.iov_base = (caddr_t) icmp_body;
+    
+    memset(chdr, 0, sizeof(chdr));
+    cmsg = (struct cmsghdr *) chdr;
+    
+    cmsg->cmsg_len   = CMSG_LEN(sizeof(struct in6_pktinfo));
+    cmsg->cmsg_level = IPPROTO_IPV6;
+    cmsg->cmsg_type  = IPV6_PKTINFO;
+    
+    pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
+    pkt_info->ipi6_ifindex = this->get_if_index();
+    memcpy(&pkt_info->ipi6_addr, &this->if_addr, sizeof(struct in6_addr));
+    
+#ifdef HAVE_SIN6_SCOPE_ID
+    if (IN6_IS_ADDR_LINKLOCAL(&addr.sin6_addr) ||
+        IN6_IS_ADDR_MC_LINKLOCAL(&addr.sin6_addr))
+        addr.sin6_scope_id = iface->if_index;
+#endif
+    
+    memset(&mhdr, 0, sizeof(mhdr));
+    mhdr.msg_name = (caddr_t)&addr;
+    mhdr.msg_namelen = sizeof(struct sockaddr_in6);
+    mhdr.msg_iov = &iov;
+    mhdr.msg_iovlen = 1;
+    mhdr.msg_control = (void *) cmsg;
+    mhdr.msg_controllen = sizeof(chdr);
+    
+    err = sendmsg(nd_socket, &mhdr, 0);
+    
+    if (err < 0) {
+        printf("send_raw_dio/sendmsg: %s\n", strerror(errno));
+    }
+}
+
+int network_interface::build_dio(unsigned char *buff, unsigned int buff_len)
+{
+    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+    struct sockaddr_in6 addr;
+    struct in6_addr *dest = NULL;
+    struct icmp6_hdr  *icmp6;
+    struct nd_rpl_dio *dio;
+    int len = 0;
+    
+    memset(buff, 0, buff_len);
+    
+    icmp6 = (struct icmp6_hdr *)buff;
+    icmp6->icmp6_type = ND_RPL_MESSAGE;
+    icmp6->icmp6_code = ND_RPL_DAG_IO;
+    icmp6->icmp6_cksum = 0;
+    
+    dio = (struct nd_rpl_dio *)icmp6->icmp6_data8;
+    
+    dio->rpl_flags = 0;
+    if(this->rpl_grounded) {
+        dio->rpl_flags |= ND_RPL_DIO_GROUNDED;
+    }
+    dio->rpl_seq        = this->rpl_sequence;
+    dio->rpl_instanceid = this->rpl_instanceid;
+    dio->rpl_dagrank    = this->rpl_dagrank;
+    memcpy(dio->rpl_dagid, this->rpl_dagid, 16);
+    
+    len = ((caddr_t)&dio[1] - (caddr_t)buff);
+    
     return len;
 }
 

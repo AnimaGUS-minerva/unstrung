@@ -1,0 +1,10 @@
+dio.o: dio.cpp ../../include/pathnames.h \
+  ../../include/rpl.h \
+  ../../include/iface.h \
+  ../../include/rpl.h
+iface.o: iface.cpp ../../include/pathnames.h \
+  ../../include/rpl.h \
+  ../../include/iface.h \
+  ../../include/rpl.h
+neighbour.o: neighbour.cpp
+peers.o: peers.cpp

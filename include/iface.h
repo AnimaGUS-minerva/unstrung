@@ -3,10 +3,13 @@ extern "C" {
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
+#include <sys/time.h>
 #include <netinet/icmp6.h>
-#include <linux/if.h>           /* for IFNAMSIZ */
+#include <linux/if.h>             /* for IFNAMSIZ */
 #include "rpl.h"
 }
+
+#define HWADDR_MAX 16
 
 class network_interface {
 
@@ -38,6 +41,29 @@ public:
         void receive_dio(const u_char *dio_bytes, const int dio_len);
 
         void send_dio(void);
+        void send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len);
+        int  build_dio(unsigned char *buff, unsigned int buff_len);
+
+        void set_if_name(const char *ifname);
+        void set_rpl_dagid(const char *dagstr);
+        void set_rpl_dagrank(const int dagrank) {
+                rpl_dagrank = dagrank;
+        };
+        void set_rpl_sequence(const int sequence) {
+                rpl_sequence = sequence;
+        };
+        void set_rpl_instanceid(const int instanceid) {
+                rpl_instanceid = instanceid;
+        };
+        void update_multicast_time(void) {
+		struct timeval tv;
+
+		gettimeofday(&tv, NULL);
+
+		last_multicast_sec = tv.tv_sec;
+		last_multicast_usec = tv.tv_usec;
+        };
+
         
         static void main_loop(FILE *verbose);
 
@@ -65,6 +91,11 @@ private:
         int                     rpl_dagrank;
         unsigned char           rpl_dagid[16];
 
+        /* timers */
+	time_t			last_multicast_sec;
+	suseconds_t		last_multicast_usec;
+        
+
         /* debugging */
 	int                     verbose_flag;
 	FILE                   *verbose_file;
@@ -76,6 +107,11 @@ private:
 
         /* read from our network socket and process result */
         void receive(void);
+
+        /* private helper functions */
+        void setup_allrouters_membership(void);
+        void check_allrouters_membership(void);
+
 
 
         /* maintain list of all interfaces */
