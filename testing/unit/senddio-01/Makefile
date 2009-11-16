@@ -7,6 +7,9 @@ export SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio
 
 checkprograms:
 programs:
+clean: 
+	@rm -f core.*
+	@rm -rf OUTPUT
 
 check:
 	@mkdir -p OUTPUT

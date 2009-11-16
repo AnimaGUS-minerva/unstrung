@@ -29,7 +29,7 @@ include ${UNSTRUNG_SRCDIR}/Makefile.top
 
 SUBDIRS=programs testing
 
-programs checkprograms::
+clean programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
 		(cd $$d && $(MAKE) srcdir=${UNSTRUNG_SRCDIR}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \

@@ -23,7 +23,7 @@ srcdir?=$(shell pwd)
 
 SUBDIRS=
 
-check programs checkprograms::
+clean check programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
 		(cd $$d && $(MAKE) srcdir=${UNSTRUNG_SRCDIR}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \

@@ -16,7 +16,6 @@
 
 
 clean::
-	-(cd ${UNSTRUNG_SRCDIR} && $(MAKE) modclean && $(MAKE) mod26clean)
 
 distclean:	clean
 	if [ -f umlsetup.sh ]; then source umlsetup.sh; if [ -d "$$POOLSPACE" ]; then rm -rf $$POOLSPACE; fi; fi
