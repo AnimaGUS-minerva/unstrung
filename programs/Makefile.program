@@ -84,18 +84,18 @@ endif
 # we can't do tests with two conditions, but we can concatenate the strings
 SHOULDWERESTART=${USE_OBJDIR}$(wildcard ../Makefile.program)
 ifeq ($(SHOULDWERESTART),true../Makefile.program)
-all programs clean install:
+all programs clean install::
 	cd ${UNSTRUNG_SRCDIR} && cd ${OBJDIRTOP}/programs/${SOURCEDIR} && $(MAKE) $@
 else
 all: ${PROGRAM}
-programs: all
-clean:	cleanall
-install: doinstall
+programs:: all
+clean::	cleanall
+install:: doinstall
 
 endif
 
 ifneq ($(PROGRAM),check)
-check: $(PROGRAM)
+check:: $(PROGRAM)
 endif
 
 srcdir?=.
@@ -194,7 +194,7 @@ ifneq ($(strip $(PROGRAM)),)
 endif
 	@rm -f *.o
 
-checkprograms:
+checkprograms::
 
 UNSTRUNG_SRCDIRREL?=../..
 

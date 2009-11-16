@@ -23,13 +23,3 @@ srcdir?=$(shell pwd)
 
 SUBDIRS=utils unit
 
-clean check programs checkprograms::
-	@for d in $(SUBDIRS) ; \
-	do \
-		(cd $$d && $(MAKE) srcdir=${UNSTRUNG_SRCDIR}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \
-	done; 
-
-env:
-	@env | sed -e "s/'/'\\\\''/g" -e "s/\([^=]*\)=\(.*\)/\1='\2'/"
-
-

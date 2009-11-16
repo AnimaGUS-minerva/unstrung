@@ -1,4 +1,5 @@
-# Makefile for the UNSTRUNG sunshine daemon
+# unstrung master makefile
+#
 # Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
 # 
 # This program is free software; you can redistribute it and/or modify it
@@ -10,14 +11,15 @@
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
+#
 
 
-UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
-srcdir?=${UNSTRUNG_SRCDIR}/programs/sunshine/
+UNSTRUNG_SRCDIR?=$(shell cd ..; pwd)
+export UNSTRUNG_SRCDIR
 
-PROGRAM=sunshine
-OBJS=main.o sendnd.o
-LIBS+=${LIBNDMGMT}
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
+srcdir?=$(shell pwd)
+
+SUBDIRS=libndmgmt
 

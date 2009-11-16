@@ -13,10 +13,10 @@ LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
 recv-01: recv-01.cpp ${INC}/iface.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o recv-01 recv-01.cpp ${LDFLAGS}
 
-checkprograms: recv-01
-programs:
+checkprograms:: recv-01
+programs::
 
-check:	recv-01
+check::	recv-01
 	@echo TEST01: PLAINND
 	./recv-01 ../INPUTS/plainnd.pcap | tee ../OUTPUTS/recv-01-output.raw | diff -B - recv-01-output.txt
 	tcpdump -t -n -r ../OUTPUTS/recv-01-plainnd.pcap -s 0 | diff -B - recv-01-plainnd-out.txt
@@ -24,5 +24,5 @@ check:	recv-01
 	./recv-01 ../INPUTS/senddio.pcap | tee ../OUTPUTS/recv-02-output.raw | diff -B - recv-02-output.txt
 	tcpdump -t -n -r ../OUTPUTS/recv-01-senddio.pcap -s 0 | diff -B - recv-01-senddio-out.txt
 
-clean:
-	rm -rf recv-01 *.o
+clean::
+	@rm -rf recv-01 *.o

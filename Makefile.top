@@ -14,6 +14,7 @@
 #
 # RCSID $Id: Makefile.top,v 1.4 2005/07/18 03:46:13 mcr Exp $
 
+NEEDCHECK:=
 
 clean::
 

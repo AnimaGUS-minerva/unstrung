@@ -13,7 +13,6 @@
 
 UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 srcdir?=${UNSTRUNG_SRCDIR}/programs/peck/
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 PROGRAM=peck
 # local install of pcap.h, or make sure you have libpcap-dev installed.
