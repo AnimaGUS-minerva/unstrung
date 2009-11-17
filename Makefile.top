@@ -30,7 +30,7 @@ umluserland:
 	(touch ${UNSTRUNG_SRCDIR}/Makefile.inc && source ${UNSTRUNG_SRCDIR}/umlsetup.sh && cd $$POOLSPACE && $(MAKE) $$UNSTRUNG_HOSTS $$REGULARHOSTS ) 
 
 
-check:	uml Makefile.ver
+check::	uml Makefile.ver
 ifneq ($(strip(${REGRESSRESULTS})),)
 	mkdir -p ${REGRESSRESULTS}
 endif

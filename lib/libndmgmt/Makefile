@@ -15,7 +15,6 @@
 
 UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
 include ${UNSTRUNG_SRCDIR}/Makefile.ver
 
 srcdir?=${UNSTRUNG_SRCDIR}/lib/libndmgmt/

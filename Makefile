@@ -20,12 +20,14 @@ export UNSTRUNG_SRCDIR
 TERMCAP=
 export TERMCAP
 
-include ${UNSTRUNG_SRCDIR}/Makefile.top
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+default:: programs
 
 srcdir?=$(shell pwd)
 
 -include ${UNSTRUNG_SRCDIR}/Makefile.vendor
 
 SUBDIRS=lib programs testing
+
+include ${UNSTRUNG_SRCDIR}/Makefile.top
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
