@@ -27,5 +27,5 @@ srcdir?=$(shell pwd)
 
 -include ${UNSTRUNG_SRCDIR}/Makefile.vendor
 
-SUBDIRS=programs testing
+SUBDIRS=lib programs testing
 
