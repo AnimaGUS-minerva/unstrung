@@ -24,7 +24,7 @@ NEEDCHECK?=check
 clean ${NEEDCHECK} programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
-		(cd $$d && $(MAKE) srcdir=${UNSTRUNG_SRCDIR}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \
+		(cd $$d && $(MAKE) srcdir=${srcdir}/$$d/ UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} $@ ) || exit 1; \
 	done; 
 
 env:
