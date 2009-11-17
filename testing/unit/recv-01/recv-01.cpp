@@ -16,6 +16,7 @@ extern "C" {
 class pcap_network_interface : public network_interface {
 public:
 	pcap_network_interface(pcap_dumper_t *pd);
+        ~pcap_network_interface();
         virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
                                        const u_char *bytes);
 	int send_packet(const u_char *bytes, const int len);
@@ -37,6 +38,12 @@ public:
                                        const u_char *bytes);
 	pcap_linux_network_interface(pcap_dumper_t *pd);
 };
+
+pcap_network_interface::~pcap_network_interface() 
+{
+        pcap_dump_close(pcap_out);
+        pcap_out=NULL;
+}
 
 pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
 	network_interface()
