@@ -15,18 +15,19 @@ rm    -rf initrd
 mkdir -p  initrd
 cat $list | (cd ${basicroot} && cpio --format=crc -o) | (cd initrd && cpio -id )
 
-#(cd initrd/bin && while read thing; do /bin/ln -f busybox $thing; done) <<FUDGE
-#cat
-#echo
-#grep
-#mount
-#umount
-#ls
-#ln
-#mkdir
-#mknod
-#chmod
-#FUDGE
+(cd initrd/bin && while read thing; do /bin/ln -f busybox $thing; done) <<FUDGE
+cat
+echo
+grep
+mount
+umount
+ls
+ln
+mkdir
+mknod
+chmod
+sh
+FUDGE
 
 (cd initrd && mkdir -p ./bin ./dev ./etc ./lib ./proc ./sbin ./var ./var/lock ./var/log ./initrd ./root ./devt)
 mknod initrd/dev/console c 5 1
