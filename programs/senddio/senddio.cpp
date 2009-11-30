@@ -176,6 +176,7 @@ int main(int argc, char *argv[])
         };
 
         class network_interface *iface = new network_interface();
+        iface->set_verbose(true, stderr);
 	
 	while((c=getopt_long(argc, argv, "D:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
 		switch(c) {
