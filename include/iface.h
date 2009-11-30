@@ -26,8 +26,8 @@ public:
 	int errors(void) {
 		return error_cnt;
 	}
-	void set_verbose(int flag) { verbose_flag = flag; }
-	void set_verbose(int flag, FILE *out) {
+	void set_verbose(bool flag) { verbose_flag = flag; }
+	void set_verbose(bool flag, FILE *out) {
 		verbose_flag = flag;
 		verbose_file = out;
 	}
@@ -97,7 +97,7 @@ private:
         
 
         /* debugging */
-	int                     verbose_flag;
+	bool                    verbose_flag;
 	FILE                   *verbose_file;
 #define VERBOSE(X) ((X)->verbose_flag && (X)->verbose_file!=NULL)
 
