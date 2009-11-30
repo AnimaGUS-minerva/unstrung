@@ -25,7 +25,25 @@ struct nd_rpl_dio {
         u_int8_t rpl_dagid[16];
 };
 
-        
+enum RPL_DIO_SUBOPT {
+        RPL_DIO_PAD0 = 0,
+        RPL_DIO_PADN = 1,
+        RPL_DIO_METRICS = 2,
+        RPL_DIO_DESTPREFIX=3,
+};
+
+#define RPL_DIO_LIFETIME_INFINITE   0xffffffff
+#define RPL_DIO_LIFETIME_DISCONNECT 0
+
+struct rpl_dio_destprefix {
+        u_int8_t rpl_dio_type;
+        u_int8_t rpl_dio_lenh;  /* easier to have two bytes */
+        u_int8_t rpl_dio_lenl;  /* than to play with packing options */
+        u_int8_t rpl_dio_prf;
+        u_int32_t rpl_dio_prefixlifetime;  /* in seconds */
+        u_int8_t rpl_dio_prefixlen;        /* in bits */
+        u_int8_t rpl_dio_prefix[1];        /* variables number of bytes */
+};
 
 
 #define _RPL_H_

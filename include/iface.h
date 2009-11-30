@@ -90,6 +90,8 @@ private:
         int                     rpl_instanceid;
         int                     rpl_dagrank;
         unsigned char           rpl_dagid[16];
+        unsigned int            rpl_dio_lifetime;
+        
 
         /* timers */
 	time_t			last_multicast_sec;
@@ -111,6 +113,20 @@ private:
         /* private helper functions */
         void setup_allrouters_membership(void);
         void check_allrouters_membership(void);
+
+        /* space to format various messages */
+        int append_dio_suboption(unsigned char *buff,
+                                 unsigned int buff_len,
+                                 enum RPL_DIO_SUBOPT subopt_type,
+                                 unsigned char *subopt_data,
+                                 unsigned int subopt_len);
+        int append_dio_suboption(unsigned char *buff,
+                                 unsigned int buff_len,
+                                 enum RPL_DIO_SUBOPT subopt_type);
+        int build_prefix_dioopt(ip_subnet prefix);
+
+        unsigned char           optbuff[256];
+        unsigned int            optlen;
 
 
 

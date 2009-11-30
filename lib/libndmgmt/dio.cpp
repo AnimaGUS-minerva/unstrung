@@ -97,7 +97,7 @@ void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp
 #ifdef HAVE_SIN6_SCOPE_ID
     if (IN6_IS_ADDR_LINKLOCAL(&addr.sin6_addr) ||
         IN6_IS_ADDR_MC_LINKLOCAL(&addr.sin6_addr))
-        addr.sin6_scope_id = iface->if_index;
+        addr.sin6_scope_id = iface->get_if_index();
 #endif
     
     memset(&mhdr, 0, sizeof(mhdr));
@@ -115,6 +115,51 @@ void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp
     }
 }
 
+/* returns number of bytes used */
+int network_interface::append_dio_suboption(unsigned char *buff,
+                                            unsigned int buff_len,
+                                            enum RPL_DIO_SUBOPT subopt_type,
+                                            unsigned char *subopt_data,
+                                            unsigned int subopt_len)
+{
+    if(buff_len < (subopt_len+3)) {
+        fprintf(this->verbose_file, "Failed to add option %u, length %u>avail:%u\n",
+                subopt_type, buff_len, subopt_len+3);
+        return -1;
+    }
+    buff[0]=subopt_type;
+    buff[1]=subopt_len >> 8;
+    buff[2]=subopt_len & 0xff;
+    memcpy(buff+3, subopt_data, subopt_len);
+    return subopt_len+3;
+}
+
+int network_interface::append_dio_suboption(unsigned char *buff,
+                                            unsigned int buff_len,
+                                            enum RPL_DIO_SUBOPT subopt_type)
+{
+    return append_dio_suboption(buff, buff_len, subopt_type,
+                                this->optbuff+3, this->optlen-3);
+}
+
+int network_interface::build_prefix_dioopt(ip_subnet prefix)
+{
+    memset(optbuff, 0, sizeof(optbuff));
+    struct rpl_dio_destprefix *diodp = (struct rpl_dio_destprefix *)optbuff;
+
+    diodp->rpl_dio_type = RPL_DIO_DESTPREFIX;
+    diodp->rpl_dio_prf=0x00;
+    diodp->rpl_dio_prefixlifetime = htonl(this->rpl_dio_lifetime);
+    diodp->rpl_dio_prefixlen = prefix.maskbits;
+    for(int i=0; i < (prefix.maskbits+7)/8; i++) {
+        diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.in6_u.u6_addr8[i];
+    }
+
+    this->optlen = ((prefix.maskbits+7)/8 + 1 + 4 + 4);
+
+    return this->optlen;
+}
+
 int network_interface::build_dio(unsigned char *buff,
                                  unsigned int buff_len,
                                  ip_subnet prefix)
@@ -124,6 +169,8 @@ int network_interface::build_dio(unsigned char *buff,
     struct in6_addr *dest = NULL;
     struct icmp6_hdr  *icmp6;
     struct nd_rpl_dio *dio;
+    unsigned char *nextopt;
+    int optlen;
     int len = 0;
     
     memset(buff, 0, buff_len);
@@ -143,9 +190,28 @@ int network_interface::build_dio(unsigned char *buff,
     dio->rpl_instanceid = this->rpl_instanceid;
     dio->rpl_dagrank    = this->rpl_dagrank;
     memcpy(dio->rpl_dagid, this->rpl_dagid, 16);
+
+    nextopt = (unsigned char *)&dio[1];
     
-    len = ((caddr_t)&dio[1] - (caddr_t)buff);
+    /* now announce the prefix using a destination option */
+    /* this stores the option in this->optbuff */
+    build_prefix_dioopt(prefix);
+
+    int nextoptlen = 0;
+
+    len = ((caddr_t)nextopt - (caddr_t)buff);
+    nextoptlen += append_dio_suboption(nextopt, buff_len-len, RPL_DIO_DESTPREFIX);
+
+    if(nextoptlen < 0) {
+        /* failed to build DIO prefix option */
+        return -1;
+    }
+    nextopt += nextoptlen;
     
+    /* recalculate length */
+    len = ((caddr_t)nextopt - (caddr_t)buff);
+
+    len = (len + 7)&(~0x7);  /* round up to next multiple of 64-bits */
     return len;
 }
 
