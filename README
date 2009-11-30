@@ -1,0 +1,16 @@
+This is UML based testing infrastructure.
+
+It was extracted from Openswan, via a project called Unstrung. 
+
+There may be missing commits here, but I'm trying to keep it minimal.
+
+The UMLroot image that goes with it can not be created as stock lenny
+"debootstrap" image.  An image that works can be found at:
+        http://junk.sandelman.ca/umlroot/umlroot-34.tgz
+
+Michael Richardson <mcr@sandelman.ca>,
+Ottawa, Ontario, October 2009 
+
+
+
+
