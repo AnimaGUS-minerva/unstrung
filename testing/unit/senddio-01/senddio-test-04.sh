@@ -1,6 +1,7 @@
 #!/bin/sh
 
 SENDDIO=${SENDDIO-./senddio}
+set -e
 
 (
 ${SENDDIO} --fake -v -p 2001:db8:0001::/48 -S 10 -I 42 -R 1 -D thisismynicedag1
