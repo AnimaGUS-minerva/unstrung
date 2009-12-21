@@ -70,7 +70,7 @@ setup_host_make() {
 
     echo "# make a hard link copy of the ROOT, but"
     echo "# make private copy of /var."
-    echo "$hostroot/etc/localtime : ${BASICROOT}/sbin/init ${BASICROOT}/ROOTVERSION"
+    echo "$hostroot/etc/localtime : ${BASICROOT}/ROOTVERSION"
     echo "$TAB -(cd ${BASICROOT} && find . -print | cpio -pld $POOLSPACE/$hostroot 2>/dev/null )"
     echo "$TAB rm -rf $hostroot/var"
 
@@ -108,7 +108,7 @@ setup_host_make() {
     echo "$TAB (cd ${TESTINGROOT}/baseconfigs/$host && find . -type f -print) | (cd $hostroot && xargs rm -f)"
     # okay, that's all the stock stuff
     echo 
-    depends="$depends $hostroot/sbin/init"
+    depends="$depends $hostroot/etc/localtime"
 
     touch makeuml-fsname.$$
 
