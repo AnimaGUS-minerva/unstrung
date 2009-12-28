@@ -1,0 +1,3 @@
+This tests uses the senddio to insert DAG Information Object ICMPv6 into
+the network. It tests that the interface to the kernel is working.
+

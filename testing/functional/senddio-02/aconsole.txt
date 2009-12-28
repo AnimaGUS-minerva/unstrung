@@ -1,0 +1,16 @@
+A:~# sleep 2
+A:~# ip -6 addr ls
+5: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+    inet6 fe80::1000:ff:fedc:bcff/64 scope link 
+       valid_lft forever preferred_lft forever
+6: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+    inet6 fe80::1000:ff:fe64:6423/64 scope link 
+       valid_lft forever preferred_lft forever
+A:~# /sbin/senddio -v -p 2001:db8:0001::/48 -i eth1
+Sending ICMP of length: 40
+0000: 9b 02 00 00  00 00 00 00  00 00 00 00  00 00 00 00    ................   
+0010: 00 00 00 00  00 00 00 00  03 00 0c 00  00 00 00 00    ................   
+0020: 30 20 01 0d  b8 00 01 00                              0 ......           
+Starting setup for eth1
+sending RA on 3
+
