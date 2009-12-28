@@ -64,7 +64,10 @@ void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp
     
     int err;
     
-    setup();
+    if(setup() == false) {
+        fprintf(this->verbose_file, "failed to setup socket!");
+        return;
+    }
     check_allrouters_membership();    
 
     printf("sending RA on %u\n", nd_socket);
@@ -111,7 +114,14 @@ void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp
     err = sendmsg(nd_socket, &mhdr, 0);
     
     if (err < 0) {
-        printf("send_raw_dio/sendmsg: %s\n", strerror(errno));
+        char sbuf[INET6_ADDRSTRLEN], dbuf[INET6_ADDRSTRLEN];
+
+	inet_ntop(AF_INET6, &pkt_info->ipi6_addr, sbuf, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &addr.sin6_addr, dbuf, INET6_ADDRSTRLEN);
+        
+        printf("send_raw_dio/sendmsg[%s->%s] (on if: %d): %s\n",
+               sbuf, dbuf,
+               pkt_info->ipi6_ifindex, strerror(errno));
     }
 }
 
