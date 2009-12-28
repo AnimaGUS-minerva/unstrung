@@ -5,6 +5,9 @@ set theprompt {([a-zA-Z0-9]*):.*# }
 
 global managednets
 set managednets {ground n1 n2}
+if {[info exists env(XNET_LISTS)]} {
+    set managednets $env(XNET_LISTS)
+}
 
 
 proc netjigdebug {msg} {
@@ -308,10 +311,15 @@ proc loginuml {umlname} {
 	          puts stderr "EOF in loginuml" 
     	          shutdownumls
 	}
-	-exact "normal startup):"
+	-exact "normal startup):" {
+            netjigdebug "\nLogging in to $umlname"
+            send -i $umlid($umlname,spawnid) -- "root\r"
+        }
+        -exact "to continue): " {
+            netjigdebug "\nLogging in to $umlname"
+            send -i $umlid($umlname,spawnid) -- "\r"
+        }
     }
-    netjigdebug "\nLogging in to $umlname"
-    send -i $umlid($umlname,spawnid) -- "root\r"
 }
 
 proc inituml {umlname} {
@@ -330,21 +338,6 @@ proc inituml {umlname} {
     expectprompt $umlid($umlname,spawnid) "for ulimit ($umlname)"
 
     send -i $umlid($umlname,spawnid) -- "ulimit -c unlimited\r"
-
-    if {[info exists env(KLIPS_MODULE)]} {
-	puts stderr "Loading module into $umlname"
-
-	trace variable expect_out(buffer) w log_by_tracing
-	set expect_out(spawn_id) $umlid($umlname,spawnid)
-	set expect_out(buffer) ""
-
-	expectprompt $umlid($umlname,spawnid) "before recording memory level ($umlname)"
-
-	send -i $umlid($umlname,spawnid) -- "cat /proc/meminfo >/tmp/proc_meminfo-no-ipsec-mod-01\r" 
-	expectprompt $umlid($umlname,spawnid) "for insmod ($umlname)"
-
-	send -i $umlid($umlname,spawnid) -- "insmod /ipsec.o\r"
-    } 
 
     expectprompt $umlid($umlname,spawnid) "for post-insmod ($umlname)"
 
@@ -471,9 +464,6 @@ proc killuml {umlname} {
 
     netjigdebug "Sending halt to $umlname!"
     # absorb anything there.
-
-    expectprompt $umlid($umlname,spawnid) "for ipsec setup stop ($umlname)"
-    send   -i $umlid($umlname,spawnid)     "ipsec setup stop\r"
 
     expectprompt $umlid($umlname,spawnid) "for klogd dump ($umlname)"
     send -i $umlid($umlname,spawnid) "kill `cat /var/run/klogd.pid`; cat /tmp/klog.log\r"
@@ -627,64 +617,3 @@ proc process_net {net} {
 
 match_max -d 10000
 
-# $Id: netjig.tcl,v 1.54 2005/10/20 21:11:45 mcr Exp $
-#
-# $Log: netjig.tcl,v $
-# Revision 1.54  2005/10/20 21:11:45  mcr
-# 	refactored to put wait-user function in netjig.tcl.
-#
-# Revision 1.53  2005/03/20 23:20:10  mcr
-# 	when looking for an output file for console output,
-# 	include the kernel version in the variable that we will
-# 	look for.
-#
-# Revision 1.52  2005/02/11 01:33:46  mcr
-# 	added newline to end of file.
-#
-# Revision 1.51  2005/01/19 00:01:07  ken
-# Fix location of klogd.pid - broke due to blind find . patch for moving pluto files to /var/run/pluto
-#
-# Revision 1.50  2005/01/11 17:54:09  ken
-# Move plutos runtime files from /var/run/pluto.* to /var/run/pluto/pluto.*
-#
-# This was done with find . -type f -print0 | xargs -0 perl -pi -e 's#/var/run/#/var/run/pluto/#g'
-#
-# Revision 1.49  2004/10/12 03:51:47  mcr
-# 	make sure that UMLs run with core dumping enabled.
-#
-# Revision 1.48  2004/05/05 17:55:20  mcr
-# 	fixed problem with getty not licking multiuser boot.
-#
-# Revision 1.47  2004/05/04 20:05:35  mcr
-# 	use ttys/1 rather than tty1.
-#
-# Revision 1.46  2004/05/04 19:51:46  mcr
-# 	make sure to send \r after each command.
-#
-# Revision 1.45  2004/05/04 19:17:59  mcr
-# 	don't try getty unless we have a run command.
-#
-# Revision 1.44  2004/05/04 18:06:04  mcr
-# 	if UML_GETTY is set, then start a getty before running each
-# 	runuml command.
-#
-# Revision 1.43  2004/03/21 04:36:16  mcr
-# 	1) local switches now reads testparams.sh file.
-# 	2) $arpreply is totally deprecated.
-#
-# Revision 1.42  2004/02/15 20:37:08  mcr
-# 	changed method by which we ask for --arpreply. We can't guess
-# 	it, as it doesn't work in all cases like that.
-#
-# Revision 1.41  2004/02/15 00:12:00  mcr
-# 	--arpreply calculation was failing for situation
-# 	where the options were specified as arguments.
-# 	split process_net -> process_net/calc_net.
-#
-# Revision 1.40  2004/02/15 00:02:06  mcr
-# 	debugging for ARPreply settings.
-#
-# Revision 1.39  2004/02/05 02:15:51  mcr
-# 	added RCS ids.
-#
-#

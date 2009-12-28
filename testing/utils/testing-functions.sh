@@ -203,7 +203,6 @@ export_variables() {
     export XHOST_LIST
     export XNET_LIST
     export UNSTRUNG_SRCDIR
-    export TEST_PURPOSE
 }
 
 # this is called to set additional variables that depend upon testparams.sh
@@ -517,34 +516,6 @@ pcap_filter() {
     fi
 }
 
-compareoutputs() {
-    for net in $XNET_LIST
-    do
-      NET=`echo $net | tr a-z A-Z`
-      REF_OUTPUT=REF_${NET}_OUTPUT
-      OUTPUT=${net}
-      REF_FILTER=REF_${NET}_FILTER
-      verboseecho "Processing ${net} with var ${REF_OUTPUT}/${OUTPUT}/${REF_FILTER}"
-      verboseecho "Variables are: ref: '${!REF_OUTPUT-}' output: '${OUTPUT}' filter: '${!REF_FILTER-}'"
-
-      if [ -n "${!REF_OUTPUT}" ]; then
-          pcap_filter $net "${!REF_OUTPUT-}" "${OUTPUT}" "${!REF_FILTER-}"
-      fi
-    done
-
-    for host in $XHOST_LIST
-    do
-       local consoleref
-       consoleref=REF${KERNVER}_${host}_CONSOLE_OUTPUT
-       lhost=`echo $host | tr 'A-Z' 'a-z'`
-
-	if [ -n "${!consoleref-}" ]
-	then
-	    consolediff ${KERNVER}$lhost OUTPUT/${KERNVER}${lhost}console.txt ${!consoleref}
-	fi
-    done
-}
-
 ###################################
 #
 #  test type: skiptest - do nothing right now.
@@ -599,8 +570,31 @@ do_umlX_test() {
     $NETJIGDEBUG && echo NETJIGCMD: $cmd
     eval $cmd
 
-    compareoutputs;
+    for net in $XNET_LIST
+    do
+      NET=`echo $net | tr a-z A-Z`
+      REF_OUTPUT=REF_${NET}_OUTPUT
+      OUTPUT=${net}
+      REF_FILTER=REF_${NET}_FILTER
+      verboseecho "Processing ${net} with var ${REF_OUTPUT}/${OUTPUT}/${REF_FILTER}"
+      verboseecho "Variables are: ref: '${!REF_OUTPUT-}' output: '${OUTPUT}' filter: '${!REF_FILTER-}'"
 
+      if [ -n "${!REF_OUTPUT}" ]; then
+          pcap_filter $net "${!REF_OUTPUT-}" "${OUTPUT}" "${!REF_FILTER-}"
+      fi
+    done
+
+    for host in $XHOST_LIST
+    do
+       local consoleref
+       consoleref=REF${KERNVER}_${host}_CONSOLE_OUTPUT
+       lhost=`echo $host | tr 'A-Z' 'a-z'`
+
+	if [ -n "${!consoleref-}" ]
+	then
+	    consolediff ${KERNVER}$lhost OUTPUT/${KERNVER}${lhost}console.txt ${!consoleref}
+	fi
+    done
 
     case "$success" in
     true)	exit 0 ;;
