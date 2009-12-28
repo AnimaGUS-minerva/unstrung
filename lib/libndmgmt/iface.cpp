@@ -159,7 +159,7 @@ bool network_interface::setup()
     ICMP6_FILTER_SETBLOCKALL(&filter);
     ICMP6_FILTER_SETPASS(ND_RPL_MESSAGE,    &filter);
     ICMP6_FILTER_SETPASS(ND_ROUTER_SOLICIT, &filter);
-    ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT, &filter);
+    ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT,  &filter);
     
     err = setsockopt(nd_socket, IPPROTO_ICMPV6, ICMP6_FILTER, &filter,
                      sizeof(filter));
