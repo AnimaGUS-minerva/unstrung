@@ -1,3 +1,6 @@
+#ifndef _UNSTRUNG_IFACE_H_
+#define _UNSTRUNG_IFACE_H_
+
 extern "C" {
 #include <errno.h>
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
@@ -144,3 +147,5 @@ private:
 
 #define ND_OPT_RPL_PRIVATE_DAO 200
 #define ND_OPT_RPL_PRIVATE_DIO 201
+
+#endif /* _UNSTRUNG_IFACE_H_ */
