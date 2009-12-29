@@ -12,6 +12,10 @@ extern "C" {
 
 #define HWADDR_MAX 16
 
+enum network_interface_exceptions {
+        TOOSHORT = 1,
+};
+
 class network_interface {
 
 public:

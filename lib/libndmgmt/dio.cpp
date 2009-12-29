@@ -31,12 +31,31 @@ extern "C" {
 
 #include "iface.h"
 
-
-void network_interface::receive_dio(const u_char *dio, const int dio_len)
+void network_interface::receive_dio(const u_char *dat, const int dio_len)
 {
-        if(VERBOSE(this))
-                fprintf(this->verbose_file, " processing dio(%u)\n",dio_len);
-        
+    if(VERBOSE(this)) {
+        fprintf(this->verbose_file, " processing dio(%u)\n",dio_len);
+    }
+
+    struct nd_rpl_dio *dio = (struct nd_rpl_dio *)dat;
+
+    if(this->packet_too_short("dio", dio_len, sizeof(*dio))) return;
+
+    char dagid[16*6];
+    char *d = dagid;
+    int  i;
+    for(i=0;i<16;i++) {
+        if(isprint(dio->rpl_dagid[i])) {
+            *d++ = dio->rpl_dagid[i];
+        } else {
+            int cnt=snprintf(d, 6,"0x%02x ", dio->rpl_dagid[i]);
+            d += strlen(d);
+        }
+    }
+    *d++ = '\0';
+    printf(" [seq:%u,instance:%u,rank:%u,dagid:%s]\n",
+           dio->rpl_seq, dio->rpl_instanceid, dio->rpl_dagrank,
+           dagid);
 }
 
 void network_interface::receive_dao(const u_char *dao, const int dao_len)
