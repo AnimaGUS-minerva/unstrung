@@ -17,12 +17,14 @@ enum ND_RPL_DIO_FLAGS {
         ND_RPL_DIO_PRF_MASK = 0x07,  /* 3-bit preference */
 };
 
+#define DAGID_LEN 16
+
 struct nd_rpl_dio {
         u_int8_t rpl_flags;
         u_int8_t rpl_seq;
         u_int8_t rpl_instanceid;
         u_int8_t rpl_dagrank;
-        u_int8_t rpl_dagid[16];
+        u_int8_t rpl_dagid[DAGID_LEN];
 };
 
 enum RPL_DIO_SUBOPT {
