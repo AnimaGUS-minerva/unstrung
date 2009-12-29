@@ -23,7 +23,8 @@ check::	recv-01
 	tcpdump -t -n -r ../OUTPUTS/recv-01-plainnd.pcap -s 0 | diff -B - recv-01-plainnd-out.txt
 	@echo TEST02: SENDDIO CREATED
 	./recv-01 ../INPUTS/senddio.pcap | tee ../OUTPUTS/recv-02-output.raw | diff -B - recv-02-output.txt
-	tcpdump -t -n -r ../OUTPUTS/recv-01-senddio.pcap -s 0 | diff -B - recv-01-senddio-out.txt
+	@echo TEST03: SENDDIO-2 CREATED
+	./recv-01 ../INPUTS/senddio-2.pcap | tee ../OUTPUTS/recv-03-output.raw | diff -B - recv-03-output.txt
 
 clean::
 	@rm -rf recv-01 *.o

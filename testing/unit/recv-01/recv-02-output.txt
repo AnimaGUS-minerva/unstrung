@@ -1,6 +1,9 @@
  processing dio(20)
+ [seq:10,instance:42,rank:1,dagid:thisismynicedag1]
 packet 2 is not ICMPv6, but=proto:0
  processing dio(20)
+ [seq:10,instance:42,rank:1,dagid:thisismynicedag1]
 packet 4 is not ICMPv6, but=proto:0
  processing dio(20)
+ [seq:10,instance:42,rank:1,dagid:thisismynicedag1]
 packet 6 is not ICMPv6, but=proto:0
