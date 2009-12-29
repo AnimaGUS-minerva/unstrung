@@ -45,7 +45,9 @@ extern "C" {
 
 static void usage(void)
 {
-	fprintf(stderr, "Usage: senddio [-p prefix] [-d datafile]\n");
+	fprintf(stderr, "Usage: senddio [--prefix prefix] [-d datafile] [--fake] [--iface net]\n");
+	fprintf(stderr, "               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]\n");
+
 	exit(2);
 }
 
