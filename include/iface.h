@@ -108,7 +108,10 @@ private:
         /* debugging */
 	bool                    verbose_flag;
 	FILE                   *verbose_file;
-#define VERBOSE(X) ((X)->verbose_flag && (X)->verbose_file!=NULL)
+        bool                    verbose_test() {
+                return(verbose_flag && verbose_file!=NULL);
+        };
+#define VERBOSE(X) ((X)->verbose_test())
 
 
         unsigned char          *control_msg_hdr;
