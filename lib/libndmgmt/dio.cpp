@@ -30,6 +30,7 @@ extern "C" {
 }
 
 #include "iface.h"
+#include "dag.h"
 
 void network_interface::receive_dio(const u_char *dat, const int dio_len)
 {
@@ -56,6 +57,12 @@ void network_interface::receive_dio(const u_char *dat, const int dio_len)
     printf(" [seq:%u,instance:%u,rank:%u,dagid:%s]\n",
            dio->rpl_seq, dio->rpl_instanceid, dio->rpl_dagrank,
            dagid);
+    
+    /* find the relevant DAG */
+    class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid);
+
+    /* and process it */
+    dn->receive_dio(dio, dio_len);
 }
 
 void network_interface::receive_dao(const u_char *dao, const int dao_len)
