@@ -1,3 +1,11 @@
+/*
+ * Unit tests for processing a DIO.
+ *
+ *
+ */
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "iface.h"
@@ -47,6 +55,26 @@ static void t2(void)
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mDiscards[DR_SEQOLD] == 1);
+
+        d1.rpl_seq = 240;
+        dn->receive_dio(&d1, sizeof(d1));
+        assert(dn->last_seq() == 4);
+        assert(dn->mDiscards[DR_SEQOLD] == 2);
+
+        d1.rpl_seq = 130;
+        dn->receive_dio(&d1, sizeof(d1));
+        assert(dn->last_seq() == 130);
+        assert(dn->mDiscards[DR_SEQOLD] == 2);
+
+        d1.rpl_seq = 243;
+        dn->receive_dio(&d1, sizeof(d1));
+        assert(dn->last_seq() == 243);
+        assert(dn->mDiscards[DR_SEQOLD] == 2);
+
+        d1.rpl_seq = 1;
+        dn->receive_dio(&d1, sizeof(d1));
+        assert(dn->last_seq() == 1);
+        assert(dn->mDiscards[DR_SEQOLD] == 2);
 }
 
 int main(int argc, char *argv[])

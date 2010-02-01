@@ -86,11 +86,30 @@ void dag_network::discard_dio(enum discard_reason dr)
 
 /*
  * sequence numbers are kept as 32-bit integers, but when
- * transmitted, only the lower 8 bits matters, so they wrap
+ * transmitted, only the lower 8 bits matters, so they wrap.
  */
 bool dag_network::seq_too_old(unsigned int seq)
 {
-    if(seq < mLastSeq) {
+    unsigned int low8bit = mLastSeq & 0xff;
+    int diff = (seq - low8bit);
+
+    /* if the seq > low8bit, everything is good */
+    if(diff > 0 && diff < 128) {
+        return false;
+    }
+
+    /* if the -128 < diff < 0, then we have a wrap backwards */
+    if(diff < 0 && diff > -128) {
+        return true;
+    }
+
+    /*
+     * if there is too much space between them, then maybe it is an
+     * old sequence number being replayed at us.
+     */
+    if((low8bit < 128) &&
+       (seq > 128) &&
+       (diff > 128)) {
         return true;
     }
 
@@ -103,8 +122,12 @@ bool dag_network::seq_too_old(unsigned int seq)
 
 void dag_network::seq_update(unsigned int seq)
 {
-    if(seq > mLastSeq) {
-        mLastSeq = seq;
+    unsigned int low8bit = mLastSeq & 0xff;
+
+    if(seq > low8bit) {
+        mLastSeq += (seq - low8bit);
+    } else if((seq+256) > low8bit) {
+        mLastSeq += (seq+256 - low8bit);
     }
 }
 
