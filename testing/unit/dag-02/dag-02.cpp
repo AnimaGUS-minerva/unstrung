@@ -77,9 +77,10 @@ static void t2(void)
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 1;
+        unsigned int processed_count = dn->mStats[PS_PACKET_PROCESSED];
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 1);
-        assert(dn->mStats[PS_SEQ_OLD] == 2);
+        assert(dn->mStats[PS_PACKET_PROCESSED] == processed_count+1);
 }
 
 int main(int argc, char *argv[])

@@ -158,6 +158,9 @@ void dag_network::receive_dio(const struct nd_rpl_dio *dio, int dio_len)
     this->seq_update(dio->rpl_seq);
 
     //if(dio->rpl_
+
+    /* increment stat of number of packets processed */
+    this->mStats[PS_PACKET_PROCESSED]++;
 }
 
 
