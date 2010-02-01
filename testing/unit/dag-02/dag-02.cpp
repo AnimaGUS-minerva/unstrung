@@ -40,6 +40,8 @@ static void t2(void)
         struct nd_rpl_dio d1;
 
         memset(&d1, 0, sizeof(d1));
+        d1.rpl_dagid[0]='T';
+        d1.rpl_dagid[0]='1';
 
         d1.rpl_seq = 1;
         dn->receive_dio(&d1, sizeof(d1));
@@ -83,6 +85,33 @@ static void t2(void)
         assert(dn->mStats[PS_PACKET_PROCESSED] == processed_count+1);
 }
 
+/*
+ * in this test case, the system should note that it sees a dagrank
+ * lower than what it currently has (which is infinite).
+ *
+ */
+static void t3(void)
+{
+        struct nd_rpl_dio d1;
+
+        /* make sure dag rank starts as infinite */
+        assert(dn->dag_rank_infinite());
+
+        memset(&d1, 0, sizeof(d1));
+
+        d1.rpl_seq = 2;
+        d1.rpl_dagid[0]='T';
+        d1.rpl_dagid[0]='1';
+        d1.rpl_instanceid = 1;
+        d1.rpl_dagrank = 1;
+
+        unsigned int lower_rank_count = dn->mStats[PS_LOWER_RANK_CONSIDERED];
+
+        dn->receive_dio(&d1, sizeof(d1));
+        assert(dn->mStats[PS_LOWER_RANK_CONSIDERED] == lower_rank_count+1);
+}
+        
+
 int main(int argc, char *argv[])
 {
 	int i;
@@ -96,6 +125,10 @@ int main(int argc, char *argv[])
 
         printf("dag-02 t1\n");        t1();
         printf("dag-02 t2\n");        t2();
+        delete dn;
+
+        dn = new dag_network(d);
+        printf("dag-02 t3\n");        t3();
 	exit(0);
 }
 

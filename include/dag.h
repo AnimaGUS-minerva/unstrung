@@ -3,7 +3,9 @@ typedef u_int8_t dagid_t[DAGID_LEN];
 
 enum packet_stats {
         PS_SEQ_OLD,
+        PS_PACKET_RECEIVED,
         PS_PACKET_PROCESSED,
+        PS_LOWER_RANK_CONSIDERED,
         PS_MAX,
 };
 
@@ -32,11 +34,16 @@ public:
 	int  verboseprint() { return verbose_flag; }
 
         /* prime key for the DAG */
-        dagid_t mDagid;
-        unsigned int mLastSeq;
+        dagid_t                    mDagid;
+
+        unsigned int               mLastSeq;
         bool seq_too_old(unsigned int seq);
         bool upd_seq(unsigned int seq);
         u_int8_t last_seq() { return(mLastSeq & 0xff); };
+
+        unsigned int               mDagRank;
+        bool dag_rank_infinite(void) { return (mDagRank == UINT_MAX); };
+
 
         /* STUPID ME: NEED TO USE A LIST TYPE */
         void add_to_list(void) {
@@ -46,11 +53,14 @@ public:
         void remove_from_list(void);
 
         void receive_dio(const struct nd_rpl_dio *dio, int dio_len);
+        void potentially_lower_rank(const struct nd_rpl_dio *dio, int dio_len);
 
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
                 
 private:
+        /* information about this DAG */
+        
         void discard_dio(enum packet_stats dr);
         bool check_security(const struct nd_rpl_dio *dio,
                                          int dio_len);

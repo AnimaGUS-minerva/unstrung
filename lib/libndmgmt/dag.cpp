@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 extern "C" {
 #include <errno.h>
@@ -23,8 +24,10 @@ dag_network::dag_network(dagid_t n_dagid)
 {
         memcpy(mDagid, n_dagid, DAGID_LEN);
         mLastSeq = 0;
+        mDagRank = UINT_MAX;
 
         this->add_to_list();
+        
 }
 
 dag_network::~dag_network()
@@ -73,7 +76,9 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
 /* provide a count of discards */
 const char *dag_network::packet_stat_names[PS_MAX+1]={
     "sequence too old",
+    "packets receied"
     "packets processed",
+    "packets with <dagrank",
     "max reason"
 };
 
@@ -138,6 +143,13 @@ bool dag_network::check_security(const struct nd_rpl_dio *dio, int dio_len)
     return true;
 }
 
+void dag_network::potentially_lower_rank(const struct nd_rpl_dio *dio,
+                                         int dio_len)
+{
+    this->mStats[PS_LOWER_RANK_CONSIDERED]++;
+}
+
+
 /*
  * Process an incoming DIO. 
  *
@@ -146,6 +158,9 @@ void dag_network::receive_dio(const struct nd_rpl_dio *dio, int dio_len)
 {
     /* it has already been checked to be at least sizeof(*dio) */
     int dio_payload_len = dio_len - sizeof(*dio);
+
+    /* increment stat of number of packets processed */
+    this->mStats[PS_PACKET_RECEIVED]++;
 
     if(this->seq_too_old(dio->rpl_seq)) {
         this->discard_dio(PS_SEQ_OLD);
@@ -157,7 +172,9 @@ void dag_network::receive_dio(const struct nd_rpl_dio *dio, int dio_len)
 
     this->seq_update(dio->rpl_seq);
 
-    //if(dio->rpl_
+    if(dio->rpl_dagrank < mDagRank) {
+        this->potentially_lower_rank(dio, dio_len);
+    }
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;
