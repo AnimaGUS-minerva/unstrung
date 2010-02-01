@@ -71,17 +71,18 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
 }
 
 /* provide a count of discards */
-const char *dag_network::discard_reasons[DR_MAX+1]={
+const char *dag_network::packet_stat_names[PS_MAX+1]={
     "sequence too old",
+    "packets processed",
     "max reason"
 };
 
-void dag_network::discard_dio(enum discard_reason dr)
+void dag_network::discard_dio(enum packet_stats dr)
 {
-    mDiscards[dr]++;
+    mStats[dr]++;
 
     if(VERBOSE(this))
-        fprintf(this->verbose_file, "  DIO discarded %s (++%u)\n", discard_reasons[dr]);
+        fprintf(this->verbose_file, "  DIO discarded %s (++%u)\n", packet_stat_names[dr]);
 }
 
 /*
@@ -147,7 +148,7 @@ void dag_network::receive_dio(const struct nd_rpl_dio *dio, int dio_len)
     int dio_payload_len = dio_len - sizeof(*dio);
 
     if(this->seq_too_old(dio->rpl_seq)) {
-        this->discard_dio(DR_SEQOLD);
+        this->discard_dio(PS_SEQ_OLD);
         return;
     }
 

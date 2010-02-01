@@ -44,37 +44,42 @@ static void t2(void)
         d1.rpl_seq = 1;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 1);
-        assert(dn->mDiscards[DR_SEQOLD] == 0);
+        assert(dn->mStats[PS_SEQ_OLD] == 0);
 
         d1.rpl_seq = 4;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 4);
-        assert(dn->mDiscards[DR_SEQOLD] == 0);
+        assert(dn->mStats[PS_SEQ_OLD] == 0);
 
         d1.rpl_seq = 3;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 4);
-        assert(dn->mDiscards[DR_SEQOLD] == 1);
+        assert(dn->mStats[PS_SEQ_OLD] == 1);
 
         d1.rpl_seq = 240;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 4);
-        assert(dn->mDiscards[DR_SEQOLD] == 2);
+        assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 130;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 130);
-        assert(dn->mDiscards[DR_SEQOLD] == 2);
+        assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 243;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 243);
-        assert(dn->mDiscards[DR_SEQOLD] == 2);
+        assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 1;
         dn->receive_dio(&d1, sizeof(d1));
         assert(dn->last_seq() == 1);
-        assert(dn->mDiscards[DR_SEQOLD] == 2);
+        assert(dn->mStats[PS_SEQ_OLD] == 2);
+
+        d1.rpl_seq = 1;
+        dn->receive_dio(&d1, sizeof(d1));
+        assert(dn->last_seq() == 1);
+        assert(dn->mStats[PS_SEQ_OLD] == 2);
 }
 
 int main(int argc, char *argv[])

@@ -1,9 +1,10 @@
 
 typedef u_int8_t dagid_t[DAGID_LEN];
 
-enum discard_reason {
-        DR_SEQOLD,
-        DR_MAX,
+enum packet_stats {
+        PS_SEQ_OLD,
+        PS_PACKET_PROCESSED,
+        PS_MAX,
 };
 
 class dag_network {
@@ -47,15 +48,15 @@ public:
         void receive_dio(const struct nd_rpl_dio *dio, int dio_len);
 
         /* let stats be public */
-        u_int32_t mDiscards[DR_MAX];
+        u_int32_t mStats[PS_MAX];
                 
 private:
-        void discard_dio(enum discard_reason dr);
+        void discard_dio(enum packet_stats dr);
         bool check_security(const struct nd_rpl_dio *dio,
                                          int dio_len);
         void seq_update(unsigned int seq);
 
-        static const char *discard_reasons[DR_MAX+1];
+        static const char *packet_stat_names[PS_MAX+1];
 
         class dag_network *next;
         static class dag_network *all_dag;
