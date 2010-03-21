@@ -1,2 +1,4 @@
-Usage: senddio [-p prefix] [-d datafile]
-Usage: senddio [-p prefix] [-d datafile]
+Usage: senddio [--prefix prefix] [-d datafile] [--fake] [--iface net]
+               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]
+Usage: senddio [--prefix prefix] [-d datafile] [--fake] [--iface net]
+               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]
