@@ -6,6 +6,7 @@ extern "C" {
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
+#include <string.h>
 }
 
 #include <set>
@@ -14,9 +15,13 @@ class rpl_less;
 class rpl_node {
         friend class rpl_less;
 public:
+        rpl_node() { valid = true; };
+        rpl_node(const char *ipv6);
+        bool validP() { return valid; };
 protected:
         struct in6_addr nodeip;
 private:
+        bool valid;
 };
 
 class rpl_less {
@@ -30,3 +35,11 @@ class node_set : std::set<rpl_node, rpl_less> {
 };
 
 #endif /* NODE_H */
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

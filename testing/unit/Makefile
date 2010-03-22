@@ -21,6 +21,7 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=recv-01 senddio-01
+SUBDIRS=recv-01 senddio-01 dagset-01
+
 
 
