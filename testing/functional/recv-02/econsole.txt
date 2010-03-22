@@ -6,5 +6,23 @@ E:~# ip -6 addr ls
 6: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
     inet6 fe80::1000:ff:fe66:6602/64 scope link 
        valid_lft forever preferred_lft forever
-E:~# /sbin/sunshine -i eth0 -i eth1
+E:~# : /sbin/sunshine -i eth0 -i eth1
+E:~# tcpdump -t -i eth1 -n &
+[1] 1046
+E:~# echo true
+true
+E:~# tcpdump: WARNING: eth1: no IPv4 address assigned
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
+IP6 fe80::1000:ff:fe64:6423 > ff02::2: ICMP6, router solicitation, length 16
+IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, RPL, DAG Information Object, length 40
+IP6 fe80::1000:ff:fe64:6423 > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+IP6 fe80::1000:ff:fe64:6423 > ff02::2: ICMP6, router solicitation, length 16
+^C
+
+E:~# kill %tcpdump
+E:~# 
+4 packets captured
+4 packets received by filter
+0 packets dropped by kernel
 
