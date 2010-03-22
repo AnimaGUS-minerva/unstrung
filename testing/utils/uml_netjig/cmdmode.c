@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2001 Michael Richardson  <mcr@freeswan.org>
  * Copyright (C) 2005 Michael Richardson  <mcr@xelerance.com>
+ * Copyright (C) 2010 Michael Richardson  <mcr@sandelman.ca>
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
