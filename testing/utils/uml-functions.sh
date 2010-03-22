@@ -200,7 +200,7 @@ setup_host_make() {
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
 
-	    echo "$TAB echo 'if [ -n \"$UML_n1_CTL\" ]; then if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi; fi' >>$startscript"
+	    echo "$TAB echo 'if [ -z \"$UML_n1_CTL\" ]; then if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi; fi' >>$startscript"
 	    echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB # the umlroot= is a local hack >>$startscript"
