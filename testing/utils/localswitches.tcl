@@ -53,7 +53,7 @@ close $switchvars
 puts "\r\nExit the netjig when you are done\r\n"
 
 set timeout -1
-interact -reset -i $netjig1 
+interact -reset -echo -i $netjig1 
 
 foreach host $argv {
     system "uml_mconsole $host halt"
