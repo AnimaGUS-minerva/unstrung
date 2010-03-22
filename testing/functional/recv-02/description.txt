@@ -1,5 +1,4 @@
 This tests uses the DIO packet that was sent by senddio-01,
-receiving it with sunshine, validating that it has now seen a new
-node on the network.
+receiving it with tcpdump to validate that the plumbing works properly.
 
 
