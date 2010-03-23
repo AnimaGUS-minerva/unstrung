@@ -27,4 +27,9 @@ rpl_node::rpl_node(const char *ipv6) {
         }
 }
 
+rpl_node::rpl_node(const struct in6_addr v6) {
+        nodeip = v6;
+        valid = true;
+}
+
 

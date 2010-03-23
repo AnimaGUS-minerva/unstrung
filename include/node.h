@@ -9,7 +9,7 @@ extern "C" {
 #include <string.h>
 }
 
-#include <set>
+#include <map>
 
 class rpl_less;
 class rpl_node {
@@ -17,6 +17,7 @@ class rpl_node {
 public:
         rpl_node() { valid = true; };
         rpl_node(const char *ipv6);
+        rpl_node(const struct in6_addr v6);
         bool validP() { return valid; };
 
         void   set_last_seen(time_t clock) { lastseen = clock; };
@@ -27,6 +28,7 @@ public:
             strncat(name, nodename, sizeof(name));
         };
         const char *node_name() { return name; };
+        const struct in6_addr& node_number() { return nodeip; };
 
 protected:
         struct in6_addr nodeip;
@@ -39,12 +41,14 @@ private:
 
 class rpl_less {
 public:
-        bool operator()(const rpl_node &x, const rpl_node &y) const {
-                return memcmp(x.nodeip.s6_addr, y.nodeip.s6_addr, 16) < 0;
+        bool operator()(const struct in6_addr &x, const struct in6_addr &y) const {
+                return memcmp(x.s6_addr, y.s6_addr, 16) < 0;
         }
 };
 
-typedef std::set<rpl_node, rpl_less> node_set;
+typedef std::map<struct in6_addr, rpl_node, rpl_less>           node_map;
+typedef std::map<struct in6_addr, rpl_node, rpl_less>::iterator node_map_iterator;
+typedef std::pair<struct in6_addr, rpl_node> node_pair;
 
 #endif /* NODE_H */
 
