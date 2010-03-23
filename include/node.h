@@ -18,21 +18,33 @@ public:
         rpl_node() { valid = true; };
         rpl_node(const char *ipv6);
         bool validP() { return valid; };
+
+        void   set_last_seen(time_t clock) { lastseen = clock; };
+        time_t get_last_seen() { return lastseen; };
+
+        void set_name(const char *nodename) {
+            name[0]='\0';
+            strncat(name, nodename, sizeof(name));
+        };
+        const char *node_name() { return name; };
+
 protected:
         struct in6_addr nodeip;
+
 private:
-        bool valid;
+        bool       valid;
+        time_t     lastseen;
+        char       name[16];
 };
 
 class rpl_less {
 public:
-        bool operator()(rpl_node &x, rpl_node &y) const {
+        bool operator()(const rpl_node &x, const rpl_node &y) const {
                 return memcmp(x.nodeip.s6_addr, y.nodeip.s6_addr, 16) < 0;
         }
 };
 
-class node_set : std::set<rpl_node, rpl_less> {
-};
+typedef std::set<rpl_node, rpl_less> node_set;
 
 #endif /* NODE_H */
 
