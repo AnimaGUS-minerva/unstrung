@@ -117,6 +117,9 @@ static void t5(void)
     inet_pton(AF_INET6, "2001:db8::abcd:0003", &a3);
     class rpl_node n3(a3);  
 
+    struct in6_addr a5;
+    inet_pton(AF_INET6, "2001:db8::abcd:0005", &a5);
+
     n1.set_name("n1");
     n2.set_name("n2");
     n3.set_name("n3");
@@ -143,8 +146,11 @@ static void t5(void)
     node_map_iterator ni = ns.find(a1);
     rpl_node   *rn =  &ni->second;
     const char *nn =  rn->node_name();
-
     assert(strcmp(nn, "n1")==0);
+
+    /* now look up an invalid item! */
+    node_map_iterator ni2= ns.find(a5);
+    assert(ni2 == ns.end());
 }
 
 int main(int argc, char *argv[])
