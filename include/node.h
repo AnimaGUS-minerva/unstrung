@@ -16,7 +16,7 @@ class rpl_less;
 class rpl_node {
         friend class rpl_less;
 public:
-        rpl_node() { valid = true; };
+        rpl_node() { valid = false; };
         rpl_node(const char *ipv6);
         rpl_node(const struct in6_addr v6);
         bool validP() { return valid; };
