@@ -15,6 +15,7 @@
 
 extern "C" {
 #include <arpa/inet.h>
+#include <stdio.h>
 };
 
 #include "node.h"
@@ -31,5 +32,34 @@ rpl_node::rpl_node(const struct in6_addr v6) {
         nodeip = v6;
         valid = true;
 }
+
+void rpl_node::makevalid(const struct in6_addr v6, const dag_network *dn)
+{
+    if(!valid) {
+        nodeip = v6;
+        mDN    = dn;
+            
+        if(1 /* mDN->iface->verbose_test()*/) {
+            char src_addrbuf[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, &v6, src_addrbuf, INET6_ADDRSTRLEN);
+
+            fprintf(stderr /* this->verbose_file*/, "  new RPL node: %s \n",
+                    src_addrbuf);
+        }
+        valid  = true;
+    }
+}
+
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+
+
+        
+
 
 

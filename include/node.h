@@ -11,6 +11,7 @@ extern "C" {
 
 #include <map>
 
+class dag_network;
 class rpl_less;
 class rpl_node {
         friend class rpl_less;
@@ -29,7 +30,8 @@ public:
         };
         const char *node_name() { return name; };
         const struct in6_addr& node_number() { return nodeip; };
-
+        void  makevalid(const struct in6_addr v6, const dag_network *dn);
+        
 protected:
         struct in6_addr nodeip;
 
@@ -37,6 +39,7 @@ private:
         bool       valid;
         time_t     lastseen;
         char       name[16];
+        const dag_network *mDN;          /* should be shared_ptr */
 };
 
 class rpl_less {
