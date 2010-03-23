@@ -41,9 +41,9 @@ private:
 
 class rpl_less {
 public:
-        bool operator()(const struct in6_addr &x, const struct in6_addr &y) const {
-                return memcmp(x.s6_addr, y.s6_addr, 16) < 0;
-        }
+    bool operator()(const struct in6_addr &x, const struct in6_addr &y) const {
+        return memcmp(x.s6_addr, y.s6_addr, 16) < 0;
+    }
 };
 
 typedef std::map<struct in6_addr, rpl_node, rpl_less>           node_map;
