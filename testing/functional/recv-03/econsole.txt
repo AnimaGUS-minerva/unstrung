@@ -1,0 +1,10 @@
+E:~# sleep 2
+E:~# ip -6 addr ls
+5: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+    inet6 fe80::1000:ff:fe66:6601/64 scope link 
+       valid_lft forever preferred_lft forever
+6: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+    inet6 fe80::1000:ff:fe66:6602/64 scope link 
+       valid_lft forever preferred_lft forever
+E:~# /sbin/sunshine -i eth0 -i eth1
+
