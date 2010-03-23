@@ -1,3 +1,7 @@
+#ifndef _UNSTRUNG_DAG_H_
+#define _UNSTRUNG_DAG_H_
+
+#include "node.h"
 
 typedef u_int8_t dagid_t[DAGID_LEN];
 
@@ -58,6 +62,12 @@ public:
         void potentially_lower_rank(rpl_node peer,
                                     const struct nd_rpl_dio *dio, int dio_len);
 
+        int  member_count() { return dag_members.size(); };
+        bool contains_member(const struct in6_addr member) {
+            return(get_member(member) != NULL);
+        };
+        rpl_node *get_member(const struct in6_addr member);
+        
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
                 
@@ -71,9 +81,14 @@ private:
 
         static const char *packet_stat_names[PS_MAX+1];
 
+        node_map           dag_members;
+
+        // XXX replace with dag_network_map!!!
         class dag_network *next;
         static class dag_network *all_dag;
 };
+
+#endif /* _UNSTRUNG_DAG_H */
 
 /*
  * Local Variables:

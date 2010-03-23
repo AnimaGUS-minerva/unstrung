@@ -143,9 +143,14 @@ bool dag_network::check_security(const struct nd_rpl_dio *dio, int dio_len)
     return true;
 }
 
-void dag_network::potentially_lower_rank(const struct nd_rpl_dio *dio,
+void dag_network::potentially_lower_rank(rpl_node peer,
+                                         const struct nd_rpl_dio *dio,
                                          int dio_len)
 {
+    if(VERBOSE(this))
+        fprintf(this->verbose_file, "  DIO has better rank %u < %u\n",
+                dio->rpl_dagrank, mDagRank);
+
     this->mStats[PS_LOWER_RANK_CONSIDERED]++;
 }
 
@@ -172,15 +177,29 @@ void dag_network::receive_dio(struct in6_addr from,
     /* validate this packet */
     this->check_security(dio, dio_len);
 
+    /* find the node entry from this source IP, and update seen time */
+    /* this will create the node if it does not already exist! */
+    rpl_node peer  = this->dag_members[from];
+    peer.set_last_seen(now);
+
     this->seq_update(dio->rpl_seq);
 
     if(dio->rpl_dagrank < mDagRank) {
-        this->potentially_lower_rank(dio, dio_len);
+        this->potentially_lower_rank(peer, dio, dio_len);
     }
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;
 }
+
+rpl_node *dag_network::get_member(const struct in6_addr memberaddr)
+{
+    node_map_iterator ni = dag_members.find(memberaddr);
+
+    if(ni == dag_members.end()) return NULL;
+    else return &ni->second;
+}
+
 
 
 
