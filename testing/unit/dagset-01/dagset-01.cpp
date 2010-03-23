@@ -140,7 +140,7 @@ static void t5(void)
     assert(ns.size() == 3);
 
     /* now look for them again */
-    node_map_iterator ni = ns.find(n1.node_number());
+    node_map_iterator ni = ns.find(a1);
     rpl_node   *rn =  &ni->second;
     const char *nn =  rn->node_name();
 
