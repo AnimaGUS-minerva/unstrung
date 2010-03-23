@@ -32,7 +32,9 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 
-void network_interface::receive_dio(const u_char *dat, const int dio_len)
+void network_interface::receive_dio(struct in6_addr from,
+                                    time_t now,
+                                    const u_char *dat, const int dio_len)
 {
     if(VERBOSE(this)) {
         fprintf(this->verbose_file, " processing dio(%u)\n",dio_len);
@@ -62,7 +64,7 @@ void network_interface::receive_dio(const u_char *dat, const int dio_len)
     class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid);
 
     /* and process it */
-    dn->receive_dio(dio, dio_len);
+    dn->receive_dio(from, now, dio, dio_len);
 }
 
 void network_interface::receive_dao(const u_char *dao, const int dao_len)

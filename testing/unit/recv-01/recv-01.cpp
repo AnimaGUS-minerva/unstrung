@@ -24,7 +24,8 @@ public:
 	unsigned int packet_num(void) { return packet_count; };
 
 protected:
-        void filter_and_receive_icmp6(const u_char *bytes, int len);
+        void filter_and_receive_icmp6(const time_t now,
+                                      const u_char *bytes, int len);
 
 private:
 
@@ -103,10 +104,11 @@ void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
 	bytes += 14;
 	len   -= 14;
 
-        this->filter_and_receive_icmp6(bytes, len);
+        this->filter_and_receive_icmp6(h->ts.tv_sec, bytes, len);
 }
 
-void pcap_network_interface::filter_and_receive_icmp6(const u_char *bytes,
+void pcap_network_interface::filter_and_receive_icmp6(time_t now,
+                                                      const u_char *bytes,
                                                       int len)
 {
 	struct ip6_hdr *ip6 = (struct ip6_hdr *)bytes;
@@ -131,7 +133,7 @@ void pcap_network_interface::filter_and_receive_icmp6(const u_char *bytes,
 		return;
 	}
 
-	this->receive_packet(ip6->ip6_src, ip6->ip6_dst, bytes, len);
+	this->receive_packet(ip6->ip6_src, ip6->ip6_dst, now, bytes, len);
 }
 
 
@@ -207,7 +209,7 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
 		return;
 	}
 
-        this->filter_and_receive_icmp6(bytes, len);
+        this->filter_and_receive_icmp6(h->ts.tv_sec, bytes, len);
 }
 
 int process_infile(char *infile, char *outfile)

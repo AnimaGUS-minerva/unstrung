@@ -42,10 +42,13 @@ public:
 
 	virtual void receive_packet(struct in6_addr ip6_src,
 				    struct in6_addr ip6_dst,
+                                    time_t          now,
 				    const u_char *bytes, const int len);
 
         void receive_dao(const u_char *dao_bytes, const int dao_len);
-        void receive_dio(const u_char *dio_bytes, const int dio_len);
+        void receive_dio(struct in6_addr from,
+                         time_t          now,
+                         const u_char *dio_bytes, const int dio_len);
 
         void send_dio(void);
         void send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len);
@@ -118,7 +121,7 @@ private:
         unsigned int            control_msg_hdrlen;
 
         /* read from our network socket and process result */
-        void receive(void);
+        void receive(time_t now);
 
         /* private helper functions */
         void setup_allrouters_membership(void);

@@ -154,7 +154,9 @@ void dag_network::potentially_lower_rank(const struct nd_rpl_dio *dio,
  * Process an incoming DIO. 
  *
  */
-void dag_network::receive_dio(const struct nd_rpl_dio *dio, int dio_len)
+void dag_network::receive_dio(struct in6_addr from,
+                              time_t          now,
+                              const struct nd_rpl_dio *dio, int dio_len)
 {
     /* it has already been checked to be at least sizeof(*dio) */
     int dio_payload_len = dio_len - sizeof(*dio);

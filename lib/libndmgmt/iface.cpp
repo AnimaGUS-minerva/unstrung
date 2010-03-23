@@ -31,6 +31,7 @@ extern "C" {
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
+#include <time.h>
 #include "rpl.h"
 
 #ifndef IPV6_ADDR_LINKLOCAL
@@ -302,6 +303,7 @@ int network_interface::get_if_index(void)
 
 void network_interface::receive_packet(struct in6_addr ip6_src,
 				       struct in6_addr ip6_dst,
+                                       time_t          now,
 				       const u_char *bytes, const int len)
 {
     const struct nd_opt_hdr *nd_options;
@@ -325,7 +327,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     case ND_RPL_MESSAGE:
         switch(icmp6->icmp6_code) {
         case ND_RPL_DAG_IO:
-            this->receive_dio(icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
+            this->receive_dio(ip6_src, now,
+                              icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
             break;
 
         default:
@@ -481,7 +484,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	    if(VERBOSE(this)) fprintf(this->verbose_file, " rpl_dio \n");
             {
                 const u_char *nd_dio = (u_char *)nd_options;
-                this->receive_dio(nd_dio+2, optlen-2);
+                this->receive_dio(ip6_src, now, nd_dio+2, optlen-2);
             }
 	    break;
 
@@ -513,7 +516,7 @@ int network_interface::packet_too_short(const char *thing,
     return 0;
 }
 
-void network_interface::receive(void)
+void network_interface::receive(time_t now)
 {
     unsigned char b[2048];
     struct sockaddr_in6 src_sock;
@@ -602,7 +605,7 @@ void network_interface::receive(void)
                     src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex);
         }
 
-        this->receive_packet(src, dst, b, len);
+        this->receive_packet(src, dst, now, b, len);
     }
     
 }
@@ -654,9 +657,11 @@ void network_interface::main_loop(FILE *verbose)
                 if(verbose) fprintf(verbose, "checking source %u -> %s\n",
                                     i,
                                     poll_if[i].revents & POLLIN ? "ready" : "no-data");
+                time_t now;
+                time(&now);
                                     
                 if(poll_if[i].revents & POLLIN) {
-                    all_if[i]->receive();
+                    all_if[i]->receive(now);
                     n--;
                 }
             }
