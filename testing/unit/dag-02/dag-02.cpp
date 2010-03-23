@@ -114,6 +114,34 @@ static void t3(void)
         dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
         assert(dn->mStats[PS_LOWER_RANK_CONSIDERED] == lower_rank_count+1);
 }
+
+/*
+ * in this test case, the system should create a new node in the dag_member.
+ * 
+ */
+static void t4(void)
+{
+        struct nd_rpl_dio d1;
+
+        struct in6_addr a1;
+        inet_pton(AF_INET6, "2001:db8::abcd:0001", &a1);
+
+        /* make sure dag rank starts as infinite */
+        assert(dn->dag_rank_infinite());
+
+        memset(&d1, 0, sizeof(d1));
+
+        d1.rpl_seq = 2;
+        d1.rpl_dagid[0]='T';
+        d1.rpl_dagid[0]='1';
+        d1.rpl_instanceid = 1;
+        d1.rpl_dagrank = 1;
+
+        dn->receive_dio(a1, now, &d1, sizeof(d1));
+
+        assert(dn->member_count() == 1);
+        assert(dn->contains_member(a1));
+}
         
 
 int main(int argc, char *argv[])
@@ -138,6 +166,12 @@ int main(int argc, char *argv[])
 
         dn = new dag_network(d);
         printf("dag-02 t3\n");        t3();
+        delete dn;
+
+        dn = new dag_network(d);
+        printf("dag-02 t4\n");        t4();
+        delete dn;
+
 	exit(0);
 }
 
