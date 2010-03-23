@@ -102,3 +102,10 @@ void hexdump(const unsigned char *base, unsigned int offset, int len)
 	}
 }
 
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

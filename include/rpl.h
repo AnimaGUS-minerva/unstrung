@@ -50,3 +50,11 @@ struct rpl_dio_destprefix {
 
 #define _RPL_H_
 #endif /* _RPL_H_ */
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

@@ -152,3 +152,11 @@ private:
 #define ND_OPT_RPL_PRIVATE_DIO 201
 
 #endif /* _UNSTRUNG_IFACE_H_ */
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

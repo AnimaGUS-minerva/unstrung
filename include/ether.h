@@ -53,3 +53,11 @@ struct	ether_header {
  * answer.
  */
 #define ETHER_HDRLEN		14
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

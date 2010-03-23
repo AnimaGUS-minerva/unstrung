@@ -71,3 +71,11 @@ private:
         class dag_network *next;
         static class dag_network *all_dag;
 };
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

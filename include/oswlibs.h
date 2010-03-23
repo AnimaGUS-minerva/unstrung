@@ -100,3 +100,11 @@ extern int isloopbackaddr(const ip_address *src);
 
 #define _OSWLIBS_H_ 
 #endif /* _OSWLIBS_H_ */
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+

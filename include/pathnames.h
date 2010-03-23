@@ -46,3 +46,11 @@
 #endif
 
 #endif
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+
