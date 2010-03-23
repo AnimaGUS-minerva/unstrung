@@ -15,8 +15,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <getopt.h>
 #include <sysexits.h>
+#include <sys/types.h>
+#include <signal.h>
 
 #include "iface.h"
 
@@ -25,6 +28,8 @@ static struct option const longopts[] =
 {
     { "help",      0, 0, '?'}, 
     { "interface", 0, 0, 'i'}, 
+    { "daemon",    0, 0, 'D'}, 
+    { "kill",      0, 0, 'K'}, 
     { "verbose",   0, 0, 'v'}, 
     { name: 0 }, 
 };
@@ -35,14 +40,44 @@ void usage()
     exit(EX_USAGE);
 }
 
+const char *pidfilename="/var/run/sunshine.pid";
+void killanydaemon(void)
+{
+    int pid;
+
+    FILE *pidfile = fopen(pidfilename, "r");
+    if(!pidfile) {
+        fprintf(stderr, "could not found any running daemon\n");
+        exit(1);
+    }
+
+    if(fscanf(pidfile, "%u", &pid) != 1) {
+        fprintf(stderr, "could not decipher pid file contents\n");
+        exit(2);
+    }
+    fclose(pidfile);
+
+    printf("Killing process %u\n", pid);
+
+    if(kill(pid, SIGTERM) != 0) {
+        perror("kill");
+        exit(3);
+    }
+   
+    unlink(pidfilename);
+
+    exit(0);
+}
+
 int main(int argc, char *argv[])
 {
     int c;
     char *ifname = NULL;
     int verbose = 0;
+    bool bedaemon = false;
 
     progname = argv[0];
-    while((c = getopt_long(argc, argv, "i:h?v", longopts, 0)) != EOF) {
+    while((c = getopt_long(argc, argv, "KDi:h?v", longopts, 0)) != EOF) {
 	switch(c) {
 	default:
 	    fprintf(stderr, "Unknown option: %s\n", argv[optind-1]);
@@ -51,6 +86,14 @@ int main(int argc, char *argv[])
 	case '?':
 	    usage();
 	    /* NORETURN */
+
+        case 'D':
+            bedaemon = true;
+            break;
+
+        case 'K':
+            killanydaemon();
+            exit(0);
 
         case 'v':
             verbose++;
@@ -66,6 +109,20 @@ int main(int argc, char *argv[])
     network_interface *sc = new network_interface((const char *)ifname);
     sc->setup();
     sc->set_verbose(verbose, stderr);
+
+    /* should check for already running instance before stomping PID file */
+
+    if(bedaemon) {
+        if(daemon(0, 0)!=0) {
+            perror("daemon");
+            exit(5);
+        }
+    }
+
+    FILE *pidfile = fopen(pidfilename, "w");
+    if(pidfile) {
+        fprintf(pidfile, "%u", getpid());
+    }
 
     network_interface::main_loop(stderr);
 
