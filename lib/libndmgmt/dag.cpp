@@ -179,7 +179,8 @@ void dag_network::receive_dio(struct in6_addr from,
 
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
-    rpl_node peer  = this->dag_members[from];
+    rpl_node &peer = this->dag_members[from];
+    peer.makevalid(from, this);
     peer.set_last_seen(now);
 
     this->seq_update(dio->rpl_seq);
