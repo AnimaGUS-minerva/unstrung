@@ -365,5 +365,47 @@
        style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 723.26922,161.93893 L 722.25907,285.17754"
        id="path4934" />
+    <text
+       xml:space="preserve"
+       style="font-size:14.45935249px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="277.5593"
+       y="365.99658"
+       id="text2440"><tspan
+         sodipodi:role="line"
+         id="tspan2442"
+         x="277.5593"
+         y="365.99658">eth0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15.43409348px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="69.578697"
+       y="354.30313"
+       id="text2444"
+       transform="scale(1.0616496,0.9419304)"><tspan
+         sodipodi:role="line"
+         id="tspan2446"
+         x="69.578697"
+         y="354.30313">eth1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15.43409348px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="176.30797"
+       y="314.72098"
+       id="text2448"
+       transform="scale(1.0616496,0.9419304)"><tspan
+         sodipodi:role="line"
+         id="tspan2450"
+         x="176.30797"
+         y="314.72098">eth1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14.45935249px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="38.955563"
+       y="358.0329"
+       id="text2452"><tspan
+         sodipodi:role="line"
+         id="tspan2454"
+         x="38.955563"
+         y="358.0329">eth0</tspan></text>
   </g>
 </svg>
