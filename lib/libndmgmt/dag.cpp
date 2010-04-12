@@ -160,7 +160,7 @@ void dag_network::potentially_lower_rank(rpl_node peer,
  *
  */
 void dag_network::receive_dio(struct in6_addr from,
-                              time_t          now,
+                              const time_t    now,
                               const struct nd_rpl_dio *dio, int dio_len)
 {
     /* it has already been checked to be at least sizeof(*dio) */

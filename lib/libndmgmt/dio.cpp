@@ -33,7 +33,7 @@ extern "C" {
 #include "dag.h"
 
 void network_interface::receive_dio(struct in6_addr from,
-                                    time_t now,
+                                    const  time_t now,
                                     const u_char *dat, const int dio_len)
 {
     if(VERBOSE(this)) {

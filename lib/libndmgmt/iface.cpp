@@ -303,7 +303,7 @@ int network_interface::get_if_index(void)
 
 void network_interface::receive_packet(struct in6_addr ip6_src,
 				       struct in6_addr ip6_dst,
-                                       time_t          now,
+                                       const  time_t   now,
 				       const u_char *bytes, const int len)
 {
     const struct nd_opt_hdr *nd_options;
@@ -516,7 +516,7 @@ int network_interface::packet_too_short(const char *thing,
     return 0;
 }
 
-void network_interface::receive(time_t now)
+void network_interface::receive(const time_t now)
 {
     unsigned char b[2048];
     struct sockaddr_in6 src_sock;

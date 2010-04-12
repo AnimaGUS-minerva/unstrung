@@ -57,7 +57,7 @@ public:
         void remove_from_list(void);
 
         void receive_dio(struct in6_addr from,
-                         time_t          now,
+                         const time_t    now,
                          const struct nd_rpl_dio *dio, int dio_len);
         void potentially_lower_rank(rpl_node peer,
                                     const struct nd_rpl_dio *dio, int dio_len);
