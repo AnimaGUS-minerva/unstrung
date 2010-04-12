@@ -121,7 +121,8 @@ int main(int argc, char *argv[])
 
     FILE *pidfile = fopen(pidfilename, "w");
     if(pidfile) {
-        fprintf(pidfile, "%u", getpid());
+        fprintf(pidfile, "%u\n", getpid());
+        fclose(pidfile);
     }
 
     network_interface::main_loop(stderr);
