@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
     /* should check for already running instance before stomping PID file */
 
     if(bedaemon) {
-        if(daemon(0, 0)!=0) {
+        if(daemon(0, 1)!=0) {
             perror("daemon");
             exit(5);
         }
