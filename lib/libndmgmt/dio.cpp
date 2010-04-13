@@ -338,6 +338,7 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum,
 
         /* see if we found what we were looking for... ? */
         if(opt.rpl_dio_type == optnum) {
+            mOptions[opt.rpl_dio_type]=offset+skip_len;
             if(p_opt_len) *p_opt_len = skip_len;
             return (struct nd_rpl_genoption *)opt_bytes;
         }
