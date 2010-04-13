@@ -299,11 +299,14 @@ void rpl_dio::reset_options(void)
  * we update it to that location.
  */
 
-struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum)
+struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum,
+                                                int *p_opt_len)
 {
     u_int8_t*opt_bytes = (mBytes+sizeof(nd_rpl_dio));
     int opt_left_len = mLen-sizeof(struct nd_rpl_dio);
     int offset = 0;
+
+    if(p_opt_len) *p_opt_len = 0;
 
     /* if we have already scanned to end of options... */
     if(mOptions[optnum] == -1) return NULL;
@@ -335,6 +338,7 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum)
 
         /* see if we found what we were looking for... ? */
         if(opt.rpl_dio_type == optnum) {
+            if(p_opt_len) *p_opt_len = skip_len;
             return (struct nd_rpl_genoption *)opt_bytes;
         }
 
@@ -347,7 +351,16 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum)
 
 struct rpl_dio_destprefix *rpl_dio::destprefix(void)
 {
-    struct rpl_dio_destprefix *dp = (struct rpl_dio_destprefix *)search_subopt(RPL_DIO_DESTPREFIX);
+    int optlen = 0;
+    struct rpl_dio_destprefix *dp = (struct rpl_dio_destprefix *)search_subopt(RPL_DIO_DESTPREFIX, &optlen);
+
+    if(dp==NULL) return NULL;
+
+    int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8)-1;
+    if(prefixbytes < (optlen - sizeof(struct rpl_dio_destprefix))) {
+        return NULL;
+    }
+    
     return dp;
 }
 

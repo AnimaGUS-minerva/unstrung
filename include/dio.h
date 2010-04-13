@@ -16,7 +16,8 @@ class rpl_dio {
 public:
     rpl_dio(rpl_node &peer,
             const struct nd_rpl_dio *dio, int dio_len);
-    struct nd_rpl_genoption *search_subopt(enum RPL_DIO_SUBOPT optnum);
+    struct nd_rpl_genoption *search_subopt(enum RPL_DIO_SUBOPT optnum,
+                                           int *p_opt_len = NULL);
     struct rpl_dio_destprefix *destprefix(void);
     void   reset_options(void);
     
