@@ -98,6 +98,7 @@ extern int isanyaddr(const ip_address *src);
 extern int isunspecaddr(const ip_address *src);
 extern int isloopbackaddr(const ip_address *src);
 
+int isvalidsubnet(const ip_subnet *a);
 size_t addrtot(const ip_address *src, int format, char *buf, size_t buflen);
 #define	ADDRTOT_BUF	(32*2 + 3 + 1 + 3 + 1 + 1)
 
@@ -106,6 +107,10 @@ size_t subnettot(const ip_subnet *src, int format, char *buf, size_t buflen);
 
 size_t ultot(unsigned long src, int format, char *buf, size_t buflen);
 #define	ULTOT_BUF	(22+1)	/* holds 64 bits in octal */
+
+size_t subnetporttot(const ip_subnet *sub, 
+                     int format, char *dst,
+                     size_t dstlen);
 
 
 #define _OSWLIBS_H_ 
