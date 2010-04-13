@@ -22,6 +22,7 @@ extern "C" {
 
 rpl_node::rpl_node(const char *ipv6) {
         valid = false;
+        name[0]='\0';
 
         if(inet_pton(AF_INET6, ipv6, &nodeip) == 1) {
                 valid=true;
@@ -31,22 +32,31 @@ rpl_node::rpl_node(const char *ipv6) {
 rpl_node::rpl_node(const struct in6_addr v6) {
         nodeip = v6;
         valid = true;
+        name[0]='\0';
 }
+
+const char *rpl_node::node_name() {
+    if(valid) {
+        if(name[0]) return name;
+
+        inet_ntop(AF_INET6, &nodeip, name, INET6_ADDRSTRLEN);
+        return name;
+    } else {
+        return "<node-not-valid>";
+    }
+};
 
 void rpl_node::makevalid(const struct in6_addr v6, const dag_network *dn)
 {
     if(!valid) {
         nodeip = v6;
         mDN    = dn;
+        valid  = true;
             
         if(1 /* mDN->iface->verbose_test()*/) {
-            char src_addrbuf[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6, &v6, src_addrbuf, INET6_ADDRSTRLEN);
-
             fprintf(stderr /* this->verbose_file*/, "  new RPL node: %s \n",
-                    src_addrbuf);
+                    node_name());
         }
-        valid  = true;
     }
 }
 

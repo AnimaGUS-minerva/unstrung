@@ -16,7 +16,7 @@ class rpl_less;
 class rpl_node {
         friend class rpl_less;
 public:
-        rpl_node() { valid = false; };
+        rpl_node() { valid = false; name[0]='\0'; };
         rpl_node(const char *ipv6);
         rpl_node(const struct in6_addr v6);
         bool validP() { return valid; };
@@ -28,7 +28,7 @@ public:
             name[0]='\0';
             strncat(name, nodename, sizeof(name));
         };
-        const char *node_name() { return name; };
+        const char *node_name();
         const struct in6_addr& node_number() { return nodeip; };
         void  makevalid(const struct in6_addr v6, const dag_network *dn);
         
@@ -38,7 +38,7 @@ protected:
 private:
         bool       valid;
         time_t     lastseen;
-        char       name[16];
+        char       name[INET6_ADDRSTRLEN];
         const dag_network *mDN;          /* should be shared_ptr */
 };
 
