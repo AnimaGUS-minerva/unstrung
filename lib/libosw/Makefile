@@ -28,6 +28,7 @@ CFLAGS+=-Werror
 
 SRCS = ttosubnet.c ttoaddr.c addrtypeof.c subnettypeof.c 
 SRCS+= ttoul.c initsubnet.c portof.c initaddr.c anyaddr.c
+SRCS+= addrtot.c ultot.c subnettot.c
 CXXSRCS=
 
 #enable to get lots more debugging about semantics.
