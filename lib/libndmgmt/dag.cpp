@@ -17,6 +17,7 @@ extern "C" {
 
 #include "iface.h"
 #include "dag.h"
+#include "dio.h"
 
 class dag_network *dag_network::all_dag = NULL;
 
@@ -188,9 +189,7 @@ void dag_network::receive_dio(struct in6_addr from,
 
     this->seq_update(dio->rpl_seq);
 
-    if(dio->rpl_dagrank < mDagRank) {
-        this->potentially_lower_rank(peer, dio, dio_len);
-    }
+    this->potentially_lower_rank(peer, dio, dio_len);
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;

@@ -31,6 +31,7 @@ extern "C" {
 
 #include "iface.h"
 #include "dag.h"
+#include "dio.h"
 
 static void format_dagid(char *dagidstr, u_int8_t rpl_dagid[DAGID_LEN])
 {
