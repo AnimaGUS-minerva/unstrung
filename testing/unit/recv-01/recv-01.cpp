@@ -133,6 +133,7 @@ void pcap_network_interface::filter_and_receive_icmp6(time_t now,
 		return;
 	}
 
+        printf("packet %u is being processed\n", this->packet_num());
 	this->receive_packet(ip6->ip6_src, ip6->ip6_dst, now, bytes, len);
 }
 
