@@ -48,6 +48,7 @@ static void t1(void)
                     dio_data_len);
 
         assert(dio.search_subopt(RPL_DIO_DESTPREFIX) != NULL);
+        assert(dio.search_subopt(RPL_DIO_DESTPREFIX) == NULL);
 }
 
 static void t2(void)
@@ -69,9 +70,13 @@ static void t2(void)
         rpl_dio dio(n2, (struct nd_rpl_dio *)diodata,
                     dio_data_len);
 
+        assert(dio.search_subopt(RPL_DIO_DESTPREFIX) == NULL);
         assert(dio.search_subopt(RPL_DIO_METRICS)    != NULL);
         assert(dio.search_subopt(RPL_DIO_PAD0)       != NULL);
+        assert(dio.search_subopt(RPL_DIO_PAD0)       == NULL);
         assert(dio.search_subopt(RPL_DIO_PADN)       != NULL);
+        assert(dio.search_subopt(RPL_DIO_METRICS)    == NULL);
+        assert(dio.search_subopt(RPL_DIO_DESTPREFIX) == NULL);
 }
         
 
