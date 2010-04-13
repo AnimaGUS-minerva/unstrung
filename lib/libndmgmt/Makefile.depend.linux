@@ -4,18 +4,22 @@ dag.o: dag.cpp ../../include/pathnames.h \
   ../../include/iface.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
-  ../../include/dag.h
+  ../../include/dag.h \
+  ../../include/node.h
 dio.o: dio.cpp ../../include/pathnames.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
   ../../include/iface.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
-  ../../include/dag.h
+  ../../include/dag.h \
+  ../../include/node.h
 iface.o: iface.cpp ../../include/pathnames.h \
   ../../include/rpl.h \
   ../../include/iface.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h
 neighbour.o: neighbour.cpp
+node.o: node.cpp ../../include/node.h \
+  ../../include/pathnames.h
 peers.o: peers.cpp
