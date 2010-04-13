@@ -358,6 +358,7 @@ struct rpl_dio_destprefix *rpl_dio::destprefix(void)
 
     int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8)-1;
     if(prefixbytes < (optlen - sizeof(struct rpl_dio_destprefix))) {
+        //(*mStats)[PS_SUBOPTION_UNDERRUN]++;
         return NULL;
     }
     
