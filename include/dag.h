@@ -10,6 +10,7 @@ enum packet_stats {
         PS_PACKET_RECEIVED,
         PS_PACKET_PROCESSED,
         PS_LOWER_RANK_CONSIDERED,
+        PS_LOWER_RANK_REJECTED,
         PS_MAX,
 };
 
