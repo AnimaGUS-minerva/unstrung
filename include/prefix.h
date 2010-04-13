@@ -26,7 +26,7 @@ public:
         bool validP() { return valid; };
 
         const char *node_name();
-        const ip_subnet &prefix_number() { return prefix; };
+        const ip_subnet &prefix_number() { return mPrefix; };
         void configureip(void);
         void set_announcer(rpl_node *announcer) {
             announced_from = announcer;
@@ -34,10 +34,12 @@ public:
         void set_dn(dag_network *dn) {
             mDN = dn;
         };
+        void set_prefix(const struct in6_addr v6, const int prefixlen);
+        void set_prefix(ip_subnet prefix);
         
 protected:
-        ip_subnet prefix;
-        void verbose_log(const char *fmt, ...);
+        ip_subnet    mPrefix;
+        void         verbose_log(const char *fmt, ...);
 
 private:
         bool         valid;

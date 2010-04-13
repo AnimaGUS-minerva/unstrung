@@ -25,18 +25,25 @@ extern "C" {
 
 prefix_node::prefix_node(rpl_node *announcer, ip_subnet sub) {
         name[0]='\0';
-        prefix = sub;
+        mPrefix = sub;
         announced_from = announcer;
         valid = true;
 }
 
-prefix_node::prefix_node(const struct in6_addr v6, const int prefixlen) {
-    memset(&prefix, 0, sizeof(prefix));
-    prefix.addr.u.v6.sin6_family = AF_INET6;
-    prefix.addr.u.v6.sin6_flowinfo = 0;		/* unused */
-    prefix.addr.u.v6.sin6_port = 0;
-    memcpy((void *)&prefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
-    prefix.maskbits  = prefixlen;
+void prefix_node::set_prefix(const struct in6_addr v6, const int prefixlen) {
+    memset(&mPrefix, 0, sizeof(mPrefix));
+    mPrefix.addr.u.v6.sin6_family = AF_INET6;
+    mPrefix.addr.u.v6.sin6_flowinfo = 0;		/* unused */
+    mPrefix.addr.u.v6.sin6_port = 0;
+    memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
+    mPrefix.maskbits  = prefixlen;
+    name[0]='\0';
+    valid = true;
+}
+
+void prefix_node::set_prefix(ip_subnet prefix)
+{
+    mPrefix = prefix;
     name[0]='\0';
     valid = true;
 }
@@ -45,7 +52,7 @@ const char *prefix_node::node_name() {
     if(valid) {
         if(name[0]) return name;
 
-        subnettot(&prefix, 0, name, sizeof(name));
+        subnettot(&mPrefix, 0, name, sizeof(name));
         return name;
     } else {
         return "<prefix-not-valid>";

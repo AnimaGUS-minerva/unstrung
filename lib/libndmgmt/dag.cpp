@@ -154,6 +154,7 @@ void dag_network::addprefix(rpl_node peer,
     prefix_node &pre = this->dag_prefixes[prefix];
     pre.set_announcer(&peer);
     pre.set_dn(this);
+    pre.set_prefix(prefix);
     pre.configureip();
 }
 
