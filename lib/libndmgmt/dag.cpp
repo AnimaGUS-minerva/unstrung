@@ -147,15 +147,60 @@ bool dag_network::check_security(const struct nd_rpl_dio *dio, int dio_len)
     return true;
 }
 
+void dag_network::addprefix(rpl_node peer,
+                            rpl_dio  &dio,
+                            ip_subnet prefix)
+{
+    char subnetbuf[SUBNETTOT_BUF];
+
+    subnettot(&prefix, 'Q', subnetbuf, sizeof(subnetbuf));
+    
+    if(VERBOSE(this))
+        fprintf(this->verbose_file, "  peer '%s' announces prefix: %s\n",
+                peer.node_name(), subnetbuf);
+}
+                            
+
 void dag_network::potentially_lower_rank(rpl_node peer,
                                          const struct nd_rpl_dio *dio,
                                          int dio_len)
 {
     if(VERBOSE(this))
-        fprintf(this->verbose_file, "  DIO has better rank %u < %u\n",
-                dio->rpl_dagrank, mDagRank);
+        fprintf(this->verbose_file, "  does peer '%s' have better rank? (%u < %u)\n",
+                peer.node_name(), dio->rpl_dagrank, mDagRank);
 
     this->mStats[PS_LOWER_RANK_CONSIDERED]++;
+
+    if(dio->rpl_dagrank >= mDagRank) {
+        this->mStats[PS_LOWER_RANK_REJECTED]++;
+        return;
+    }
+
+    if(VERBOSE(this))
+        fprintf(this->verbose_file, "  Yes, '%s' has best rank %u\n",
+                peer.node_name(), dio->rpl_dagrank);
+
+
+    /* now see if we have already an address on this new network */
+    /*
+     * to do this, we have to crack open the DIO.  UP to this point
+     * we haven't taken the DIO apart, so do, keeping stuff on the stack.
+     */
+    rpl_dio decoded_dio(peer, dio, dio_len);
+
+    struct rpl_dio_destprefix *dp;
+    while((dp = decoded_dio.destprefix()) != NULL) {
+        int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8);
+        ip_subnet prefix;
+        prefix.maskbits = dp->rpl_dio_prefixlen;
+        unsigned char *addrbytes;
+        addrbytesptr_write(&prefix.addr, &addrbytes);
+        
+        /* copy the prefix into place */
+        memcpy(addrbytes, dp->rpl_dio_prefix, prefixbytes);
+
+        addprefix(peer, decoded_dio, prefix);
+    }
 }
 
 
