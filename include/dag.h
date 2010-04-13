@@ -11,8 +11,11 @@ enum packet_stats {
         PS_PACKET_PROCESSED,
         PS_LOWER_RANK_CONSIDERED,
         PS_LOWER_RANK_REJECTED,
+        PS_SUBOPTION_UNDERRUN,
         PS_MAX,
 };
+
+class rpl_dio;
 
 class dag_network {
 public:
@@ -62,6 +65,9 @@ public:
         void receive_dio(struct in6_addr from,
                          const time_t    now,
                          const struct nd_rpl_dio *dio, int dio_len);
+        void addprefix(rpl_node peer,
+                       rpl_dio  &dio,
+                       ip_subnet prefix);
         void potentially_lower_rank(rpl_node peer,
                                     const struct nd_rpl_dio *dio, int dio_len);
 
