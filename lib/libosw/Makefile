@@ -34,6 +34,7 @@ CXXSRCS=
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
 CXXFLAGS+=-g
+CFLAGS+=-g
 
 OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o} 
 
