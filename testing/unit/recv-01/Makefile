@@ -25,6 +25,8 @@ check::	recv-01
 	./recv-01 ../INPUTS/senddio.pcap | tee ../OUTPUTS/recv-02-output.raw | diff -B - recv-02-output.txt
 	@echo TEST03: SENDDIO-2 CREATED
 	./recv-01 ../INPUTS/senddio-2.pcap | tee ../OUTPUTS/recv-03-output.raw | diff -B - recv-03-output.txt
+	@echo TEST04: SENDDIO-example CREATED
+	./recv-01 ../INPUTS/senddio-example.pcap | tee ../OUTPUTS/recv-04-output.raw | diff -B - recv-04-output.txt
 
 clean::
 	@rm -rf recv-01 *.o
