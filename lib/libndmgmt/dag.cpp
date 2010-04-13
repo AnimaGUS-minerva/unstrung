@@ -151,14 +151,11 @@ void dag_network::addprefix(rpl_node peer,
                             rpl_dio  &dio,
                             ip_subnet prefix)
 {
-    char subnetbuf[SUBNETTOT_BUF];
-    subnettot(&prefix, 0, subnetbuf, sizeof(subnetbuf));
-    
-    if(VERBOSE(this))
-        fprintf(this->verbose_file, "  peer '%s' announces prefix: %s\n",
-                peer.node_name(), subnetbuf);
+    prefix_node &pre = this->dag_prefixes[prefix];
+    pre.set_announcer(&peer);
+    pre.set_dn(this);
+    pre.configureip();
 }
-                            
 
 void dag_network::potentially_lower_rank(rpl_node peer,
                                          const struct nd_rpl_dio *dio,

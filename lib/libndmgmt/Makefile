@@ -24,11 +24,11 @@ LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
 
 ONEFILE=iface.cpp
-CXXSRCS=iface.cpp dio.cpp dag.cpp node.cpp
+CXXSRCS=iface.cpp dio.cpp dag.cpp node.cpp prefix.cpp
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
-CXXFLAGS+=-g
+CXXFLAGS+=-g -O0
 
 OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o} 
 

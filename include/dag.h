@@ -1,7 +1,9 @@
 #ifndef _UNSTRUNG_DAG_H_
 #define _UNSTRUNG_DAG_H_
 
+#include "rpl.h"
 #include "node.h"
+#include "prefix.h"
 
 typedef u_int8_t dagid_t[DAGID_LEN];
 
@@ -68,6 +70,9 @@ public:
         void addprefix(rpl_node peer,
                        rpl_dio  &dio,
                        ip_subnet prefix);
+        unsigned int prefixcount(void) {
+            return dag_prefixes.size();
+        };
         void potentially_lower_rank(rpl_node peer,
                                     const struct nd_rpl_dio *dio, int dio_len);
 
@@ -91,6 +96,7 @@ private:
         static const char *packet_stat_names[PS_MAX+1];
 
         node_map           dag_members;
+        prefix_map         dag_prefixes;     /* usually only one */
 
         // XXX replace with dag_network_map!!!
         class dag_network *next;
