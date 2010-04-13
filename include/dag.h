@@ -18,7 +18,9 @@ public:
         dag_network(dagid_t dagid);
         ~dag_network();
         static class dag_network *find_by_dagid(dagid_t dagid);
-        static class dag_network *find_or_make_by_dagid(dagid_t dagid);
+        static class dag_network *find_or_make_by_dagid(dagid_t dagid,
+                                                        bool verbose_flag,
+                                                        FILE *verbose_file);
 
         int cmp_dag(dagid_t n_dagid) {
                 return memcmp(mDagid, n_dagid, DAGID_LEN);

@@ -52,12 +52,15 @@ void dag_network::remove_from_list(void)
 }
 
 
-class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid)
+class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
+                                                      bool verbose_flag,
+                                                      FILE *verbose_file)
 {
         class dag_network *dn = find_by_dagid(n_dagid);
         
         if(dn==NULL) {
                 dn = new dag_network(n_dagid);
+                dn->set_verbose(verbose_flag, verbose_file);
         }
         return dn;
 }

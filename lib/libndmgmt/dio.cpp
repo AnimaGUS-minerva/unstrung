@@ -73,7 +73,9 @@ void network_interface::receive_dio(struct in6_addr from,
            dagid);
     
     /* find the relevant DAG */
-    class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid);
+    class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid,
+                                                               verbose_flag,
+                                                               verbose_file);
 
     /* and process it */
     dn->receive_dio(from, now, dio, dio_len);
