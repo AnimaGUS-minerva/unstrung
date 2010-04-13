@@ -45,13 +45,13 @@ struct rpl_dio_genoption {
 #define RPL_DIO_LIFETIME_DISCONNECT 0
 
 struct rpl_dio_destprefix {
-        u_int8_t rpl_dio_type;
-        u_int8_t rpl_dio_lenh;  /* easier to have two bytes */
-        u_int8_t rpl_dio_lenl;  /* than to play with packing options */
-        u_int8_t rpl_dio_prf;
-        u_int32_t rpl_dio_prefixlifetime;  /* in seconds */
-        u_int8_t rpl_dio_prefixlen;        /* in bits */
-        u_int8_t rpl_dio_prefix[1];        /* variables number of bytes */
+    u_int8_t rpl_dio_type;
+    u_int8_t rpl_dio_lenh;             /* easier to have two bytes */
+    u_int8_t rpl_dio_lenl;             /* than to play with packing options */
+    u_int8_t rpl_dio_prf;              /* flags, including Route Preference */
+    u_int32_t rpl_dio_prefixlifetime;  /* in seconds */
+    u_int8_t rpl_dio_prefixlen;        /* in bits */
+    u_int8_t rpl_dio_prefix[1];        /* variables number of bytes */
 };
 
 
