@@ -152,8 +152,7 @@ void dag_network::addprefix(rpl_node peer,
                             ip_subnet prefix)
 {
     char subnetbuf[SUBNETTOT_BUF];
-
-    subnettot(&prefix, 'Q', subnetbuf, sizeof(subnetbuf));
+    subnettot(&prefix, 0, subnetbuf, sizeof(subnetbuf));
     
     if(VERBOSE(this))
         fprintf(this->verbose_file, "  peer '%s' announces prefix: %s\n",
@@ -190,14 +189,13 @@ void dag_network::potentially_lower_rank(rpl_node peer,
 
     struct rpl_dio_destprefix *dp;
     while((dp = decoded_dio.destprefix()) != NULL) {
+        unsigned char v6bytes[16];
         int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8);
         ip_subnet prefix;
         prefix.maskbits = dp->rpl_dio_prefixlen;
-        unsigned char *addrbytes;
-        addrbytesptr_write(&prefix.addr, &addrbytes);
-        
-        /* copy the prefix into place */
-        memcpy(addrbytes, dp->rpl_dio_prefix, prefixbytes);
+        memset(v6bytes, 0, 16);
+        memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes); 
+        initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
         addprefix(peer, decoded_dio, prefix);
     }
