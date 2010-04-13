@@ -5,7 +5,9 @@ dag.o: dag.cpp ../../include/pathnames.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
   ../../include/dag.h \
-  ../../include/node.h
+  ../../include/node.h \
+  ../../include/prefix.h \
+  ../../include/dio.h
 dio.o: dio.cpp ../../include/pathnames.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
@@ -13,7 +15,9 @@ dio.o: dio.cpp ../../include/pathnames.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
   ../../include/dag.h \
-  ../../include/node.h
+  ../../include/node.h \
+  ../../include/prefix.h \
+  ../../include/dio.h
 iface.o: iface.cpp ../../include/pathnames.h \
   ../../include/rpl.h \
   ../../include/iface.h \
@@ -23,3 +27,11 @@ neighbour.o: neighbour.cpp
 node.o: node.cpp ../../include/node.h \
   ../../include/pathnames.h
 peers.o: peers.cpp
+prefix.o: prefix.cpp ../../include/dag.h \
+  ../../include/rpl.h \
+  ../../include/node.h \
+  ../../include/pathnames.h \
+  ../../include/prefix.h \
+  ../../include/oswlibs.h \
+  ../../include/node.h \
+  ../../include/prefix.h
