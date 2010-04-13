@@ -102,6 +102,7 @@ int isvalidsubnet(const ip_subnet *a);
 size_t addrtot(const ip_address *src, int format, char *buf, size_t buflen);
 #define	ADDRTOT_BUF	(32*2 + 3 + 1 + 3 + 1 + 1)
 
+/* format: 0=default, 'Q'=a.b.c.d, 'r'=d.c.b.a, */
 size_t subnettot(const ip_subnet *src, int format, char *buf, size_t buflen);
 #define	SUBNETTOT_BUF	(ADDRTOT_BUF + 1 + 3)
 
