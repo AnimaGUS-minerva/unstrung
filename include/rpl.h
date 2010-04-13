@@ -34,6 +34,13 @@ enum RPL_DIO_SUBOPT {
         RPL_DIO_DESTPREFIX=3,
 };
 
+struct rpl_dio_genoption {
+    u_int8_t rpl_dio_type;
+    u_int8_t rpl_dio_lenh;    /* easier to have two bytes */
+    u_int8_t rpl_dio_lenl;    /* than to play with packing options */
+    u_int8_t rpl_dio_res;   
+};
+
 #define RPL_DIO_LIFETIME_INFINITE   0xffffffff
 #define RPL_DIO_LIFETIME_DISCONNECT 0
 
