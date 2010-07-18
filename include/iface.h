@@ -141,6 +141,10 @@ private:
         unsigned char           optbuff[256];
         unsigned int            optlen;
 
+        /* interface to netlink */
+        void                    find_eui64();
+        unsigned char           eui64[8];
+        prefix_map              ipv6_prefix_list;  /* always /128 networks */
 
 
         /* maintain list of all interfaces */

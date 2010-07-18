@@ -12,6 +12,7 @@ extern "C" {
 
 #include <map>
 
+class network_interface;
 class dag_network;
 class rpl_node;
 class prefix_less;

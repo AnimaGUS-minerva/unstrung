@@ -176,6 +176,7 @@ int get_addr_1(inet_prefix *addr, const char *name, int family)
 		return 0;
 	}
 
+#if 0
 	if (family == AF_DECnet) {
 		struct dn_naddr dna;
 		addr->family = AF_DECnet;
@@ -186,6 +187,7 @@ int get_addr_1(inet_prefix *addr, const char *name, int family)
 		addr->bitlen = -1;
 		return 0;
 	}
+#endif
 
 	addr->family = AF_INET;
 	if (family != AF_UNSPEC && family != AF_INET)
@@ -402,14 +404,20 @@ const char *rt_addr_n2a(int af, int len, const void *addr, char *buf, int buflen
 	case AF_INET:
 	case AF_INET6:
 		return inet_ntop(af, addr, buf, buflen);
+#if 0
 	case AF_IPX:
 		return ipx_ntop(af, addr, buf, buflen);
+#endif
+
+#if 0
 	case AF_DECnet:
 	{
 		struct dn_naddr dna = { 2, { 0, 0, }};
 		memcpy(dna.a_addr, addr, 2);
 		return dnet_ntop(af, &dna, buf, buflen);
 	}
+#endif
+
 	default:
 		return "???";
 	}
