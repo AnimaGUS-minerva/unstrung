@@ -16,7 +16,7 @@ findeui: findeui.cpp ${LIBNETLINK} ${LIBOSW}
 	${CXX} ${CXXFLAGS} -o findeui findeui.cpp ${LDFLAGS}
 
 check::	findeui
-	./findeui 
+	./findeui 2>&1 | diff - marajade.output.txt
 
 checkprograms:: findeui
 programs::

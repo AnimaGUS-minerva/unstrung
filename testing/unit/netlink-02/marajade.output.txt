@@ -1,0 +1,9 @@
+found[1]: lo type=loopback (inactive new)
+found[2]: eth0 type=ether (inactive new)
+   adding as new interface 00:0d:60:fa:7f:03/020d:60ff:fefa:7f03
+found[3]: irda0 type=irda (inactive new)
+found[4]: wlan0 type=ether (inactive new)
+   adding as new interface 00:05:4e:4a:55:da/0205:4eff:fe4a:55da
+found[6]: pan0 type=ether (inactive new)
+   adding as new interface 3e:61:6a:97:14:c3/3e61:6aff:fe97:14c3
+found[7]: teredo type=[65534] (inactive new)
