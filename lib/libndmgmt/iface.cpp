@@ -92,8 +92,51 @@ void network_interface::set_rpl_dagid(const char *dagstr)
     }
 }
 
+void network_interface::generate_eui64(void)
+{
+    if(eui64[0]!=0) return;
+
+    /*
+     * eui64 is upper 3 bytes of eui48, with bit 0x02 set to indicate
+     * that it is a "globabally" generated eui64
+     *
+     * then 0xfffe as bytes 4/5, and then lower 3 bytes of eui48 
+     *
+     * maybe NETLINK should provide us with the EUI64? 
+     */
+    eui64[0]=eui48[0] | 0x02;
+    eui64[1]=eui48[1];
+    eui64[2]=eui48[2];
+    eui64[3]=0xff;
+    eui64[4]=0xfe;
+    eui64[5]=eui48[5];
+    eui64[6]=eui48[6];
+    eui64[7]=eui48[7];
+}
+
+char *network_interface::eui64_str(char *str, int strlen)
+{
+    snprintf(str, strlen, "%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
+             eui64[0], eui64[1], eui64[2], eui64[3],
+             eui64[4], eui64[5], eui64[6], eui64[7]);
+    return str;
+}
+
+char *network_interface::eui48_str(char *str, int strlen)
+{
+    snprintf(str, strlen, "%02x:%02x:%02x:%02x:%02x:%02x",
+             eui48[0], eui48[1], eui48[2], eui48[3],
+             eui48[4], eui48[5]);
+    return str;
+}
+
+
 bool network_interface::setup()
 {
+    if(alive) return true;
+
+    generate_eui64();
+    
     if(alive && nd_socket != -1) return true;
 
     if(VERBOSE(this)) {
@@ -240,15 +283,57 @@ void network_interface::check_allrouters_membership(void)
 	return;
 }		
 
-
+/* XXX replace with STL list */
 class network_interface *network_interface::all_if = NULL;
 void network_interface::add_to_list(void)
 {
+    if(on_list) return;
+
     this->next = network_interface::all_if;
     network_interface::all_if = this;
+
+    on_list = true;
 }
 
+network_interface *network_interface::find_by_ifindex(int index)
+{
+    network_interface *ni = network_interface::all_if;
+    while(ni!=NULL && ni->if_index!=index) ni=ni->next;
+    return ni;
+}
+
+int network_interface::foreach_if(int (*func)(network_interface *, void *arg),
+                                   void *arg)
+{
+    int ret=-1;
+    network_interface *ni = network_interface::all_if;
+
+    while(ni!=NULL) {
+        network_interface *next = ni->next;
+        ret = (*func)(ni, arg);
+
+        if(ret==0) return ret;
+        ni=next;
+    }
+    return ret;
+}
+
+static int remove_mark(network_interface *ni, void *arg)
+{
+    ni->mark = false;
+    return 1;
+}
+
+void network_interface::remove_marks(void)
+{
+    foreach_if(remove_mark, NULL);
+}
+
+
+
+
 /* this searches through /proc to get right ifindex */
+/* probably do not need this anymore, now that we use netlink */
 int network_interface::get_if_index(void)
 {
     if(this->if_index > 0) {

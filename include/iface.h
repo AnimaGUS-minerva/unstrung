@@ -23,6 +23,8 @@ enum network_interface_exceptions {
 class network_interface {
 
 public:
+    bool mark;
+
 	int announce_network();
 	network_interface();
 	network_interface(int fd);
@@ -77,15 +79,20 @@ public:
         };
         bool addprefix(prefix_node &prefix);
 
+        /* eui string functions */
+        char *eui48_str(char *str, int strlen);
+        char *eui64_str(char *str, int strlen);
         
         static void scan_devices(void);
         static void main_loop(FILE *verbose);
+        static network_interface *find_by_ifindex(int ifindex);
+        static int foreach_if(int (*func)(network_interface*, void*), void*arg);
+        static void remove_marks(void);
 
 private:
 	int packet_too_short(const char *thing, const int avail, const int needed);
 	int                     nd_socket;
 	int                     error_cnt;
-        bool                    alive;
 
         int                     get_if_index(void);
         int                     if_index;      /* cached value for above */
@@ -96,7 +103,12 @@ private:
 
 	uint8_t			if_hwaddr[HWADDR_MAX];
 	int			if_hwaddr_len;
+
 	int			if_maxmtu;
+
+        /* list states */
+        bool                    on_list;
+        bool                    alive;
 
         /* RiPpLe statistics */
         int                     rpl_grounded;
@@ -147,7 +159,8 @@ private:
         unsigned int            optlen;
 
         /* interface to netlink */
-        void                    find_eui64();
+        void                    generate_eui64();
+        unsigned char           eui48[6];
         unsigned char           eui64[8];
         prefix_map              ipv6_prefix_list;  /* always /128 networks */
 

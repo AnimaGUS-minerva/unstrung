@@ -28,10 +28,13 @@ extern "C" {
 #include <poll.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
+#include <net/if_arp.h>         /* for ARPHRD_ETHER */
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
 #include <time.h>
+
+
 
 #include <netlink/rt_names.h>
 #include <netlink/utils.h>
@@ -70,6 +73,7 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     struct rtattr * tb[IFLA_MAX+1];
     int len = n->nlmsg_len;
     unsigned m_flag = 0;
+    SPRINT_BUF(b1);
 
     if (n->nlmsg_type != RTM_NEWLINK && n->nlmsg_type != RTM_DELLINK)
         return 0;
@@ -83,63 +87,53 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
         fprintf(stderr, "BUG: nil ifname\n");
         return -1;
     }
-    
-    fprintf(fp, "%d: %s", ifi->ifi_index,
-            tb[IFLA_IFNAME] ? (char*)RTA_DATA(tb[IFLA_IFNAME]) : "<nil>");
 
-    if (tb[IFLA_LINK]) {
-        SPRINT_BUF(b1);
-        int iflink = *(int*)RTA_DATA(tb[IFLA_LINK]);
-        if (iflink == 0)
-            fprintf(fp, "@NONE: ");
-        else {
-            fprintf(fp, "@%s: ", ll_idx_n2a(iflink, b1));
-            m_flag = ll_index_to_flags(iflink);
-            m_flag = !(m_flag & IFF_UP);
-        }
-    } else {
-        fprintf(fp, ": ");
+    network_interface *ni = find_by_ifindex(ifi->ifi_index);
+    if(ni == NULL) {
+        ni = new network_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]));
+        ni->add_to_list();
     }
-    //print_link_flags(fp, ifi->ifi_flags, m_flag);
 
-    if (tb[IFLA_MTU])
-        fprintf(fp, "mtu %u ", *(int*)RTA_DATA(tb[IFLA_MTU]));
-    
-    if (tb[IFLA_QDISC])
-        fprintf(fp, "qdisc %s ", (char*)RTA_DATA(tb[IFLA_QDISC]));
-#ifdef IFLA_MASTER
-	if (tb[IFLA_MASTER]) {
-            SPRINT_BUF(b1);
-            fprintf(fp, "master %s ", ll_idx_n2a(*(int*)RTA_DATA(tb[IFLA_MASTER]), b1));
-	}
-#endif
-	
-            SPRINT_BUF(b1);
-            fprintf(fp, "    link/%s ", ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
+    /* XXX need to use logging interface */
+    fprintf(stderr, "found[%d]: %s type=%s (%s %s)\n",
+            ni->if_index, ni->if_name,
+            ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),            
+            ni->alive   ? "alive" : "inactive",
+            ni->on_list ? "existing" :"new");
+
+    const unsigned char *addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
+    const unsigned int addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
+
+    switch(ifi->ifi_type) {
+    case ARPHRD_ETHER:
+        if(memcpy(ni->eui48, addr, addrlen)==0) {
+            /* no change, go on to next interface */
+            return 0;
+        }
+        break;
+
+    default:
+        return 0;
+    }
+
+    if (tb[IFLA_MTU]) {
+        ni->if_maxmtu =  *(int*)RTA_DATA(tb[IFLA_MTU]);
+    }
+
+    /* must be a new mac address */
+    memcpy(ni->eui48, addr, addrlen);
+
+    /* now build eui64 from eui48 */
+    ni->generate_eui64();
+
+    SPRINT_BUF(b2);
+    fprintf(stderr, "   adding as new interface %s/%s\n",
+            ni->eui48_str(b1,sizeof(b1)),
+            ni->eui64_str(b2,sizeof(b2)));
             
-            if (tb[IFLA_ADDRESS]) {
-                fprintf(fp, "%s", (unsigned char *)
-                        ll_addr_n2a((unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]),
-                                    RTA_PAYLOAD(tb[IFLA_ADDRESS]),
-                                    ifi->ifi_type,
-                                    b1, sizeof(b1)));
-            }
-            if (tb[IFLA_BROADCAST]) {
-                if (ifi->ifi_flags&IFF_POINTOPOINT)
-                    fprintf(fp, " peer ");
-                else
-                    fprintf(fp, " brd ");
-                fprintf(fp, "%s",
-                        ll_addr_n2a((unsigned char *)RTA_DATA(tb[IFLA_BROADCAST]),
-                                    RTA_PAYLOAD(tb[IFLA_BROADCAST]),
-                                    ifi->ifi_type,
-                                    b1, sizeof(b1)));
-            }
-        
-	fprintf(fp, "\n");
-	fflush(fp);
-	return 0;
+    return 0;
 }
+
 
 bool network_interface::open_netlink()
 {
@@ -170,6 +164,8 @@ void network_interface::scan_devices(void)
 
         if(!open_netlink()) return;
 
+        remove_marks();
+
 	if (rtnl_wilddump_request(netlink_handle, AF_PACKET, RTM_GETLINK) < 0) {
 		perror("Cannot send dump request");
 		exit(1);
@@ -180,6 +176,9 @@ void network_interface::scan_devices(void)
 		fprintf(stderr, "Dump terminated\n");
 		exit(1);
 	}
+
+        /* now look for interfaces with no mark, as they may be removed */
+        
 }
 
 
