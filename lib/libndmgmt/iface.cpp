@@ -109,9 +109,9 @@ void network_interface::generate_eui64(void)
     eui64[2]=eui48[2];
     eui64[3]=0xff;
     eui64[4]=0xfe;
-    eui64[5]=eui48[5];
-    eui64[6]=eui48[6];
-    eui64[7]=eui48[7];
+    eui64[5]=eui48[3];
+    eui64[6]=eui48[4];
+    eui64[7]=eui48[5];
 }
 
 char *network_interface::eui64_str(char *str, int strlen)
