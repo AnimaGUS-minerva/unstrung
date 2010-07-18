@@ -116,7 +116,7 @@ void network_interface::generate_eui64(void)
 
 char *network_interface::eui64_str(char *str, int strlen)
 {
-    snprintf(str, strlen, "%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
+    snprintf(str, strlen, "%02x%02x:%02x%02x:%02x%02x:%02x%02x",
              eui64[0], eui64[1], eui64[2], eui64[3],
              eui64[4], eui64[5], eui64[6], eui64[7]);
     return str;

@@ -12,7 +12,7 @@ LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBOSW} ${LIBNETLINK}
 #LDFLAGS+=/sandel/lib/libpcap.a
 LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
 
-findeui: findeui.cpp 
+findeui: findeui.cpp ${LIBNETLINK} ${LIBOSW}
 	${CXX} ${CXXFLAGS} -o findeui findeui.cpp ${LDFLAGS}
 
 check::	findeui

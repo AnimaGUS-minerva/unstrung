@@ -91,7 +91,6 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     network_interface *ni = find_by_ifindex(ifi->ifi_index);
     if(ni == NULL) {
         ni = new network_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]));
-        ni->add_to_list();
     }
 
     /* XXX need to use logging interface */
@@ -101,11 +100,15 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
             ni->alive   ? "alive" : "inactive",
             ni->on_list ? "existing" :"new");
 
-    const unsigned char *addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
-    const unsigned int addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
+    ni->add_to_list();
+
+    const unsigned char *addr = NULL;
+    unsigned int addrlen = 0;
 
     switch(ifi->ifi_type) {
     case ARPHRD_ETHER:
+        addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
+        addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
         if(memcpy(ni->eui48, addr, addrlen)==0) {
             /* no change, go on to next interface */
             return 0;
