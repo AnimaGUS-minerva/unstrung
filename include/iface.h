@@ -14,6 +14,7 @@ extern "C" {
 }
 
 #define HWADDR_MAX 16
+#include "prefix.h"
 
 enum network_interface_exceptions {
         TOOSHORT = 1,
@@ -55,6 +56,7 @@ public:
         int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 
         void set_if_name(const char *ifname);
+        const char *get_if_name(void) { return if_name; };
         void set_rpl_dagid(const char *dagstr);
         void set_rpl_dagrank(const int dagrank) {
                 rpl_dagrank = dagrank;
@@ -73,8 +75,10 @@ public:
 		last_multicast_sec = tv.tv_sec;
 		last_multicast_usec = tv.tv_usec;
         };
+        bool addprefix(prefix_node &prefix);
 
         
+        static void scan_devices(void);
         static void main_loop(FILE *verbose);
 
 private:
@@ -117,6 +121,7 @@ private:
 #define VERBOSE(X) ((X)->verbose_test())
 
 
+
         unsigned char          *control_msg_hdr;
         unsigned int            control_msg_hdrlen;
 
@@ -150,9 +155,15 @@ private:
         /* maintain list of all interfaces */
         void add_to_list(void);
 
+        /* this is global to all the interfaces */
         class network_interface        *next;
         static class network_interface *all_if;
         static int                      if_count(void);
+
+        static struct rtnl_handle      *netlink_handle;
+        static bool                     open_netlink(void);
+        static int    gather_linkinfo(const struct sockaddr_nl *who,
+                                      struct nlmsghdr *n, void *arg);
 };
 
 #define ND_OPT_RPL_PRIVATE_DAO 200
