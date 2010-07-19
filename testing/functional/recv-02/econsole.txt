@@ -13,13 +13,9 @@ E:~# sleep 1
 tcpdump: WARNING: eth1: no IPv4 address assigned
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on eth1, link-type EN10MB (Ethernet), capture size 65535 bytes
-IP6 fe80::1000:ff:fe66:6602 > ff02::16: HBH ICMP6, multicast listener report v2, 1 group record(s), length 28
 E:~# echo true
 true
-E:~# IP6 fe80::1000:ff:fe64:6423 > ff02::2: ICMP6, router solicitation, length 16
 IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, RPL, DAG Information Object, length 40
-IP6 fe80::1000:ff:fe64:6423 > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
-IP6 fe80::1000:ff:fe64:6423 > ff02::2: ICMP6, router solicitation, length 16
 ^C
 
 E:~# kill %tcpdump

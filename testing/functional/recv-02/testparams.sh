@@ -15,6 +15,7 @@ REF_N1_OUTPUT=n1-output.txt
 REF_N1_FILTER="no-icmp-v6-mcast.sed"
 REF_E_CONSOLE_OUTPUT=econsole.txt
 REF_CONSOLE_FIXUPS="script-only.sed"
+REF_CONSOLE_FIXUPS="${REF_CONSOLE_FIXUPS} delete-router-solicitations.sed"
 E_RUN_SCRIPT=sunshine.sh
 E_FINAL_SCRIPT=sunfinal.sh
 
