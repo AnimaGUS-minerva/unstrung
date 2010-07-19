@@ -57,12 +57,16 @@ bool network_interface::addprefix(prefix_node &prefix)
             
     newipv6 = prefix.get_prefix();
     newipv6.maskbits = 128;
-    memcpy(&newipv6.addr.u.v6.sin6_addr.s6_addr[8],
-           eui64, 8);
+    memcpy(&newipv6.addr.u.v6.sin6_addr.s6_addr[8], eui64, 8);
+
+    char sbuf[SUBNETTOT_BUF];
+    subnettot(&newipv6, 0, sbuf, sizeof(sbuf));
     
     snprintf(buf, 1024,
-             "ip -6 addr add XX");
-    //system(buf);
+             "ip -6 addr add %s dev %s", sbuf, if_name);
+    fprintf(stderr, "invoking %s\n", buf);
+    system(buf);
+    system("ip -6 addr show");
 }
 
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 

@@ -64,16 +64,19 @@ public:
         };
         void remove_from_list(void);
 
-        void receive_dio(struct in6_addr from,
+        void receive_dio(network_interface *iface,
+                         struct in6_addr from,
                          const time_t    now,
                          const struct nd_rpl_dio *dio, int dio_len);
         void addprefix(rpl_node peer,
+                       network_interface *iface,
                        rpl_dio  &dio,
                        ip_subnet prefix);
         unsigned int prefixcount(void) {
             return dag_prefixes.size();
         };
         void potentially_lower_rank(rpl_node peer,
+                                    network_interface *iface,
                                     const struct nd_rpl_dio *dio, int dio_len);
 
         int  member_count() { return dag_members.size(); };

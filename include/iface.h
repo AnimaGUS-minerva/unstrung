@@ -86,6 +86,7 @@ public:
         static void scan_devices(void);
         static void main_loop(FILE *verbose);
         static network_interface *find_by_ifindex(int ifindex);
+        static network_interface *find_by_name(const char *name);
         static int foreach_if(int (*func)(network_interface*, void*), void*arg);
         static void remove_marks(void);
 

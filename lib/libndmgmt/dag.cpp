@@ -148,6 +148,7 @@ bool dag_network::check_security(const struct nd_rpl_dio *dio, int dio_len)
 }
 
 void dag_network::addprefix(rpl_node peer,
+                            network_interface *iface,
                             rpl_dio  &dio,
                             ip_subnet prefix)
 {
@@ -155,10 +156,11 @@ void dag_network::addprefix(rpl_node peer,
     pre.set_announcer(&peer);
     pre.set_dn(this);
     pre.set_prefix(prefix);
-    pre.configureip();
+    pre.configureip(iface);
 }
 
 void dag_network::potentially_lower_rank(rpl_node peer,
+                                         network_interface *iface,
                                          const struct nd_rpl_dio *dio,
                                          int dio_len)
 {
@@ -195,7 +197,7 @@ void dag_network::potentially_lower_rank(rpl_node peer,
         memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes); 
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
-        addprefix(peer, decoded_dio, prefix);
+        addprefix(peer, iface, decoded_dio, prefix);
     }
 }
 
@@ -204,7 +206,8 @@ void dag_network::potentially_lower_rank(rpl_node peer,
  * Process an incoming DIO. 
  *
  */
-void dag_network::receive_dio(struct in6_addr from,
+void dag_network::receive_dio(network_interface *iface,
+                              struct in6_addr from,
                               const time_t    now,
                               const struct nd_rpl_dio *dio, int dio_len)
 {
@@ -230,7 +233,7 @@ void dag_network::receive_dio(struct in6_addr from,
 
     this->seq_update(dio->rpl_seq);
 
-    this->potentially_lower_rank(peer, dio, dio_len);
+    this->potentially_lower_rank(peer, iface, dio, dio_len);
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;

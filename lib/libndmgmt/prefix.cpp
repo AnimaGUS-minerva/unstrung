@@ -22,15 +22,19 @@ extern "C" {
 #include "dag.h"
 #include "node.h"
 #include "prefix.h"
+#include "iface.h"
 
-prefix_node::prefix_node(rpl_node *announcer, ip_subnet sub) {
-        name[0]='\0';
-        mPrefix = sub;
-        announced_from = announcer;
-        valid = true;
+prefix_node::prefix_node(rpl_node *announcer, ip_subnet sub)
+{
+    name[0]='\0';
+    mPrefix = sub;
+    announced_from = announcer;
+    valid = true;
+    installed = false;
 }
 
-void prefix_node::set_prefix(const struct in6_addr v6, const int prefixlen) {
+void prefix_node::set_prefix(const struct in6_addr v6, const int prefixlen)
+{
     memset(&mPrefix, 0, sizeof(mPrefix));
     mPrefix.addr.u.v6.sin6_family = AF_INET6;
     mPrefix.addr.u.v6.sin6_flowinfo = 0;		/* unused */
@@ -39,6 +43,7 @@ void prefix_node::set_prefix(const struct in6_addr v6, const int prefixlen) {
     mPrefix.maskbits  = prefixlen;
     name[0]='\0';
     valid = true;
+    installed = false;
 }
 
 void prefix_node::set_prefix(ip_subnet prefix)
@@ -46,6 +51,7 @@ void prefix_node::set_prefix(ip_subnet prefix)
     mPrefix = prefix;
     name[0]='\0';
     valid = true;
+    installed = false;
 }
 
 const char *prefix_node::node_name() {
@@ -59,10 +65,16 @@ const char *prefix_node::node_name() {
     }
 };
 
-void prefix_node::configureip(void)
+void prefix_node::configureip(network_interface *iface)
 {
     this->verbose_log("  peer '%s' announces prefix: %s\n",
                       announced_from->node_name(), node_name());
+    if(!installed) {
+        this->verbose_log("  adding prefix: %s to iface: %s\n",
+                          node_name(),
+                          iface->get_if_name());
+        iface->addprefix(*this);
+    }
 }
 
 void prefix_node::verbose_log(const char *fmt, ...)

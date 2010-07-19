@@ -20,7 +20,8 @@ class prefix_node {
         friend class prefix_less;
 public:
         prefix_node() {
-            valid = false;
+            valid     = false;
+            installed = false;
         };
         prefix_node(rpl_node *announcer, ip_subnet sub);
         prefix_node(const struct in6_addr v6, const int prefixlen);
@@ -28,7 +29,7 @@ public:
 
         const char *node_name();
         const ip_subnet &prefix_number() { return mPrefix; };
-        void configureip(void);
+        void configureip(network_interface *iface);
         void set_announcer(rpl_node *announcer) {
             announced_from = announcer;
         };
@@ -37,6 +38,10 @@ public:
         };
         void set_prefix(const struct in6_addr v6, const int prefixlen);
         void set_prefix(ip_subnet prefix);
+
+        ip_subnet &get_prefix() {
+            return mPrefix;
+        };
         
 protected:
         ip_subnet    mPrefix;
@@ -44,6 +49,7 @@ protected:
 
 private:
         bool         valid;
+        bool         installed;
         rpl_node    *announced_from;       /* should be shared_ptr */
         char         name[SUBNETTOT_BUF];
         dag_network *mDN;          /* should be shared_ptr */

@@ -79,7 +79,7 @@ void network_interface::receive_dio(struct in6_addr from,
                                                                verbose_file);
 
     /* and process it */
-    dn->receive_dio(from, now, dio, dio_len);
+    dn->receive_dio(this, from, now, dio, dio_len);
 }
 
 void network_interface::receive_dao(const u_char *dao, const int dao_len)

@@ -302,6 +302,13 @@ network_interface *network_interface::find_by_ifindex(int index)
     return ni;
 }
 
+network_interface *network_interface::find_by_name(const char *name)
+{
+    network_interface *ni = network_interface::all_if;
+    while(ni!=NULL && strcasecmp(name, ni->if_name)!=0) ni=ni->next;
+    return ni;
+}
+
 int network_interface::foreach_if(int (*func)(network_interface *, void *arg),
                                    void *arg)
 {
