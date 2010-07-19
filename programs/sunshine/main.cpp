@@ -106,7 +106,9 @@ int main(int argc, char *argv[])
 
     if(!ifname) usage();
 
-    network_interface *sc = new network_interface((const char *)ifname);
+    network_interface::scan_devices();
+
+    network_interface *sc = network_interface::find_by_name(ifname);
     sc->setup();
     sc->set_verbose(verbose, stderr);
 

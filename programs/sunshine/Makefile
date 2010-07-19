@@ -17,7 +17,7 @@ srcdir?=${UNSTRUNG_SRCDIR}/programs/sunshine/
 
 PROGRAM=sunshine
 OBJS=main.o sendnd.o
-LIBS+=${LIBNDMGMT} ${LIBOSW}
+LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK}
 
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
 
