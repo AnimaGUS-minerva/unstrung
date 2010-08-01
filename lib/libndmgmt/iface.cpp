@@ -714,6 +714,8 @@ int network_interface::if_count(void)
     return count;
 }
 
+event_map network_interface::things_to_do;
+
 void network_interface::main_loop(FILE *verbose)
 {
     bool done = false;
