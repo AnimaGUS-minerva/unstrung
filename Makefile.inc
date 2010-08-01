@@ -19,6 +19,7 @@ INSTBINFLAGS=-D
 LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${UNSTRUNG_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
+LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
 
 NEEDCHECK?=check
 
