@@ -4,3 +4,5 @@ packet 1 is being processed
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (0 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 0
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
+  adding prefix: 2001:db8:1::/48 to iface: 
+  invoking ip -6 addr add 2001:db8:1::/128 dev 

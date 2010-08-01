@@ -64,9 +64,9 @@ bool network_interface::addprefix(prefix_node &prefix)
     
     snprintf(buf, 1024,
              "ip -6 addr add %s dev %s", sbuf, if_name);
-    fprintf(stderr, "invoking %s\n", buf);
-    system(buf);
-    system("ip -6 addr show");
+    if(VERBOSE(this)) fprintf(this->verbose_file, "  invoking %s\n", buf);
+    //system(buf);
+    //system("ip -6 addr show");
 }
 
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 
