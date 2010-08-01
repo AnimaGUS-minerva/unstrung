@@ -1,3 +1,6 @@
+#ifndef _UNSTRUNG_ETHER_H_
+#define _UNSTRUNG_ETHER_H_
+
 /* @(#) $Header: /tcpdump/master/tcpdump/ether.h,v 1.8 2002-12-11 07:13:51 guy Exp $ (LBL) */
 /*
  * Copyright (c) 1982, 1986, 1993
@@ -53,6 +56,8 @@ struct	ether_header {
  * answer.
  */
 #define ETHER_HDRLEN		14
+
+#endif /* _UNSTRUNG_ETHER_H_ */
 
 /*
  * Local Variables:

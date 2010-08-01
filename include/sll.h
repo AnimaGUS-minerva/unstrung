@@ -1,3 +1,6 @@
+#ifndef _UNSTRUNG_SLL_H_
+#define _UNSTRUNG_SLL_H_
+
 /*-
  * Copyright (c) 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997
  *	The Regents of the University of California.  All rights reserved.
@@ -121,6 +124,8 @@ struct sll_header {
  */
 #define LINUX_SLL_P_802_3	0x0001	/* Novell 802.3 frames without 802.2 LLC header */
 #define LINUX_SLL_P_802_2	0x0004	/* 802.2 frames (not D/I/X Ethernet) */
+
+#endif /* _UNSTRUNG_SLL_H_ */
 
 /*
  * Local Variables:
