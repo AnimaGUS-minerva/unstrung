@@ -24,8 +24,10 @@ public:
     rpl_event() { };
 
     rpl_event(unsigned int sec, unsigned int msec, const char *reason) {
-        interval.tv_sec  = sec;
-        interval.tv_usec = msec*1000;
+        struct timeval now;
+        gettimeofday(&now, NULL);
+        alarm_time.tv_sec  = now.tv_sec  + sec;
+        alarm_time.tv_usec = now.tv_usec + msec*1000;
         mReason[0]='\0';
         strncat(mReason, reason, sizeof(mReason));
     };
@@ -34,7 +36,14 @@ public:
         rpl_send_dio = 1,
     } event_type;
 
-    struct timeval      interval;
+    /* invoke this event */
+    void doit(void);
+    bool passed(struct timeval &now) {
+        return (alarm_time.tv_sec  <= now.tv_sec &&
+                alarm_time.tv_usec <= now.tv_usec);
+    };
+
+    struct timeval      alarm_time;
     struct timeval      last_time;
     network_interface  *interface;
     char mReason[16];

@@ -722,6 +722,16 @@ void network_interface::main_loop(FILE *verbose)
         struct pollfd            poll_if[network_interface::if_count()];
         class network_interface* all_if[network_interface::if_count()];
         int pollnum=0;
+
+        struct timeval now;
+        gettimeofday(&now, NULL);
+
+        event_map_iterator rei = things_to_do.begin();
+        if(rei != things_to_do.end()) {
+            rpl_event &re = rei->second;
+            if(re.passed(now)) re.doit();
+            things_to_do.erase(rei);
+        }
         
         /*
          * do not really need to build this every time, but, for

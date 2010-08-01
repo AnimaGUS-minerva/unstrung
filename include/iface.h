@@ -15,6 +15,7 @@ extern "C" {
 
 #define HWADDR_MAX 16
 #include "prefix.h"
+#include "event.h"
 
 enum network_interface_exceptions {
         TOOSHORT = 1,
@@ -69,6 +70,11 @@ public:
         void set_rpl_instanceid(const int instanceid) {
                 rpl_instanceid = instanceid;
         };
+        void set_rpl_prefix(const ip_subnet prefix) {
+            rpl_prefix = prefix;
+        };
+        void set_rpl_interval(const int msec);
+
         void update_multicast_time(void) {
 		struct timeval tv;
 
@@ -118,6 +124,8 @@ private:
         int                     rpl_dagrank;
         unsigned char           rpl_dagid[16];
         unsigned int            rpl_dio_lifetime;
+        ip_subnet               rpl_prefix;
+        unsigned int            rpl_interval_msec;
         
 
         /* timers */
@@ -178,6 +186,9 @@ private:
         static bool                     open_netlink(void);
         static int    gather_linkinfo(const struct sockaddr_nl *who,
                                       struct nlmsghdr *n, void *arg);
+
+        /* event lists */
+        static event_map              things_to_do;
 };
 
 #define ND_OPT_RPL_PRIVATE_DAO 200

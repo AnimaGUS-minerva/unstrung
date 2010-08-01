@@ -89,6 +89,15 @@ void network_interface::receive_dao(const u_char *dao, const int dao_len)
         
 }
 
+void network_interface::set_rpl_interval(const int msec) 
+{
+    rpl_interval_msec = msec;
+    rpl_event *re  = new rpl_event(0, msec, if_name);
+    re->event_type = rpl_event::rpl_send_dio;
+
+    things_to_do[re->interval] = *re;
+}
+
 void network_interface::send_dio(void)
 {
 
