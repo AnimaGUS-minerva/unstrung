@@ -26,6 +26,7 @@ extern "C" {
 #include "dag.h"
 #include "node.h"
 #include "dio.h"
+#include "fakeiface.h"
 
 struct in6_addr dummy_src1;
 time_t now;
@@ -39,6 +40,16 @@ static void t1(void)
 {
         class rpl_node n1("2001:db8::abcd:0002");
 
+        int pcap_link = DLT_EN10MB;
+	pcap_t *pout = pcap_open_dead(pcap_link, 65535);
+	if(!pout) {
+		fprintf(stderr, "can not create pcap_open_deads\n");
+		exit(1);
+	}
+		
+	pcap_dumper_t *out = pcap_dump_open(pout, "t1.pcap");
+        pcap_network_interface *iface = new pcap_network_interface(out);
+
         /* test data from senddio-test-04.out */
         u_int8_t diodata[]={
                 /*ICMPv6 header 0x9b, 0x02, 0x00, 0x00,*/
@@ -50,6 +61,8 @@ static void t1(void)
         };
         int dio_data_len=sizeof(diodata);
 
+        
+
         rpl_dio dio(n1, (struct nd_rpl_dio *)diodata,
                     dio_data_len);
 
@@ -57,7 +70,7 @@ static void t1(void)
         const char *example="2001:db8:0001::/48";
         ttosubnet(example, strlen(example), AF_INET6, &prefix);
 
-        dn->addprefix(n1, dio, prefix);
+        dn->addprefix(n1, iface, dio, prefix);
 
         assert(dn->prefixcount() >= 1);
 }

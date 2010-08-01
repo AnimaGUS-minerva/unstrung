@@ -15,26 +15,6 @@ extern "C" {
 
 }
 
-class pcap_network_interface : public network_interface {
-public:
-	pcap_network_interface(pcap_dumper_t *pd);
-        ~pcap_network_interface();
-        virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
-                                       const u_char *bytes);
-	int send_packet(const u_char *bytes, const int len);
-	void increment_packet(void)   { packet_count++; };
-	unsigned int packet_num(void) { return packet_count; };
-
-protected:
-        void filter_and_receive_icmp6(const time_t now,
-                                      const u_char *bytes, int len);
-
-private:
-
-	pcap_dumper_t *pcap_out;
-	unsigned int packet_count;
-};
-
 class pcap_linux_network_interface : public pcap_network_interface {
 public:
         virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
