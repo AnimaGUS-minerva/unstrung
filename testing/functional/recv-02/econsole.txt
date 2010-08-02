@@ -20,7 +20,5 @@ IP6 fe80::1000:ff:fe64:6423 > ff02::1: ICMP6, RPL, DAG Information Object, lengt
 
 E:~# kill %tcpdump
 
-5 packets captured
-5 packets received by filter
 0 packets dropped by kernel
 
