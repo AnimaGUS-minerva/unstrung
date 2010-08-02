@@ -28,40 +28,41 @@ extern "C" {
  */
 static void t1(void)
 {
-    rpl_event e1(0, 300, "e1");
-    rpl_event e2(0, 500, "e2");
-    rpl_event e3(0, 150, "e3");
-    rpl_event e4(1, 150, "e4");
+    rpl_event e1(0, 300, rpl_event::rpl_send_dio, "e1");
+    rpl_event e2(0, 500, rpl_event::rpl_send_dio, "e2");
+    rpl_event e3(0, 150, rpl_event::rpl_send_dio, "e3");
+    rpl_event e4(1, 150, rpl_event::rpl_send_dio, "e4");
 
     event_map n;
 
-    n[e1.interval] = e1;
-    n[e2.interval] = e2;
-    n[e3.interval] = e3;
-    n[e4.interval] = e4;
+    n[e1.alarm_time] = e1;
+    n[e2.alarm_time] = e2;
+    n[e3.alarm_time] = e3;
+    n[e4.alarm_time] = e4;
 
     event_map_iterator first = n.begin();
     assert(first != n.end());
+
+    printevents(stdout, n);
     
     rpl_event &n1 = first->second;
     printf("first interval: %u %s\n",
-           n1.interval.tv_usec, n1.mReason);
-    assert(n1.interval.tv_usec == 150000);
+           n1.alarm_time.tv_usec, n1.mReason);
 
-#if 0
+    assert(n1.occurs_in().tv_usec == 150000);
+
     /* we want the last item, but n.end() is the one after that one */
     /* need to read the STL manual */
-    event_map_iterator last = n.end();
-    assert(last != n.begin());
+    event_map_riterator last = n.rbegin();
+    assert(last != n.rend());
     
     rpl_event &n2 = last->second;
-    printf("last interval: %u %u %s\n",
-           n2.interval.tv_sec,
-           n2.interval.tv_usec,
+    printf("last alarm_time: %u %u %s\n",
+           n2.alarm_time.tv_sec,
+           n2.alarm_time.tv_usec,
            n2.mReason);
-    assert(n2.interval.tv_sec  == 1);
-    assert(n2.interval.tv_usec == 150000);
-#endif
+    assert(n2.alarm_time.tv_sec  == 1);
+    assert(n2.alarm_time.tv_usec == 150000);
     
 }
 

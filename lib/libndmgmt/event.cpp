@@ -46,6 +46,65 @@ void rpl_event::doit(void)
 {
 }
 
+const char *rpl_event::event_name()
+{
+    switch(event_type) {
+    case rpl_send_dio:
+        return "send_dio";
+    }
+
+    return "<unknown>";
+}
+
+void rpl_event::printevent(FILE *out)
+{
+    char b1[256];
+    struct tm tm1;
+
+    gmtime_r(&alarm_time.tv_sec, &tm1);
+
+    strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
+    fprintf(out, "event(%s) at (%s)<%d:%d>, type: %s",
+            mReason,  b1, alarm_time.tv_sec, alarm_time.tv_usec,
+            event_name());
+}
+
+struct timeval rpl_event::occurs_in(struct timeval &now) {
+    int usec_interval = alarm_time.tv_usec - now.tv_usec;
+    int borrow = 0;
+    struct timeval diff;
+
+    if(usec_interval < 0) {
+        usec_interval += 1000000;
+        borrow = 1;
+    } 
+
+    diff.tv_usec = usec_interval;
+    diff.tv_sec = alarm_time.tv_sec - now.tv_sec - borrow;
+    return diff;
+}
+
+struct timeval rpl_event::occurs_in() {
+    struct timeval now;
+    
+    gettimeofday(&now, NULL);
+    return occurs_in(now);
+}
+
+
+void printevents(FILE *out, event_map em) {
+    int i = 1;
+    event_map_iterator one = em.begin();
+    while(one != em.end()) {
+        rpl_event &n = one->second;
+        fprintf(out, "%d: ", i);
+        n.printevent(out);
+        fprintf(out, "\n");
+        i++; one++;
+    }
+}
+
+
 /*
  * Local Variables:
  * c-basic-offset:4
