@@ -216,7 +216,7 @@ setup_host_make() {
     echo "$startscript : $UNSTRUNG_SRCDIR/umlsetup.sh initrd.cpio"
     echo "$TAB echo '#!/bin/sh' >$startscript"
     echo "$TAB echo ''          >>$startscript"
-    echo "$TAB echo 'if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
+    echo "$TAB echo 'if [ -z \"\$\${TEST_PURPOSE} ] && [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
     echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
     echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
     echo "$TAB echo ''          >>$startscript"
