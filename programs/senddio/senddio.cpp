@@ -173,6 +173,7 @@ int main(int argc, char *argv[])
                 {"instance", 1, NULL, 'I'},
                 {"rank",     1, NULL, 'R'},
                 {"dagid",    1, NULL, 'D'},
+                {"dagid",    1, NULL, 'G'},
                 {"iface",    1, NULL, 'i'},
                 {0,0,0,0},
         };
@@ -180,7 +181,7 @@ int main(int argc, char *argv[])
         class network_interface *iface = new network_interface();
         iface->set_verbose(true, stderr);
 	
-	while((c=getopt_long(argc, argv, "D:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
+	while((c=getopt_long(argc, argv, "D:G:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
 		switch(c) {
 		case 'd':
 			datafilename=optarg;
@@ -206,6 +207,7 @@ int main(int argc, char *argv[])
                         break;
 
                 case 'D':
+                case 'G':
                         iface->set_rpl_dagid(optarg);
                         break;
 
