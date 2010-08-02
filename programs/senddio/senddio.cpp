@@ -178,8 +178,9 @@ int main(int argc, char *argv[])
                 {0,0,0,0},
         };
 
-        class network_interface *iface = new network_interface();
-        iface->set_verbose(true, stderr);
+        network_interface::scan_devices();
+
+        class network_interface *iface;
 	
 	while((c=getopt_long(argc, argv, "D:G:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
 		switch(c) {
@@ -199,7 +200,7 @@ int main(int argc, char *argv[])
 			break;
 
                 case 'i':
-                        iface->set_if_name(optarg);
+                        iface = network_interface::findif_by_name(optarg);
                         break;
 			
                 case 'T':
