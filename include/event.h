@@ -54,7 +54,9 @@ public:
     
     /* calculate against this event */
     struct timeval      occurs_in(struct timeval &now);
-    struct timeval      occurs_in();     
+    struct timeval      occurs_in(void);     
+    const int           miliseconds_util(void);
+    const int           miliseconds_util(struct timeval &now);
 
     /* dump this event for humans */
     void printevent(FILE *out);

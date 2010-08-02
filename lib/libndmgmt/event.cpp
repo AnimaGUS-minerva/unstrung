@@ -84,6 +84,23 @@ struct timeval rpl_event::occurs_in(struct timeval &now) {
     return diff;
 }
 
+/*
+ * assumes that the event is in the future.
+ */
+const int rpl_event::miliseconds_util(struct timeval &now) {
+    unsigned int sec = alarm_time.tv_sec - now.tv_sec;
+    int usec = alarm_time.tv_usec - now.tv_usec;
+
+    return (sec*1000 + usec / 1000);
+}
+
+const int rpl_event::miliseconds_util() {
+    struct timeval now;
+    gettimeofday(&now, NULL);
+
+    return miliseconds_util(now);
+}
+
 struct timeval rpl_event::occurs_in() {
     struct timeval now;
     

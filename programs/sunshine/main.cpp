@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     bool bedaemon = false;
 
     progname = argv[0];
-    network_interface::scan_devices();
+    bool devices_scanned = false;
 
     network_interface *iface = NULL;
 
@@ -120,23 +120,28 @@ int main(int argc, char *argv[])
             err_t e = ttosubnet(optarg, strlen(optarg),
                                 AF_INET6, &prefix);
 
+            if(!iface) usage();
             iface->set_rpl_prefix(prefix);
         }
         break;
 
         case 'I':
+            if(!iface) usage();
             iface->set_rpl_instanceid(atoi(optarg));
             break; 
 
         case 'W':
+            if(!iface) usage();
             iface->set_rpl_interval(atoi(optarg));
             break; 
 
         case 'R':
+            if(!iface) usage();
             iface->set_rpl_dagrank(atoi(optarg));
             break; 
 
         case 'G':
+            if(!iface) usage();
             iface->set_rpl_dagid(optarg);
             break;
 
@@ -145,6 +150,10 @@ int main(int argc, char *argv[])
             break;
 
         case 'i':
+            if(!devices_scanned) {
+                network_interface::scan_devices();
+                devices_scanned = true;
+            }
             iface = network_interface::find_by_name(optarg);
             break;
 	}

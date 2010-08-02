@@ -725,17 +725,30 @@ void network_interface::main_loop(FILE *verbose)
         struct pollfd            poll_if[network_interface::if_count()];
         class network_interface* all_if[network_interface::if_count()];
         int pollnum=0;
+        int timeout = 60*1000;   /* 60 seconds is maximum */
 
         struct timeval now;
         gettimeofday(&now, NULL);
 
-        event_map_iterator rei = things_to_do.begin();
-        if(rei != things_to_do.end()) {
-            rpl_event &re = rei->second;
-            if(re.passed(now)) re.doit();
-            things_to_do.erase(rei);
+        if(verbose) {
+            fprintf(verbose,
+                    "checking things to do list, has %d items",
+                    things_to_do.size());
         }
-        
+        event_map_iterator rei = things_to_do.begin();
+        while(rei != things_to_do.end()) {
+            rpl_event &re = rei->second;
+            if(re.passed(now)) {
+                re.doit();
+                things_to_do.erase(rei);
+            } else {
+                // since things are sorted, when we find something which
+                // has not yet passed, then it must be in the future.
+                int newtimeout = re.miliseconds_util(now);
+                if(newtimeout < timeout) timeout = newtimeout;
+            }
+        }
+
         /*
          * do not really need to build this every time, but, for
          * now, this is fine.
@@ -752,7 +765,12 @@ void network_interface::main_loop(FILE *verbose)
         }
 
         /* now poll for input */
-        int n = poll(poll_if, pollnum, 60 * 1000);
+        if(verbose) {
+            fprintf(verbose,
+                    "sleeping with %d file descriptors, for %d ms",
+                    pollnum, timeout);
+        }
+        int n = poll(poll_if, pollnum, timeout);
         
         if(n == 0) {
             /* there was a timeout */
