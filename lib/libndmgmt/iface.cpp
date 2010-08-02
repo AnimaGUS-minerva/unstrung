@@ -135,6 +135,7 @@ bool network_interface::setup()
 {
     if(alive) return true;
 
+    rpl_dio_lifetime = 0;       // zero out to avoid garbage.
     generate_eui64();
     
     if(alive && nd_socket != -1) return true;

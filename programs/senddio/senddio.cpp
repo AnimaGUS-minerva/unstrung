@@ -179,9 +179,9 @@ int main(int argc, char *argv[])
                 {0,0,0,0},
         };
 
-        network_interface::scan_devices();
-
         class network_interface *iface;
+        bool initted = false;
+        memset(icmp_body, 0, sizeof(icmp_body));
 	
 	while((c=getopt_long(argc, argv, "D:G:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
 		switch(c) {
