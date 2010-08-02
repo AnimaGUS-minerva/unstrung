@@ -24,6 +24,8 @@ public:
 	void increment_packet(void)   { packet_count++; };
 	unsigned int packet_num(void) { return packet_count; };
 
+        static void scan_devices(void);
+
 protected:
         void filter_and_receive_icmp6(const time_t now,
                                       const u_char *bytes, int len);

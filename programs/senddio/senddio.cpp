@@ -37,6 +37,7 @@ extern "C" {
 }
 
 #include "iface.h"
+#include "fakeiface.h"
 
 /* open a raw IPv6 socket, and 
    - send a router advertisement for prefix on argv. (-p)
@@ -200,7 +201,15 @@ int main(int argc, char *argv[])
 			break;
 
                 case 'i':
-                        iface = network_interface::findif_by_name(optarg);
+                        if(!initted) {
+                                if(fakesend) {
+                                        pcap_network_interface::scan_devices();
+                                } else {
+                                        network_interface::scan_devices();
+                                }
+                                initted = true;
+                        }
+                        iface = network_interface::find_by_name(optarg);
                         break;
 			
                 case 'T':
@@ -249,17 +258,17 @@ int main(int argc, char *argv[])
                 icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body), prefix);
         }
 
+        if(icmp_len == 0) {
+                usage();
+                exit(1);
+        }
+
 	if(verbose) {
                 printf("Sending ICMP of length: %u\n", icmp_len);
                 if(icmp_len > 0) {
                         hexdump(icmp_body, 0, icmp_len);
                 }
 	}
-
-        if(icmp_len == 0) {
-                usage();
-                exit(1);
-        }
 
         if(!fakesend && icmp_len > 0) {
                 iface->send_raw_dio(icmp_body, icmp_len);

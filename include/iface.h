@@ -96,6 +96,10 @@ public:
         static int foreach_if(int (*func)(network_interface*, void*), void*arg);
         static void remove_marks(void);
 
+protected:
+        static int    gather_linkinfo(const struct sockaddr_nl *who,
+                                      struct nlmsghdr *n, void *arg);
+
 private:
 	int packet_too_short(const char *thing, const int avail, const int needed);
 	int                     nd_socket;
@@ -184,8 +188,6 @@ private:
 
         static struct rtnl_handle      *netlink_handle;
         static bool                     open_netlink(void);
-        static int    gather_linkinfo(const struct sockaddr_nl *who,
-                                      struct nlmsghdr *n, void *arg);
 
         /* event lists */
         static event_map              things_to_do;

@@ -23,6 +23,7 @@ extern "C" {
 }
 
 #include "iface.h"
+#include "fakeiface.h"
 #include "dag.h"
 
 struct in6_addr dummy_src1;
@@ -31,7 +32,7 @@ time_t now;
 class dag_network *dn = NULL;
 
 /* TEST1: a DN shall have a sequence number */
-static void t1(void)
+static void t1(network_interface *iface)
 {
         assert(dn->last_seq() == 0);
 }
@@ -39,7 +40,7 @@ static void t1(void)
 /* TEST2: a DN will update it's sequence number, if
  *        the sequence number is not too old
  */
-static void t2(void)
+static void t2(network_interface *iface)
 {
         struct nd_rpl_dio d1;
 
@@ -48,43 +49,43 @@ static void t2(void)
         d1.rpl_dagid[0]='1';
 
         d1.rpl_seq = 1;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_SEQ_OLD] == 0);
 
         d1.rpl_seq = 4;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 0);
 
         d1.rpl_seq = 3;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 1);
 
         d1.rpl_seq = 240;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 130;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 130);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 243;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 243);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 1;
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_seq = 1;
         unsigned int processed_count = dn->mStats[PS_PACKET_PROCESSED];
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_PACKET_PROCESSED] == processed_count+1);
 }
@@ -94,7 +95,7 @@ static void t2(void)
  * lower than what it currently has (which is infinite).
  *
  */
-static void t3(void)
+static void t3(network_interface *iface)
 {
         struct nd_rpl_dio d1;
 
@@ -111,7 +112,7 @@ static void t3(void)
 
         unsigned int lower_rank_count = dn->mStats[PS_LOWER_RANK_CONSIDERED];
 
-        dn->receive_dio(dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->mStats[PS_LOWER_RANK_CONSIDERED] == lower_rank_count+1);
 }
 
@@ -119,7 +120,7 @@ static void t3(void)
  * in this test case, the system should create a new node in the dag_member.
  * 
  */
-static void t4(void)
+static void t4(network_interface *iface)
 {
         struct nd_rpl_dio d1;
 
@@ -137,7 +138,7 @@ static void t4(void)
         d1.rpl_instanceid = 1;
         d1.rpl_dagrank = 1;
 
-        dn->receive_dio(a1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, a1, now, &d1, sizeof(d1));
 
         assert(dn->member_count() == 1);
         assert(dn->contains_member(a1));
@@ -153,6 +154,16 @@ int main(int argc, char *argv[])
         time_t now;
         time(&now);
 
+        int pcap_link = DLT_EN10MB;
+	pcap_t *pout = pcap_open_dead(pcap_link, 65535);
+	if(!pout) {
+		fprintf(stderr, "can not create pcap_open_deads\n");
+		exit(1);
+	}
+		
+	pcap_dumper_t *out = pcap_dump_open(pout, "t1.pcap");
+        pcap_network_interface *iface = new pcap_network_interface(out);
+
         dagid_t d;
         memset(d, 0, DAGID_LEN);
         d[0]='T';
@@ -160,16 +171,16 @@ int main(int argc, char *argv[])
         
         dn = new dag_network(d);
 
-        printf("dag-02 t1\n");        t1();
-        printf("dag-02 t2\n");        t2();
+        printf("dag-02 t1\n");        t1(iface);
+        printf("dag-02 t2\n");        t2(iface);
         delete dn;
 
         dn = new dag_network(d);
-        printf("dag-02 t3\n");        t3();
+        printf("dag-02 t3\n");        t3(iface);
         delete dn;
 
         dn = new dag_network(d);
-        printf("dag-02 t4\n");        t4();
+        printf("dag-02 t4\n");        t4(iface);
         delete dn;
 
 	exit(0);

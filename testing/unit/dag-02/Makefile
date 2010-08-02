@@ -9,8 +9,9 @@ INC=${UNSTRUNG_SRCDIR}/include
 CXXFLAGS+=-I/sandel/include -g
 LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBOSW} ${LIBNETLINK}
+LDFLAGS+=${LIBFAKEIFACE}
 #LDFLAGS+=/sandel/lib/libpcap.a
-LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
+LDFLAGS+=${LIBPCAP}
 
 dag-02: dag-02.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o dag-02 dag-02.cpp ${LDFLAGS}

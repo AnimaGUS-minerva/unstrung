@@ -12,8 +12,15 @@ extern "C" {
 #include <string.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
-
+#include <net/if_arp.h>
+#include <sys/types.h>
+#include <unistd.h>
 }
+
+#include <netlink/rt_names.h>
+#include <netlink/utils.h>
+#include <netlink/ll_map.h>
+
 
 class pcap_linux_network_interface : public pcap_network_interface {
 public:
@@ -194,6 +201,64 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
 
         this->filter_and_receive_icmp6(h->ts.tv_sec, bytes, len);
 }
+
+void pcap_network_interface::scan_devices(void)
+{
+        struct sockaddr_nl who;
+        unsigned int seq = 0;
+        unsigned int ifindex = 0;
+        struct fake_device_msg {
+                struct nlmsghdr  nlh;
+                struct ifinfomsg if1;
+                struct rtattr    ifname;
+                unsigned char    ifnamespace[256];
+                struct rtattr    ifmtu;
+                unsigned int     ifmtu_value;
+        } fake1;
+
+        memset(&who, 0, sizeof(who));
+
+        struct nlmsghdr *nlh = &fake1.nlh;
+        struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
+        struct rtattr    *rtname = IFLA_RTA(ifi);
+        int    len      = 0;
+        nlh->nlmsg_type = RTM_NEWLINK;
+        nlh->nlmsg_flags = 0;  /* not sure what to set here */
+        nlh->nlmsg_seq   = ++seq;
+        nlh->nlmsg_pid   = getpid();
+
+        ifi->ifi_index   = ++ifindex;
+        ifi->ifi_type    = ARPHRD_ETHER;
+        //ifi->ifi_family  = PF_ETHER;
+        ifi->ifi_flags   = IFF_BROADCAST;
+
+        rtname->rta_type = IFLA_IFNAME;
+        char *ifname = (char *)RTA_DATA(rtname);
+        ifname[0]='\0';
+        strncat(ifname, "wlan0", sizeof(fake1.ifnamespace));
+        rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
+        
+        struct rtattr *rtmtu = RTA_NEXT(rtname, len);
+        rtmtu->rta_type = IFLA_MTU;
+        unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
+        *mtu            = 1500;
+        rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
+
+        struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
+        rtaddr->rta_type= IFLA_ADDRESS;
+        unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
+        hwaddr[0]=0x00;        hwaddr[1]=0x16;
+        hwaddr[2]=0x3e;        hwaddr[3]=0x11;
+        hwaddr[4]=0x34;        hwaddr[5]=0x24;
+        rtaddr->rta_len = RTA_LENGTH(6);
+
+        struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
+
+        nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
+
+        gather_linkinfo(&who, (struct nlmsghdr *)&fake1, NULL);
+}
+
 
 int process_infile(char *infile, char *outfile)
 {

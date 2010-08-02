@@ -113,12 +113,14 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     switch(ifi->ifi_type) {
     case ARPHRD_ETHER:
         addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
-        addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
-        if(memcpy(ni->eui48, addr, addrlen)==0) {
-            /* no change, go on to next interface */
-            return 0;
+        if(addr) {
+            addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
+            if(memcpy(ni->eui48, addr, addrlen)==0) {
+                /* no change, go on to next interface */
+                return 0;
+            }
+            break;
         }
-        break;
 
     default:
         return 0;
