@@ -4,9 +4,11 @@ dag.o: dag.cpp ../../include/pathnames.h \
   ../../include/iface.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
+  ../../include/prefix.h \
+  ../../include/event.h \
+  ../../include/iface.h \
   ../../include/dag.h \
   ../../include/node.h \
-  ../../include/prefix.h \
   ../../include/dio.h
 dio.o: dio.cpp ../../include/pathnames.h \
   ../../include/oswlibs.h \
@@ -14,16 +16,45 @@ dio.o: dio.cpp ../../include/pathnames.h \
   ../../include/iface.h \
   ../../include/oswlibs.h \
   ../../include/rpl.h \
+  ../../include/prefix.h \
+  ../../include/event.h \
+  ../../include/iface.h \
   ../../include/dag.h \
   ../../include/node.h \
-  ../../include/prefix.h \
   ../../include/dio.h
+event.o: event.cpp ../../include/pathnames.h \
+  ../../include/rpl.h \
+  ../../include/iface.h \
+  ../../include/oswlibs.h \
+  ../../include/rpl.h \
+  ../../include/prefix.h \
+  ../../include/event.h \
+  ../../include/iface.h \
+  ../../include/event.h
 iface.o: iface.cpp ../../include/pathnames.h \
   ../../include/rpl.h \
   ../../include/iface.h \
   ../../include/oswlibs.h \
-  ../../include/rpl.h
+  ../../include/rpl.h \
+  ../../include/prefix.h \
+  ../../include/event.h \
+  ../../include/iface.h
 neighbour.o: neighbour.cpp
+netlink.o: netlink.cpp \
+  ../../include/pathnames.h \
+  ../../include/netlink/rt_names.h \
+  ../../include/netlink/utils.h \
+  ../../include/netlink/libnetlink.h \
+  ../../include/netlink/ll_map.h \
+  ../../include/netlink/rtm_map.h \
+  ../../include/rpl.h \
+  ../../include/iface.h \
+  ../../include/oswlibs.h \
+  ../../include/rpl.h \
+  ../../include/prefix.h \
+  ../../include/event.h \
+  ../../include/iface.h \
+  ../../include/prefix.h
 node.o: node.cpp ../../include/node.h \
   ../../include/pathnames.h
 peers.o: peers.cpp
@@ -34,4 +65,7 @@ prefix.o: prefix.cpp ../../include/dag.h \
   ../../include/prefix.h \
   ../../include/oswlibs.h \
   ../../include/node.h \
-  ../../include/prefix.h
+  ../../include/prefix.h \
+  ../../include/iface.h \
+  ../../include/event.h \
+  ../../include/iface.h
