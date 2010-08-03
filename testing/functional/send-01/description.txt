@@ -1,0 +1,6 @@
+This test starts up sunshine (on A) with a command to announce a particular
+DAGID + prefix goal onto the n1 network.  This test confirms that E sees
+this DIO.
+
+
+
