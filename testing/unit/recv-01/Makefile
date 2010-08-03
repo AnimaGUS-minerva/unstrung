@@ -5,13 +5,10 @@ INC=${UNSTRUNG_SRCDIR}/include
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CXXFLAGS+=-I/sandel/include -g
-LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
-LDFLAGS+=${LIBFAKEIFACE} 
-LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBOSW} ${LIBNETLINK}
-#LDFLAGS+=/sandel/lib/libpcap.a
-LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a  
+LIBS=${LIBFAKEIFACE} ${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBPCAP}
+LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt  ${LIBS}
 
-recv-01: recv-01.cpp ${INC}/iface.h ${LIBNDMGMT}
+recv-01: recv-01.cpp ${INC}/iface.h ${LIBS}
 	${CXX} ${CXXFLAGS} -o recv-01 recv-01.cpp ${LDFLAGS}
 
 checkprograms:: recv-01
