@@ -46,236 +46,242 @@ extern "C" {
 
 static void usage(void)
 {
-	fprintf(stderr, "Usage: senddio [--prefix prefix] [-d datafile] [--fake] [--iface net]\n");
-	fprintf(stderr, "               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]\n");
+    fprintf(stderr, "Usage: senddio [--prefix prefix] [-d datafile] [--fake] [--iface net]\n");
+    fprintf(stderr, "               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]\n");
 
-	exit(2);
+    exit(2);
 }
 
 unsigned int read_hex_values(FILE *in, unsigned char *buffer)
 {
-	int count = 0;
-	unsigned int data;
-        int c;
+    int count = 0;
+    unsigned int data;
+    int c;
 
-        while((c = fgetc(in)) != EOF) {
-                if(c == '#') {
-                        /* skip comment */
-                        while((c = fgetc(in)) != EOF &&
-                              c != '\n');
-                        if(c==EOF) return count;
-                        continue;
-                }
-                ungetc(c, in);
-                while(fscanf(in, "%2x", &data) > 0) {
-                        buffer[count++]=data;
-                }
+    while((c = fgetc(in)) != EOF) {
+        if(c == '#') {
+            /* skip comment */
+            while((c = fgetc(in)) != EOF &&
+                  c != '\n');
+            if(c==EOF) return count;
+            continue;
         }
-	return count;
+        ungetc(c, in);
+        while(fscanf(in, "%2x", &data) > 0) {
+            buffer[count++]=data;
+        }
+    }
+    return count;
 }
 
 #if 0
 int
 open_icmpv6_socket(void)
 {
-	int sock;
-	struct icmp6_filter filter;
-	int err, val;
+    int sock;
+    struct icmp6_filter filter;
+    int err, val;
 
-        sock = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
-	if (sock < 0)
-	{
-		printf("can't create socket(AF_INET6): %s", strerror(errno));
-		return (-1);
-	}
+    sock = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+    if (sock < 0)
+    {
+        printf("can't create socket(AF_INET6): %s", strerror(errno));
+        return (-1);
+    }
 
-	val = 1;
-	err = setsockopt(sock, IPPROTO_IPV6, IPV6_RECVPKTINFO, &val, sizeof(val));
-	if (err < 0)
-	{
-		printf("setsockopt(IPV6_RECVPKTINFO): %s", strerror(errno));
-		return (-1);
-	}
+    val = 1;
+    err = setsockopt(sock, IPPROTO_IPV6, IPV6_RECVPKTINFO, &val, sizeof(val));
+    if (err < 0)
+    {
+        printf("setsockopt(IPV6_RECVPKTINFO): %s", strerror(errno));
+        return (-1);
+    }
 
-	val = 2;
+    val = 2;
 #ifdef __linux__
-	err = setsockopt(sock, IPPROTO_RAW, IPV6_CHECKSUM, &val, sizeof(val));
+    err = setsockopt(sock, IPPROTO_RAW, IPV6_CHECKSUM, &val, sizeof(val));
 #else
-	err = setsockopt(sock, IPPROTO_IPV6, IPV6_CHECKSUM, &val, sizeof(val));
+    err = setsockopt(sock, IPPROTO_IPV6, IPV6_CHECKSUM, &val, sizeof(val));
 #endif
-	if (err < 0)
-	{
-		printf("setsockopt(IPV6_CHECKSUM): %s", strerror(errno));
-		return (-1);
-	}
+    if (err < 0)
+    {
+        printf("setsockopt(IPV6_CHECKSUM): %s", strerror(errno));
+        return (-1);
+    }
 
-	val = 255;
-	err = setsockopt(sock, IPPROTO_IPV6, IPV6_UNICAST_HOPS, &val, sizeof(val));
-	if (err < 0)
-	{
-		printf("setsockopt(IPV6_UNICAST_HOPS): %s", strerror(errno));
-		return (-1);
-	}
+    val = 255;
+    err = setsockopt(sock, IPPROTO_IPV6, IPV6_UNICAST_HOPS, &val, sizeof(val));
+    if (err < 0)
+    {
+        printf("setsockopt(IPV6_UNICAST_HOPS): %s", strerror(errno));
+        return (-1);
+    }
 
-	val = 255;
-	err = setsockopt(sock, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &val, sizeof(val));
-	if (err < 0)
-	{
-		printf("setsockopt(IPV6_MULTICAST_HOPS): %s", strerror(errno));
-		return (-1);
-	}
+    val = 255;
+    err = setsockopt(sock, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &val, sizeof(val));
+    if (err < 0)
+    {
+        printf("setsockopt(IPV6_MULTICAST_HOPS): %s", strerror(errno));
+        return (-1);
+    }
 
 #ifdef IPV6_RECVHOPLIMIT
-	val = 1;
-	err = setsockopt(sock, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &val, sizeof(val));
-	if (err < 0)
-	{
-		printf("setsockopt(IPV6_RECVHOPLIMIT): %s", strerror(errno));
-		return (-1);
-	}
+    val = 1;
+    err = setsockopt(sock, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &val, sizeof(val));
+    if (err < 0)
+    {
+        printf("setsockopt(IPV6_RECVHOPLIMIT): %s", strerror(errno));
+        return (-1);
+    }
 #endif
 
-	/*
-	 * setup ICMP filter
-	 */
+    /*
+     * setup ICMP filter
+     */
 	
-	ICMP6_FILTER_SETBLOCKALL(&filter);
-	ICMP6_FILTER_SETPASS(ND_ROUTER_SOLICIT, &filter);
-	ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT, &filter);
+    ICMP6_FILTER_SETBLOCKALL(&filter);
+    ICMP6_FILTER_SETPASS(ND_ROUTER_SOLICIT, &filter);
+    ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT, &filter);
 
-	err = setsockopt(sock, IPPROTO_ICMPV6, ICMP6_FILTER, &filter,
-			 sizeof(filter));
-	if (err < 0)
-	{
-		printf("setsockopt(ICMPV6_FILTER): %s", strerror(errno));
-		return (-1);
-	}
+    err = setsockopt(sock, IPPROTO_ICMPV6, ICMP6_FILTER, &filter,
+                     sizeof(filter));
+    if (err < 0)
+    {
+        printf("setsockopt(ICMPV6_FILTER): %s", strerror(errno));
+        return (-1);
+    }
 
-	return sock;
+    return sock;
 }
 
 #endif
 
 int main(int argc, char *argv[])
 {
-	int c;
-	const char *datafilename;
-	FILE *datafile;
-        char *prefixvalue = NULL;
-	unsigned char icmp_body[2048];
-	unsigned int  icmp_len = 0;
-        unsigned int verbose=0;
-        unsigned int fakesend=0;
-        struct option longoptions[]={
-                {"fake",     0, NULL, 'T'},
-                {"testing",  0, NULL, 'T'},
-                {"prefix",   1, NULL, 'p'},
-                {"sequence", 1, NULL, 'S'},
-                {"instance", 1, NULL, 'I'},
-                {"rank",     1, NULL, 'R'},
-                {"dagid",    1, NULL, 'D'},
-                {"dagid",    1, NULL, 'G'},
-                {"iface",    1, NULL, 'i'},
-                {0,0,0,0},
-        };
+    int c;
+    const char *datafilename;
+    FILE *datafile;
+    char *prefixvalue = NULL;
+    unsigned char icmp_body[2048];
+    unsigned int  icmp_len = 0;
+    unsigned int verbose=0;
+    unsigned int fakesend=0;
+    struct option longoptions[]={
+        {"fake",     0, NULL, 'T'},
+        {"testing",  0, NULL, 'T'},
+        {"prefix",   1, NULL, 'p'},
+        {"sequence", 1, NULL, 'S'},
+        {"instance", 1, NULL, 'I'},
+        {"rank",     1, NULL, 'R'},
+        {"dagid",    1, NULL, 'D'},
+        {"dagid",    1, NULL, 'G'},
+        {"iface",    1, NULL, 'i'},
+        {0,0,0,0},
+    };
 
-        class rpl_debug *deb;
-        class network_interface *iface;
-        bool initted = false;
-        memset(icmp_body, 0, sizeof(icmp_body));
+    class rpl_debug *deb;
+    class network_interface *iface;
+    bool initted = false;
+    memset(icmp_body, 0, sizeof(icmp_body));
 	
-	while((c=getopt_long(argc, argv, "D:G:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
-		switch(c) {
-		case 'd':
-			datafilename=optarg;
-			if(datafilename[0]=='-' && datafilename[1]=='\0') {
-				datafile = stdin;
-				datafilename="<stdin>";
-			} else {
-				datafile = fopen(datafilename, "r");
-			}
-			if(!datafile) {
-				perror(datafilename);
-				exit(1);
-			}
-			icmp_len = read_hex_values(datafile, icmp_body);
-			break;
-
-                case 'i':
-                        if(!initted) {
-                                if(fakesend) {
-                                        pcap_network_interface::scan_devices(deb);
-                                } else {
-                                        network_interface::scan_devices(deb);
-                                }
-                                initted = true;
-                        }
-                        iface = network_interface::find_by_name(optarg);
-                        break;
-			
-                case 'T':
-                        fakesend=1;
-                        break;
-
-                case 'D':
-                case 'G':
-                        iface->set_rpl_dagid(optarg);
-                        break;
-
-                case 'R':
-                        iface->set_rpl_dagrank(atoi(optarg));
-                        break;
-
-                case 'S':
-                        iface->set_rpl_sequence(atoi(optarg));
-                        break;
-
-                case 'I':
-                        iface->set_rpl_instanceid(atoi(optarg));
-                        break;
-
-		case 'p':
-                        prefixvalue = optarg;
-                        break;
-
-		case 'v':
-			verbose++;
-                        deb = new rpl_debug(verbose, stderr);
-			break;
-
-		case '?':
-		case 'h':
-		default:
-			usage();
-			break;
-		}
-	}
-
-        if(prefixvalue) {
-                ip_subnet prefix;
-
-                err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
-                                    AF_INET6, &prefix);
-
-                icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body), prefix);
-        }
-
-        if(icmp_len == 0) {
-                usage();
+    while((c=getopt_long(argc, argv, "D:G:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
+        switch(c) {
+        case 'd':
+            datafilename=optarg;
+            if(datafilename[0]=='-' && datafilename[1]=='\0') {
+                datafile = stdin;
+                datafilename="<stdin>";
+            } else {
+                datafile = fopen(datafilename, "r");
+            }
+            if(!datafile) {
+                perror(datafilename);
                 exit(1);
-        }
+            }
+            icmp_len = read_hex_values(datafile, icmp_body);
+            break;
 
-	if(verbose) {
-                printf("Sending ICMP of length: %u\n", icmp_len);
-                if(icmp_len > 0) {
-                        hexdump(icmp_body, 0, icmp_len);
+        case 'i':
+            if(!initted) {
+                if(fakesend) {
+                    pcap_network_interface::scan_devices(deb);
+                } else {
+                    network_interface::scan_devices(deb);
                 }
-	}
+                initted = true;
+            }
+            iface = network_interface::find_by_name(optarg);
+            break;
+			
+        case 'T':
+            fakesend=1;
+            break;
 
-        if(!fakesend && icmp_len > 0) {
-                iface->send_raw_dio(icmp_body, icmp_len);
+        case 'D':
+        case 'G':
+            iface->set_rpl_dagid(optarg);
+            break;
+
+        case 'R':
+            iface->set_rpl_dagrank(atoi(optarg));
+            break;
+
+        case 'S':
+            iface->set_rpl_sequence(atoi(optarg));
+            break;
+
+        case 'I':
+            iface->set_rpl_instanceid(atoi(optarg));
+            break;
+
+        case 'p':
+            prefixvalue = optarg;
+            break;
+
+        case 'v':
+            verbose++;
+            deb = new rpl_debug(verbose, stderr);
+            break;
+
+        case '?':
+        case 'h':
+        default:
+            usage();
+            break;
         }
+    }
 
-	exit(0);
+    if(prefixvalue) {
+        ip_subnet prefix;
+
+        err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
+                            AF_INET6, &prefix);
+
+        icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body), prefix);
+    }
+
+    if(icmp_len == 0) {
+        usage();
+        exit(1);
+    }
+
+    if(verbose) {
+        printf("Sending ICMP of length: %u\n", icmp_len);
+        if(icmp_len > 0) {
+            hexdump(icmp_body, 0, icmp_len);
+        }
+    }
+
+    if(!fakesend && icmp_len > 0) {
+        iface->send_raw_dio(icmp_body, icmp_len);
+    }
+
+    exit(0);
 }
 	
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
