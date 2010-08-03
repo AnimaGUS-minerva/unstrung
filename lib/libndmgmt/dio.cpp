@@ -91,7 +91,8 @@ void network_interface::receive_dao(const u_char *dao, const int dao_len)
 void network_interface::set_rpl_interval(const int msec) 
 {
     rpl_interval_msec = msec;
-    rpl_event *re  = new rpl_event(0, msec, rpl_event::rpl_send_dio, if_name);
+    rpl_event *re  = new rpl_event(0, msec, rpl_event::rpl_send_dio,
+                                   if_name, this->debug);
     re->event_type = rpl_event::rpl_send_dio;
 
     re->interface = this;
@@ -101,9 +102,12 @@ void network_interface::set_rpl_interval(const int msec)
 
 void network_interface::send_dio(void)
 {
-    if(VERBOSE(this))
-        fprintf(this->verbose_file, "sending DIO on if: %s", this->if_name);
+    debug->log("sending DIO on if: %s\n", this->if_name);
+    
+    
 }
+
+
 
 void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
 {

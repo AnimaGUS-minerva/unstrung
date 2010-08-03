@@ -28,18 +28,18 @@ public:
 
     rpl_event() { };
 
-    rpl_event(struct timeval &relative,
+    rpl_event(struct timeval &relative, 
               unsigned int sec, unsigned int msec,
-              event_types t, const char *reason) {
-        init_event(relative, sec, msec, t, reason);
+              event_types t, const char *reason, rpl_debug *deb) {
+        init_event(relative, sec, msec, t, reason, deb);
     };
 
     rpl_event(unsigned int sec, unsigned int msec,
-              event_types t, const char *reason) {
+              event_types t, const char *reason, rpl_debug *deb) {
         struct timeval now;
         gettimeofday(&now, NULL);
 
-        init_event(now, sec, msec, t, reason);
+        init_event(now, sec, msec, t, reason, deb);
     };
 
     enum event_types event_type;
@@ -91,19 +91,20 @@ private:
     };
 
     void init_event(struct timeval &relative,
-              unsigned int sec, unsigned int msec,
-              event_types t, const char *reason) {
+                    unsigned int sec, unsigned int msec,
+                    event_types t, const char *reason, rpl_debug *deb) {
         set_alarm(relative, sec, msec);
         event_type = t;
         mReason[0]='\0';
         strncat(mReason, reason, sizeof(mReason));
+        debug = deb;
     };
 
     unsigned int        repeat_sec;
     unsigned int        repeat_msec;
     struct timeval      last_time;
     char mReason[16];
-
+    rpl_debug *debug;
 };
 
 class rpl_eventless {
