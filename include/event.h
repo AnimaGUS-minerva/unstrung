@@ -48,8 +48,14 @@ public:
     /* invoke this event */
     bool doit(void);
     bool passed(struct timeval &now) {
-        return (alarm_time.tv_sec  <= now.tv_sec &&
-                alarm_time.tv_usec <= now.tv_usec);
+        //fprintf(stderr, "passed([%u,%u] < [%u,%u])\n",
+        //        alarm_time.tv_sec, alarm_time.tv_usec,
+        //        now.tv_sec, now.tv_usec);
+
+        if(alarm_time.tv_sec  <  now.tv_sec)  return true;
+        if(alarm_time.tv_sec  == now.tv_sec && 
+           alarm_time.tv_usec <= now.tv_usec) return true;
+        return false;
     };
     
     /* calculate against this event */

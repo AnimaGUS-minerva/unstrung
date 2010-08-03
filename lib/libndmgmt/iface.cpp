@@ -749,7 +749,12 @@ void network_interface::main_loop(FILE *verbose)
                 // since things are sorted, when we find something which
                 // has not yet passed, then it must be in the future.
                 int newtimeout = re->miliseconds_util(now);
-                if(newtimeout < timeout) timeout = newtimeout;
+                if(newtimeout < 0) {
+                    if(verbose) {
+                        fprintf(verbose,
+                                "negative timeout %d\n", newtimeout);
+                    }
+                } else if(newtimeout < timeout) timeout = newtimeout;
                 break;
             }
             rei++;
