@@ -7,13 +7,10 @@ INC=${UNSTRUNG_SRCDIR}/include
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CXXFLAGS+=-I/sandel/include -g
-LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
-LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBOSW} ${LIBNETLINK}
-LDFLAGS+=${LIBFAKEIFACE}
-#LDFLAGS+=/sandel/lib/libpcap.a
-LDFLAGS+=${LIBPCAP}
+LIBS=${LIBFAKEIFACE} ${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBPCAP}
+LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBS}
 
-dag-02: dag-02.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
+dag-02: dag-02.cpp ${INC}/iface.h ${INC}/dag.h ${LIBS}
 	${CXX} ${CXXFLAGS} -o dag-02 dag-02.cpp ${LDFLAGS}
 
 check::	dag-02
