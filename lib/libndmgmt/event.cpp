@@ -42,9 +42,34 @@ extern "C" {
 #include "iface.h"
 #include "event.h"
 
-void rpl_event::doit(void)
+bool rpl_event::doit(void)
 {
+    switch(event_type) {
+    case rpl_send_dio:
+        if(interface!=NULL) {
+            interface->send_dio();
+        } else {
+            fprintf(stderr, "event did not have associated interface\n");
+        }
+        return true;
+        
+    default:
+        fprintf(stderr, "invalid event %d\n", event_type);
+        break;
+    }
+    return false;
 }
+
+void rpl_event::requeue(void) {
+    network_interface::things_to_do[this->alarm_time] = this;
+}
+
+void rpl_event::requeue(struct timeval &now) {
+    set_alarm(now, repeat_sec, repeat_msec);
+    network_interface::things_to_do[this->alarm_time] = this;
+}
+
+
 
 const char *rpl_event::event_name()
 {
@@ -113,9 +138,9 @@ void printevents(FILE *out, event_map em) {
     int i = 1;
     event_map_iterator one = em.begin();
     while(one != em.end()) {
-        rpl_event &n = one->second;
+        rpl_event *n = one->second;
         fprintf(out, "%d: ", i);
-        n.printevent(out);
+        n->printevent(out);
         fprintf(out, "\n");
         i++; one++;
     }

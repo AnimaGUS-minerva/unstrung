@@ -732,21 +732,27 @@ void network_interface::main_loop(FILE *verbose)
 
         if(verbose) {
             fprintf(verbose,
-                    "checking things to do list, has %d items",
+                    "checking things to do list, has %d items\n",
                     things_to_do.size());
         }
         event_map_iterator rei = things_to_do.begin();
         while(rei != things_to_do.end()) {
-            rpl_event &re = rei->second;
-            if(re.passed(now)) {
-                re.doit();
+            rpl_event *re = rei->second;
+            if(re->passed(now)) {
                 things_to_do.erase(rei);
+                if(re->doit()) {
+                    re->requeue(now);
+                } else {
+                    delete re;
+                }
             } else {
                 // since things are sorted, when we find something which
                 // has not yet passed, then it must be in the future.
-                int newtimeout = re.miliseconds_util(now);
+                int newtimeout = re->miliseconds_util(now);
                 if(newtimeout < timeout) timeout = newtimeout;
+                break;
             }
+            rei++;
         }
 
         /*
@@ -767,7 +773,7 @@ void network_interface::main_loop(FILE *verbose)
         /* now poll for input */
         if(verbose) {
             fprintf(verbose,
-                    "sleeping with %d file descriptors, for %d ms",
+                    "sleeping with %d file descriptors, for %d ms\n",
                     pollnum, timeout);
         }
         int n = poll(poll_if, pollnum, timeout);

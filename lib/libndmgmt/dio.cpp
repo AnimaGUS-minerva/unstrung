@@ -95,12 +95,15 @@ void network_interface::set_rpl_interval(const int msec)
     rpl_event *re  = new rpl_event(0, msec, rpl_event::rpl_send_dio, if_name);
     re->event_type = rpl_event::rpl_send_dio;
 
-    things_to_do[re->alarm_time] = *re;
+    re->interface = this;
+    re->requeue();
+    //this->dio_event = re;        // needs to be smart-pointer
 }
 
 void network_interface::send_dio(void)
 {
-
+    if(VERBOSE(this))
+        fprintf(this->verbose_file, "sending DIO on if: %s", this->if_name);
 }
 
 void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)

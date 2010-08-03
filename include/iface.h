@@ -96,6 +96,9 @@ public:
         static int foreach_if(int (*func)(network_interface*, void*), void*arg);
         static void remove_marks(void);
 
+        /* event lists */
+        static event_map              things_to_do;
+
 protected:
         static int    gather_linkinfo(const struct sockaddr_nl *who,
                                       struct nlmsghdr *n, void *arg);
@@ -189,8 +192,6 @@ private:
         static struct rtnl_handle      *netlink_handle;
         static bool                     open_netlink(void);
 
-        /* event lists */
-        static event_map              things_to_do;
 };
 
 #define ND_OPT_RPL_PRIVATE_DAO 200

@@ -46,7 +46,7 @@ public:
     const char *event_name();
 
     /* invoke this event */
-    void doit(void);
+    bool doit(void);
     bool passed(struct timeval &now) {
         return (alarm_time.tv_sec  <= now.tv_sec &&
                 alarm_time.tv_usec <= now.tv_usec);
@@ -58,24 +58,39 @@ public:
     const int           miliseconds_util(void);
     const int           miliseconds_util(struct timeval &now);
 
+    void requeue(void);
+    void requeue(struct timeval &now);
+
     /* dump this event for humans */
     void printevent(FILE *out);
+
+    /* the associated iface for this event */
+    network_interface  *interface;
 
     struct timeval      alarm_time;
 
 private:
+    void set_alarm(struct timeval &relative,
+                   unsigned int sec, unsigned int msec)
+    {
+        last_time  = relative;
+        repeat_sec = sec;
+        repeat_msec= msec;
+        alarm_time.tv_sec  = relative.tv_sec  + sec;
+        alarm_time.tv_usec = relative.tv_usec + msec*1000;
+    };
     void init_event(struct timeval &relative,
               unsigned int sec, unsigned int msec,
               event_types t, const char *reason) {
+        set_alarm(relative, sec, msec);
         event_type = t;
-        alarm_time.tv_sec  = relative.tv_sec  + sec;
-        alarm_time.tv_usec = relative.tv_usec + msec*1000;
         mReason[0]='\0';
         strncat(mReason, reason, sizeof(mReason));
     };
 
+    unsigned int        repeat_sec;
+    unsigned int        repeat_msec;
     struct timeval      last_time;
-    network_interface  *interface;
     char mReason[16];
 
 };
@@ -95,9 +110,9 @@ public:
     }
 };  
 
-typedef std::map<struct timeval,rpl_event,rpl_eventless>           event_map;
-typedef std::map<struct timeval,rpl_event,rpl_eventless>::iterator event_map_iterator;
-typedef std::map<struct timeval,rpl_event,rpl_eventless>::reverse_iterator event_map_riterator;
+typedef std::map<struct timeval,rpl_event *,rpl_eventless>           event_map;
+typedef std::map<struct timeval,rpl_event *,rpl_eventless>::iterator event_map_iterator;
+typedef std::map<struct timeval,rpl_event *,rpl_eventless>::reverse_iterator event_map_riterator;
 
 void printevents(FILE *out, event_map em);
 
