@@ -82,9 +82,14 @@ private:
         last_time  = relative;
         repeat_sec = sec;
         repeat_msec= msec;
-        alarm_time.tv_sec  = relative.tv_sec  + sec;
         alarm_time.tv_usec = relative.tv_usec + msec*1000;
+        alarm_time.tv_sec  = relative.tv_sec  + sec;
+        while(alarm_time.tv_usec > 1000000) {
+            alarm_time.tv_usec -= 1000000;
+            alarm_time.tv_sec++;
+        }
     };
+
     void init_event(struct timeval &relative,
               unsigned int sec, unsigned int msec,
               event_types t, const char *reason) {
