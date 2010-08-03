@@ -10,6 +10,7 @@ extern "C" {
 }
 
 #include <map>
+#include "debug.h"
 
 class dag_network;
 class rpl_less;
@@ -30,7 +31,9 @@ public:
         };
         const char *node_name();
         const struct in6_addr& node_number() { return nodeip; };
-        void  makevalid(const struct in6_addr v6, const dag_network *dn);
+        void  makevalid(const struct in6_addr v6,
+                        const dag_network *dn, rpl_debug *deb);
+        rpl_debug *debug;
         
 protected:
         struct in6_addr nodeip;

@@ -4,6 +4,7 @@
 #include "rpl.h"
 #include "node.h"
 #include "prefix.h"
+#include "debug.h"
 
 typedef u_int8_t dagid_t[DAGID_LEN];
 
@@ -25,25 +26,14 @@ public:
         ~dag_network();
         static class dag_network *find_by_dagid(dagid_t dagid);
         static class dag_network *find_or_make_by_dagid(dagid_t dagid,
-                                                        bool verbose_flag,
-                                                        FILE *verbose_file);
+                                                        rpl_debug *debug);
 
         int cmp_dag(dagid_t n_dagid) {
                 return memcmp(mDagid, n_dagid, DAGID_LEN);
         };
 
-        /* debugging -- refactor me */
-	bool                    verbose_flag;
-	FILE                   *verbose_file;
-        bool                    verbose_test() {
-                return(verbose_flag && verbose_file!=NULL);
-        };
-	void set_verbose(bool flag) { verbose_flag = flag; }
-	void set_verbose(bool flag, FILE *out) {
-		verbose_flag = flag;
-		verbose_file = out;
-	}
-	int  verboseprint() { return verbose_flag; }
+	void set_debug(rpl_debug *deb) { debug = deb; };
+        rpl_debug        *debug;
 
         /* prime key for the DAG */
         dagid_t                    mDagid;

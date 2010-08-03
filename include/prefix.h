@@ -11,6 +11,7 @@ extern "C" {
 }
 
 #include <map>
+#include "debug.h"
 
 class network_interface;
 class dag_network;
@@ -23,8 +24,8 @@ public:
             valid     = false;
             installed = false;
         };
-        prefix_node(rpl_node *announcer, ip_subnet sub);
-        prefix_node(const struct in6_addr v6, const int prefixlen);
+        prefix_node(rpl_debug *deb, rpl_node *announcer, ip_subnet sub);
+        prefix_node(rpl_debug *deb, const struct in6_addr v6, const int prefixlen);
         bool validP() { return valid; };
 
         const char *node_name();
@@ -39,13 +40,22 @@ public:
         void set_prefix(const struct in6_addr v6, const int prefixlen);
         void set_prefix(ip_subnet prefix);
 
+        void set_debug(rpl_debug *deb) { debug = deb; };
+
         ip_subnet &get_prefix() {
             return mPrefix;
         };
         
 protected:
         ip_subnet    mPrefix;
-        void         verbose_log(const char *fmt, ...);
+        rpl_debug   *debug;
+
+        void         verbose_log(const char *fmt, ...) {
+            va_list vargs;
+            va_start(vargs,fmt);
+
+            debug->logv(fmt, vargs);
+        };
 
 private:
         bool         valid;

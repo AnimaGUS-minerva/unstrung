@@ -24,13 +24,14 @@ extern "C" {
 #include "prefix.h"
 #include "iface.h"
 
-prefix_node::prefix_node(rpl_node *announcer, ip_subnet sub)
+prefix_node::prefix_node(rpl_debug *deb, rpl_node *announcer, ip_subnet sub)
 {
     name[0]='\0';
     mPrefix = sub;
     announced_from = announcer;
     valid = true;
     installed = false;
+    debug = deb;
 }
 
 void prefix_node::set_prefix(const struct in6_addr v6, const int prefixlen)
@@ -76,18 +77,6 @@ void prefix_node::configureip(network_interface *iface)
         iface->addprefix(*this);
     }
 }
-
-void prefix_node::verbose_log(const char *fmt, ...)
-{
-    va_list vargs;
-    va_start(vargs, fmt);
-    
-    if(mDN->verboseprint()) {
-        vfprintf(mDN->verbose_file, fmt, vargs);
-    }
-}
-
-
 
 /*
  * Local Variables:

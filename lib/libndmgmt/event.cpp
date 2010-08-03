@@ -44,6 +44,8 @@ extern "C" {
 
 bool rpl_event::doit(void)
 {
+    fprintf(stderr, "invoking doit on rpl_event %p (if_name=%s)\n",
+            this, interface->get_if_name());
     switch(event_type) {
     case rpl_send_dio:
         if(interface!=NULL) {

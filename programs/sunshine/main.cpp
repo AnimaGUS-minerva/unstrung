@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     bool devices_scanned = false;
 
     network_interface *iface = NULL;
-
+    rpl_debug *deb = new rpl_debug(false, NULL);
 
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
 	switch(c) {
@@ -147,21 +147,21 @@ int main(int argc, char *argv[])
 
         case 'v':
             verbose++;
+            deb = new rpl_debug(verbose, stderr);
             break;
 
         case 'i':
             if(!devices_scanned) {
-                network_interface::scan_devices();
+                network_interface::scan_devices(deb);
                 devices_scanned = true;
             }
             iface = network_interface::find_by_name(optarg);
+            iface->set_debug(deb);
             break;
 	}
     }
 
     if(!iface) usage();
-
-    if(iface) iface->set_verbose(verbose, stderr);
 
     /* should check for already running instance before stomping PID file */
 

@@ -72,6 +72,7 @@ bool network_interface::addprefix(prefix_node &prefix)
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 
                            struct nlmsghdr *n, void *arg)
 {
+    rpl_debug *deb = (rpl_debug *)arg;
     struct ifinfomsg *ifi = (struct ifinfomsg *)NLMSG_DATA(n);
     FILE *fp = stdout;
     struct rtattr * tb[IFLA_MAX+1];
@@ -96,6 +97,7 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     if(ni == NULL) {
         ni = new network_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]));
         ni->if_index = ifi->ifi_index;
+        ni->set_debug(deb);
     }
 
     /* XXX need to use logging interface */
@@ -164,7 +166,7 @@ bool network_interface::open_netlink()
 }
 
 
-void network_interface::scan_devices(void)
+void network_interface::scan_devices(rpl_debug *deb)
 {
 	struct nlmsg_list *linfo = NULL;
 	struct nlmsg_list *ainfo = NULL;
@@ -182,7 +184,7 @@ void network_interface::scan_devices(void)
 	}
 
 	if (rtnl_dump_filter(netlink_handle, gather_linkinfo,
-                             NULL, NULL, NULL) < 0) {
+                             (void *)deb, NULL, NULL) < 0) {
 		fprintf(stderr, "Dump terminated\n");
 		exit(1);
 	}

@@ -179,6 +179,7 @@ int main(int argc, char *argv[])
                 {0,0,0,0},
         };
 
+        class rpl_debug *deb;
         class network_interface *iface;
         bool initted = false;
         memset(icmp_body, 0, sizeof(icmp_body));
@@ -203,9 +204,9 @@ int main(int argc, char *argv[])
                 case 'i':
                         if(!initted) {
                                 if(fakesend) {
-                                        pcap_network_interface::scan_devices();
+                                        pcap_network_interface::scan_devices(deb);
                                 } else {
-                                        network_interface::scan_devices();
+                                        network_interface::scan_devices(deb);
                                 }
                                 initted = true;
                         }
@@ -239,6 +240,7 @@ int main(int argc, char *argv[])
 
 		case 'v':
 			verbose++;
+                        deb = new rpl_debug(verbose, stderr);
 			break;
 
 		case '?':

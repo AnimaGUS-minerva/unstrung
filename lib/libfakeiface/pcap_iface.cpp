@@ -202,7 +202,7 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
         this->filter_and_receive_icmp6(h->ts.tv_sec, bytes, len);
 }
 
-void pcap_network_interface::scan_devices(void)
+void pcap_network_interface::scan_devices(rpl_debug *deb)
 {
         struct sockaddr_nl who;
         unsigned int seq = 0;
@@ -256,7 +256,7 @@ void pcap_network_interface::scan_devices(void)
 
         nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
 
-        gather_linkinfo(&who, (struct nlmsghdr *)&fake1, NULL);
+        gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
 }
 
 
@@ -300,7 +300,8 @@ int process_infile(char *infile, char *outfile)
                 exit(1);
         }
 
-	ndproc->set_verbose(1, stdout);
+        rpl_debug *deb = new rpl_debug(true, stdout);
+	ndproc->set_debug(deb);
 	
 	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)ndproc);
 

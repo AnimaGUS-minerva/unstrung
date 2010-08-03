@@ -54,14 +54,13 @@ void dag_network::remove_from_list(void)
 
 
 class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
-                                                      bool verbose_flag,
-                                                      FILE *verbose_file)
+                                                      rpl_debug *debug)
 {
         class dag_network *dn = find_by_dagid(n_dagid);
         
         if(dn==NULL) {
                 dn = new dag_network(n_dagid);
-                dn->set_verbose(verbose_flag, verbose_file);
+                dn->set_debug(debug);
         }
         return dn;
 }
@@ -153,6 +152,7 @@ void dag_network::addprefix(rpl_node peer,
                             ip_subnet prefix)
 {
     prefix_node &pre = this->dag_prefixes[prefix];
+    pre.set_debug(this->debug);
     pre.set_announcer(&peer);
     pre.set_dn(this);
     pre.set_prefix(prefix);
@@ -228,7 +228,7 @@ void dag_network::receive_dio(network_interface *iface,
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
     rpl_node &peer = this->dag_members[from];
-    peer.makevalid(from, this);
+    peer.makevalid(from, this, this->debug);
     peer.set_last_seen(now);
 
     this->seq_update(dio->rpl_seq);

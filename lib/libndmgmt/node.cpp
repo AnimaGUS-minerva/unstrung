@@ -46,15 +46,18 @@ const char *rpl_node::node_name() {
     }
 };
 
-void rpl_node::makevalid(const struct in6_addr v6, const dag_network *dn)
+void rpl_node::makevalid(const struct in6_addr v6,
+                         const dag_network *dn,
+                         rpl_debug *deb)
 {
     if(!valid) {
         nodeip = v6;
         mDN    = dn;
         valid  = true;
-            
-        if(1 /* mDN->iface->verbose_test()*/) {
-            fprintf(stderr /* this->verbose_file*/, "  new RPL node: %s \n",
+        this->debug  = deb;
+        
+        if(debug->verbose_test()) {
+            fprintf(debug->file, "  new RPL node: %s \n",
                     node_name());
         }
     }

@@ -16,6 +16,7 @@ extern "C" {
 #define HWADDR_MAX 16
 #include "prefix.h"
 #include "event.h"
+#include "debug.h"
 
 enum network_interface_exceptions {
         TOOSHORT = 1,
@@ -37,12 +38,8 @@ public:
 	int errors(void) {
 		return error_cnt;
 	}
-	void set_verbose(bool flag) { verbose_flag = flag; }
-	void set_verbose(bool flag, FILE *out) {
-		verbose_flag = flag;
-		verbose_file = out;
-	}
-	int  verboseprint() { return verbose_flag; }
+
+	void set_debug(class rpl_debug *deb) { debug = deb; }
 
 	virtual void receive_packet(struct in6_addr ip6_src,
 				    struct in6_addr ip6_dst,
@@ -89,7 +86,7 @@ public:
         char *eui48_str(char *str, int strlen);
         char *eui64_str(char *str, int strlen);
         
-        static void scan_devices(void);
+        static void scan_devices(rpl_debug *deb);
         static void main_loop(FILE *verbose);
         static network_interface *find_by_ifindex(int ifindex);
         static network_interface *find_by_name(const char *name);
@@ -139,19 +136,11 @@ private:
 	time_t			last_multicast_sec;
 	suseconds_t		last_multicast_usec;
         
-
-        /* debugging */
-	bool                    verbose_flag;
-	FILE                   *verbose_file;
-        bool                    verbose_test() {
-                return(verbose_flag && verbose_file!=NULL);
-        };
-#define VERBOSE(X) ((X)->verbose_test())
-
-
-
         unsigned char          *control_msg_hdr;
         unsigned int            control_msg_hdrlen;
+
+        /* debugging */
+        rpl_debug              *debug;
 
         /* read from our network socket and process result */
         void receive(time_t now);

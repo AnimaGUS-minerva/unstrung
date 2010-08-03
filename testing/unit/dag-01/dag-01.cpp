@@ -15,6 +15,9 @@ extern "C" {
 
 #include "iface.h"
 #include "dag.h"
+#include "debug.h"
+
+rpl_debug *debug;
 
 /* TEST1: a DN shall have a dagid */
 static void t1(void)
@@ -95,7 +98,7 @@ static void t5(void)
         d[1]='5';
         
         /* verify that we can not find it */
-        class dag_network *dn2 = dag_network::find_or_make_by_dagid(d, true, stderr);
+        class dag_network *dn2 = dag_network::find_or_make_by_dagid(d, debug);
         assert(dn2 != NULL);
 
         assert(dn2->mDagid[0]=='T');
@@ -105,6 +108,8 @@ static void t5(void)
 int main(int argc, char *argv[])
 {
 	int i;
+
+        debug = new rpl_debug(true, stderr);
 
         printf("dag-01 t1\n");        t1();
         printf("dag-01 t2\n");        t2();

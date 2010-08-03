@@ -404,7 +404,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     char dst_addrbuf[INET6_ADDRSTRLEN];
 
     /* should collect this all into a "class packet", or "class transaction" */
-    if(this->verbose_flag) {
+    if(this->debug->flag) {
 	inet_ntop(AF_INET6, &ip6_src, src_addrbuf, INET6_ADDRSTRLEN);
 	inet_ntop(AF_INET6, &ip6_dst, dst_addrbuf, INET6_ADDRSTRLEN);
     }

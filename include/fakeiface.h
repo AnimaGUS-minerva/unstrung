@@ -12,6 +12,8 @@ extern "C" {
 
 }
 
+#include "debug.h"
+
 extern int process_infile(char *infile, char *outfile);
 
 class pcap_network_interface : public network_interface {
@@ -24,7 +26,7 @@ public:
 	void increment_packet(void)   { packet_count++; };
 	unsigned int packet_num(void) { return packet_count; };
 
-        static void scan_devices(void);
+        static void scan_devices(rpl_debug *deb);
 
 protected:
         void filter_and_receive_icmp6(const time_t now,
