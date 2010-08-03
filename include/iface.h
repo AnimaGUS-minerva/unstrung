@@ -19,7 +19,7 @@ extern "C" {
 #include "debug.h"
 
 enum network_interface_exceptions {
-        TOOSHORT = 1,
+    TOOSHORT = 1,
 };
 
 class network_interface {
@@ -27,159 +27,159 @@ class network_interface {
 public:
     bool mark;
 
-	int announce_network();
-	network_interface();
-	network_interface(int fd);
-	network_interface(const char *if_name);
+    int announce_network();
+    network_interface();
+    network_interface(int fd);
+    network_interface(const char *if_name);
 
-        // setup the object, open sockets, etc.
-        bool setup(void);
+    // setup the object, open sockets, etc.
+    bool setup(void);
 
-	int errors(void) {
-		return error_cnt;
-	}
+    int errors(void) {
+        return error_cnt;
+    }
 
-	void set_debug(class rpl_debug *deb) { debug = deb; }
+    void set_debug(class rpl_debug *deb) { debug = deb; }
 
-	virtual void receive_packet(struct in6_addr ip6_src,
-				    struct in6_addr ip6_dst,
-                                    time_t          now,
-				    const u_char *bytes, const int len);
+    virtual void receive_packet(struct in6_addr ip6_src,
+                                struct in6_addr ip6_dst,
+                                time_t          now,
+                                const u_char *bytes, const int len);
 
-        void receive_dao(const u_char *dao_bytes, const int dao_len);
-        void receive_dio(struct in6_addr from,
-                         time_t          now,
-                         const u_char *dio_bytes, const int dio_len);
+    void receive_dao(const u_char *dao_bytes, const int dao_len);
+    void receive_dio(struct in6_addr from,
+                     time_t          now,
+                     const u_char *dio_bytes, const int dio_len);
 
-        void send_dio(void);
-        void send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len);
-        int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
+    void send_dio(void);
+    void send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len);
+    int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 
-        void set_if_name(const char *ifname);
-        const char *get_if_name(void) { return if_name; };
-        void set_rpl_dagid(const char *dagstr);
-        void set_rpl_dagrank(const int dagrank) {
-                rpl_dagrank = dagrank;
-        };
-        void set_rpl_sequence(const int sequence) {
-                rpl_sequence = sequence;
-        };
-        void set_rpl_instanceid(const int instanceid) {
-                rpl_instanceid = instanceid;
-        };
-        void set_rpl_prefix(const ip_subnet prefix) {
-            rpl_prefix = prefix;
-        };
-        void set_rpl_interval(const int msec);
+    void set_if_name(const char *ifname);
+    const char *get_if_name(void) { return if_name; };
+    void set_rpl_dagid(const char *dagstr);
+    void set_rpl_dagrank(const int dagrank) {
+        rpl_dagrank = dagrank;
+    };
+    void set_rpl_sequence(const int sequence) {
+        rpl_sequence = sequence;
+    };
+    void set_rpl_instanceid(const int instanceid) {
+        rpl_instanceid = instanceid;
+    };
+    void set_rpl_prefix(const ip_subnet prefix) {
+        rpl_prefix = prefix;
+    };
+    void set_rpl_interval(const int msec);
 
-        void update_multicast_time(void) {
-		struct timeval tv;
+    void update_multicast_time(void) {
+        struct timeval tv;
 
-		gettimeofday(&tv, NULL);
+        gettimeofday(&tv, NULL);
 
-		last_multicast_sec = tv.tv_sec;
-		last_multicast_usec = tv.tv_usec;
-        };
-        bool addprefix(prefix_node &prefix);
+        last_multicast_sec = tv.tv_sec;
+        last_multicast_usec = tv.tv_usec;
+    };
+    bool addprefix(prefix_node &prefix);
 
-        /* eui string functions */
-        char *eui48_str(char *str, int strlen);
-        char *eui64_str(char *str, int strlen);
+    /* eui string functions */
+    char *eui48_str(char *str, int strlen);
+    char *eui64_str(char *str, int strlen);
         
-        static void scan_devices(rpl_debug *deb);
-        static void main_loop(FILE *verbose);
-        static network_interface *find_by_ifindex(int ifindex);
-        static network_interface *find_by_name(const char *name);
-        static int foreach_if(int (*func)(network_interface*, void*), void*arg);
-        static void remove_marks(void);
+    static void scan_devices(rpl_debug *deb);
+    static void main_loop(FILE *verbose);
+    static network_interface *find_by_ifindex(int ifindex);
+    static network_interface *find_by_name(const char *name);
+    static int foreach_if(int (*func)(network_interface*, void*), void*arg);
+    static void remove_marks(void);
 
-        /* event lists */
-        static event_map              things_to_do;
+    /* event lists */
+    static event_map              things_to_do;
 
 protected:
-        static int    gather_linkinfo(const struct sockaddr_nl *who,
-                                      struct nlmsghdr *n, void *arg);
+    static int    gather_linkinfo(const struct sockaddr_nl *who,
+                                  struct nlmsghdr *n, void *arg);
 
 private:
-	int packet_too_short(const char *thing, const int avail, const int needed);
-	int                     nd_socket;
-	int                     error_cnt;
+    int packet_too_short(const char *thing, const int avail, const int needed);
+    int                     nd_socket;
+    int                     error_cnt;
 
-        int                     get_if_index(void);
-        int                     if_index;      /* cached value for above */
+    int                     get_if_index(void);
+    int                     if_index;      /* cached value for above */
 
-        char                    if_name[IFNAMSIZ];
-        struct in6_addr         if_addr;
-	int			if_prefix_len;
+    char                    if_name[IFNAMSIZ];
+    struct in6_addr         if_addr;
+    int			if_prefix_len;
 
-	uint8_t			if_hwaddr[HWADDR_MAX];
-	int			if_hwaddr_len;
+    uint8_t			if_hwaddr[HWADDR_MAX];
+    int			if_hwaddr_len;
 
-	int			if_maxmtu;
+    int			if_maxmtu;
 
-        /* list states */
-        bool                    on_list;
-        bool                    alive;
+    /* list states */
+    bool                    on_list;
+    bool                    alive;
 
-        /* RiPpLe statistics */
-        int                     rpl_grounded;
-        int                     rpl_sequence;
-        int                     rpl_instanceid;
-        int                     rpl_dagrank;
-        unsigned char           rpl_dagid[16];
-        unsigned int            rpl_dio_lifetime;
-        ip_subnet               rpl_prefix;
-        unsigned int            rpl_interval_msec;
+    /* RiPpLe statistics */
+    int                     rpl_grounded;
+    int                     rpl_sequence;
+    int                     rpl_instanceid;
+    int                     rpl_dagrank;
+    unsigned char           rpl_dagid[16];
+    unsigned int            rpl_dio_lifetime;
+    ip_subnet               rpl_prefix;
+    unsigned int            rpl_interval_msec;
         
 
-        /* timers */
-	time_t			last_multicast_sec;
-	suseconds_t		last_multicast_usec;
+    /* timers */
+    time_t			last_multicast_sec;
+    suseconds_t		last_multicast_usec;
         
-        unsigned char          *control_msg_hdr;
-        unsigned int            control_msg_hdrlen;
+    unsigned char          *control_msg_hdr;
+    unsigned int            control_msg_hdrlen;
 
-        /* debugging */
-        rpl_debug              *debug;
+    /* debugging */
+    rpl_debug              *debug;
 
-        /* read from our network socket and process result */
-        void receive(time_t now);
+    /* read from our network socket and process result */
+    void receive(time_t now);
 
-        /* private helper functions */
-        void setup_allrouters_membership(void);
-        void check_allrouters_membership(void);
+    /* private helper functions */
+    void setup_allrouters_membership(void);
+    void check_allrouters_membership(void);
 
-        /* space to format various messages */
-        int append_dio_suboption(unsigned char *buff,
-                                 unsigned int buff_len,
-                                 enum RPL_DIO_SUBOPT subopt_type,
-                                 unsigned char *subopt_data,
-                                 unsigned int subopt_len);
-        int append_dio_suboption(unsigned char *buff,
-                                 unsigned int buff_len,
-                                 enum RPL_DIO_SUBOPT subopt_type);
-        int build_prefix_dioopt(ip_subnet prefix);
+    /* space to format various messages */
+    int append_dio_suboption(unsigned char *buff,
+                             unsigned int buff_len,
+                             enum RPL_DIO_SUBOPT subopt_type,
+                             unsigned char *subopt_data,
+                             unsigned int subopt_len);
+    int append_dio_suboption(unsigned char *buff,
+                             unsigned int buff_len,
+                             enum RPL_DIO_SUBOPT subopt_type);
+    int build_prefix_dioopt(ip_subnet prefix);
 
-        unsigned char           optbuff[256];
-        unsigned int            optlen;
+    unsigned char           optbuff[256];
+    unsigned int            optlen;
 
-        /* interface to netlink */
-        void                    generate_eui64();
-        unsigned char           eui48[6];
-        unsigned char           eui64[8];
-        prefix_map              ipv6_prefix_list;  /* always /128 networks */
+    /* interface to netlink */
+    void                    generate_eui64();
+    unsigned char           eui48[6];
+    unsigned char           eui64[8];
+    prefix_map              ipv6_prefix_list;  /* always /128 networks */
 
 
-        /* maintain list of all interfaces */
-        void add_to_list(void);
+    /* maintain list of all interfaces */
+    void add_to_list(void);
 
-        /* this is global to all the interfaces */
-        class network_interface        *next;
-        static class network_interface *all_if;
-        static int                      if_count(void);
+    /* this is global to all the interfaces */
+    class network_interface        *next;
+    static class network_interface *all_if;
+    static int                      if_count(void);
 
-        static struct rtnl_handle      *netlink_handle;
-        static bool                     open_netlink(void);
+    static struct rtnl_handle      *netlink_handle;
+    static bool                     open_netlink(void);
 
 };
 
