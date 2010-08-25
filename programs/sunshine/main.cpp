@@ -157,6 +157,7 @@ int main(int argc, char *argv[])
             }
             iface = network_interface::find_by_name(optarg);
             iface->set_debug(deb);
+            iface->setup();
             break;
 	}
     }
