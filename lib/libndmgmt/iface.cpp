@@ -141,7 +141,6 @@ bool network_interface::setup()
     if(alive && nd_socket != -1) return true;
 
     debug->verbose("Starting setup for %s\n", this->if_name);
-    }
     
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
     struct icmp6_filter filter;
@@ -425,7 +424,6 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
         default:
             debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);
-            }
             break;
         }
         return;
@@ -437,7 +435,6 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	debug->warn("Got router solicitation from %s with %u bytes of options\n",
 		    src_addrbuf,
 		    bytes_end - (u_char *)nd_options);
-	}
     }
     break;
 
