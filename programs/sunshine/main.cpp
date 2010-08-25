@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
         fclose(pidfile);
     }
 
-    network_interface::main_loop(stderr);
+    network_interface::main_loop(stderr, deb);
 
     exit(0);
 }

@@ -87,7 +87,7 @@ public:
     char *eui64_str(char *str, int strlen);
         
     static void scan_devices(rpl_debug *deb);
-    static void main_loop(FILE *verbose);
+    static void main_loop(FILE *verbose, rpl_debug *debug);
     static network_interface *find_by_ifindex(int ifindex);
     static network_interface *find_by_name(const char *name);
     static int foreach_if(int (*func)(network_interface*, void*), void*arg);

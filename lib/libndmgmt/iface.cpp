@@ -717,7 +717,7 @@ int network_interface::if_count(void)
 
 event_map network_interface::things_to_do;
 
-void network_interface::main_loop(FILE *verbose)
+void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 {
     bool done = false;
 
@@ -766,21 +766,22 @@ void network_interface::main_loop(FILE *verbose)
          */
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
-            poll_if[pollnum].fd = iface->nd_socket;
-            poll_if[pollnum].events = POLLIN;
-            poll_if[pollnum].revents= 0;
-            all_if[pollnum] = iface;
+            debug->log("iface %s has socketfd: %d",
+                       iface->if_name, iface->nd_socket);
+            if(iface->nd_socket != -1) {
+                poll_if[pollnum].fd = iface->nd_socket;
+                poll_if[pollnum].events = POLLIN;
+                poll_if[pollnum].revents= 0;
+                all_if[pollnum] = iface;
             
-            pollnum++;
+                pollnum++;
+            }
             iface = iface->next;
         }
 
         /* now poll for input */
-        if(verbose) {
-            fprintf(verbose,
-                    "sleeping with %d file descriptors, for %d ms\n",
+        debug->log("sleeping with %d file descriptors, for %d ms\n",
                     pollnum, timeout);
-        }
         int n = poll(poll_if, pollnum, timeout);
         
         if(n == 0) {
@@ -788,9 +789,9 @@ void network_interface::main_loop(FILE *verbose)
         } else if(n > 0) {
             /* there is data ready */
             for(int i=0; i < pollnum && n > 0; i++) {
-                if(verbose) fprintf(verbose, "checking source %u -> %s\n",
-                                    i,
-                                    poll_if[i].revents & POLLIN ? "ready" : "no-data");
+                debug->log("checking source %u -> %s\n",
+                           i,
+                           poll_if[i].revents & POLLIN ? "ready" : "no-data");
                 time_t now;
                 time(&now);
                                     
