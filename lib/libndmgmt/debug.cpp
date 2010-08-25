@@ -23,14 +23,33 @@ void rpl_debug::logv(const char *fmt, va_list vargs)
 {
     if(flag) {
         vfprintf(file, fmt, vargs);
+
+#if 0
         int len = strlen(fmt);
         if(len > 1 && fmt[len-1]!='\n') {
             fputc('\n', file);
         }
+#endif
     }
 }
 
 void rpl_debug::log(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    logv(fmt, vargs);
+}
+
+void rpl_debug::warn(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    logv(fmt, vargs);
+}
+
+void rpl_debug::verbose(const char *fmt, ...)
 {
     va_list vargs;
     va_start(vargs,fmt);

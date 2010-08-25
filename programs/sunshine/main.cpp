@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 {
     int c;
     char *ifname = NULL;
-    int verbose = 0;
+    bool verbose = false;
     bool bedaemon = false;
 
     progname = argv[0];
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'v':
-            verbose++;
+            verbose=true;
             deb = new rpl_debug(verbose, stderr);
             break;
 

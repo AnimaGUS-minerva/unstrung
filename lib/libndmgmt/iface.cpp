@@ -140,8 +140,7 @@ bool network_interface::setup()
     
     if(alive && nd_socket != -1) return true;
 
-    if(VERBOSE(this)) {
-        fprintf(this->verbose_file, "Starting setup for %s\n", this->if_name);
+    debug->verbose("Starting setup for %s\n", this->if_name);
     }
     
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
@@ -404,7 +403,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     char dst_addrbuf[INET6_ADDRSTRLEN];
 
     /* should collect this all into a "class packet", or "class transaction" */
-    if(this->debug->flag) {
+    if(this->debug->verbose_test()) {
 	inet_ntop(AF_INET6, &ip6_src, src_addrbuf, INET6_ADDRSTRLEN);
 	inet_ntop(AF_INET6, &ip6_dst, dst_addrbuf, INET6_ADDRSTRLEN);
     }
@@ -425,8 +424,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
             break;
 
         default:
-            if(VERBOSE(this)) {
-                fprintf(this->verbose_file, "Got unknown RPL code: %u\n", icmp6->icmp6_code);
+            debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);
             }
             break;
         }
@@ -436,8 +434,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     {
 	struct nd_router_solicit *nrs = (struct nd_router_solicit *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nrs[1];
-	if(VERBOSE(this)) {
-	    fprintf(this->verbose_file, "Got router solicitation from %s with %u bytes of options\n",
+	debug->warn("Got router solicitation from %s with %u bytes of options\n",
 		    src_addrbuf,
 		    bytes_end - (u_char *)nd_options);
 	}
@@ -448,8 +445,10 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     {
 	struct nd_router_advert *nra = (struct nd_router_advert *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nra[1];
-	if(VERBOSE(this)) {
-	    fprintf(this->verbose_file, "Got router advertisement from %s (hoplimit: %u, flags=%s%s%s, lifetime=%ums, reachable=%u, retransmit=%u)\n  with %u bytes of options\n",
+	if(debug->verbose_test()) {
+	    debug->verbose("Got router advertisement from %s \n"
+                           "\t(hoplimit: %u, flags=%s%s%s, lifetime=%ums, reachable=%u, retransmit=%u)\n"
+                           "\twith %u bytes of options\n",
 		    src_addrbuf,
 		    nra->nd_ra_curhoplimit,
 		    nra->nd_ra_flags_reserved & ND_RA_FLAG_MANAGED ? "managed " : "",
@@ -467,10 +466,10 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     {
 	struct nd_neighbor_solicit *nns = (struct nd_neighbor_solicit *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nns[1];
-	if(VERBOSE(this)) {
+	if(debug->verbose_test()) {
 	    char target_addrbuf[INET6_ADDRSTRLEN];
 	    inet_ntop(AF_INET6, &nns->nd_ns_target, target_addrbuf, INET6_ADDRSTRLEN);
-	    fprintf(this->verbose_file, "Got neighbour solicitation from %s, looking for %s, has %u bytes of options\n",
+	    debug->verbose("Got neighbour solicitation from %s, looking for %s, has %u bytes of options\n",
 		    src_addrbuf,
 		    target_addrbuf,
 		    bytes_end - (u_char *)nd_options);
@@ -482,10 +481,10 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     {
 	struct nd_neighbor_advert *nna = (struct nd_neighbor_advert *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nna[1];
-	if(VERBOSE(this)) {
+	if(debug->verbose_test()) {
 	    char target_addrbuf[INET6_ADDRSTRLEN];
 	    inet_ntop(AF_INET6, &nna->nd_na_target, target_addrbuf, INET6_ADDRSTRLEN);
-	    fprintf(this->verbose_file, "Got neighbor advertisement from %s (flags=%s%s%s), advertising: %s, has %u bytes of options\n",
+            debug->verbose("Got neighbor advertisement from %s (flags=%s%s%s), advertising: %s, has %u bytes of options\n",
 		    src_addrbuf,
 		    nna->nd_na_flags_reserved & ND_NA_FLAG_ROUTER ? "router " : "",
 		    nna->nd_na_flags_reserved & ND_NA_FLAG_SOLICITED ? "solicited " : "",
@@ -513,17 +512,17 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 				  (bytes_end - bytes),
 				  optlen)) return;
 
-	if(VERBOSE(this)) {
-	    fprintf(this->verbose_file, "    option %u[%u]",
-		    nd_options->nd_opt_type, optlen);
+	if(debug->verbose_test()) {
+            debug->verbose("    option %u[%u]",
+                           nd_options->nd_opt_type, optlen);
 	}
 	switch(nd_options->nd_opt_type) {
 	case ND_OPT_SOURCE_LINKADDR:
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " source-linkaddr \n");
+            debug->verbose(" source-linkaddr \n");
 	    break;
 
 	case ND_OPT_TARGET_LINKADDR:
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " target-linkaddr \n");
+	    debug->verbose(" target-linkaddr \n");
 	    break;
 
 	case ND_OPT_PREFIX_INFORMATION:
@@ -533,7 +532,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 				      optlen,
 				      sizeof(struct nd_opt_prefix_info))) return;
 	    
-	    if(VERBOSE(this)) {
+	    if(debug->verbose_test()) {
 		char prefix_addrbuf[INET6_ADDRSTRLEN];
 		inet_ntop(AF_INET6, &nopi->nd_opt_pi_prefix, prefix_addrbuf, INET6_ADDRSTRLEN);
 		fprintf(this->verbose_file, " prefix %s/%u (valid=%us, preferred=%us) flags=%s%s%s\n",
@@ -548,24 +547,24 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	break;
 
 	case ND_OPT_REDIRECTED_HEADER:
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " redirected \n");
+	    debug->verbose(" redirected \n");
 	    break;
 
 	case ND_OPT_MTU:
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " mtu \n");
+            debug->verbose(" mtu \n");
 	    break;
 
 	case ND_OPT_RTR_ADV_INTERVAL:
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " rtr-interval \n");
+	    debug->verbose(" rtr-interval \n");
 	    break;
 
 	case ND_OPT_HOME_AGENT_INFO:
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " home-agent-info \n");
+	    debug->verbose(" home-agent-info \n");
 	    break;
 
 	case ND_OPT_RPL_PRIVATE_DAO:
 	    /* SHOULD validate that this arrived in an NA */
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " rpl_dao \n");
+	    debug->verbose(" rpl_dao \n");
             {
                 const u_char *nd_dao = (u_char *)nd_options;
                 this->receive_dao(nd_dao+2, optlen-2);
@@ -574,7 +573,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
 	case ND_OPT_RPL_PRIVATE_DIO:
 	    /* SHOULD validate that this arrived in an RA */
-	    if(VERBOSE(this)) fprintf(this->verbose_file, " rpl_dio \n");
+	    debug->verbose(" rpl_dio \n");
             {
                 const u_char *nd_dio = (u_char *)nd_options;
                 this->receive_dio(ip6_src, now, nd_dio+2, optlen-2);
@@ -661,8 +660,8 @@ void network_interface::receive(const time_t now)
                 }
                 else
                 {
-                    fprintf(this->verbose_file, "received a bogus IPV6_HOPLIMIT from the kernel! len=%d, data=%d",
-                            cmsg->cmsg_len, *(int *)CMSG_DATA(cmsg));
+                    debug->warn("received a bogus IPV6_HOPLIMIT from the kernel! len=%d, data=%d",
+                               cmsg->cmsg_len, *(int *)CMSG_DATA(cmsg));
                     return;	
                 }  
                 break;
@@ -676,8 +675,8 @@ void network_interface::receive(const time_t now)
                 }
                 else
                 {
-                    fprintf(this->verbose_file, "received a bogus IPV6_PKTINFO from the kernel! len=%d, index=%d", 
-                            cmsg->cmsg_len, ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex);
+                    debug->warn("received a bogus IPV6_PKTINFO from the kernel! len=%d, index=%d", 
+                               cmsg->cmsg_len, ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex);
                     return;
                 } 
                 break;
@@ -687,15 +686,16 @@ void network_interface::receive(const time_t now)
         dst = pkt_info->ipi6_addr;
         src = src_sock.sin6_addr;
         
-        if(VERBOSE(this)) {
+        if(debug->verbose_test()) {
             char src_addrbuf[INET6_ADDRSTRLEN];
             char dst_addrbuf[INET6_ADDRSTRLEN];
 
             inet_ntop(AF_INET6, &src, src_addrbuf, INET6_ADDRSTRLEN);
             inet_ntop(AF_INET6, &dst, dst_addrbuf, INET6_ADDRSTRLEN);
 
-            fprintf(this->verbose_file, "received packet from %s -> %s[%u]\n",
-                    src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex);
+            debug->verbose(" %s: received packet from %s -> %s[%u]\n",
+                           if_name, 
+                           src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex);
         }
 
         this->receive_packet(src, dst, now, b, len);
@@ -766,7 +766,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
          */
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
-            debug->log("iface %s has socketfd: %d",
+            debug->log("iface %s has socketfd: %d\n",
                        iface->if_name, iface->nd_socket);
             if(iface->nd_socket != -1) {
                 poll_if[pollnum].fd = iface->nd_socket;

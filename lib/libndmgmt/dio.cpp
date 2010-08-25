@@ -59,8 +59,8 @@ void network_interface::receive_dio(struct in6_addr from,
                                     const  time_t now,
                                     const u_char *dat, const int dio_len)
 {
-    if(VERBOSE(this)) {
-        fprintf(this->verbose_file, " processing dio(%u)\n",dio_len);
+    if(debug->verbose_test()) {
+        debug->verbose(" processing dio(%u)\n",dio_len);
     }
 
     struct nd_rpl_dio *dio = (struct nd_rpl_dio *)dat;

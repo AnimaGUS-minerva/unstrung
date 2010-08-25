@@ -23,6 +23,8 @@ public:
 #define verbose_file debug->file
 
         void log(const char *fmt, ...);
+        void warn(const char *fmt, ...);
+        void verbose(const char *fmt, ...);
         void logv(const char *fmt, va_list vargs);
 };
 
