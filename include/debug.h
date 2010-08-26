@@ -20,6 +20,11 @@ public:
         bool                    verbose_test() {
                 return(flag && file!=NULL);
         };
+
+        void set_verbose(FILE *f) {
+                file = f;
+                flag = true;
+        }
 #define verbose_file debug->file
 
         void log(const char *fmt, ...);

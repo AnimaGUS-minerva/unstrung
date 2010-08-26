@@ -146,8 +146,8 @@ int main(int argc, char *argv[])
             break;
 
         case 'v':
-            verbose=true;
-            deb = new rpl_debug(verbose, stderr);
+            verbose=true;            
+            deb->set_verbose(stderr);
             break;
 
         case 'i':
