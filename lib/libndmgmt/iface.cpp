@@ -133,13 +133,11 @@ char *network_interface::eui48_str(char *str, int strlen)
 
 bool network_interface::setup()
 {
-    if(alive) return true;
+    if(alive && nd_socket != -1) return true;
 
     rpl_dio_lifetime = 0;       // zero out to avoid garbage.
     generate_eui64();
     
-    if(alive && nd_socket != -1) return true;
-
     debug->verbose("Starting setup for %s\n", this->if_name);
     
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
