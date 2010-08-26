@@ -69,6 +69,7 @@ public:
     };
     void set_rpl_prefix(const ip_subnet prefix) {
         rpl_prefix = prefix;
+        subnettot(&prefix, 0, rpl_prefix_str, sizeof(rpl_prefix_str));
     };
     void set_rpl_interval(const int msec);
 
@@ -129,6 +130,8 @@ private:
     unsigned char           rpl_dagid[16];
     unsigned int            rpl_dio_lifetime;
     ip_subnet               rpl_prefix;
+    char                    rpl_prefix_str[SUBNETTOT_BUF];
+
     unsigned int            rpl_interval_msec;
         
 
