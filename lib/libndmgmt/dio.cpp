@@ -102,9 +102,16 @@ void network_interface::set_rpl_interval(const int msec)
 
 void network_interface::send_dio(void)
 {
-    debug->log("sending DIO on if: %s\n", this->if_name);
+    unsigned char icmp_body[2048];
+
+    debug->log("sending DIO on if: %s for prefix: %s\n",
+               this->if_name, this->rpl_prefix_str);
+    memset(icmp_body, 0, sizeof(icmp_body));
     
-    
+    unsigned int icmp_len = build_dio(icmp_body, sizeof(icmp_body),
+                                      rpl_prefix);
+
+    send_raw_dio(icmp_body, icmp_len);
 }
 
 
