@@ -166,7 +166,7 @@ setup_host_make() {
     depends="$depends $hostroot/etc/fstab"
 
     echo "$hostroot/lib/modules/stamp: ${KERNDIR}/.config"
-    echo "${TAB}(cd ${KERNDIR} && make ARCH=um INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules_install)"
+    echo "${TAB}(cd ${KERNDIR} && make ARCH=um INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules modules_install)"
     echo "${TAB}touch ${hostroot}/lib/modules/stamp"
     echo ""
     depends="$depends $hostroot/lib/modules/stamp"
@@ -204,7 +204,7 @@ setup_host_make() {
 	    echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB # the umlroot= is a local hack >>$startscript"
-	    echo "$TAB echo '$POOLSPACE/plain${KERNVER}/linux initrd=$POOLSPACE/initrd.cpio umlroot=$POOLSPACE/$hostroot root=/dev/ram0 rw ssl=pty umid=$host \$\$net \$\$UML_DEBUG_OPT \$\$UML_"${host}"_OPT  rdinit=/linuxrc gim\$\$*' >>$startscript"
+	    echo "$TAB echo '$POOLSPACE/plain${KERNVER}/vmlinux initrd=$POOLSPACE/initrd.cpio umlroot=$POOLSPACE/$hostroot root=/dev/ram0 rw ssl=pty umid=$host \$\$net \$\$UML_DEBUG_OPT \$\$UML_"${host}"_OPT  rdinit=/linuxrc gim\$\$*' >>$startscript"
 	    echo "$TAB chmod +x $startscript"
 	    echo
 	    depends="$depends $startscript"
@@ -216,7 +216,7 @@ setup_host_make() {
     echo "$startscript : $UNSTRUNG_SRCDIR/umlsetup.sh initrd.cpio"
     echo "$TAB echo '#!/bin/sh' >$startscript"
     echo "$TAB echo ''          >>$startscript"
-    echo "$TAB echo 'if [ -z \"\$\${TEST_PURPOSE} ] && [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
+    echo "$TAB echo 'if [ -z \"\$\${TEST_PURPOSE}\" ] && [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
     echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
     echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
     echo "$TAB echo ''          >>$startscript"
