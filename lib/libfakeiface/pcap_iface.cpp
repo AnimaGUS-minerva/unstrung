@@ -1,3 +1,12 @@
+/*
+ * This code was originally written by Michael Richardson <mcr@sandelman.ca>
+ * as part of the Unstrung project, and was under the GPL.
+ *
+ * The original author (me) thinks that this code is generally useful to others who want
+ * to use pcap files as sources of testing data, and the rights to this file are hereby
+ * (2010-07-01) placed into the *public domain*, along with the header file fakeiface.h.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "iface.h"
