@@ -81,6 +81,7 @@ public:
         last_multicast_sec = tv.tv_sec;
         last_multicast_usec = tv.tv_usec;
     };
+    virtual int nisystem(const char *cmd);
     bool addprefix(prefix_node &prefix);
 
     /* eui string functions */
@@ -100,6 +101,9 @@ public:
 protected:
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
+
+    /* debugging */
+    rpl_debug              *debug;
 
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);
@@ -141,9 +145,6 @@ private:
         
     unsigned char          *control_msg_hdr;
     unsigned int            control_msg_hdrlen;
-
-    /* debugging */
-    rpl_debug              *debug;
 
     /* read from our network socket and process result */
     void receive(time_t now);

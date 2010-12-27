@@ -7,3 +7,5 @@ packet 1 is being processed
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
   adding prefix: 2001:db8:1::/48 to iface: 
   invoking ip -6 addr add 2001:db8:1::/128 dev 
+would invoke cmd: ip -6 addr add 2001:db8:1::/128 dev 
+would invoke cmd: ip -6 addr show

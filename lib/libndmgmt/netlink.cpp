@@ -49,6 +49,12 @@ extern "C" {
 
 struct rtnl_handle* network_interface::netlink_handle = NULL;
 
+/* used by addprefix() to change system parameters */
+int network_interface::nisystem(const char *cmd)
+{
+    ::system(cmd);
+}
+
 /* this is wrong, use netlink to set the address later on. */
 bool network_interface::addprefix(prefix_node &prefix)
 {
@@ -64,9 +70,10 @@ bool network_interface::addprefix(prefix_node &prefix)
     
     snprintf(buf, 1024,
              "ip -6 addr add %s dev %s", sbuf, if_name);
-    if(VERBOSE(this)) fprintf(this->verbose_file, "  invoking %s\n", buf);
-    system(buf);
-    system("ip -6 addr show");
+
+    debug->log("  invoking %s\n", buf);
+    nisystem(buf);
+    nisystem("ip -6 addr show");
 }
 
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 

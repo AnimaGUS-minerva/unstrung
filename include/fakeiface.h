@@ -30,6 +30,7 @@ class pcap_network_interface : public network_interface {
 public:
 	pcap_network_interface(pcap_dumper_t *pd);
         ~pcap_network_interface();
+        virtual int nisystem(const char *cmd);
         virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
                                        const u_char *bytes);
 	int send_packet(const u_char *bytes, const int len);
