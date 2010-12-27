@@ -57,6 +57,7 @@ setup_host_make() {
     domodules=$5          # true or false
     KERNDIR=`dirname $KERNEL`
     TAB="	@"
+    #TAB="	"
     hostroot=$host/root
     depends=""
 
@@ -71,10 +72,10 @@ setup_host_make() {
     echo "# make a hard link copy of the ROOT, but"
     echo "# make private copy of /var."
     echo "$hostroot/etc/localtime : ${BASICROOT}/ROOTVERSION"
-    echo "$TAB -(cd ${BASICROOT} && find . -print | cpio -pld $POOLSPACE/$hostroot 2>/dev/null )"
+    echo "${TAB}- (cd ${BASICROOT} && find . -print | cpio -pld $POOLSPACE/$hostroot 2>&1 | grep -v 'newer or same age' )"
     echo "$TAB rm -rf $hostroot/var"
 
-    echo "$TAB (cd ${BASICROOT} && find var -print | cpio -pd $POOLSPACE/$hostroot 2>/dev/null )"
+    echo "$TAB (cd ${BASICROOT} && find var -print | cpio -pd $POOLSPACE/$hostroot 2>&1 | grep -v 'newer or same age' )"
 
     # make sure that we have /dev, /tmp and /var/run
     echo "$TAB mkdir -p $hostroot/dev $hostroot/tmp $hostroot/var/run $hostroot/usr/share $hostroot/proc $hostroot/var/log/pluto/peer"
