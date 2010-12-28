@@ -203,6 +203,7 @@ export_variables() {
     export XHOST_LIST
     export XNET_LIST
     export UNSTRUNG_SRCDIR
+    export TEST_PURPOSE
 }
 
 # this is called to set additional variables that depend upon testparams.sh
