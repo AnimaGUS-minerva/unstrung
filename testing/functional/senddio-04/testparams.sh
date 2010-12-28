@@ -7,7 +7,7 @@ TEST_TYPE=pkttest
 XHOST_LIST="A"
 XNET_LIST="ground n1"
 
-TESTNAME=senddio-02
+TESTNAME=senddio-04
 AHOST=A
 EXITONEMPTY=--exitonempty
 PRIV_INPUT=../inputs/01-sunrise-sunset-ping.pcap
