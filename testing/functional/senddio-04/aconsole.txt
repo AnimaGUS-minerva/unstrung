@@ -7,10 +7,18 @@ A:~# ip -6 addr ls
     inet6 fe80::1000:ff:fe64:6423/64 scope link 
        valid_lft forever preferred_lft forever
 A:~# /sbin/senddio -v -p 2001:db8:0001::/48 -i eth1
+found[1]: lo type=loopback (inactive new)
+found[2]: dummy0 type=ether (inactive new)
+found[3]: tunl0 type=ipip (inactive new)
+found[4]: gre0 type=gre (inactive new)
+found[5]: eth0 type=ether (inactive new)
+   adding as new interface 12:00:00:dc:bc:ff/1200:00ff:fedc:bcff
+found[6]: eth1 type=ether (inactive new)
+   adding as new interface 12:00:00:64:64:23/1200:00ff:fe64:6423
 Sending ICMP of length: 40
 0000: 9b 02 00 00  00 00 00 00  00 00 00 00  00 00 00 00    ................   
 0010: 00 00 00 00  00 00 00 00  03 00 0c 00  00 00 00 00    ................   
 0020: 30 20 01 0d  b8 00 01 00                              0 ......           
 Starting setup for eth1
-sending RA on 3
+sending RA on 4
 
