@@ -17,6 +17,7 @@ REF_E_CONSOLE_OUTPUT=econsole.txt
 REF_CONSOLE_FIXUPS="script-only.sed"
 REF_CONSOLE_FIXUPS="${REF_CONSOLE_FIXUPS} tcpdump-packet-count.sed"
 REF_CONSOLE_FIXUPS="${REF_CONSOLE_FIXUPS} no-icmp-v6-mcast.sed"
+REF_CONSOLE_FIXUPS="${REF_CONSOLE_FIXUPS} fixup-proc-1-pid.sed"
 E_RUN_SCRIPT=sunshine.sh
 E_FINAL_SCRIPT=sunfinal.sh
 

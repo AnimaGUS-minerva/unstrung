@@ -8,7 +8,7 @@ E:~# ip -6 addr ls
        valid_lft forever preferred_lft forever
 E:~# : /sbin/sunshine -i eth0 -i eth1
 E:~# tcpdump -t -i eth1 -n &
-[1] 1046
+[1] PID
 E:~# sleep 1
 tcpdump: WARNING: eth1: no IPv4 address assigned
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
