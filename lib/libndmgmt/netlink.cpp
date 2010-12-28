@@ -108,13 +108,18 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     }
 
     /* XXX need to use logging interface */
-    fprintf(stderr, "found[%d]: %s type=%s (%s %s)\n",
+    deb->log("found[%d]: %s type=%s (%s %s)\n",
             ni->if_index, ni->if_name,
             ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),            
             ni->alive   ? "alive" : "inactive",
             ni->on_list ? "existing" :"new");
 
     ni->add_to_list();
+
+    /* dummy0 interface is always changing */
+    if(strcasecmp(ni->if_name, "dummy0")==0) {
+        return 0;
+    }
 
     const unsigned char *addr = NULL;
     unsigned int addrlen = 0;
@@ -146,9 +151,9 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     ni->generate_eui64();
 
     SPRINT_BUF(b2);
-    fprintf(stderr, "   adding as new interface %s/%s\n",
-            ni->eui48_str(b1,sizeof(b1)),
-            ni->eui64_str(b2,sizeof(b2)));
+    deb->log("   adding as new interface %s/%s\n",
+             ni->eui48_str(b1,sizeof(b1)),
+             ni->eui64_str(b2,sizeof(b2)));
             
     return 0;
 }
