@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'v':
-            verbose=true;            
+            verbose=true;
             deb->set_verbose(stderr);
             break;
 
@@ -156,8 +156,12 @@ int main(int argc, char *argv[])
                 devices_scanned = true;
             }
             iface = network_interface::find_by_name(optarg);
-            iface->set_debug(deb);
-            iface->setup();
+            if(!iface) {
+                deb->log("Can not find interface %s\n", optarg);
+            } else {
+                iface->set_debug(deb);
+                iface->setup();
+            }
             break;
 	}
     }

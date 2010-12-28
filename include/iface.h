@@ -39,7 +39,10 @@ public:
         return error_cnt;
     }
 
-    void set_debug(class rpl_debug *deb) { debug = deb; }
+    void set_debug(class rpl_debug *deb) {
+        deb->log("Updating debug on iface: %s\n", if_name);
+        debug = deb;
+    }
 
     virtual void receive_packet(struct in6_addr ip6_src,
                                 struct in6_addr ip6_dst,

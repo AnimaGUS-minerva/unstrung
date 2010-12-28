@@ -46,12 +46,14 @@ network_interface::network_interface()
 {
     nd_socket = -1;
     alive = false;
+    debug = NULL;
 }
 
 network_interface::network_interface(int fd)
 {
     nd_socket = fd;
     alive = true;
+    debug = NULL;
 }
 
 network_interface::network_interface(const char *if_name)
@@ -60,6 +62,7 @@ network_interface::network_interface(const char *if_name)
     nd_socket = -1;
 
     this->set_if_name(if_name);
+    debug = NULL;
 }
 
 void network_interface::set_if_name(const char *if_name)
