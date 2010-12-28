@@ -1,0 +1,34 @@
+E:~# sleep 2
+E:~# ip -6 addr ls
+5: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+    inet6 fe80::1000:ff:fe66:6601/64 scope link 
+       valid_lft forever preferred_lft forever
+6: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+    inet6 fe80::1000:ff:fe66:6602/64 scope link 
+       valid_lft forever preferred_lft forever
+E:~# /sbin/sunshine -i eth0 -D -v -v
+found[1]: lo type=loopback (inactive new)
+found[2]: dummy0 type=ether (inactive new)
+found[3]: tunl0 type=ipip (inactive new)
+found[4]: gre0 type=gre (inactive new)
+found[5]: eth0 type=ether (inactive new)
+   adding as new interface 12:00:00:66:66:01/1200:00ff:fe66:6601
+found[6]: eth1 type=ether (inactive new)
+   adding as new interface 12:00:00:66:66:02/1200:00ff:fe66:6602
+checking things to do list, has 0 items
+iface eth1 has socketfd: -1
+iface eth0 has socketfd: 4
+iface gre0 has socketfd: -1
+iface tunl0 has socketfd: -1
+iface dummy0 has socketfd: -1
+iface lo has socketfd: -1
+sleeping with 1 file descriptors, for 60000 ms
+E:~# echo true
+true
+E:~# : === NETJIG start of A sleep5.sh 
+E:~# ^C
+
+E:~# : now kill the running daemon
+E:~# sunshine -K
+Killing process 1045
+

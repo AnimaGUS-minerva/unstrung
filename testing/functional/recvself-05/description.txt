@@ -1,0 +1,6 @@
+This tests the case when we hear our own multicast, we should not
+do anything useful with such a message.
+
+
+
+
