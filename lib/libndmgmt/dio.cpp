@@ -20,6 +20,7 @@
 extern "C" {
 #include <errno.h>
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
+#include <time.h>
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
@@ -86,6 +87,39 @@ void network_interface::receive_dao(const u_char *dao, const int dao_len)
         if(VERBOSE(this))
                 fprintf(this->verbose_file, " processing dao(%u)\n",dao_len);
         
+}
+
+rpl_node *network_interface::my_dag_node(void) {
+    time_t n;
+    time(&n);
+
+    if(this->node != NULL) return this->node;
+
+    int ifindex = this->get_if_index();
+    dag_network *mynet = my_dag_net();
+    this->node         = mynet->find_or_make_member(if_addr);
+    this->node->makevalid(if_addr, mynet, this->debug);
+    this->node->set_last_seen(n);
+    this->node->markself(ifindex);
+    return this->node;
+}
+
+dag_network *network_interface::my_dag_net(void) {
+    if(this->dagnet != NULL) return this->dagnet;
+
+    this->dagnet = dag_network::find_or_make_by_dagid(rpl_dagid,debug);
+    return this->dagnet;
+}
+
+void network_interface::set_rpl_prefix(const ip_subnet prefix) {
+    rpl_prefix = prefix;
+    subnettot(&prefix, 0, rpl_prefix_str, sizeof(rpl_prefix_str));
+
+    rpl_node    *myself= my_dag_node();
+    dag_network *mynet = my_dag_net();
+    if(mynet != NULL && myself != NULL) {
+        mynet->addprefix(*myself, this, prefix);
+    }
 }
 
 void network_interface::set_rpl_interval(const int msec) 

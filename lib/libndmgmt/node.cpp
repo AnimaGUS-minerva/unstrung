@@ -39,7 +39,13 @@ const char *rpl_node::node_name() {
     if(valid) {
         if(name[0]) return name;
 
-        inet_ntop(AF_INET6, &nodeip, name, INET6_ADDRSTRLEN);
+        char *addr = name;
+        if(self) {
+            strcpy(addr, "<ME>");
+            addr += 4;
+        }
+
+        inet_ntop(AF_INET6, &nodeip, addr, INET6_ADDRSTRLEN-(addr-name));
         return name;
     } else {
         return "<node-not-valid>";

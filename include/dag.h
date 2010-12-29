@@ -73,6 +73,7 @@ public:
             return(get_member(member) != NULL);
         };
         rpl_node *get_member(const struct in6_addr member);
+        rpl_node *find_or_make_member(const struct in6_addr memberaddr);
         
         /* let stats be public */
         u_int32_t mStats[PS_MAX];

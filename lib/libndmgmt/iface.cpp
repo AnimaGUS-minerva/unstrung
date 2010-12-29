@@ -40,6 +40,7 @@ extern "C" {
 }
 
 #include "iface.h"
+#include "dag.h"
 
 
 network_interface::network_interface()
@@ -215,8 +216,13 @@ bool network_interface::setup()
 #endif
 
     setup_allrouters_membership();
-    struct ipv6_mreq mreq;                  
-	
+    struct ipv6_mreq mreq;
+
+    /* make sure that there is an rpl_node entry for ourselves */
+    /* XXX rpl_node should include all this nodes' addresses, on
+     *     all of this nodes' interface
+     */
+    
     alive = true;
     add_to_list();
     

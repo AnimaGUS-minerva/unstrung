@@ -69,11 +69,10 @@ public:
     void set_rpl_instanceid(const int instanceid) {
         rpl_instanceid = instanceid;
     };
-    void set_rpl_prefix(const ip_subnet prefix) {
-        rpl_prefix = prefix;
-        subnettot(&prefix, 0, rpl_prefix_str, sizeof(rpl_prefix_str));
-    };
+    void set_rpl_prefix(const ip_subnet prefix);
     void set_rpl_interval(const int msec);
+    rpl_node    *my_dag_node(void);
+    dag_network *my_dag_net(void);
 
     void update_multicast_time(void) {
         struct timeval tv;
@@ -106,6 +105,8 @@ protected:
 
     /* debugging */
     rpl_debug              *debug;
+    rpl_node               *node;
+    dag_network            *dagnet;
 
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);

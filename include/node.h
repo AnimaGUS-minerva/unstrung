@@ -34,12 +34,18 @@ public:
         void  makevalid(const struct in6_addr v6,
                         const dag_network *dn, rpl_debug *deb);
         rpl_debug *debug;
+        void  markself(int index) {
+            this->self = true;
+            ifindex    = index;
+        };
         
 protected:
         struct in6_addr nodeip;
 
 private:
         bool       valid;
+        bool       self;
+        int        ifindex;
         time_t     lastseen;
         char       name[INET6_ADDRSTRLEN];
         const dag_network *mDN;          /* should be shared_ptr */
