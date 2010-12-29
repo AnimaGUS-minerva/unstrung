@@ -103,6 +103,11 @@ protected:
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
 
+    static int    adddel_linkinfo(const struct sockaddr_nl *who,
+                                  struct nlmsghdr *n, void *arg);
+    static int    adddel_ipinfo(const struct sockaddr_nl *who,
+                                struct nlmsghdr *n, void *arg);
+
     /* debugging */
     rpl_debug              *debug;
     rpl_node               *node;

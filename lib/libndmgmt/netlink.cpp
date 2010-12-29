@@ -87,6 +87,80 @@ bool network_interface::addprefix(prefix_node &prefix)
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 
                            struct nlmsghdr *n, void *arg)
 {
+
+    switch(n->nlmsg_type) {
+    case RTM_NEWLINK:
+    case RTM_DELLINK:
+        adddel_linkinfo(who, n, arg);
+        break;
+    case RTM_NEWADDR:
+        adddel_ipinfo(who, n, arg);
+        break;
+    }
+}
+
+int network_interface::adddel_ipinfo(const struct sockaddr_nl *who, 
+                                       struct nlmsghdr *n, void *arg)
+{
+    rpl_debug *deb = (rpl_debug *)arg;
+    struct ifaddrmsg *iai = (struct ifaddrmsg *)NLMSG_DATA(n);
+    struct rtattr * tb[IFA_MAX+1];
+    int len = n->nlmsg_len;
+    unsigned m_flag = 0;
+    SPRINT_BUF(b1);
+
+    len -= NLMSG_LENGTH(sizeof(*iai));
+    if (len < 0)
+        return -1;
+
+    parse_rtattr(tb, IFA_MAX, IFA_RTA(iai), len);
+#if 0
+    if (tb[IFLA_IFNAME] == NULL) {
+        fprintf(stderr, "BUG: nil ifname\n");
+        return -1;
+    }
+#endif
+
+    network_interface *ni = find_by_ifindex(iai->ifa_index);
+    if(ni == NULL) {
+        /*
+         * might work if we have a name to go with it, but we will
+         * not create it for now.
+         */
+        deb->warn("Not creating new interface index=%d\n", iai->ifa_index);
+        return 0;
+    }
+
+    const unsigned char *addr = NULL;
+    unsigned int addrlen = 0;
+
+    switch(iai->ifa_family) {
+    case AF_INET6:
+        addr = (unsigned char *)RTA_DATA(tb[IFA_LOCAL]);
+        if(addr) {
+            addrlen = RTA_PAYLOAD(tb[IFA_LOCAL]);
+            if(addrlen > sizeof(ni->if_addr)) addrlen=sizeof(ni->if_addr);
+            
+            memcpy(&ni->if_addr, addr, addrlen);
+        }
+
+        inet_ntop(AF_INET6, addr, b1, sizeof(b1));
+
+        /* log it for human */
+        deb->log("found[%d]: %s address=%s\n",
+                 ni->if_index, ni->if_name, b1);
+        break;
+
+    default:
+        break;
+    }
+        
+    return 0;
+}
+
+int network_interface::adddel_linkinfo(const struct sockaddr_nl *who, 
+                                       struct nlmsghdr *n, void *arg)
+{
     rpl_debug *deb = (rpl_debug *)arg;
     struct ifinfomsg *ifi = (struct ifinfomsg *)NLMSG_DATA(n);
     FILE *fp = stdout;
@@ -94,9 +168,6 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     int len = n->nlmsg_len;
     unsigned m_flag = 0;
     SPRINT_BUF(b1);
-
-    if (n->nlmsg_type != RTM_NEWLINK && n->nlmsg_type != RTM_DELLINK)
-        return 0;
 
     len -= NLMSG_LENGTH(sizeof(*ifi));
     if (len < 0)
@@ -145,6 +216,7 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
         }
 
     default:
+        deb->log("   ignoring address type: %d\n", ifi->ifi_type);
         return 0;
     }
 

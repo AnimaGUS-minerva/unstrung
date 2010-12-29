@@ -55,6 +55,7 @@ public:
 pcap_network_interface::pcap_network_interface(const char *name) :
         network_interface(name)
 {
+        fprintf(stderr, "Creating PCAP interface: %s\n", name);
 }
 
 pcap_network_interface::~pcap_network_interface() 
@@ -248,46 +249,82 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
         } fake1;
 
         memset(&who, 0, sizeof(who));
+        int myindex;
 
-        struct nlmsghdr *nlh = &fake1.nlh;
-        struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
-        struct rtattr    *rtname = IFLA_RTA(ifi);
-        int    len      = 0;
-        nlh->nlmsg_type = RTM_NEWLINK;
-        nlh->nlmsg_flags = 0;  /* not sure what to set here */
-        nlh->nlmsg_seq   = ++seq;
-        nlh->nlmsg_pid   = getpid();
+        {
+                struct nlmsghdr *nlh = &fake1.nlh;
+                struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
+                struct rtattr    *rtname = IFLA_RTA(ifi);
+                int    len      = 0;
+                nlh->nlmsg_type  = RTM_NEWLINK;
+                nlh->nlmsg_flags = 0;  /* not sure what to set here */
+                nlh->nlmsg_seq   = ++seq;
+                nlh->nlmsg_pid   = getpid();
+                
+                ifi->ifi_index   = myindex = ++ifindex;
+                ifi->ifi_type    = ARPHRD_ETHER;
+                //ifi->ifi_family  = PF_ETHER;
+                ifi->ifi_flags   = IFF_BROADCAST;
+                
+                rtname->rta_type = IFLA_IFNAME;
+                char *ifname = (char *)RTA_DATA(rtname);
+                ifname[0]='\0';
+                strncat(ifname, "wlan0", sizeof(fake1.ifnamespace));
+                rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
+                
+                struct rtattr *rtmtu = RTA_NEXT(rtname, len);
+                rtmtu->rta_type = IFLA_MTU;
+                unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
+                *mtu            = 1500;
+                rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
+                
+                struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
+                rtaddr->rta_type= IFLA_ADDRESS;
+                unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
+                hwaddr[0]=0x00;        hwaddr[1]=0x16;
+                hwaddr[2]=0x3e;        hwaddr[3]=0x11;
+                hwaddr[4]=0x34;        hwaddr[5]=0x24;
+                rtaddr->rta_len = RTA_LENGTH(6);
+                
+                struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
+                
+                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
+        }
 
-        ifi->ifi_index   = ++ifindex;
-        ifi->ifi_type    = ARPHRD_ETHER;
-        //ifi->ifi_family  = PF_ETHER;
-        ifi->ifi_flags   = IFF_BROADCAST;
+        {
+                /* now send up the IPv6 address */
+                struct nlmsghdr *nlh = &fake1.nlh;
+                struct ifaddrmsg *iai= (struct ifaddrmsg *)NLMSG_DATA(nlh);
+                struct rtattr    *rtaddr6 = IFA_RTA(iai);
+                int    len      = 0;
+                nlh->nlmsg_type  = RTM_NEWADDR;
+                nlh->nlmsg_flags = 0;  /* not sure what to set here */
+                nlh->nlmsg_seq   = ++seq;
+                nlh->nlmsg_pid   = getpid();
 
-        rtname->rta_type = IFLA_IFNAME;
-        char *ifname = (char *)RTA_DATA(rtname);
-        ifname[0]='\0';
-        strncat(ifname, "wlan0", sizeof(fake1.ifnamespace));
-        rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
-        
-        struct rtattr *rtmtu = RTA_NEXT(rtname, len);
-        rtmtu->rta_type = IFLA_MTU;
-        unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
-        *mtu            = 1500;
-        rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
+                iai->ifa_family  = AF_INET6;
+                iai->ifa_prefixlen = 64;
+                iai->ifa_flags   = IFA_F_PERMANENT;
+                iai->ifa_scope   = 0;
+                iai->ifa_index   = myindex;
 
-        struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
-        rtaddr->rta_type= IFLA_ADDRESS;
-        unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
-        hwaddr[0]=0x00;        hwaddr[1]=0x16;
-        hwaddr[2]=0x3e;        hwaddr[3]=0x11;
-        hwaddr[4]=0x34;        hwaddr[5]=0x24;
-        rtaddr->rta_len = RTA_LENGTH(6);
-
-        struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
-
-        nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
-
-        gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
+                rtaddr6->rta_type= IFA_LOCAL;
+                unsigned char *addr6 = (unsigned char *)RTA_DATA(rtaddr6);
+                addr6[0] = 0xfe;                addr6[1] = 0x80;
+                addr6[2] = 0x00;                addr6[3] = 0x00;
+                addr6[4] = 0x00;                addr6[5] = 0x00;
+                addr6[6] = 0x00;                addr6[7] = 0x00; 
+                addr6[8] = 0x10;                addr6[9] = 0x00;
+                addr6[10]= 0x00;                addr6[11]= 0xff;
+                addr6[12]= 0xfe;                addr6[13]= 0x64;
+                addr6[14]= 0x64;                addr6[15]= 0x23;
+                rtaddr6->rta_len = RTA_LENGTH(16);
+                
+                struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
+                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
+        }
 }
 
 /* used by addprefix() to change system parameters */
