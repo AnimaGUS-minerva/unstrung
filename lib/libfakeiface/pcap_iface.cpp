@@ -30,6 +30,19 @@ extern "C" {
 #include <netlink/utils.h>
 #include <netlink/ll_map.h>
 
+class pcap_iface_factory : public iface_factory {
+public:
+    virtual network_interface *newnetwork_interface(const char *name);
+};
+
+network_interface *pcap_iface_factory::newnetwork_interface(const char *name)
+{
+    return new pcap_network_interface(name);
+}
+
+/* new factory / creates pcap_network_interface */
+class pcap_iface_factory pcap_factory;
+
 
 class pcap_linux_network_interface : public pcap_network_interface {
 public:
@@ -37,6 +50,12 @@ public:
                                        const u_char *bytes);
 	pcap_linux_network_interface(pcap_dumper_t *pd);
 };
+
+/* constructor */
+pcap_network_interface::pcap_network_interface(const char *name) :
+        network_interface(name)
+{
+}
 
 pcap_network_interface::~pcap_network_interface() 
 {
@@ -213,6 +232,9 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
 
 void pcap_network_interface::scan_devices(rpl_debug *deb)
 {
+        /* fix up the factory */
+        iface_maker = &pcap_factory;
+
         struct sockaddr_nl who;
         unsigned int seq = 0;
         unsigned int ifindex = 0;
