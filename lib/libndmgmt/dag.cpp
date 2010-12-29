@@ -148,7 +148,6 @@ bool dag_network::check_security(const struct nd_rpl_dio *dio, int dio_len)
 
 void dag_network::addprefix(rpl_node peer,
                             network_interface *iface,
-                            rpl_dio  &dio,
                             ip_subnet prefix)
 {
     prefix_node &pre = this->dag_prefixes[prefix];
@@ -197,7 +196,7 @@ void dag_network::potentially_lower_rank(rpl_node peer,
         memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes); 
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
-        addprefix(peer, iface, decoded_dio, prefix);
+        addprefix(peer, iface, prefix);
     }
 }
 
@@ -237,6 +236,11 @@ void dag_network::receive_dio(network_interface *iface,
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;
+}
+
+rpl_node *dag_network::find_or_make_member(const struct in6_addr memberaddr)
+{
+    return &this->dag_members[memberaddr];
 }
 
 rpl_node *dag_network::get_member(const struct in6_addr memberaddr)

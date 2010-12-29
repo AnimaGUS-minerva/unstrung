@@ -60,7 +60,6 @@ public:
                          const struct nd_rpl_dio *dio, int dio_len);
         void addprefix(rpl_node peer,
                        network_interface *iface,
-                       rpl_dio  &dio,
                        ip_subnet prefix);
         unsigned int prefixcount(void) {
             return dag_prefixes.size();
