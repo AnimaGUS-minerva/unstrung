@@ -132,6 +132,10 @@ int main(int argc, char *argv[])
             break;
 			
         case 'T':
+            if(initted) {
+                fprintf(stderr, "--fake MUST be first argument\n");
+                exit(16);
+            }
             fakesend=1;
             break;
 
