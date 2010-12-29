@@ -193,6 +193,13 @@ private:
 #define ND_OPT_RPL_PRIVATE_DAO 200
 #define ND_OPT_RPL_PRIVATE_DIO 201
 
+class iface_factory {
+public:
+    virtual network_interface *newnetwork_interface(const char *name);
+};
+extern class iface_factory *iface_maker;
+
+
 #endif /* _UNSTRUNG_IFACE_H_ */
 
 /*

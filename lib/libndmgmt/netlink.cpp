@@ -49,6 +49,14 @@ extern "C" {
 
 struct rtnl_handle* network_interface::netlink_handle = NULL;
 
+class iface_factory basic_factory;
+class iface_factory *iface_maker = &basic_factory;
+
+network_interface *iface_factory::newnetwork_interface(const char *name)
+{
+    return new network_interface(name);
+}
+
 /* used by addprefix() to change system parameters */
 int network_interface::nisystem(const char *cmd)
 {
@@ -102,7 +110,7 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
 
     network_interface *ni = find_by_ifindex(ifi->ifi_index);
     if(ni == NULL) {
-        ni = new network_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]));
+        ni = iface_maker->newnetwork_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]));
         ni->if_index = ifi->ifi_index;
         ni->set_debug(deb);
     }

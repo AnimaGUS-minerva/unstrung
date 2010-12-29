@@ -28,6 +28,7 @@ extern int process_infile(char *infile, char *outfile);
 
 class pcap_network_interface : public network_interface {
 public:
+	pcap_network_interface(const char *name);
 	pcap_network_interface(pcap_dumper_t *pd);
         ~pcap_network_interface();
         virtual int nisystem(const char *cmd);
