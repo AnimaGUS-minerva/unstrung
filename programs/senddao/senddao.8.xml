@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<!-- lifted from troff+man by doclifter -->
+<refentry>
+<refmeta>
+<refentrytitle>sendra</refentrytitle>
+<manvolnum>8</manvolnum>
+<refmiscinfo class='date'>09 november 2009</refmiscinfo>
+</refmeta>
+<refnamediv id='name'>
+<refname>senddio</refname>
+<refpurpose>send arbitrary RPL DIO messages</refpurpose>
+</refnamediv>
+<!-- body begins here -->
+<refsynopsisdiv id='synopsis'>
+<cmdsynopsis>
+  <command>senddio</command>    
+    <arg choice='plain'><replaceable>setup</replaceable></arg>
+    <group choice='opt'><arg choice='plain'>--show </arg><arg choice='plain'>--showonly </arg></group>
+    <arg choice='plain'><replaceable>command</replaceable></arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1 id='examples'><title>EXAMPLES</title>
+<cmdsynopsis>
+  <command>ipsec</command>
+    <arg choice='plain'><replaceable>setup</replaceable></arg>
+    <arg choice='opt'>[ --showonly ] </arg>
+    <arg choice='plain'>{ --start | --stop | --restart }</arg>
+</cmdsynopsis>
+<cmdsynopsis>
+  <command>ipsec</command>
+    <arg choice='plain'><replaceable>setup</replaceable></arg>
+    <arg choice='plain'> --status </arg>
+</cmdsynopsis>
+</refsect1>
+
+
+<refsect1 id='description'><title>DESCRIPTION</title>
+<para><emphasis remap='I'>senddio</emphasis>
+opens an ICMPv6 socket and sends arbitrary DIO messages onto the network.
+</para>
+</refsect1>
+
+<refsect1 id='files'><title>FILES</title>
+<para>file1</para>
+</refsect1>
+
+<refsect1 id='see_also'><title>SEE ALSO</title>
+<para><citerefentry><refentrytitle>ping6</refentrytitle><manvolnum>8</manvolnum></citerefentry>, </para>
+</refsect1>
+
+<refsect1 id='diagnostics'><title>DIAGNOSTICS</title>
+<para>All output from the commands</para>
+</refsect1>
+
+<refsect1 id='history'><title>HISTORY</title>
+<para>Written for the Pandora Unstrung project
+&lt;<ulink url='http://pandora.sandelman.ca'>http://pandora.sandelman.ca</ulink>&gt;
+by Michael Richardson.</para>
+</refsect1>
+
+<refsect1 id='bugs'><title>BUGS</title>
+<para>No known bugs.</para>
+</refsect1>
+</refentry>
+
