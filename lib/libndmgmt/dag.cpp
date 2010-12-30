@@ -21,14 +21,18 @@ extern "C" {
 
 class dag_network *dag_network::all_dag = NULL;
 
+void dag_network::init_stats(void) 
+{
+}
+
 dag_network::dag_network(dagid_t n_dagid)
 {
         memcpy(mDagid, n_dagid, DAGID_LEN);
         mLastSeq = 0;
         mDagRank = UINT_MAX;
+        memset(mStats, 0, sizeof(mStats));
 
         this->add_to_list();
-        
 }
 
 dag_network::~dag_network()

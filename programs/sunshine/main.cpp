@@ -22,6 +22,7 @@
 #include <signal.h>
 
 #include "iface.h"
+#include "dag.h"
 
 char *progname;
 static struct option const longopts[] =
@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
 
     network_interface *iface = NULL;
     rpl_debug *deb = new rpl_debug(false, NULL);
+
+    dag_network::init_stats();
 
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
 	switch(c) {
