@@ -40,6 +40,7 @@ public:
         static void scan_devices(rpl_debug *deb);
         void set_if_index(int index) {
                 if_index = index;
+                add_to_list();
         };
 
         /* a kind of constructor */

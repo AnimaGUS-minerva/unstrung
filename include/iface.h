@@ -59,6 +59,8 @@ public:
 
     void set_if_name(const char *ifname);
     const char *get_if_name(void) { return if_name; };
+    int        get_if_index(void);
+
     void set_rpl_dagid(const char *dagstr);
     void set_rpl_dagrank(const int dagrank) {
         rpl_dagrank = dagrank;
@@ -114,12 +116,13 @@ protected:
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
 
+    /* maintain list of all interfaces */
+    void add_to_list(void);
+
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);
     int                     nd_socket;
     int                     error_cnt;
-
-    int                     get_if_index(void);
 
     char                    if_name[IFNAMSIZ];
     struct in6_addr         if_addr;
@@ -181,9 +184,6 @@ private:
     unsigned char           eui64[8];
     prefix_map              ipv6_prefix_list;  /* always /128 networks */
 
-
-    /* maintain list of all interfaces */
-    void add_to_list(void);
 
     /* this is global to all the interfaces */
     class network_interface        *next;

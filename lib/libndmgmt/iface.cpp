@@ -295,6 +295,8 @@ void network_interface::add_to_list(void)
 {
     if(on_list) return;
 
+    debug->warn("  adding ifindex: %d\n", if_index);
+
     this->next = network_interface::all_if;
     network_interface::all_if = this;
 

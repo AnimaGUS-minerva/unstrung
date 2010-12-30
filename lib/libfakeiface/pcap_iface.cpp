@@ -395,6 +395,8 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(const char 
 
 int pcap_network_interface::process_pcap(void)
 {	
+        if(pol==NULL) return -1;
+
 	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)this);
 
 	if(this->errors() > 0) {
