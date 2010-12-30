@@ -9,3 +9,5 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1::/128 dev 
 would invoke cmd: ip -6 addr add 2001:db8:1::/128 dev 
 would invoke cmd: ip -6 addr show
+SENDING dao for prefix: 2001:db8:1::/48
+Scheduling earlier dio

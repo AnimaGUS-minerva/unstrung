@@ -162,6 +162,7 @@ void dag_network::addprefix(rpl_node peer,
         pre.set_dn(this);
         pre.set_prefix(prefix);
         pre.configureip(iface);
+        send_dao(pre);
     }
 }
 
@@ -208,6 +209,27 @@ void dag_network::potentially_lower_rank(rpl_node peer,
 
         addprefix(peer, iface, prefix);
     }
+
+    /* now schedule sending out packets */
+    schedule_dio();
+}
+
+/*
+ * send out outgoing DAO
+ */
+void dag_network::send_dao(prefix_node &pre)
+{
+    debug->verbose("SENDING dao for prefix: %s\n",
+                   pre.node_name());
+}
+
+/*
+ * this routine needs to send out a DIO sooner than
+ * we would otherwise.
+ */
+void dag_network::schedule_dio(void)
+{
+    debug->verbose("Scheduling earlier dio\n");
 }
 
 

@@ -76,6 +76,10 @@ public:
         };
         rpl_node *get_member(const struct in6_addr member);
         rpl_node *find_or_make_member(const struct in6_addr memberaddr);
+
+        /* send a unicast summary to new parent */
+        void send_dao(prefix_node &pre);
+        void schedule_dio(void);
         
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
