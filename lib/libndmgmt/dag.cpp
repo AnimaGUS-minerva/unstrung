@@ -170,9 +170,8 @@ void dag_network::potentially_lower_rank(rpl_node peer,
                                          const struct nd_rpl_dio *dio,
                                          int dio_len)
 {
-    if(VERBOSE(this))
-        fprintf(this->verbose_file, "  does peer '%s' have better rank? (%u < %u)\n",
-                peer.node_name(), dio->rpl_dagrank, mDagRank);
+    debug->verbose("  does peer '%s' have better rank? (%u < %u)\n",
+                   peer.node_name(), dio->rpl_dagrank, mDagRank);
 
     this->mStats[PS_LOWER_RANK_CONSIDERED]++;
 
@@ -181,10 +180,14 @@ void dag_network::potentially_lower_rank(rpl_node peer,
         return;
     }
 
-    if(VERBOSE(this))
-        fprintf(this->verbose_file, "  Yes, '%s' has best rank %u\n",
-                peer.node_name(), dio->rpl_dagrank);
+    debug->verbose("  Yes, '%s' has best rank %u\n",
+                   peer.node_name(), dio->rpl_dagrank);
 
+    /* XXX
+     * this is actually quite a big deal (SEE ID), setting my RANK.
+     * just fake it for now
+     */
+    mDagRank = dio->rpl_dagrank;
 
     /* now see if we have already an address on this new network */
     /*
