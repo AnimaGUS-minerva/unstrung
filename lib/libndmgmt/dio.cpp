@@ -70,9 +70,9 @@ void network_interface::receive_dio(struct in6_addr from,
 
     char dagid[16*6];
     format_dagid(dagid, dio->rpl_dagid);
-    printf(" [seq:%u,instance:%u,rank:%u,dagid:%s]\n",
-           dio->rpl_seq, dio->rpl_instanceid, dio->rpl_dagrank,
-           dagid);
+    debug->info(" [seq:%u,instance:%u,rank:%u,dagid:%s]\n",
+                dio->rpl_seq, dio->rpl_instanceid, dio->rpl_dagrank,
+                dagid);
     
     /* find the relevant DAG */
     class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid,

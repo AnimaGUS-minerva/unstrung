@@ -108,14 +108,14 @@ void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
 	this->increment_packet();
 
 	if(bytes[12]!=0x86 || bytes[13]!=0xdd) {
-		printf("packet %u not ethernet II (is: %02x%02x), dropped\n",
-		       this->packet_num(), bytes[12], bytes[13]);
+		debug->warn("packet %u not ethernet II (is: %02x%02x), dropped\n",
+                            this->packet_num(), bytes[12], bytes[13]);
 		return;
 	}
 	
 	/* make sure it's IPv6! */
 	if((bytes[14] & 0xf0) != 0x60) {
-		printf("packet %u is not IPv6: %u\n", bytes[14] >> 4);
+		debug->warn("packet %u is not IPv6: %u\n", bytes[14] >> 4);
 		return;
 	}
 
@@ -133,7 +133,7 @@ void pcap_network_interface::filter_and_receive_icmp6(time_t now,
 	unsigned int nh = ip6->ip6_nxt;       /* type of next PDU */
 
 	if(nh != IPPROTO_ICMPV6) {
-		printf("packet %u is not ICMPv6, but=proto:%u\n", this->packet_num(), nh);
+		debug->warn("packet %u is not ICMPv6, but=proto:%u\n", this->packet_num(), nh);
 		return;
 	}
 
@@ -146,12 +146,12 @@ void pcap_network_interface::filter_and_receive_icmp6(time_t now,
 	   icmp6->icmp6_type != ND_NEIGHBOR_SOLICIT &&
 	   icmp6->icmp6_type != ND_NEIGHBOR_ADVERT  &&
            icmp6->icmp6_type != ND_RPL_MESSAGE) {
-		printf("packet %u is not ICMPv6, but=proto:%u\n",
+		debug->warn("packet %u is not ICMPv6, but=proto:%u\n",
 		       this->packet_num(), icmp6->icmp6_type);
 		return;
 	}
 
-        printf("packet %u is being processed\n", this->packet_num());
+        debug->warn("packet %u is being processed\n", this->packet_num());
 	this->receive_packet(ip6->ip6_src, ip6->ip6_dst, now, bytes, len);
 }
 
@@ -204,7 +204,7 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
 			break;
 
 		default:
-                        printf("packet ether_type: %024 rejected\n",
+                        debug->warn("packet ether_type: %024 rejected\n",
                                ether_type);
                         return;
 		}
@@ -215,7 +215,7 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
                  */
 
                 if(ether_type != 0x86dd) {
-                        printf("packet %u not ethernet II (is: %04x), dropped\n",
+                        debug->warn("packet %u not ethernet II (is: %04x), dropped\n",
                                this->packet_num(), ether_type);
                         return;
                 }
@@ -224,7 +224,7 @@ void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h
 	
 	/* make sure it's IPv6! */
 	if((bytes[0] & 0xf0) != 0x60) {
-		printf("packet %u is not IPv6: %u\n", bytes[14] >> 4);
+		debug->warn("packet %u is not IPv6: %u\n", bytes[14] >> 4);
 		return;
 	}
 

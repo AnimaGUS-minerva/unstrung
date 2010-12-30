@@ -41,7 +41,23 @@ void rpl_debug::log(const char *fmt, ...)
     logv(fmt, vargs);
 }
 
+void rpl_debug::info(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    logv(fmt, vargs);
+}
+
 void rpl_debug::warn(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    logv(fmt, vargs);
+}
+
+void rpl_debug::error(const char *fmt, ...)
 {
     va_list vargs;
     va_start(vargs,fmt);
