@@ -104,7 +104,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 {
     rpl_debug *deb = (rpl_debug *)arg;
     struct ifaddrmsg *iai = (struct ifaddrmsg *)NLMSG_DATA(n);
-    struct rtattr * tb[IFA_MAX+1];
+    struct rtattr * tb[IFA_MAX+1], *addrattr;
     int len = n->nlmsg_len;
     unsigned m_flag = 0;
     SPRINT_BUF(b1);
@@ -114,12 +114,15 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         return -1;
 
     parse_rtattr(tb, IFA_MAX, IFA_RTA(iai), len);
-#if 0
-    if (tb[IFLA_IFNAME] == NULL) {
-        fprintf(stderr, "BUG: nil ifname\n");
-        return -1;
+    addrattr = tb[IFA_LOCAL];
+    if(addrattr == NULL) {
+        addrattr = tb[IFA_ADDRESS];
     }
-#endif
+
+    if (addrattr == NULL) {
+        /* not a useful update */
+        return 0;
+    }
 
     network_interface *ni = find_by_ifindex(iai->ifa_index);
     if(ni == NULL) {
@@ -136,9 +139,9 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 
     switch(iai->ifa_family) {
     case AF_INET6:
-        addr = (unsigned char *)RTA_DATA(tb[IFA_LOCAL]);
+        addr = (unsigned char *)RTA_DATA(addrattr);
         if(addr) {
-            addrlen = RTA_PAYLOAD(tb[IFA_LOCAL]);
+            addrlen = RTA_PAYLOAD(addrattr);
             if(addrlen > sizeof(ni->if_addr)) addrlen=sizeof(ni->if_addr);
             
             memcpy(&ni->if_addr, addr, addrlen);
@@ -270,7 +273,20 @@ void network_interface::scan_devices(rpl_debug *deb)
 
         remove_marks();
 
+        /* get list of interfaces */
 	if (rtnl_wilddump_request(netlink_handle, AF_PACKET, RTM_GETLINK) < 0) {
+		perror("Cannot send dump request");
+		exit(1);
+	}
+
+	if (rtnl_dump_filter(netlink_handle, gather_linkinfo,
+                             (void *)deb, NULL, NULL) < 0) {
+		fprintf(stderr, "Dump terminated\n");
+		exit(1);
+	}
+
+        /* get list of addresses on the interfaces */
+	if (rtnl_wilddump_request(netlink_handle, AF_INET6, RTM_GETADDR) < 0) {
 		perror("Cannot send dump request");
 		exit(1);
 	}

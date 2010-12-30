@@ -27,6 +27,7 @@ extern "C" {
 #include "dag.h"
 
 struct in6_addr dummy_src1;
+struct in6_addr iface_src2;
 time_t now;
 
 class dag_network *dn = NULL;
@@ -149,8 +150,9 @@ int main(int argc, char *argv[])
 {
 	int i;
 
-        struct in6_addr dummy_src1;
+        inet_pton(AF_INET6, "2001:db8::abcd:00a2", &iface_src2);
         inet_pton(AF_INET6, "2001:db8::abcd:00a1", &dummy_src1);
+
         time_t now;
         time(&now);
 
@@ -166,6 +168,7 @@ int main(int argc, char *argv[])
 
         rpl_debug *deb = new rpl_debug(false, stdout);
         iface->set_debug(deb);
+        iface->set_if_addr(iface_src2);
 	
         dagid_t d;
         memset(d, 0, DAGID_LEN);

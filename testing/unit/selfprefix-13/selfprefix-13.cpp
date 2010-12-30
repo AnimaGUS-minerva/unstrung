@@ -8,13 +8,17 @@ int main(int argc, char *argv[])
 {
         pcap_network_interface *iface = NULL;
         pcap_network_interface *iface2 = NULL;
+        struct in6_addr iface_src2;
+
 
         rpl_debug *deb = new rpl_debug(true, stderr);
+        inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
         iface = pcap_network_interface::setup_infile_outfile("../INPUTS/dioA-eth1b.pcap","/dev/null");
         iface->set_debug(deb);
         iface->set_if_name("wlan0");
         iface->set_if_index(1);
+        iface->set_if_addr(iface_src2);
 
         /* now finish setting things up with netlink */
         pcap_network_interface::scan_devices(deb);

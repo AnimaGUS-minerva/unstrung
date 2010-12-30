@@ -17,7 +17,7 @@ class rpl_less;
 class rpl_node {
         friend class rpl_less;
 public:
-        rpl_node() { valid = false; name[0]='\0'; };
+        rpl_node() { valid = false; name[0]='\0'; self = false; };
         rpl_node(const char *ipv6);
         rpl_node(const struct in6_addr v6);
         bool validP() { return valid; };
@@ -38,6 +38,7 @@ public:
             this->self = true;
             ifindex    = index;
         };
+        bool  isself() { return self; };
         
 protected:
         struct in6_addr nodeip;

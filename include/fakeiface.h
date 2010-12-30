@@ -42,6 +42,9 @@ public:
                 if_index = index;
                 add_to_list();
         };
+        void set_if_addr(struct in6_addr ifa) {
+                if_addr = ifa;
+        };
 
         /* a kind of constructor */
         static pcap_network_interface *setup_infile_outfile(const char *infile,

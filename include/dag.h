@@ -15,6 +15,7 @@ enum packet_stats {
         PS_LOWER_RANK_CONSIDERED,
         PS_LOWER_RANK_REJECTED,
         PS_SUBOPTION_UNDERRUN,
+        PS_SELF_PACKET_RECEIVED,
         PS_MAX,
 };
 

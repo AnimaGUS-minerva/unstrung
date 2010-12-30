@@ -61,6 +61,10 @@ public:
     const char *get_if_name(void) { return if_name; };
     int        get_if_index(void);
 
+    bool if_ifaddr(struct in6_addr ia) {
+        return (memcmp(&ia, &if_addr, sizeof(ia))==0);
+    };
+
     void set_rpl_dagid(const char *dagstr);
     void set_rpl_dagrank(const int dagrank) {
         rpl_dagrank = dagrank;
@@ -115,6 +119,7 @@ protected:
     rpl_node               *node;
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
+    struct in6_addr         if_addr;
 
     /* maintain list of all interfaces */
     void add_to_list(void);
@@ -125,7 +130,6 @@ private:
     int                     error_cnt;
 
     char                    if_name[IFNAMSIZ];
-    struct in6_addr         if_addr;
     int			if_prefix_len;
 
     uint8_t			if_hwaddr[HWADDR_MAX];

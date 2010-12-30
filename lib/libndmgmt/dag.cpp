@@ -227,6 +227,18 @@ void dag_network::receive_dio(network_interface *iface,
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
     rpl_node &peer = this->dag_members[from];
+
+    if(peer.isself() ||
+       iface->if_ifaddr(from)) {
+        peer.markself(iface->get_if_index());
+
+        this->mStats[PS_SELF_PACKET_RECEIVED]++;
+        debug->info("  received self packet (%u/%u)\n",
+                    this->mStats[PS_SELF_PACKET_RECEIVED],
+                    this->mStats[PS_PACKET_RECEIVED]);
+        return;
+    }
+
     peer.makevalid(from, this, this->debug);
     peer.set_last_seen(now);
 

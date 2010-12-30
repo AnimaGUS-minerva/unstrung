@@ -22,6 +22,7 @@ extern "C" {
 
 rpl_node::rpl_node(const char *ipv6) {
         valid = false;
+        self  = false;
         name[0]='\0';
 
         if(inet_pton(AF_INET6, ipv6, &nodeip) == 1) {
@@ -32,6 +33,7 @@ rpl_node::rpl_node(const char *ipv6) {
 rpl_node::rpl_node(const struct in6_addr v6) {
         nodeip = v6;
         valid = true;
+        self  = false;
         name[0]='\0';
 }
 
