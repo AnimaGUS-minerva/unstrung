@@ -82,6 +82,8 @@ bool network_interface::addprefix(prefix_node &prefix)
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
     nisystem("ip -6 addr show");
+
+    return true;
 }
 
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 

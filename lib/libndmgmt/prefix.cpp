@@ -74,7 +74,9 @@ void prefix_node::configureip(network_interface *iface)
         this->verbose_log("  adding prefix: %s to iface: %s\n",
                           node_name(),
                           iface->get_if_name());
-        iface->addprefix(*this);
+        if(iface->addprefix(*this)) {
+            installed = true;
+        }
     }
 }
 

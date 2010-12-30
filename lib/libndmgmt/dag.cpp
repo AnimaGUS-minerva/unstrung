@@ -155,11 +155,14 @@ void dag_network::addprefix(rpl_node peer,
                             ip_subnet prefix)
 {
     prefix_node &pre = this->dag_prefixes[prefix];
-    pre.set_debug(this->debug);
-    pre.set_announcer(&peer);
-    pre.set_dn(this);
-    pre.set_prefix(prefix);
-    pre.configureip(iface);
+
+    if(!pre.is_installed()) {
+        pre.set_debug(this->debug);
+        pre.set_announcer(&peer);
+        pre.set_dn(this);
+        pre.set_prefix(prefix);
+        pre.configureip(iface);
+    }
 }
 
 void dag_network::potentially_lower_rank(rpl_node peer,

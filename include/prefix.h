@@ -45,6 +45,10 @@ public:
         ip_subnet &get_prefix() {
             return mPrefix;
         };
+
+        bool is_installed() {
+            return installed;
+        };
         
 protected:
         ip_subnet    mPrefix;
