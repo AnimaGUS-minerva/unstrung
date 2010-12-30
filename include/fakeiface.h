@@ -24,7 +24,6 @@ extern "C" {
 
 #include "debug.h"
 
-extern int process_infile(char *infile, char *outfile);
 
 class pcap_network_interface : public network_interface {
 public:
@@ -39,6 +38,17 @@ public:
 	unsigned int packet_num(void) { return packet_count; };
 
         static void scan_devices(rpl_debug *deb);
+        void set_if_index(int index) {
+                if_index = index;
+        };
+
+        /* a kind of constructor */
+        static pcap_network_interface *setup_infile_outfile(const char *infile,
+                                                            const char *outfile);
+
+        static int process_infile(char *infile, char *outfile);
+        int process_pcap(void);
+
 
 protected:
         void filter_and_receive_icmp6(const time_t now,
@@ -47,6 +57,7 @@ protected:
 private:
 
 	pcap_dumper_t *pcap_out;
+        pcap_t        *pol;
 	unsigned int packet_count;
 };
 

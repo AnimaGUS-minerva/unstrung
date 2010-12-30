@@ -333,18 +333,32 @@ int pcap_network_interface::nisystem(const char *cmd)
         debug->log("would invoke cmd: %s\n", cmd);
 }
 
-int process_infile(char *infile, char *outfile)
+int pcap_network_interface::process_infile(char *infile, char *outfile) 
+{
+        pcap_network_interface *ndproc = 
+                setup_infile_outfile(infile, outfile);
+
+        rpl_debug *deb = new rpl_debug(true, stdout);
+	ndproc->set_debug(deb);
+
+        ndproc->process_pcap();
+        return 0;
+}
+
+pcap_network_interface *pcap_network_interface::setup_infile_outfile(const char *infile, const char *outfile)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
-	pcap_t *pol = pcap_open_offline(infile, errbuf);
+        pcap_t *ppol;
+
+	ppol = pcap_open_offline(infile, errbuf);
         pcap_network_interface *ndproc;
 
-	if(!pol) {
+	if(!ppol) {
 		fprintf(stderr, "can not open input %s: %s\n", infile, errbuf);
 		exit(1);
 	}
 
-        int pcap_link = pcap_datalink(pol);
+        int pcap_link = pcap_datalink(ppol);
 	pcap_t *pout = pcap_open_dead(pcap_link, 65535);
 	if(!pout) {
 		fprintf(stderr, "can not create pcap_open_deads\n");
@@ -373,13 +387,20 @@ int process_infile(char *infile, char *outfile)
                 exit(1);
         }
 
-        rpl_debug *deb = new rpl_debug(true, stdout);
-	ndproc->set_debug(deb);
-	
-	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)ndproc);
+        ndproc->pol = ppol;
 
-	if(ndproc->errors() > 0) {
-		exit(ndproc->errors());
+        return ndproc;
+}
+
+
+int pcap_network_interface::process_pcap(void)
+{	
+	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)this);
+
+	if(this->errors() > 0) {
+		exit(this->errors());
 	}
+
+        return 0;
 }
 

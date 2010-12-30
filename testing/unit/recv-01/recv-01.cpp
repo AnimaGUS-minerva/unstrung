@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 		
 		b = basename(infile);
 		snprintf(b1, 256, "../OUTPUTS/recv-01-%s", b);
-		process_infile(infile, b1);
+                pcap_network_interface::process_infile(infile, b1);
 	}
 	exit(0);
 }

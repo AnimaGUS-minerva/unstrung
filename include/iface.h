@@ -112,6 +112,7 @@ protected:
     rpl_debug              *debug;
     rpl_node               *node;
     dag_network            *dagnet;
+    int                     if_index;      /* cached value for get_if_index()*/
 
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);
@@ -119,7 +120,6 @@ private:
     int                     error_cnt;
 
     int                     get_if_index(void);
-    int                     if_index;      /* cached value for above */
 
     char                    if_name[IFNAMSIZ];
     struct in6_addr         if_addr;
