@@ -30,7 +30,11 @@ public:
 	pcap_network_interface(const char *name);
 	pcap_network_interface(pcap_dumper_t *pd);
         ~pcap_network_interface();
-        virtual int nisystem(const char *cmd);
+        int nisystem(const char *cmd);
+        void send_raw_icmp(const unsigned char *icmp_body,
+                                   unsigned int icmp_len);
+        bool faked(void);
+
         virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
                                        const u_char *bytes);
 	int send_packet(const u_char *bytes, const int len);

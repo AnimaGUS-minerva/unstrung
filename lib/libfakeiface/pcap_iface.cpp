@@ -76,15 +76,41 @@ pcap_linux_network_interface::pcap_linux_network_interface(pcap_dumper_t *pd) :
 {
 }
 
+bool pcap_network_interface::faked(void) {
+    return true;
+};
+
 int pcap_network_interface::send_packet(const u_char *bytes, const int len)
 {
-	struct pcap_pkthdr h;
-	memset(&h, 0, sizeof(h));
-	h.caplen = len;
-	h.len    = len;
-	gettimeofday(&h.ts, NULL);
-	
-	pcap_dump((u_char *)this->pcap_out, &h, bytes);
+    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+    unsigned char packet[icmp_len+sizeof(ip6_hdr)+16];
+
+    memset(packet, 0, sizeof(packet));
+    packet[0] =0x02; packet[1]=0x34; packet[2]=0x56;
+    packet[3] =0x78; packet[4]=0x9a; packet[5]=0xbc;
+    packet[6] =0x02; packet[7]=0xcb; packet[8]=0xa9;
+    packet[9] =0x87; packet[10]=0x65; packet[11]=0x43;
+    packet[12]=0x86;
+    packet[13]=0xdd;
+
+    struct ip6_hdr *v6 = (struct ip6_hdr *)&packet[14];
+    /* leave zeroes v6->ip6_src = 0; */
+    memcpy(&v6->ip6_dst, all_hosts_addr, 16);
+    v6->ip6_nxt = IPPROTO_ICMPV6;
+    v6->ip6_hlim= 64;
+    v6->ip6_plen= htons(icmp_len+40);
+
+    unsigned char *payload = (unsigned char *)(v6+1);
+    memcpy(payload, icmp_body, icmp_len);
+
+    struct pcap_pkthdr h;
+    memset(&h, 0, sizeof(h));
+    h.caplen = 14+40+icmp_len;
+    h.len    = h.caplen;
+    gettimeofday(&h.ts, NULL);
+    
+    pcap_dump((u_char *)this->pcap_out, &h, packet);
+
 }
 
 void sunshine_pcap_input(u_char *u,

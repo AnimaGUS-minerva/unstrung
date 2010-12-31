@@ -43,6 +43,7 @@ public:
         debug = deb;
     }
 
+    virtual int nisystem(const char *cmd);
     virtual void receive_packet(struct in6_addr ip6_src,
                                 struct in6_addr ip6_dst,
                                 time_t          now,
@@ -54,8 +55,12 @@ public:
                      const u_char *dio_bytes, const int dio_len);
 
     void send_dio(void);
-    void send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len);
+    void send_dao(void);
+    virtual void send_raw_icmp(unsigned char *icmp_body, unsigned int icmp_len);
+    virtual bool faked(void);
+
     int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
+    //int  build_dao(unsigned char *buff, unsigned int buff_len);
 
     void set_if_name(const char *ifname);
     const char *get_if_name(void) { return if_name; };
@@ -88,7 +93,6 @@ public:
         last_multicast_sec = tv.tv_sec;
         last_multicast_usec = tv.tv_usec;
     };
-    virtual int nisystem(const char *cmd);
     bool addprefix(prefix_node &prefix);
 
     /* eui string functions */

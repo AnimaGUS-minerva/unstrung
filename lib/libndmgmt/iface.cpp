@@ -813,7 +813,9 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
     }
 }
 
-
+bool network_interface::faked(void) {
+    return false;
+};
 
 /*
  * Local Variables:
