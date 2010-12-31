@@ -80,7 +80,8 @@ bool pcap_network_interface::faked(void) {
     return true;
 };
 
-int pcap_network_interface::send_packet(const u_char *bytes, const int len)
+void pcap_network_interface::send_raw_icmp(const unsigned char *icmp_body,
+                                          unsigned int icmp_len)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     unsigned char packet[icmp_len+sizeof(ip6_hdr)+16];
@@ -371,6 +372,23 @@ int pcap_network_interface::process_infile(char *infile, char *outfile)
         return 0;
 }
 
+void pcap_network_interface::set_pcap_out(const char *outfile,
+                                          int pcap_link)
+{
+    pcap_t *pout = pcap_open_dead(pcap_link, 65535);
+    if(!pout) {
+        fprintf(stderr, "can not create pcap_open_deads\n");
+        exit(1);
+    }
+    
+    this->pcap_out = pcap_dump_open(pout, outfile);
+    
+    if(!pcap_out) {
+        fprintf(stderr, "can not open output %s\n", outfile);
+        exit(1);
+    }
+}
+
 pcap_network_interface *pcap_network_interface::setup_infile_outfile(const char *infile, const char *outfile)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
@@ -432,3 +450,9 @@ int pcap_network_interface::process_pcap(void)
         return 0;
 }
 
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */

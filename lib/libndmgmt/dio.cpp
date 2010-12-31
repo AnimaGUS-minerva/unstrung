@@ -138,12 +138,11 @@ void network_interface::send_dio(void)
     unsigned int icmp_len = build_dio(icmp_body, sizeof(icmp_body),
                                       rpl_prefix);
 
-    send_raw_dio(icmp_body, icmp_len);
+    send_raw_icmp(icmp_body, icmp_len);
 }
 
 
-
-void network_interface::send_raw_dio(unsigned char *icmp_body, unsigned int icmp_len)
+void network_interface::send_raw_icmp(unsigned char *icmp_body, unsigned int icmp_len)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;
