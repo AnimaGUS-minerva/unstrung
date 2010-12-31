@@ -99,7 +99,7 @@ void pcap_network_interface::send_raw_icmp(const unsigned char *icmp_body,
     memcpy(&v6->ip6_dst, all_hosts_addr, 16);
     v6->ip6_nxt = IPPROTO_ICMPV6;
     v6->ip6_hlim= 64;
-    v6->ip6_plen= htons(icmp_len+40);
+    v6->ip6_plen= htons(icmp_len);
 
     unsigned char *payload = (unsigned char *)(v6+1);
     memcpy(payload, icmp_body, icmp_len);

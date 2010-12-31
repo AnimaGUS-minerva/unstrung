@@ -21,5 +21,5 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=peck senddio sunshine
+SUBDIRS=peck senddio sunshine senddao
 

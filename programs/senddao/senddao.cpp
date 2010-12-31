@@ -46,8 +46,9 @@ extern "C" {
 
 static void usage(void)
 {
-    fprintf(stderr, "Usage: senddio [--prefix prefix] [-d datafile] [--fake] [--iface net]\n");
+    fprintf(stderr, "Usage: senddao [--prefix prefix] [-d datafile] [--fake] [--iface net]\n");
     fprintf(stderr, "               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]\n");
+    fprintf(stderr, "               [--outpcap file] \n");
 
     exit(2);
 }
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
     int c;
     const char *datafilename;
     FILE *datafile;
+    char *outfile     = NULL;
     char *prefixvalue = NULL;
     unsigned char icmp_body[2048];
     unsigned int  icmp_len = 0;
@@ -94,15 +96,17 @@ int main(int argc, char *argv[])
         {"dagid",    1, NULL, 'D'},
         {"dagid",    1, NULL, 'G'},
         {"iface",    1, NULL, 'i'},
+        {"outpcap",  1, NULL, 'O'},
         {0,0,0,0},
     };
 
     class rpl_debug *deb;
-    class network_interface *iface;
+    class network_interface *iface = NULL;
+    class pcap_network_interface *piface = NULL;
     bool initted = false;
     memset(icmp_body, 0, sizeof(icmp_body));
 	
-    while((c=getopt_long(argc, argv, "D:G:I:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
+    while((c=getopt_long(argc, argv, "D:G:I:O:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
         switch(c) {
         case 'd':
             datafilename=optarg;
@@ -122,6 +126,7 @@ int main(int argc, char *argv[])
         case 'i':
             if(!initted) {
                 if(fakesend) {
+                    fprintf(stderr, "Using faked interfaces\n");
                     pcap_network_interface::scan_devices(deb);
                 } else {
                     network_interface::scan_devices(deb);
@@ -129,6 +134,15 @@ int main(int argc, char *argv[])
                 initted = true;
             }
             iface = network_interface::find_by_name(optarg);
+            if(iface && fakesend) {
+                if(iface->faked()) {
+                    piface = (pcap_network_interface *)iface;
+                    piface->set_pcap_out(outfile, DLT_EN10MB);
+                } else {
+                    fprintf(stderr, "interface %s is not faked\n", optarg);
+                    exit(1);
+                }
+            }
             break;
 			
         case 'T':
@@ -137,6 +151,10 @@ int main(int argc, char *argv[])
                 exit(16);
             }
             fakesend=1;
+            break;
+
+        case 'O':
+            outfile=optarg;
             break;
 
         case 'D':
@@ -179,7 +197,7 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
                             AF_INET6, &prefix);
 
-        icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body), prefix);
+        //icmp_len = iface->build_dao(icmp_body, sizeof(icmp_body), prefix);
     }
 
     if(icmp_len == 0) {
@@ -194,8 +212,12 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(!fakesend && icmp_len > 0) {
-        iface->send_raw_dio(icmp_body, icmp_len);
+    if(iface != NULL && icmp_len > 0) {
+        if(piface != NULL) {
+            piface->send_raw_icmp(icmp_body, icmp_len);
+        } else {
+            iface->send_raw_icmp(icmp_body, icmp_len);
+        }
     }
 
     exit(0);
