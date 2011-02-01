@@ -253,7 +253,7 @@ int network_interface::build_prefix_dioopt(ip_subnet prefix)
     diodp->rpl_dio_prefixlifetime = htonl(this->rpl_dio_lifetime);
     diodp->rpl_dio_prefixlen = prefix.maskbits;
     for(int i=0; i < (prefix.maskbits+7)/8; i++) {
-        diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.in6_u.u6_addr8[i];
+        diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
     }
 
     this->optlen = ((prefix.maskbits+7)/8 + 1 + 4 + 4);
