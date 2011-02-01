@@ -2,7 +2,7 @@
 # ICMP v6 type
 9B
 # ICMP v6 code
-02
+01
 # ICMP v6 checksum
 00 00
 # DAG options

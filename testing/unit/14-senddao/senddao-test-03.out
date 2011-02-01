@@ -1,0 +1,6 @@
+Using faked interfaces
+Creating PCAP interface: wlan0
+Must specify pcap outfile (-O)
+Usage: senddao [--prefix prefix] [--sequence #]
+               [--instance #] [--rank #] [--dagid hexstring]
+               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]

@@ -1,0 +1,6 @@
+Usage: senddao [--prefix prefix] [--sequence #]
+               [--instance #] [--rank #] [--dagid hexstring]
+               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
+Usage: senddao [--prefix prefix] [--sequence #]
+               [--instance #] [--rank #] [--dagid hexstring]
+               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
