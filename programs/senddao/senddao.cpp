@@ -46,11 +46,11 @@ extern "C" {
 
 static void usage(void)
 {
-    fprintf(stderr, "Usage: senddao [--prefix prefix] [-d datafile] [--fake] [--iface net]\n");
-    fprintf(stderr, "               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]\n");
-    fprintf(stderr, "               [--outpcap file] \n");
+        fprintf(stderr, "Usage: senddao [--prefix prefix] [--sequence #]\n");
+        fprintf(stderr, "               [--instance #] [--rank #] [--dagid hexstring]\n");
+        fprintf(stderr, "               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]\n");
 
-    exit(2);
+        exit(2);
 }
 
 unsigned int read_hex_values(FILE *in, unsigned char *buffer)
