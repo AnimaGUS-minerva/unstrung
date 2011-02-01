@@ -164,12 +164,12 @@ int main(int argc, char *argv[])
             break;
 
         case 'G':
-                if(!iface) {
-                        fprintf(stderr, "--dagid must follow --interface argument\n");
-                        usage();
-                        exit(17);
-                }
-                dn = iface->find_or_make_dag_by_dagid(optarg);
+            if(!iface) {
+                fprintf(stderr, "--dagid must follow --interface argument\n");
+                usage();
+                exit(17);
+            }
+            dn = iface->find_or_make_dag_by_dagid(optarg);
             break;
 
         case 'R':
