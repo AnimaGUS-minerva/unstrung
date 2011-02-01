@@ -93,7 +93,6 @@ int main(int argc, char *argv[])
         {"sequence", 1, NULL, 'S'},
         {"instance", 1, NULL, 'I'},
         {"rank",     1, NULL, 'R'},
-        {"dagid",    1, NULL, 'D'},
         {"dagid",    1, NULL, 'G'},
         {"iface",    1, NULL, 'i'},
         {"outpcap",  1, NULL, 'O'},
@@ -102,6 +101,7 @@ int main(int argc, char *argv[])
 
     class rpl_debug *deb;
     class network_interface *iface = NULL;
+    class dag_network       *dn = NULL;
     class pcap_network_interface *piface = NULL;
     bool initted = false;
     memset(icmp_body, 0, sizeof(icmp_body));
@@ -133,6 +133,11 @@ int main(int argc, char *argv[])
                 }
                 initted = true;
             }
+            if(outfile == NULL) {
+                    fprintf(stderr, "Must specify pcap outfile (-O)\n");
+                    exit(2);
+            }
+
             iface = network_interface::find_by_name(optarg);
             if(iface && fakesend) {
                 if(iface->faked()) {
@@ -157,9 +162,8 @@ int main(int argc, char *argv[])
             outfile=optarg;
             break;
 
-        case 'D':
         case 'G':
-            iface->set_rpl_dagid(optarg);
+            dn = iface->find_or_make_dag_by_dagid(optarg);
             break;
 
         case 'R':
