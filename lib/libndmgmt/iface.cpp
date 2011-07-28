@@ -617,7 +617,7 @@ int network_interface::packet_too_short(const char *thing,
 				       const int needed_len)
 {
     if(avail_len < needed_len) {
-	fprintf(this->verbose_file, "%s has invalid len: %u(<%u)\n",
+        debug->warn("%s has invalid len: %u(<%u)\n",
 		thing, avail_len, needed_len);
 	
 	this->error_cnt++;

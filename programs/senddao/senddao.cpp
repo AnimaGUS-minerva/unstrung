@@ -1,21 +1,7 @@
 /*
- * Copyright (C) 2010 Michael Richardson <mcr@sandelman.ca>
- */
-
-/*
- * parts of this file are derived from send.c of radvd, by 
+ * Copyright (C) 2011 Michael Richardson <mcr@sandelman.ca>
  *
- *   Authors:
- *    Pedro Roque		<roque@di.fc.ul.pt>
- *    Lars Fenneberg		<lf@elemental.net>	 
- *
- *   This software is Copyright 1996,1997 by the above mentioned author(s), 
- *   All Rights Reserved.
- *
- *   The license which is distributed with this software in the file COPYRIGHT
- *   applies to this software. If your distribution is missing this file, you
- *   may request it from <pekkas@netcore.fi>.
- *
+ * SEE FILE COPYING in root of source.
  */
 
 extern "C" {
@@ -207,10 +193,14 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
                             AF_INET6, &prefix);
 
-        //icmp_len = iface->build_dao(icmp_body, sizeof(icmp_body), prefix);
+        icmp_len = iface->build_dao(icmp_body, sizeof(icmp_body), prefix);
     }
 
     if(icmp_len == 0) {
+        fprintf(stderr, "length of generated packet is 0, none sent\n");
+        if(!prefixvalue) {
+            fprintf(stderr, "No prefix value set\n");
+        }
         usage();
         exit(1);
     }

@@ -14,15 +14,24 @@ recv-01: recv-01.cpp ${INC}/iface.h ${LIBS}
 checkprograms:: recv-01
 programs::
 
-check::	recv-01
+check::	part01 part02 part03 part04
+
+part01: recv-01
 	@mkdir -p ../OUTPUTS
 	@echo TEST01: PLAINND
 	./recv-01 ../INPUTS/plainnd.pcap | tee ../OUTPUTS/recv-01-output.raw | diff -B - recv-01-output.txt
 	tcpdump -t -n -r ../OUTPUTS/recv-01-plainnd.pcap -s 0 | diff -B - recv-01-plainnd-out.txt
+
+part02: recv-01
+	@mkdir -p ../OUTPUTS
 	@echo TEST02: SENDDIO CREATED
 	./recv-01 ../INPUTS/senddio.pcap | tee ../OUTPUTS/recv-02-output.raw | diff -B - recv-02-output.txt
+
+part03: recv-01
 	@echo TEST03: SENDDIO-2 CREATED
 	./recv-01 ../INPUTS/senddio-2.pcap | tee ../OUTPUTS/recv-03-output.raw | diff -B - recv-03-output.txt
+
+part04: recv-01
 	@echo TEST04: SENDDIO-example CREATED
 	./recv-01 ../INPUTS/senddio-example.pcap | tee ../OUTPUTS/recv-04-output.raw | diff -B - recv-04-output.txt
 

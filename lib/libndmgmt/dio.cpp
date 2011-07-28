@@ -70,8 +70,11 @@ void network_interface::receive_dio(struct in6_addr from,
 
     char dagid[16*6];
     format_dagid(dagid, dio->rpl_dagid);
-    debug->info(" [seq:%u,instance:%u,rank:%u,dagid:%s]\n",
-                dio->rpl_seq, dio->rpl_instanceid, dio->rpl_dagrank,
+    debug->info(" [seq:%u,instance:%u,rank:%u,version:%u,%s%s,dagid:%s]\n",
+                dio->rpl_dtsn, dio->rpl_instanceid, ntohs(dio->rpl_dagrank),
+                dio->rpl_version,
+                (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
+                dag_network::mop_decode(dag_network::mop_extract(dio)),
                 dagid);
     
     /* find the relevant DAG */
@@ -294,7 +297,7 @@ int network_interface::build_dio(unsigned char *buff,
 
     /* XXX need to set PRF */
 
-    dio->rpl_seq        = this->rpl_sequence;
+    dio->rpl_dtsn       = this->rpl_sequence;
     dio->rpl_instanceid = this->rpl_instanceid;
     dio->rpl_dagrank    = this->rpl_dagrank;
     memcpy(dio->rpl_dagid, this->rpl_dagid, 16);

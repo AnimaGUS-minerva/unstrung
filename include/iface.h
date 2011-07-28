@@ -60,7 +60,7 @@ public:
     virtual bool faked(void);
 
     int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
-    //int  build_dao(unsigned char *buff, unsigned int buff_len);
+    int  build_dao(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 
     void set_if_name(const char *ifname);
     const char *get_if_name(void) { return if_name; };

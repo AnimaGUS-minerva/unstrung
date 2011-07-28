@@ -83,6 +83,24 @@ public:
         
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
+
+        /* some decode routines */
+        static const char *mop_decode(unsigned int mop) {
+            switch(mop) {
+            case RPL_DIO_NONSTORING: return "non-storing";
+            case RPL_DIO_STORING:    return "storing";
+            case RPL_DIO_NONSTORING_MULTICAST: return "non-storing-mcase";
+            case RPL_DIO_STORING_MULTICAST:    return "storing-mcast";
+            case 4:                  return "unknown-mop4";
+            case 5:                  return "unknown-mop5";
+            case 6:                  return "unknown-mop6";
+            case 7:                  return "unknown-mop7";
+            }
+        };
+
+        static const unsigned int mop_extract(const struct nd_rpl_dio *dio) {
+            return RPL_DIO_MOP(dio->rpl_mopprf);
+        };
                 
 private:
         /* information about this DAG */

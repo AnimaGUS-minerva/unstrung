@@ -171,24 +171,26 @@ void dag_network::potentially_lower_rank(rpl_node peer,
                                          const struct nd_rpl_dio *dio,
                                          int dio_len)
 {
+    unsigned int rank = ntohs(dio->rpl_dagrank);
+
     debug->verbose("  does peer '%s' have better rank? (%u < %u)\n",
-                   peer.node_name(), dio->rpl_dagrank, mDagRank);
+                   peer.node_name(), rank, mDagRank);
 
     this->mStats[PS_LOWER_RANK_CONSIDERED]++;
 
-    if(dio->rpl_dagrank >= mDagRank) {
+    if(rank >= mDagRank) {
         this->mStats[PS_LOWER_RANK_REJECTED]++;
         return;
     }
 
     debug->verbose("  Yes, '%s' has best rank %u\n",
-                   peer.node_name(), dio->rpl_dagrank);
+                   peer.node_name(), rank);
 
     /* XXX
      * this is actually quite a big deal (SEE ID), setting my RANK.
      * just fake it for now
      */
-    mDagRank = dio->rpl_dagrank;
+    mDagRank = rank;
 
     /* now see if we have already an address on this new network */
     /*
@@ -248,7 +250,7 @@ void dag_network::receive_dio(network_interface *iface,
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_RECEIVED]++;
 
-    if(this->seq_too_old(dio->rpl_seq)) {
+    if(this->seq_too_old(dio->rpl_dtsn)) {
         this->discard_dio(PS_SEQ_OLD);
         return;
     }
@@ -274,7 +276,7 @@ void dag_network::receive_dio(network_interface *iface,
     peer.makevalid(from, this, this->debug);
     peer.set_last_seen(now);
 
-    this->seq_update(dio->rpl_seq);
+    this->seq_update(dio->rpl_dtsn);
 
     this->potentially_lower_rank(peer, iface, dio, dio_len);
 

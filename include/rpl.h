@@ -52,7 +52,7 @@ struct nd_rpl_dio {
     u_int8_t  rpl_version;
     u_int16_t rpl_dagrank;
     u_int8_t  rpl_mopprf;   /* bit 7=G, 5-3=MOP, 2-0=PRF */
-    u_int8_t  rpl_seq;
+    u_int8_t  rpl_dtsn;     /* Dest. Advertisement Trigger Sequence Number */
     u_int8_t  rpl_flags;    /* no flags defined yet */
     u_int8_t  rpl_resv1;   
     u_int8_t  rpl_dagid[DAGID_LEN];
