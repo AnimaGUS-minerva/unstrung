@@ -1,11 +1,21 @@
 #ifndef _RPL_H_
 
-#define ND_RPL_MESSAGE 0x9B
+/*
+ * DIO: Updated to RPL-19 on 2011-07-25, section 6. (page 30) 
+ */
+
+#define ND_RPL_MESSAGE 155  /* 0x9B */
 
 enum ND_RPL_CODE {
-        ND_RPL_DAG_IS=0x01,
-        ND_RPL_DAG_IO=0x02,
-        ND_RPL_DAO   =0x04
+    ND_RPL_DAG_IS=0x00,
+    ND_RPL_DAG_IO=0x01,
+    ND_RPL_DAO   =0x02,
+    ND_RPL_DAO_ACK=0x03,
+    ND_RPL_SEC_DAG_IS = 0x80,
+    ND_RPL_SEC_DAG_IO = 0x81,
+    ND_RPL_SEC_DAG    = 0x82,
+    ND_RPL_SEC_DAG_ACK= 0x83,
+    ND_RPL_SEC_CONSIST= 0x84,
 };
 
 enum ND_RPL_DIO_FLAGS {
@@ -19,19 +29,56 @@ enum ND_RPL_DIO_FLAGS {
 
 #define DAGID_LEN 16
 
+/* section 6 of draft-ietf-roll-rpl-19 */
+struct nd_rpl_security {
+    u_int8_t  rpl_sec_t_reserved;     /* bit 7 is T-bit */
+    u_int8_t  rpl_sec_algo;
+    u_int16_t rpl_sec_kim_lvl_flags;  /* bit 15/14, KIM */
+                                      /* bit 10-8, LVL, bit 7-0 flags */
+    u_int32_t rpl_sec_counter;
+    u_int8_t  rpl_sec_ki[0];          /* depends upon kim */
+};
+
+/* section 6.2.1, DODAG Information Solication (DIS_IS) */
+struct nd_rpl_dis_is {
+    u_int8_t rpl_dis_flags;
+    u_int8_t rpl_dis_reserved;
+    u_int8_t rpl_dis_options[0];
+};
+
+/* section 6.3.1, DODAG Information Object (DIO) */
 struct nd_rpl_dio {
-        u_int8_t rpl_flags;
-        u_int8_t rpl_seq;
-        u_int8_t rpl_instanceid;
-        u_int8_t rpl_dagrank;
-        u_int8_t rpl_dagid[DAGID_LEN];
+    u_int8_t  rpl_instanceid;
+    u_int8_t  rpl_version;
+    u_int16_t rpl_dagrank;
+    u_int8_t  rpl_mopprf;   /* bit 7=G, 5-3=MOP, 2-0=PRF */
+    u_int8_t  rpl_seq;
+    u_int8_t  rpl_flags;    /* no flags defined yet */
+    u_int8_t  rpl_resv1;   
+    u_int8_t  rpl_dagid[DAGID_LEN];
+};
+#define RPL_DIO_GROUND_FLAG 0x80
+#define RPL_DIO_MOP_SHIFT   3
+#define RPL_DIO_MOP_MASK    (7 << RPL_DIO_MOP_SHIFT)
+#define RPL_DIO_PRF_SHIFT   0
+#define RPL_DIO_PRF_MASK    (7 << RPL_DIO_MOP_SHIFT)
+#define RPL_DIO_GROUNDED(X) ((X)&RPL_DIO_GROUND_FLAG)
+#define RPL_DIO_MOP(X)      (((X)&RPL_DIO_MOP_MASK) >> RPL_DIO_MOP_SHIFT)
+#define RPL_DIO_PRF(X)      (((X)&RPL_DIO_PRF_MASK) >> RPL_DIO_PRF_SHIFT)
+enum RPL_DIO_MOP {
+    RPL_DIO_NONSTORING= 0x0,
+    RPL_DIO_STORING   = 0x1,
+    RPL_DIO_NONSTORING_MULTICAST = 0x2,
+    RPL_DIO_STORING_MULTICAST    = 0x3,
 };
 
 enum RPL_DIO_SUBOPT {
-        RPL_DIO_PAD0 = 0,
-        RPL_DIO_PADN = 1,
-        RPL_DIO_METRICS = 2,
-        RPL_DIO_DESTPREFIX=3,
+        RPL_DIO_PAD0        = 0,
+        RPL_DIO_PADN        = 1,
+        RPL_DIO_METRICS     = 2,
+        RPL_DIO_ROUTINGINFO = 3,
+        RPL_DIO_CONFIG      = 4,
+        RPL_DIO_DESTPREFIX  = 8,
 };
 
 struct rpl_dio_genoption {
@@ -54,6 +101,32 @@ struct rpl_dio_destprefix {
     u_int8_t rpl_dio_prefix[1];        /* variables number of bytes */
 };
 
+/* section 6.4.1, DODAG Information Object (DIO) */
+struct nd_rpl_dao {
+    u_int8_t  rpl_instanceid;
+    u_int8_t  rpl_flags;      /* bit 7=K, 6=D */
+    u_int8_t  rpl_resv;      
+    u_int8_t  rpl_daoseq;        
+    /* u_int8_t  rpl_dagid[DAGID_LEN];*/  /* present when D set. */
+};
+
+/* indicates if this DAO is to be acK'ed */
+#define RPL_DAO_K_SHIFT   7
+#define RPL_DAO_K_MASK    (1 << RPL_DAO_K_SHIFT)
+#define RPL_DAO_K(X)      (((X)&RPL_DAO_K_MASK) >> RPL_DAO_K_SHIFT)
+
+/* indicates if the DAGID is present */
+#define RPL_DAO_D_SHIFT   6
+#define RPL_DAO_D_MASK    (1 << RPL_DAO_D_SHIFT)
+#define RPL_DAO_D(X)      (((X)&RPL_DAO_D_MASK) >> RPL_DAO_D_SHIFT)
+
+enum RPL_DAO_SUBOPT {
+        RPL_DAO_PAD0        = 0,
+        RPL_DAO_PADN        = 1,
+        RPL_DAO_RPLTARGET   = 5,
+        RPL_DAO_TRANSITINFO = 6,
+        RPL_DAO_RPLTARGET_DESC=9,
+};
 
 #define _RPL_H_
 #endif /* _RPL_H_ */

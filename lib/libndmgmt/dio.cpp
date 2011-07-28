@@ -285,8 +285,15 @@ int network_interface::build_dio(unsigned char *buff,
     
     dio->rpl_flags = 0;
     if(this->rpl_grounded) {
-        dio->rpl_flags |= ND_RPL_DIO_GROUNDED;
+        dio->rpl_mopprf |= ND_RPL_DIO_GROUNDED;
     }
+    dio->rpl_mopprf     = 0;
+    
+    /* XXX need to non-storing mode is a MUST */
+    dio->rpl_mopprf |= RPL_DIO_STORING << RPL_DIO_MOP_SHIFT;
+
+    /* XXX need to set PRF */
+
     dio->rpl_seq        = this->rpl_sequence;
     dio->rpl_instanceid = this->rpl_instanceid;
     dio->rpl_dagrank    = this->rpl_dagrank;
