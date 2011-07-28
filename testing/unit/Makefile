@@ -23,7 +23,8 @@ srcdir?=$(shell pwd)
 
 SUBDIRS=01-osw
 SUBDIRS+=02-recv 
-SUBDIRS+=dagset-01 dag-01 dag-02 dioopt-01 #send-01
+SUBDIRS+=03-dioopt
+SUBDIRS+=dagset-01 dag-01 dag-02 #send-01
 SUBDIRS+=12-senddio
 SUBDIRS+=13-selfprefix
 SUBDIRS+=14-senddao
