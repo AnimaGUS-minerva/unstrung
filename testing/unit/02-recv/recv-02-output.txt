@@ -7,12 +7,12 @@ packet 1 is being processed
 Scheduling earlier dio
 packet 2 is not ICMPv6, but=proto:0
 packet 3 is being processed
- processing dio(20)
+ processing dio(24)
  [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 1)
 packet 4 is not ICMPv6, but=proto:0
 packet 5 is being processed
- processing dio(20)
+ processing dio(24)
  [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 1)
 packet 6 is not ICMPv6, but=proto:0
