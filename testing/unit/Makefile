@@ -22,13 +22,13 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 srcdir?=$(shell pwd)
 
 SUBDIRS=01-osw
-SUBDIRS+=02-recv 
+SUBDIRS+=02-recvdio 
 SUBDIRS+=03-dioopt
 SUBDIRS+=04-dag
 SUBDIRS+=05-dag
 SUBDIRS+=dagset-01 
 SUBDIRS+=12-senddio
-SUBDIRS+=13-selfprefix
+#SUBDIRS+=13-selfprefix
 SUBDIRS+=14-senddao
 
 
