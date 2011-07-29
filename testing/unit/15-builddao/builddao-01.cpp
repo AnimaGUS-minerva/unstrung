@@ -39,6 +39,18 @@ extern "C" {
 static void t1(rpl_debug *deb)
 {
     pcap_network_interface::scan_devices(deb);
+
+    network_interface *my_if = network_interface::find_by_name("wlan0");
+
+    assert(my_if!=NULL);
+    
+    unsigned char buf[2048];
+    ip_subnet out;
+    ttosubnet("fdfd:abcd:ef01::/48",0, AF_INET6, &out);
+
+    int len = my_if->build_dao(buf, 2048, out);
+    assert(len == 40);
+    /* XXX should do more */
 }
 
 int main(int argc, char *argv[])
