@@ -36,7 +36,7 @@ class dag_network *dn = NULL;
 /*
  * TEST1: a DN will get a new prefix, if it is new.
  */
-static void t1(void)
+static void t1(rpl_debug *deb)
 {
         class rpl_node n1("2001:db8::abcd:0002");
 
@@ -49,6 +49,8 @@ static void t1(void)
 		
 	pcap_dumper_t *out = pcap_dump_open(pout, "t1.pcap");
         pcap_network_interface *iface = new pcap_network_interface(out);
+
+        iface->set_debug(deb);
 
         /* test data from senddio-test-04.out */
         u_int8_t diodata[]={
@@ -70,7 +72,7 @@ static void t1(void)
         const char *example="2001:db8:0001::/48";
         ttosubnet(example, strlen(example), AF_INET6, &prefix);
 
-        dn->addprefix(n1, iface, dio, prefix);
+        dn->addprefix(n1, iface, prefix);
 
         assert(dn->prefixcount() >= 1);
 }
@@ -79,6 +81,8 @@ static void t1(void)
 int main(int argc, char *argv[])
 {
 	int i;
+
+        rpl_debug *deb = new rpl_debug(false, stdout);
 
         struct in6_addr dummy_src1;
         inet_pton(AF_INET6, "2001:db8::abcd:00a1", &dummy_src1);
@@ -91,8 +95,9 @@ int main(int argc, char *argv[])
         d[1]='3';
         
         dn = new dag_network(d);
+        dn->set_debug(deb);
 
-        printf("dag-03 t1\n");        t1();
+        printf("dag-03 t1\n");        t1(deb);
         delete dn;
 
 	exit(0);
