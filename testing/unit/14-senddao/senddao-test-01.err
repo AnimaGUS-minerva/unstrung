@@ -1,6 +1,12 @@
+length of generated packet is 0, none sent
+No prefix value set
 Usage: senddao [--prefix prefix] [--sequence #]
-               [--instance #] [--rank #] [--dagid hexstring]
+               [--instance #] [--ack-request] 
+               [--dagid hexstring]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
+length of generated packet is 0, none sent
+No prefix value set
 Usage: senddao [--prefix prefix] [--sequence #]
-               [--instance #] [--rank #] [--dagid hexstring]
+               [--instance #] [--ack-request] 
+               [--dagid hexstring]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]

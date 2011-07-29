@@ -1,5 +1,6 @@
 Using faked interfaces
 Creating PCAP interface: wlan0
-Usage: senddao [--prefix prefix] [--sequence #]
-               [--instance #] [--rank #] [--dagid hexstring]
-               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
+Sending ICMP of length: 40
+0000: 9b 01 00 00  2b 40 00 0b  00 00 00 00  00 00 00 00    ....+@..........   
+0010: 00 00 00 00  00 00 00 00  05 0d 00 30  fd fd ab cd    ...........0....   
+0020: ef 01 00 00  00 00 00 00                              ........           

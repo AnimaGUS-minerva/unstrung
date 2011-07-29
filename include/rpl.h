@@ -123,13 +123,13 @@ struct nd_rpl_dao {
 #define RPL_DAO_D_MASK    (1 << RPL_DAO_D_SHIFT)
 #define RPL_DAO_D(X)      (((X)&RPL_DAO_D_MASK) >> RPL_DAO_D_SHIFT)
 
-enum RPL_DAO_SUBOPT {
-        RPL_DAO_PAD0        = 0,
-        RPL_DAO_PADN        = 1,
-        RPL_DAO_RPLTARGET   = 5,
-        RPL_DAO_TRANSITINFO = 6,
-        RPL_DAO_RPLTARGET_DESC=9,
-};
+struct rpl_dao_target {
+    u_int8_t rpl_dao_type;
+    u_int8_t rpl_dao_len; 
+    u_int8_t rpl_dao_flags;            /* unused */
+    u_int8_t rpl_dao_prefixlen;        /* in bits */
+    u_int8_t rpl_dao_prefix[0];        /* variables number of bytes */
+} PACKED;
 
 #define _RPL_H_
 #endif /* _RPL_H_ */

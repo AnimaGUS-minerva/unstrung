@@ -41,6 +41,24 @@ void network_interface::receive_dao(const u_char *dao, const int dao_len)
         
 }
 
+
+int network_interface::build_target_opt(ip_subnet prefix)
+{
+    memset(optbuff, 0, sizeof(optbuff));
+    struct rpl_dao_target *daotg = (struct rpl_dao_target *)optbuff;
+
+    daotg->rpl_dao_flags     = 0x00;
+    daotg->rpl_dao_prefixlen = prefix.maskbits;
+    for(int i=0; i < (prefix.maskbits+7)/8; i++) {
+        daotg->rpl_dao_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
+    }
+
+    this->optlen = ((prefix.maskbits+7)/8 + 1 + 4 + 4);
+
+    return this->optlen;
+}
+
+
 int network_interface::build_dao(unsigned char *buff,
                                  unsigned int buff_len,
                                  ip_subnet prefix)
@@ -76,6 +94,13 @@ int network_interface::build_dao(unsigned char *buff,
     }
 
     /* add RPL_TARGET  */
+    build_target_opt(prefix);
+
+    int nextoptlen;
+    len = ((caddr_t)nextopt - (caddr_t)buff);
+    nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
+    nextopt += nextoptlen;
+
     /* add RPL_TRANSIT */
     /* add RPL_TARGET DESCRIPTION */
     

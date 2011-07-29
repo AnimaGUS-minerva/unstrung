@@ -26,14 +26,15 @@ extern "C" {
 #include "fakeiface.h"
 
 /* open a raw IPv6 socket, and 
-   - send a router advertisement for prefix on argv. (-p)
+   - send a RPL Destination Advertisement Object for a specific host.
    - send data from file (in hex)  (-d)
 */
 
 static void usage(void)
 {
         fprintf(stderr, "Usage: senddao [--prefix prefix] [--sequence #]\n");
-        fprintf(stderr, "               [--instance #] [--rank #] [--dagid hexstring]\n");
+        fprintf(stderr, "               [--instance #] [--ack-request] \n");
+        fprintf(stderr, "               [--dagid hexstring]\n");
         fprintf(stderr, "               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]\n");
 
         exit(2);
@@ -78,8 +79,8 @@ int main(int argc, char *argv[])
         {"prefix",   1, NULL, 'p'},
         {"sequence", 1, NULL, 'S'},
         {"instance", 1, NULL, 'I'},
-        {"rank",     1, NULL, 'R'},
         {"dagid",    1, NULL, 'G'},
+        {"ack-request",0,NULL,'A'},
         {"iface",    1, NULL, 'i'},
         {"outpcap",  1, NULL, 'O'},
         {0,0,0,0},
@@ -90,10 +91,15 @@ int main(int argc, char *argv[])
     class dag_network       *dn = NULL;
     class pcap_network_interface *piface = NULL;
     bool initted = false;
+    bool ackreq  = false;
     memset(icmp_body, 0, sizeof(icmp_body));
 	
-    while((c=getopt_long(argc, argv, "D:G:I:O:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
+    while((c=getopt_long(argc, argv, "AD:G:I:O:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
         switch(c) {
+        case 'A':
+            ackreq=true;  /* XXX todo */
+            break;
+
         case 'd':
             datafilename=optarg;
             if(datafilename[0]=='-' && datafilename[1]=='\0') {
