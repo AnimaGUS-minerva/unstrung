@@ -26,6 +26,7 @@ class network_interface {
 
 public:
     bool mark;
+    bool                    rpl_grounded;
 
     int announce_network();
     network_interface();
@@ -71,19 +72,48 @@ public:
     };
 
     void set_rpl_dagid(const char *dagstr);
-    void set_rpl_dagrank(const int dagrank) {
+    void set_rpl_dagrank(const unsigned int dagrank) {
         rpl_dagrank = dagrank;
     };
-    void set_rpl_sequence(const int sequence) {
+    void set_rpl_sequence(const unsigned int sequence) {
         rpl_sequence = sequence;
     };
-    void set_rpl_instanceid(const int instanceid) {
+    void set_rpl_instanceid(const unsigned int instanceid) {
         rpl_instanceid = instanceid;
+    };
+    void set_rpl_prefixlifetime(const unsigned int lifetime) {
+        rpl_lifetime = lifetime;
+    };
+    void set_rpl_version(const unsigned int version) {
+        rpl_version = version;
     };
     void set_rpl_prefix(const ip_subnet prefix);
     void set_rpl_interval(const int msec);
     rpl_node    *my_dag_node(void);
     dag_network *my_dag_net(void);
+
+    void set_rpl_mode(enum RPL_DIO_MOP m) {
+        rpl_mode = m;
+    };
+    void set_rpl_nomulticast() {
+        if(rpl_mode == RPL_DIO_NONSTORING ||
+           rpl_mode == RPL_DIO_NONSTORING_MULTICAST) {
+            rpl_mode = RPL_DIO_NONSTORING;
+        } else if(rpl_mode == RPL_DIO_STORING ||
+           rpl_mode == RPL_DIO_STORING_MULTICAST) {
+            rpl_mode = RPL_DIO_STORING;
+        }
+    }
+
+    void set_rpl_multicast() {
+        if(rpl_mode == RPL_DIO_NONSTORING ||
+           rpl_mode == RPL_DIO_NONSTORING_MULTICAST) {
+            rpl_mode = RPL_DIO_NONSTORING_MULTICAST;
+        } else if(rpl_mode == RPL_DIO_STORING ||
+           rpl_mode == RPL_DIO_STORING_MULTICAST) {
+            rpl_mode = RPL_DIO_STORING_MULTICAST;
+        }
+    }
 
     void update_multicast_time(void) {
         struct timeval tv;
@@ -149,10 +179,12 @@ private:
     bool                    alive;
 
     /* RiPpLe statistics */
-    int                     rpl_grounded;
-    int                     rpl_sequence;
-    int                     rpl_instanceid;
-    int                     rpl_dagrank;
+    enum RPL_DIO_MOP        rpl_mode;
+    unsigned int            rpl_sequence;
+    unsigned int            rpl_instanceid;
+    unsigned int            rpl_dagrank;
+    unsigned int            rpl_lifetime;
+    unsigned int            rpl_version;
     unsigned char           rpl_dagid[16];
     unsigned int            rpl_dio_lifetime;
     ip_subnet               rpl_prefix;

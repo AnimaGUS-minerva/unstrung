@@ -286,20 +286,21 @@ int network_interface::build_dio(unsigned char *buff,
     
     dio = (struct nd_rpl_dio *)icmp6->icmp6_data8;
     
+    dio->rpl_instanceid = this->rpl_instanceid;
+    dio->rpl_version    = this->rpl_version;
     dio->rpl_flags = 0;
+    dio->rpl_mopprf     = 0;
     if(this->rpl_grounded) {
         dio->rpl_mopprf |= ND_RPL_DIO_GROUNDED;
     }
-    dio->rpl_mopprf     = 0;
     
     /* XXX need to non-storing mode is a MUST */
-    dio->rpl_mopprf |= RPL_DIO_STORING << RPL_DIO_MOP_SHIFT;
+    dio->rpl_mopprf |= (rpl_mode << RPL_DIO_MOP_SHIFT);
 
     /* XXX need to set PRF */
 
     dio->rpl_dtsn       = this->rpl_sequence;
-    dio->rpl_instanceid = this->rpl_instanceid;
-    dio->rpl_dagrank    = this->rpl_dagrank;
+    dio->rpl_dagrank    = htons(this->rpl_dagrank);
     memcpy(dio->rpl_dagid, this->rpl_dagid, 16);
 
     nextopt = (unsigned char *)&dio[1];
@@ -384,8 +385,7 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum,
         if(opt.rpl_dio_type == RPL_DIO_PAD0) {
             skip_len = 1;
         } else {
-            skip_len = (opt.rpl_dio_lenh << 8) +
-                opt.rpl_dio_lenl;
+            skip_len = opt.rpl_dio_len + 2;
             if(skip_len == 0) break;
         }
 
