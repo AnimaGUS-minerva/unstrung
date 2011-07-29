@@ -74,6 +74,9 @@ public:
     network_interface  *interface;
 
     struct timeval      alarm_time;
+    const char *getReason() {
+        return mReason;
+    };
 
 private:
     void set_alarm(struct timeval &relative,
