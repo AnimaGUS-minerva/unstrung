@@ -385,7 +385,7 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum,
             skip_len = 1;
         } else {
             skip_len = opt.rpl_dio_len + 2;
-            if(skip_len == 0) break;
+            if(opt.rpl_dio_len == 0) break;
         }
 
         /* if mOptions[dio_type] is 0, then advance it */
@@ -415,7 +415,7 @@ struct rpl_dio_destprefix *rpl_dio::destprefix(void)
     if(dp==NULL) return NULL;
 
     int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8)-1;
-    if(prefixbytes < (optlen - sizeof(struct rpl_dio_destprefix))) {
+    if(prefixbytes > (optlen - sizeof(struct rpl_dio_destprefix))) {
         //(*mStats)[PS_SUBOPTION_UNDERRUN]++;
         return NULL;
     }

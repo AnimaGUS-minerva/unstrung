@@ -27,7 +27,7 @@ private:
     int                     mLen;
 
     /*
-     * this structure is a set of virtual pointers,
+     * this structure is a set of pseudo pointers,
      * where we last found an an option of that particular type.
      */
     int16_t                  mOptions[256]; 
