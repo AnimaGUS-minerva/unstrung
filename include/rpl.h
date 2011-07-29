@@ -1,5 +1,7 @@
 #ifndef _RPL_H_
 
+#define PACKED __attribute__((packed))
+
 /*
  * DIO: Updated to RPL-19 on 2011-07-25, section 6. (page 30) 
  */
@@ -37,14 +39,14 @@ struct nd_rpl_security {
                                       /* bit 10-8, LVL, bit 7-0 flags */
     u_int32_t rpl_sec_counter;
     u_int8_t  rpl_sec_ki[0];          /* depends upon kim */
-};
+} PACKED;
 
 /* section 6.2.1, DODAG Information Solication (DIS_IS) */
 struct nd_rpl_dis_is {
     u_int8_t rpl_dis_flags;
     u_int8_t rpl_dis_reserved;
     u_int8_t rpl_dis_options[0];
-};
+} PACKED;
 
 /* section 6.3.1, DODAG Information Object (DIO) */
 struct nd_rpl_dio {
@@ -56,7 +58,7 @@ struct nd_rpl_dio {
     u_int8_t  rpl_flags;    /* no flags defined yet */
     u_int8_t  rpl_resv1;   
     u_int8_t  rpl_dagid[DAGID_LEN];
-};
+} PACKED;
 #define RPL_DIO_GROUND_FLAG 0x80
 #define RPL_DIO_MOP_SHIFT   3
 #define RPL_DIO_MOP_MASK    (7 << RPL_DIO_MOP_SHIFT)
@@ -85,7 +87,7 @@ struct rpl_dio_genoption {
     u_int8_t rpl_dio_type;
     u_int8_t rpl_dio_len;  
     u_int8_t rpl_dio_data[0];   
-};
+} PACKED;
 
 #define RPL_DIO_LIFETIME_INFINITE   0xffffffff
 #define RPL_DIO_LIFETIME_DISCONNECT 0
@@ -96,8 +98,8 @@ struct rpl_dio_destprefix {
     u_int8_t rpl_dio_prefixlen;        /* in bits */
     u_int8_t rpl_dio_prf;              /* flags, including Route Preference */
     u_int32_t rpl_dio_prefixlifetime;  /* in seconds */
-    u_int8_t rpl_dio_prefix[1];        /* variables number of bytes */
-};
+    u_int8_t rpl_dio_prefix[0];        /* variables number of bytes */
+} PACKED;
 
 /* section 6.4.1, DODAG Information Object (DIO) */
 struct nd_rpl_dao {
@@ -106,7 +108,7 @@ struct nd_rpl_dao {
     u_int8_t  rpl_resv;      
     u_int8_t  rpl_daoseq;        
     /* u_int8_t  rpl_dagid[DAGID_LEN];*/  /* present when D set. */
-};
+} PACKED;
 
 /* indicates if this DAO is to be acK'ed */
 #define RPL_DAO_K_SHIFT   7

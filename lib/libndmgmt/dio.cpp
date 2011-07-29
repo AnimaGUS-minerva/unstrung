@@ -226,16 +226,16 @@ int network_interface::append_dio_suboption(unsigned char *buff,
                                             unsigned char *subopt_data,
                                             unsigned int subopt_len)
 {
-    if(buff_len < (subopt_len+3)) {
+    struct rpl_dio_genoption *gopt = (struct rpl_dio_genoption *)buff;
+    if(buff_len < (subopt_len+2)) {
         fprintf(this->verbose_file, "Failed to add option %u, length %u>avail:%u\n",
-                subopt_type, buff_len, subopt_len+3);
+                subopt_type, buff_len, subopt_len+2);
         return -1;
     }
-    buff[0]=subopt_type;
-    buff[1]=subopt_len >> 8;
-    buff[2]=subopt_len & 0xff;
-    memcpy(buff+3, subopt_data, subopt_len);
-    return subopt_len+3;
+    gopt->rpl_dio_type = subopt_type;
+    gopt->rpl_dio_len  = subopt_len;
+    memcpy(gopt->rpl_dio_data, subopt_data, subopt_len);
+    return subopt_len+2;
 }
 
 int network_interface::append_dio_suboption(unsigned char *buff,
@@ -243,7 +243,7 @@ int network_interface::append_dio_suboption(unsigned char *buff,
                                             enum RPL_DIO_SUBOPT subopt_type)
 {
     return append_dio_suboption(buff, buff_len, subopt_type,
-                                this->optbuff+3, this->optlen-3);
+                                this->optbuff+2, this->optlen-2);
 }
 
 int network_interface::build_prefix_dioopt(ip_subnet prefix)
@@ -251,8 +251,7 @@ int network_interface::build_prefix_dioopt(ip_subnet prefix)
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dio_destprefix *diodp = (struct rpl_dio_destprefix *)optbuff;
 
-    diodp->rpl_dio_type = RPL_DIO_DESTPREFIX;
-    diodp->rpl_dio_prf=0x00;
+    diodp->rpl_dio_prf  = 0x00;
     diodp->rpl_dio_prefixlifetime = htonl(this->rpl_dio_lifetime);
     diodp->rpl_dio_prefixlen = prefix.maskbits;
     for(int i=0; i < (prefix.maskbits+7)/8; i++) {
