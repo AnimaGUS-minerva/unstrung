@@ -49,42 +49,42 @@ static void t2(network_interface *iface)
         d1.rpl_dagid[0]='T';
         d1.rpl_dagid[0]='1';
 
-        d1.rpl_seq = 1;
+        d1.rpl_dtsn = 1;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_SEQ_OLD] == 0);
 
-        d1.rpl_seq = 4;
+        d1.rpl_dtsn = 4;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 0);
 
-        d1.rpl_seq = 3;
+        d1.rpl_dtsn = 3;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 1);
 
-        d1.rpl_seq = 240;
+        d1.rpl_dtsn = 240;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
-        d1.rpl_seq = 130;
+        d1.rpl_dtsn = 130;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 130);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
-        d1.rpl_seq = 243;
+        d1.rpl_dtsn = 243;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 243);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
-        d1.rpl_seq = 1;
+        d1.rpl_dtsn = 1;
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
-        d1.rpl_seq = 1;
+        d1.rpl_dtsn = 1;
         unsigned int processed_count = dn->mStats[PS_PACKET_PROCESSED];
         dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
@@ -105,7 +105,7 @@ static void t3(network_interface *iface)
 
         memset(&d1, 0, sizeof(d1));
 
-        d1.rpl_seq = 2;
+        d1.rpl_dtsn = 2;
         d1.rpl_dagid[0]='T';
         d1.rpl_dagid[0]='1';
         d1.rpl_instanceid = 1;
@@ -133,7 +133,7 @@ static void t4(network_interface *iface)
 
         memset(&d1, 0, sizeof(d1));
 
-        d1.rpl_seq = 2;
+        d1.rpl_dtsn = 2;
         d1.rpl_dagid[0]='T';
         d1.rpl_dagid[0]='1';
         d1.rpl_instanceid = 1;
