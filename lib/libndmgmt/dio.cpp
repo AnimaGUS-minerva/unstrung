@@ -220,9 +220,9 @@ void network_interface::send_raw_icmp(unsigned char *icmp_body, unsigned int icm
 }
 
 /* returns number of bytes used */
-int network_interface::append_dio_suboption(unsigned char *buff,
+int network_interface::append_suboption(unsigned char *buff,
                                             unsigned int buff_len,
-                                            enum RPL_DIO_SUBOPT subopt_type,
+                                            enum RPL_SUBOPT subopt_type,
                                             unsigned char *subopt_data,
                                             unsigned int subopt_len)
 {
@@ -238,11 +238,11 @@ int network_interface::append_dio_suboption(unsigned char *buff,
     return subopt_len+2;
 }
 
-int network_interface::append_dio_suboption(unsigned char *buff,
+int network_interface::append_suboption(unsigned char *buff,
                                             unsigned int buff_len,
-                                            enum RPL_DIO_SUBOPT subopt_type)
+                                            enum RPL_SUBOPT subopt_type)
 {
-    return append_dio_suboption(buff, buff_len, subopt_type,
+    return append_suboption(buff, buff_len, subopt_type,
                                 this->optbuff+2, this->optlen-2);
 }
 
@@ -311,7 +311,7 @@ int network_interface::build_dio(unsigned char *buff,
     int nextoptlen = 0;
 
     len = ((caddr_t)nextopt - (caddr_t)buff);
-    nextoptlen += append_dio_suboption(nextopt, buff_len-len, RPL_DIO_DESTPREFIX);
+    nextoptlen += append_suboption(nextopt, buff_len-len, RPL_DIO_DESTPREFIX);
 
     if(nextoptlen < 0) {
         /* failed to build DIO prefix option */
@@ -357,7 +357,7 @@ void rpl_dio::reset_options(void)
  * we update it to that location.
  */
 
-struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum,
+struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_SUBOPT optnum,
                                                 int *p_opt_len)
 {
     u_int8_t*opt_bytes = (mBytes+sizeof(nd_rpl_dio));
@@ -381,7 +381,7 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_DIO_SUBOPT optnum,
         struct rpl_dio_genoption opt;
         memcpy((void*)&opt, (void*)opt_bytes,sizeof(struct rpl_dio_genoption));
 
-        if(opt.rpl_dio_type == RPL_DIO_PAD0) {
+        if(opt.rpl_dio_type == RPL_OPT_PAD0) {
             skip_len = 1;
         } else {
             skip_len = opt.rpl_dio_len + 2;

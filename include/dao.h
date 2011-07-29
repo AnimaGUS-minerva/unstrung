@@ -16,7 +16,7 @@ class rpl_dao {
 public:
     rpl_dao(rpl_node &peer,
             const struct nd_rpl_dao *dao, int dao_len);
-    struct nd_rpl_genoption *search_subopt(enum RPL_DIO_SUBOPT optnum,
+    struct nd_rpl_genoption *search_subopt(enum RPL_SUBOPT optnum,
                                            int *p_opt_len = NULL);
     void   reset_options(void);
     

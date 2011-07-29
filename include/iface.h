@@ -208,15 +208,16 @@ private:
     void check_allrouters_membership(void);
 
     /* space to format various messages */
-    int append_dio_suboption(unsigned char *buff,
+    int append_suboption(unsigned char *buff,
                              unsigned int buff_len,
-                             enum RPL_DIO_SUBOPT subopt_type,
+                             enum RPL_SUBOPT subopt_type,
                              unsigned char *subopt_data,
                              unsigned int subopt_len);
-    int append_dio_suboption(unsigned char *buff,
+    int append_suboption(unsigned char *buff,
                              unsigned int buff_len,
-                             enum RPL_DIO_SUBOPT subopt_type);
+                             enum RPL_SUBOPT subopt_type);
     int build_prefix_dioopt(ip_subnet prefix);
+    int build_target_opt(ip_subnet prefix);
 
     unsigned char           optbuff[256];
     unsigned int            optlen;

@@ -74,13 +74,16 @@ enum RPL_DIO_MOP {
     RPL_DIO_STORING_MULTICAST    = 0x3,
 };
 
-enum RPL_DIO_SUBOPT {
-        RPL_DIO_PAD0        = 0,
-        RPL_DIO_PADN        = 1,
+enum RPL_SUBOPT {
+        RPL_OPT_PAD0        = 0,
+        RPL_OPT_PADN        = 1,
         RPL_DIO_METRICS     = 2,
         RPL_DIO_ROUTINGINFO = 3,
         RPL_DIO_CONFIG      = 4,
+        RPL_DAO_RPLTARGET   = 5,
+        RPL_DAO_TRANSITINFO = 6,
         RPL_DIO_DESTPREFIX  = 8,
+        RPL_DAO_RPLTARGET_DESC=9,
 };
 
 struct rpl_dio_genoption {

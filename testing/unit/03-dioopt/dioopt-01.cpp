@@ -62,8 +62,8 @@ static void t2(void)
                 0x88, 0x0a, 0x00, 0x00, 0x74, 0x68, 0x69, 0x73, 
                 0x69, 0x73, 0x6d, 0x79, 0x6e, 0x69, 0x63, 0x65,
                 0x64, 0x61, 0x67, 0x31, 
-                RPL_DIO_PAD0, 
-                RPL_DIO_PADN, 0x02, 0x04, 0x00,
+                RPL_OPT_PAD0, 
+                RPL_OPT_PADN, 0x02, 0x04, 0x00,
                 RPL_DIO_METRICS, 0x0e, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 
                 0x30, 0x20, 0x01, 0x0d, 0xb8, 0x00, 0x01, 0x00  
         };
@@ -74,9 +74,9 @@ static void t2(void)
 
         assert(dio.search_subopt(RPL_DIO_DESTPREFIX) == NULL);
         assert(dio.search_subopt(RPL_DIO_METRICS)    != NULL);
-        assert(dio.search_subopt(RPL_DIO_PAD0)       != NULL);
-        assert(dio.search_subopt(RPL_DIO_PAD0)       == NULL);
-        assert(dio.search_subopt(RPL_DIO_PADN)       != NULL);
+        assert(dio.search_subopt(RPL_OPT_PAD0)       != NULL);
+        assert(dio.search_subopt(RPL_OPT_PAD0)       == NULL);
+        assert(dio.search_subopt(RPL_OPT_PADN)       != NULL);
         assert(dio.search_subopt(RPL_DIO_METRICS)    == NULL);
         assert(dio.search_subopt(RPL_DIO_DESTPREFIX) == NULL);
 }
