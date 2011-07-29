@@ -141,82 +141,8 @@ void network_interface::send_dio(void)
     unsigned int icmp_len = build_dio(icmp_body, sizeof(icmp_body),
                                       rpl_prefix);
 
-    send_raw_icmp(icmp_body, icmp_len);
-}
-
-
-void network_interface::send_raw_icmp(unsigned char *icmp_body, unsigned int icmp_len)
-{
-    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
-    struct sockaddr_in6 addr;
-    struct in6_addr *dest = NULL;
-    struct in6_pktinfo *pkt_info;
-    struct msghdr mhdr;
-    struct cmsghdr *cmsg;
-    struct iovec iov;
-    char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
-    
-    int err;
-    
-    if(setup() == false) {
-        fprintf(this->verbose_file, "failed to setup socket!");
-        return;
-    }
-    check_allrouters_membership();    
-
-    printf("sending RA on %u\n", nd_socket);
-    
-    if (dest == NULL)
-    {
-        dest = (struct in6_addr *)all_hosts_addr;
-        update_multicast_time();
-    }
-    
-    memset((void *)&addr, 0, sizeof(addr));
-    addr.sin6_family = AF_INET6;
-    addr.sin6_port = htons(IPPROTO_ICMPV6);
-    memcpy(&addr.sin6_addr, dest, sizeof(struct in6_addr));
-
-    iov.iov_len  = icmp_len;
-    iov.iov_base = (caddr_t) icmp_body;
-    
-    memset(chdr, 0, sizeof(chdr));
-    cmsg = (struct cmsghdr *) chdr;
-    
-    cmsg->cmsg_len   = CMSG_LEN(sizeof(struct in6_pktinfo));
-    cmsg->cmsg_level = IPPROTO_IPV6;
-    cmsg->cmsg_type  = IPV6_PKTINFO;
-    
-    pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
-    pkt_info->ipi6_ifindex = this->get_if_index();
-    memcpy(&pkt_info->ipi6_addr, &this->if_addr, sizeof(struct in6_addr));
-    
-#ifdef HAVE_SIN6_SCOPE_ID
-    if (IN6_IS_ADDR_LINKLOCAL(&addr.sin6_addr) ||
-        IN6_IS_ADDR_MC_LINKLOCAL(&addr.sin6_addr))
-        addr.sin6_scope_id = iface->get_if_index();
-#endif
-    
-    memset(&mhdr, 0, sizeof(mhdr));
-    mhdr.msg_name = (caddr_t)&addr;
-    mhdr.msg_namelen = sizeof(struct sockaddr_in6);
-    mhdr.msg_iov = &iov;
-    mhdr.msg_iovlen = 1;
-    mhdr.msg_control = (void *) cmsg;
-    mhdr.msg_controllen = sizeof(chdr);
-    
-    err = sendmsg(nd_socket, &mhdr, 0);
-    
-    if (err < 0) {
-        char sbuf[INET6_ADDRSTRLEN], dbuf[INET6_ADDRSTRLEN];
-
-	inet_ntop(AF_INET6, &pkt_info->ipi6_addr, sbuf, INET6_ADDRSTRLEN);
-	inet_ntop(AF_INET6, &addr.sin6_addr, dbuf, INET6_ADDRSTRLEN);
-        
-        printf("send_raw_dio/sendmsg[%s->%s] (on if: %d): %s\n",
-               sbuf, dbuf,
-               pkt_info->ipi6_ifindex, strerror(errno));
-    }
+    /* NULL indicates use multicast */
+    send_raw_icmp(NULL, icmp_body, icmp_len);
 }
 
 /* returns number of bytes used */

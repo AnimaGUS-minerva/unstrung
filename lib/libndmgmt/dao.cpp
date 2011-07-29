@@ -112,6 +112,24 @@ int network_interface::build_dao(unsigned char *buff,
 }
 
 
+void network_interface::send_dao(rpl_node &parent, prefix_node &pre)
+{
+    unsigned char icmp_body[2048];
+
+    /* this is wrong, it needs to send the entire set of prefixes */
+    debug->log("sending DAO on if: %s for prefix: %s\n",
+               this->if_name, parent.node_name());
+    memset(icmp_body, 0, sizeof(icmp_body));
+    
+    unsigned int icmp_len = build_dao(icmp_body, sizeof(icmp_body),
+                                      pre.get_prefix());
+
+    struct in6_addr dest = parent.node_number();
+    send_raw_icmp(&dest, icmp_body, icmp_len);
+}
+
+
+
 
 /*
  * Local Variables:

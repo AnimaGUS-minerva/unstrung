@@ -162,11 +162,11 @@ void dag_network::addprefix(rpl_node peer,
         pre.set_dn(this);
         pre.set_prefix(prefix);
         pre.configureip(iface);
-        send_dao(pre);
+        send_dao(peer, pre);
     }
 }
 
-void dag_network::potentially_lower_rank(rpl_node peer,
+void dag_network::potentially_lower_rank(rpl_node &peer,
                                          network_interface *iface,
                                          const struct nd_rpl_dio *dio,
                                          int dio_len)
@@ -191,6 +191,8 @@ void dag_network::potentially_lower_rank(rpl_node peer,
      * just fake it for now
      */
     mDagRank = rank;
+    dag_parentif = iface;
+    dag_parent   = &peer;
 
     /* now see if we have already an address on this new network */
     /*
@@ -219,10 +221,17 @@ void dag_network::potentially_lower_rank(rpl_node peer,
 /*
  * send out outgoing DAO
  */
-void dag_network::send_dao(prefix_node &pre)
+void dag_network::send_dao(rpl_node &parent, prefix_node &pre)
 {
-    debug->verbose("SENDING dao for prefix: %s\n",
-                   pre.node_name());
+    debug->verbose("SENDING dao for %s to: %s to %s on if=%s\n",
+                   "dagname", parent.node_name(),
+                   dag_parent   ? dag_parent->node_name() : "unset",
+                   dag_parentif ? dag_parentif->get_if_name():"unknown");
+
+    if(dag_parent == NULL || dag_parentif ==NULL) return;
+
+    /* need to tell our parent about how to reach us */
+    dag_parentif->send_dao(parent, pre);
 }
 
 /*
