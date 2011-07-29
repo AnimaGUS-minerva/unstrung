@@ -25,7 +25,8 @@ extern "C" {
 
 int main(int argc, char *argv[])
 {
-    network_interface::scan_devices();
+    rpl_debug *deb = new rpl_debug(false, stdout);
+    network_interface::scan_devices(deb);
 
     exit(0);
 }
