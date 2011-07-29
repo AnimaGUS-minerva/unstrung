@@ -44,13 +44,6 @@ network_interface *pcap_iface_factory::newnetwork_interface(const char *name)
 class pcap_iface_factory pcap_factory;
 
 
-class pcap_linux_network_interface : public pcap_network_interface {
-public:
-        virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
-                                       const u_char *bytes);
-	pcap_linux_network_interface(pcap_dumper_t *pd);
-};
-
 /* constructor */
 pcap_network_interface::pcap_network_interface(const char *name) :
         network_interface(name)
@@ -71,20 +64,21 @@ pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
 	packet_count = 0;
 }
 
-pcap_linux_network_interface::pcap_linux_network_interface(pcap_dumper_t *pd) :
-        pcap_network_interface(pd)
-{
-}
-
 bool pcap_network_interface::faked(void) {
     return true;
 };
 
-void pcap_network_interface::send_raw_icmp(const unsigned char *icmp_body,
-                                          unsigned int icmp_len)
+void pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
+                                           const unsigned char *icmp_body,
+                                           unsigned int icmp_len)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     unsigned char packet[icmp_len+sizeof(ip6_hdr)+16];
+
+    if (dest == NULL)
+    {
+        dest = (struct in6_addr *)all_hosts_addr;  /* XXX WRONG WRONG WRONG */
+    }
 
     memset(packet, 0, sizeof(packet));
     packet[0] =0x02; packet[1]=0x34; packet[2]=0x56;
@@ -96,7 +90,7 @@ void pcap_network_interface::send_raw_icmp(const unsigned char *icmp_body,
 
     struct ip6_hdr *v6 = (struct ip6_hdr *)&packet[14];
     /* leave zeroes v6->ip6_src = 0; */
-    memcpy(&v6->ip6_dst, all_hosts_addr, 16);
+    memcpy(&v6->ip6_dst, dest, 16);
     v6->ip6_nxt = IPPROTO_ICMPV6;
     v6->ip6_hlim= 64;
     v6->ip6_plen= htons(icmp_len);
@@ -123,8 +117,29 @@ void sunshine_pcap_input(u_char *u,
         pnd->skip_pcap_headers(h, bytes);
 }
 
+
 void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
-                                               const u_char *bytes)
+                                                    const u_char *bytes)
+{
+    switch(pcap_link) {
+    case DLT_LINUX_SLL:
+        skip_linux_pcap_headers(h, bytes);
+        break;
+
+    case DLT_EN10MB:
+        skip_10mb_pcap_headers(h, bytes);
+        break;
+                
+    default:
+        fprintf(stderr, "unimplemented dlt type: %s (%u)",
+                pcap_datalink_val_to_name(pcap_link),pcap_link);
+        exit(1);
+    }
+}
+
+
+void pcap_network_interface::skip_10mb_pcap_headers(const struct pcap_pkthdr *h,
+                                                    const u_char *bytes)
 {
 	int len = h->len;
 
@@ -183,7 +198,7 @@ void pcap_network_interface::filter_and_receive_icmp6(time_t now,
 }
 
 
-void pcap_linux_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
+void pcap_network_interface::skip_linux_pcap_headers(const struct pcap_pkthdr *h,
                                                      const u_char *p)
 {
 	u_int caplen = h->caplen;
@@ -360,10 +375,12 @@ int pcap_network_interface::nisystem(const char *cmd)
         debug->log("would invoke cmd: %s\n", cmd);
 }
 
-int pcap_network_interface::process_infile(char *infile, char *outfile) 
+int pcap_network_interface::process_infile(const char *ifname,
+                                           const char *infile,
+                                           const char *outfile) 
 {
         pcap_network_interface *ndproc = 
-                setup_infile_outfile(infile, outfile);
+            setup_infile_outfile(ifname, infile, outfile);
 
         rpl_debug *deb = new rpl_debug(true, stdout);
 	ndproc->set_debug(deb);
@@ -389,7 +406,10 @@ void pcap_network_interface::set_pcap_out(const char *outfile,
     }
 }
 
-pcap_network_interface *pcap_network_interface::setup_infile_outfile(const char *infile, const char *outfile)
+pcap_network_interface *pcap_network_interface::setup_infile_outfile(
+    const char *ifname,
+    const char *infile,
+    const char *outfile)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
         pcap_t *ppol;
@@ -416,21 +436,8 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(const char 
 		exit(1);
 	}
 
-        switch(pcap_link) {
-        case DLT_LINUX_SLL:
-                ndproc = new pcap_linux_network_interface(out);
-                break;
-
-        case DLT_EN10MB:
-                ndproc = new pcap_network_interface(out);
-                break;
-                
-        default:
-                fprintf(stderr, "unimplemented dlt type: %s (%u)",
-                        pcap_datalink_val_to_name(pcap_link),pcap_link);
-                exit(1);
-        }
-
+        ndproc = (pcap_network_interface *)find_by_name(ifname);
+        ndproc->set_link_encap(pcap_link);
         ndproc->pol = ppol;
 
         return ndproc;

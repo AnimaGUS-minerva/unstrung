@@ -51,13 +51,22 @@ public:
         };
 
         /* a kind of constructor */
-        static pcap_network_interface *setup_infile_outfile(const char *infile,
-                                                            const char *outfile);
+        static pcap_network_interface *setup_infile_outfile(
+                const char *ifname,
+                const char *infile,
+                const char *outfile);
 
         void set_pcap_out(const char *outfile, int pcap_link);
 
-        static int process_infile(char *infile, char *outfile);
+        static int process_infile(
+                const char *ifname,
+                const char *infile,
+                const char *outfile);
+
         int process_pcap(void);
+        void set_link_encap(int link) {
+                pcap_link=link;
+        };
 
 
 protected:
@@ -65,10 +74,14 @@ protected:
                                       const u_char *bytes, int len);
 
 private:
-
+        int            pcap_link;
 	pcap_dumper_t *pcap_out;
         pcap_t        *pol;
 	unsigned int packet_count;
+        void skip_linux_pcap_headers(const struct pcap_pkthdr *h,
+                                     const u_char *p);
+        void skip_10mb_pcap_headers(const struct pcap_pkthdr *h,
+                                    const u_char *p);
 };
 
 

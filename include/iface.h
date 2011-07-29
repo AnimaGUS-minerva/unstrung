@@ -56,8 +56,10 @@ public:
                      const u_char *dio_bytes, const int dio_len);
 
     void send_dio(void);
-    void send_dao(void);
-    virtual void send_raw_icmp(unsigned char *icmp_body, unsigned int icmp_len);
+    void send_dao(rpl_node &n, prefix_node &pre);
+    virtual void send_raw_icmp(struct in6_addr *dest,
+                               unsigned char *icmp_body,
+                               unsigned int icmp_len);
     virtual bool faked(void);
 
     int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
