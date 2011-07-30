@@ -16,11 +16,11 @@ LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
 
 TESTNAME=vf
 
-${TESTNAME}: ${TESTNAME}.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
-	${CXX} ${CXXFLAGS} -o ${TESTNAME} ${TESTNAME}.cpp ${LDFLAGS}
+${TESTNAME}: ${TESTNAME}.cpp ${INC}/iface.h ${INC}/dag.h base.o derived.o
+	${CXX} ${CXXFLAGS} -o ${TESTNAME} ${TESTNAME}.cpp base.o derived.o ${LDFLAGS}
 
 check::	${TESTNAME}
-	./${TESTNAME}
+	./${TESTNAME} | diff - expected.txt
 
 checkprograms:: ${TESTNAME}
 programs::
