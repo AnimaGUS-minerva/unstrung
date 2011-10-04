@@ -24,7 +24,7 @@ LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
 
 ONEFILE=
-CFLAGS+=-Werror 
+CFLAGS+=${WERROR}
 
 SRCS = ttosubnet.c ttoaddr.c addrtypeof.c subnettypeof.c 
 SRCS+= ttoul.c initsubnet.c portof.c initaddr.c anyaddr.c

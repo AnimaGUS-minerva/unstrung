@@ -24,7 +24,7 @@ LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
 
 ONEFILE=
-CFLAGS+=-Werror 
+CFLAGS+=${WERROR}
 
 SRCS = utils.c rt_names.c ll_types.c ll_proto.c ll_addr.c inet_proto.c
 SRCS+= ll_map.o libnetlink.o 
