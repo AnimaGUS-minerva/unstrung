@@ -51,11 +51,6 @@ CFLAGS+=-DFINALCONFDDIR=\"${FINALCONFDDIR}\"
 CFLAGS+=-DFINALCONFFILE=\"${FINALCONFFILE}\"
 CFLAGS+=-DFINALVARDIR=\"${FINALVARDIR}\"
 
-# die if there are any warnings
-ifndef WERROR
-WERROR:= -Werror
-endif
-
 CFLAGS+= ${WERROR}
 
 ifneq ($(LD_LIBRARY_PATH),)
