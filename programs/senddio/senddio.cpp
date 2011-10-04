@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
     }
 
     if(!fakesend && icmp_len > 0) {
-        iface->send_raw_icmp(icmp_body, icmp_len);
+        iface->send_raw_icmp(NULL, icmp_body, icmp_len);
     }
 
     exit(0);
