@@ -45,6 +45,7 @@ static void t1(rpl_debug *deb)
     assert(my_if!=NULL);
 
     my_if->set_pcap_out("../OUTPUTS/15-dao.pcap", DLT_EN10MB);
+    my_if->set_rpl_dagid("mydagid");
 
     unsigned char buf[2048];
     ip_subnet out;
