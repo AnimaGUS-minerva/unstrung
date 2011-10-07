@@ -521,7 +521,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     break;
     }
 
-#if 0
+#if 1
     /* now decode the option packets */
     while((const u_char *)nd_options < bytes_end && nd_options->nd_opt_type!=0) {
 	/*

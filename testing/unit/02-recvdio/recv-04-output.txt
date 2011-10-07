@@ -10,5 +10,5 @@ packet 1 is being processed
 would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr show
 SENDING dao for dagname to: fe80::1022:ff:fe64:6423 to fe80::1022:ff:fe64:6423 on if=wlan0
-sending DAO on if: wlan0 for prefix: fe80::1022:ff:fe64:6423
+sending DAO on if: wlan0 for prefix: fe80::1022:ff:fe64:6423 faked
 Scheduling earlier dio

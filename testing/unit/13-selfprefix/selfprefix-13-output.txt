@@ -12,20 +12,16 @@ would invoke cmd: ip -6 addr show
 SENDING dao for dagname to: fe80::1000:ff:fe64:6423 to unset on if=unknown
 packet 1 is being processed
   processing dao(36)
-  [seq:0,instance:210,rank:1,dagid:internet0x00 ]
-   received self packet (1/1)
+ [instance:0,daoseq:1,dagid:<elided>]
 packet 2 is being processed
   processing dao(36)
-  [seq:0,instance:210,rank:1,dagid:internet0x00 ]
-   received self packet (1/1)
+ [instance:0,daoseq:1,dagid:<elided>]
 packet 3 is being processed
   processing dao(36)
-  [seq:0,instance:210,rank:1,dagid:internet0x00 ]
-   received self packet (1/1)
+ [instance:0,daoseq:1,dagid:<elided>]
 packet 4 is being processed
   processing dao(36)
-  [seq:0,instance:210,rank:1,dagid:internet0x00 ]
-   received self packet (1/1)
+ [instance:0,daoseq:1,dagid:<elided>]
 iface1[1]: wlan0
 iface2[1]: wlan0
 Processing input file

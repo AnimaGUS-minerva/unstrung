@@ -109,8 +109,9 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     h.len    = h.caplen;
     gettimeofday(&h.ts, NULL);
 
-    pcap_dump((u_char *)this->pcap_out, &h, packet);
-
+    if(this->pcap_out) {
+        pcap_dump((u_char *)this->pcap_out, &h, packet);
+    }
 }
 
 void sunshine_pcap_input(u_char *u,
