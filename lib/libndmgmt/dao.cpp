@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2009-2011 Michael Richardson <mcr@sandelman.ca>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -73,22 +73,22 @@ int network_interface::build_dao(unsigned char *buff,
     unsigned char *nextopt;
     int optlen;
     int len = 0;
-    
+
     memset(buff, 0, buff_len);
-    
+
     icmp6 = (struct icmp6_hdr *)buff;
     icmp6->icmp6_type = ND_RPL_MESSAGE;
     icmp6->icmp6_code = ND_RPL_DAG_IO;
     icmp6->icmp6_cksum = 0;
-    
+
     dao = (struct nd_rpl_dao *)icmp6->icmp6_data8;
-    
+
     dao->rpl_instanceid = this->rpl_instanceid;
     dao->rpl_flags = 0;
     dao->rpl_flags |= RPL_DAO_D_MASK;
-    
+
     dao->rpl_daoseq     = this->rpl_sequence;
-    
+
     {
         unsigned char *dagid = (unsigned char *)&dao[1];
         memcpy(dagid, this->rpl_dagid, 16);
@@ -105,7 +105,7 @@ int network_interface::build_dao(unsigned char *buff,
 
     /* add RPL_TRANSIT */
     /* add RPL_TARGET DESCRIPTION */
-    
+
     /* recalculate length */
     len = ((caddr_t)nextopt - (caddr_t)buff);
 

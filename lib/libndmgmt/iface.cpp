@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -82,7 +82,7 @@ void network_interface::set_rpl_dagid(const char *dagstr)
             unsigned int value;
             if(sscanf(digits, "%2x",&value)==0) break;
             this->rpl_dagid[i]=value;
-            
+
             /* advance two characters, carefully */
             digits++;
             if(digits[0]) digits++;
@@ -90,7 +90,7 @@ void network_interface::set_rpl_dagid(const char *dagstr)
     } else {
         int len = strlen(dagstr);
         if(len > 16) len=16;
-        
+
         memset(this->rpl_dagid, 0, 16);
         memcpy(this->rpl_dagid, dagstr, len);
     }
@@ -104,9 +104,9 @@ void network_interface::generate_eui64(void)
      * eui64 is upper 3 bytes of eui48, with bit 0x02 set to indicate
      * that it is a "globabally" generated eui64
      *
-     * then 0xfffe as bytes 4/5, and then lower 3 bytes of eui48 
+     * then 0xfffe as bytes 4/5, and then lower 3 bytes of eui48
      *
-     * maybe NETLINK should provide us with the EUI64? 
+     * maybe NETLINK should provide us with the EUI64?
      */
     eui64[0]=eui48[0] | 0x02;
     eui64[1]=eui48[1];
@@ -141,9 +141,9 @@ bool network_interface::setup()
 
     rpl_dio_lifetime = 0;       // zero out to avoid garbage.
     generate_eui64();
-    
+
     debug->verbose("Starting setup for %s\n", this->if_name);
-    
+
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
     struct icmp6_filter filter;
     int err, val;
@@ -177,7 +177,7 @@ bool network_interface::setup()
         fprintf(this->verbose_file, "setsockopt(IPV6_UNICAST_HOPS): %s", strerror(errno));
         return false;
     }
-    
+
     val = 255;
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &val, sizeof(val));
     if (err < 0)
@@ -200,12 +200,12 @@ bool network_interface::setup()
     /*
      * setup ICMP filter
      */
-    
+
     ICMP6_FILTER_SETBLOCKALL(&filter);
     ICMP6_FILTER_SETPASS(ND_RPL_MESSAGE,    &filter);
     ICMP6_FILTER_SETPASS(ND_ROUTER_SOLICIT, &filter);
     ICMP6_FILTER_SETPASS(ND_ROUTER_ADVERT,  &filter);
-    
+
     err = setsockopt(nd_socket, IPPROTO_ICMPV6, ICMP6_FILTER, &filter,
                      sizeof(filter));
     if (err < 0)
@@ -222,23 +222,23 @@ bool network_interface::setup()
     /* XXX rpl_node should include all this nodes' addresses, on
      *     all of this nodes' interface
      */
-    
+
     alive = true;
     add_to_list();
-    
+
     return true;
 }
 
 void network_interface::setup_allrouters_membership(void)
 {
-	struct ipv6_mreq mreq;                  
-	
-	memset(&mreq, 0, sizeof(mreq));                  
+	struct ipv6_mreq mreq;
+
+	memset(&mreq, 0, sizeof(mreq));
 	mreq.ipv6mr_interface = this->get_if_index();
-	
+
 	/* ipv6-allrouters: ff02::2 */
 	mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);
-	mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x2);     
+	mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x2);
 
         if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
         {
@@ -257,7 +257,7 @@ void network_interface::setup_allrouters_membership(void)
 void network_interface::check_allrouters_membership(void)
 {
 	#define ALL_ROUTERS_MCAST "ff020000000000000000000000000002"
-	
+
 	FILE *fp;
 	unsigned int if_idx, allrouters_ok=0;
 	char addr[32+1];
@@ -267,9 +267,9 @@ void network_interface::check_allrouters_membership(void)
 	{
 		printf("can't open %s: %s", PATH_PROC_NET_IGMP6,
 			strerror(errno));
-		return;	
+		return;
 	}
-	
+
 	while ( (ret=fscanf(fp, "%u %*s %32[0-9A-Fa-f] %*x %*x %*x\n", &if_idx, addr)) != EOF) {
             if (ret == 2) {
                 if (this->if_index == if_idx) {
@@ -284,17 +284,17 @@ void network_interface::check_allrouters_membership(void)
 	if (!allrouters_ok) {
             printf("resetting ipv6-allrouters membership on %s\n", this->if_name);
             setup_allrouters_membership();
-	}	
+	}
 
 	return;
-}		
+}
 
 class dag_network *network_interface::find_or_make_dag_by_dagid(const char *name)
 {
         dagid_t n;
         int i = DAGID_LEN;
         int len = strlen(name);
-        
+
         memset(n, 0, DAGID_LEN);
         while(--i>0) n[i]=name[i];
 
@@ -370,7 +370,7 @@ int network_interface::get_if_index(void)
 
     /*
      * this function extracts the link local address and interface index
-     * from PATH_PROC_NET_IF_INET6. 
+     * from PATH_PROC_NET_IF_INET6.
      */
     FILE *fp;
     char str_addr[40];
@@ -381,9 +381,9 @@ int network_interface::get_if_index(void)
     {
         fprintf(this->verbose_file, "can't open %s: %s", PATH_PROC_NET_IF_INET6,
                 strerror(errno));
-        return -1;	
+        return -1;
     }
-	
+
     while (fscanf(fp, "%32s %x %02x %02x %02x %15s\n",
                   str_addr, &if_idx, &plen, &scope, &dad_status,
                   devname) != EOF)
@@ -394,20 +394,20 @@ int network_interface::get_if_index(void)
             struct in6_addr addr;
             unsigned int ap;
             int i;
-			
+
             for (i=0; i<16; i++)
             {
                 sscanf(str_addr + i * 2, "%02x", &ap);
                 addr.s6_addr[i] = (unsigned char)ap;
             }
             memcpy(&this->if_addr, &addr, sizeof(this->if_addr));
-            
+
             this->if_index = if_idx;
             fclose(fp);
             return this->if_index;
         }
     }
-    
+
     fprintf(this->verbose_file, "no linklocal address configured for %s",
             this->if_name);
     fclose(fp);
@@ -430,7 +430,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     }
 
     struct icmp6_hdr *icmp6 = (struct icmp6_hdr *)bytes;
-    
+
     /* mark end of data received */
     const u_char *bytes_end = bytes + len;
 
@@ -454,7 +454,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
             break;
         }
         return;
-            
+
     case ND_ROUTER_SOLICIT:
     {
 	struct nd_router_solicit *nrs = (struct nd_router_solicit *)bytes;
@@ -500,7 +500,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	}
     }
     break;
-	
+
     case ND_NEIGHBOR_ADVERT:
     {
 	struct nd_neighbor_advert *nna = (struct nd_neighbor_advert *)bytes;
@@ -513,7 +513,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 		    nna->nd_na_flags_reserved & ND_NA_FLAG_ROUTER ? "router " : "",
 		    nna->nd_na_flags_reserved & ND_NA_FLAG_SOLICITED ? "solicited " : "",
 		    nna->nd_na_flags_reserved & ND_NA_FLAG_OVERRIDE  ? "override " : "",
-		    
+
 		    target_addrbuf,
 		    bytes_end - (u_char *)nd_options);
 	}
@@ -556,7 +556,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	    if(this->packet_too_short("option",
 				      optlen,
 				      sizeof(struct nd_opt_prefix_info))) return;
-	    
+
 	    if(debug->verbose_test()) {
 		char prefix_addrbuf[INET6_ADDRSTRLEN];
 		inet_ntop(AF_INET6, &nopi->nd_opt_pi_prefix, prefix_addrbuf, INET6_ADDRSTRLEN);
@@ -609,7 +609,7 @@ int network_interface::packet_too_short(const char *thing,
     if(avail_len < needed_len) {
         debug->warn("%s has invalid len: %u(<%u)\n",
 		thing, avail_len, needed_len);
-	
+
 	this->error_cnt++;
 	/* discard packet */
 	return 1;
@@ -656,13 +656,13 @@ void network_interface::receive(const time_t now)
 	{
             if (cmsg->cmsg_level != IPPROTO_IPV6)
           	continue;
-            
+
             switch(cmsg->cmsg_type)
             {
 #ifdef IPV6_HOPLIMIT
             case IPV6_HOPLIMIT:
-                if ((cmsg->cmsg_len == CMSG_LEN(sizeof(int))) && 
-                    (*(int *)CMSG_DATA(cmsg) >= 0) && 
+                if ((cmsg->cmsg_len == CMSG_LEN(sizeof(int))) &&
+                    (*(int *)CMSG_DATA(cmsg) >= 0) &&
                     (*(int *)CMSG_DATA(cmsg) < 256))
                 {
                     hoplimit = *(int *)CMSG_DATA(cmsg);
@@ -671,8 +671,8 @@ void network_interface::receive(const time_t now)
                 {
                     debug->warn("received a bogus IPV6_HOPLIMIT from the kernel! len=%d, data=%d",
                                cmsg->cmsg_len, *(int *)CMSG_DATA(cmsg));
-                    return;	
-                }  
+                    return;
+                }
                 break;
 #endif /* IPV6_HOPLIMIT */
 
@@ -684,17 +684,17 @@ void network_interface::receive(const time_t now)
                 }
                 else
                 {
-                    debug->warn("received a bogus IPV6_PKTINFO from the kernel! len=%d, index=%d", 
+                    debug->warn("received a bogus IPV6_PKTINFO from the kernel! len=%d, index=%d",
                                cmsg->cmsg_len, ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex);
                     return;
-                } 
+                }
                 break;
             }
 	}
 
         dst = pkt_info->ipi6_addr;
         src = src_sock.sin6_addr;
-        
+
         if(debug->verbose_test()) {
             char src_addrbuf[INET6_ADDRSTRLEN];
             char dst_addrbuf[INET6_ADDRSTRLEN];
@@ -723,25 +723,25 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
     struct cmsghdr *cmsg;
     struct iovec iov;
     char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
-    
+
     int err;
 
-#if 0    
+#if 0
     if(setup() == false) {
         fprintf(this->verbose_file, "failed to setup socket!");
         return;
     }
-    check_allrouters_membership();    
+    check_allrouters_membership();
 
     printf("sending RA on %u\n", nd_socket);
 #endif
-    
+
     if (dest == NULL)
     {
         dest = (struct in6_addr *)all_hosts_addr;  /* XXX WRONG WRONG WRONG */
         update_multicast_time();
     }
-    
+
     memset((void *)&addr, 0, sizeof(addr));
     addr.sin6_family = AF_INET6;
     addr.sin6_port = htons(IPPROTO_ICMPV6);
@@ -749,24 +749,24 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
 
     iov.iov_len  = icmp_len;
     iov.iov_base = (caddr_t) icmp_body;
-    
+
     memset(chdr, 0, sizeof(chdr));
     cmsg = (struct cmsghdr *) chdr;
-    
+
     cmsg->cmsg_len   = CMSG_LEN(sizeof(struct in6_pktinfo));
     cmsg->cmsg_level = IPPROTO_IPV6;
     cmsg->cmsg_type  = IPV6_PKTINFO;
-    
+
     pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
     pkt_info->ipi6_ifindex = this->get_if_index();
     memcpy(&pkt_info->ipi6_addr, &this->if_addr, sizeof(struct in6_addr));
-    
+
 #ifdef HAVE_SIN6_SCOPE_ID
     if (IN6_IS_ADDR_LINKLOCAL(&addr.sin6_addr) ||
         IN6_IS_ADDR_MC_LINKLOCAL(&addr.sin6_addr))
         addr.sin6_scope_id = iface->get_if_index();
 #endif
-    
+
     memset(&mhdr, 0, sizeof(mhdr));
     mhdr.msg_name = (caddr_t)&addr;
     mhdr.msg_namelen = sizeof(struct sockaddr_in6);
@@ -774,15 +774,15 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
     mhdr.msg_iovlen = 1;
     mhdr.msg_control = (void *) cmsg;
     mhdr.msg_controllen = sizeof(chdr);
-    
+
     err = sendmsg(nd_socket, &mhdr, 0);
-    
+
     if (err < 0) {
         char sbuf[INET6_ADDRSTRLEN], dbuf[INET6_ADDRSTRLEN];
 
 	inet_ntop(AF_INET6, &pkt_info->ipi6_addr, sbuf, INET6_ADDRSTRLEN);
 	inet_ntop(AF_INET6, &addr.sin6_addr, dbuf, INET6_ADDRSTRLEN);
-        
+
         printf("send_raw_dio/sendmsg[%s->%s] (on if: %d): %s\n",
                sbuf, dbuf,
                pkt_info->ipi6_ifindex, strerror(errno));
@@ -859,7 +859,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 poll_if[pollnum].events = POLLIN;
                 poll_if[pollnum].revents= 0;
                 all_if[pollnum] = iface;
-            
+
                 pollnum++;
             }
             iface = iface->next;
@@ -869,7 +869,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         debug->log("sleeping with %d file descriptors, for %d ms\n",
                     pollnum, timeout);
         int n = poll(poll_if, pollnum, timeout);
-        
+
         if(n == 0) {
             /* there was a timeout */
         } else if(n > 0) {
@@ -880,7 +880,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                            poll_if[i].revents & POLLIN ? "ready" : "no-data");
                 time_t now;
                 time(&now);
-                                    
+
                 if(poll_if[i].revents & POLLIN) {
                     all_if[i]->receive(now);
                     n--;
