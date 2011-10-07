@@ -142,7 +142,7 @@ void network_interface::send_dio(void)
                                       rpl_prefix);
 
     /* NULL indicates use multicast */
-    send_raw_icmp(NULL, icmp_body, icmp_len);
+    this->send_raw_icmp(NULL, icmp_body, icmp_len);
 }
 
 /* returns number of bytes used */

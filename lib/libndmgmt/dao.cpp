@@ -34,11 +34,13 @@ extern "C" {
 #include "dag.h"
 #include "dao.h"
 
-void network_interface::receive_dao(const u_char *dao, const int dao_len)
+void network_interface::receive_dao(struct in6_addr from,
+                                    const  time_t now,
+                                    const u_char *dao, const int dao_len)
 {
     if(VERBOSE(this))
-        fprintf(this->verbose_file, " processing dao(%u)\n",dao_len);
-        
+        fprintf(this->verbose_file, "  processing dao(%u)\n",dao_len);
+
 }
 
 
@@ -117,10 +119,11 @@ void network_interface::send_dao(rpl_node &parent, prefix_node &pre)
     unsigned char icmp_body[2048];
 
     /* this is wrong, it needs to send the entire set of prefixes */
-    debug->log("sending DAO on if: %s for prefix: %s\n",
-               this->if_name, parent.node_name());
+    debug->log("sending DAO on if: %s for prefix: %s%s\n",
+               this->if_name, parent.node_name(),
+               this->faked() ? " faked" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
-    
+
     unsigned int icmp_len = build_dao(icmp_body, sizeof(icmp_body),
                                       pre.get_prefix());
 

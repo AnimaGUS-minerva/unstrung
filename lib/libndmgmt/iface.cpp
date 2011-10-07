@@ -444,6 +444,11 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
                               icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
             break;
 
+        case ND_RPL_DAO:
+            this->receive_dao(ip6_src, now,
+                              icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
+            break;
+
         default:
             debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);
             break;
@@ -516,6 +521,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     break;
     }
 
+#if 0
     /* now decode the option packets */
     while((const u_char *)nd_options < bytes_end && nd_options->nd_opt_type!=0) {
 	/*
@@ -581,35 +587,19 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	    debug->verbose(" home-agent-info \n");
 	    break;
 
-	case ND_OPT_RPL_PRIVATE_DAO:
-	    /* SHOULD validate that this arrived in an NA */
-	    debug->verbose(" rpl_dao \n");
-            {
-                const u_char *nd_dao = (u_char *)nd_options;
-                this->receive_dao(nd_dao+2, optlen-2);
-            }
-	    break;
-
-	case ND_OPT_RPL_PRIVATE_DIO:
-	    /* SHOULD validate that this arrived in an RA */
-	    debug->verbose(" rpl_dio \n");
-            {
-                const u_char *nd_dio = (u_char *)nd_options;
-                this->receive_dio(ip6_src, now, nd_dio+2, optlen-2);
-            }
-	    break;
-
 	default:
 	    /* nothing */
 	    break;
 	}
-	
+
 	const u_char *nd_bytes = (u_char *)nd_options;
 	nd_bytes += optlen;
 	nd_options = (const struct nd_opt_hdr *)nd_bytes;
     }
-    
-    
+    /* Dead code? */
+#endif
+
+
 }
 
 int network_interface::packet_too_short(const char *thing,
@@ -713,18 +703,18 @@ void network_interface::receive(const time_t now)
             inet_ntop(AF_INET6, &dst, dst_addrbuf, INET6_ADDRSTRLEN);
 
             debug->verbose(" %s: received packet from %s -> %s[%u]\n",
-                           if_name, 
+                           if_name,
                            src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex);
         }
 
         this->receive_packet(src, dst, now, b, len);
     }
-    
+
 }
 
 void network_interface::send_raw_icmp(struct in6_addr *dest,
-                                      unsigned char *icmp_body,
-                                      unsigned int icmp_len)
+                                      const unsigned char *icmp_body,
+                                      const unsigned int icmp_len)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;

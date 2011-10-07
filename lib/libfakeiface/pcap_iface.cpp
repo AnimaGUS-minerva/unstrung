@@ -68,9 +68,10 @@ bool pcap_network_interface::faked(void) {
     return true;
 };
 
-void pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
-                                           const unsigned char *icmp_body,
-                                           unsigned int icmp_len)
+void
+pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
+                                      const unsigned char *icmp_body,
+                                      const unsigned int icmp_len)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     unsigned char packet[icmp_len+sizeof(ip6_hdr)+16];
@@ -289,6 +290,8 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 struct rtattr    ifmtu;
                 unsigned int     ifmtu_value;
         } fake1;
+
+        
 
         memset(&who, 0, sizeof(who));
         int myindex;

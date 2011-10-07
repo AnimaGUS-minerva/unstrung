@@ -11,19 +11,19 @@ would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr show
 SENDING dao for dagname to: fe80::1000:ff:fe64:6423 to unset on if=unknown
 packet 1 is being processed
-  processing dio(36)
+  processing dao(36)
   [seq:0,instance:210,rank:1,dagid:internet0x00 ]
    received self packet (1/1)
 packet 2 is being processed
-  processing dio(36)
+  processing dao(36)
   [seq:0,instance:210,rank:1,dagid:internet0x00 ]
    received self packet (1/1)
 packet 3 is being processed
-  processing dio(36)
+  processing dao(36)
   [seq:0,instance:210,rank:1,dagid:internet0x00 ]
    received self packet (1/1)
 packet 4 is being processed
-  processing dio(36)
+  processing dao(36)
   [seq:0,instance:210,rank:1,dagid:internet0x00 ]
    received self packet (1/1)
 iface1[1]: wlan0

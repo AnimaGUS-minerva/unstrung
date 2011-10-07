@@ -33,7 +33,7 @@ public:
         int nisystem(const char *cmd);
         void send_raw_icmp(struct in6_addr *dest,
                            const unsigned char *icmp_body,
-                           unsigned int icmp_len);
+                           const unsigned int icmp_len);
         bool faked(void);
 
         virtual void skip_pcap_headers(const struct pcap_pkthdr *h,

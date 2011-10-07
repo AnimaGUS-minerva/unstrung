@@ -50,7 +50,9 @@ public:
                                 time_t          now,
                                 const u_char *bytes, const int len);
 
-    void receive_dao(const u_char *dao_bytes, const int dao_len);
+    void receive_dao(struct in6_addr from,
+                     time_t          now,
+                     const u_char *dao_bytes, const int dao_len);
     void receive_dio(struct in6_addr from,
                      time_t          now,
                      const u_char *dio_bytes, const int dio_len);
@@ -58,8 +60,8 @@ public:
     void send_dio(void);
     void send_dao(rpl_node &n, prefix_node &pre);
     virtual void send_raw_icmp(struct in6_addr *dest,
-                               unsigned char *icmp_body,
-                               unsigned int icmp_len);
+                               const unsigned char *icmp_body,
+                               const unsigned int icmp_len);
     virtual bool faked(void);
 
     int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
@@ -133,7 +135,7 @@ public:
 
     /* find a dag network associated with the interface */
     dag_network       *find_or_make_dag_by_dagid(const char *name);
-        
+
     static void scan_devices(rpl_debug *deb);
     static void main_loop(FILE *verbose, rpl_debug *debug);
     static network_interface *find_by_ifindex(int ifindex);
@@ -193,12 +195,12 @@ private:
     char                    rpl_prefix_str[SUBNETTOT_BUF];
 
     unsigned int            rpl_interval_msec;
-        
+
 
     /* timers */
     time_t			last_multicast_sec;
     suseconds_t		last_multicast_usec;
-        
+
     unsigned char          *control_msg_hdr;
     unsigned int            control_msg_hdrlen;
 
