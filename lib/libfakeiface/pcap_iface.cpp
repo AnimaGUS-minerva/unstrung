@@ -81,6 +81,7 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
         dest = (struct in6_addr *)all_hosts_addr;  /* XXX WRONG WRONG WRONG */
     }
 
+    /* layer 2 */
     memset(packet, 0, sizeof(packet));
     packet[0] =0x02; packet[1]=0x34; packet[2]=0x56;
     packet[3] =0x78; packet[4]=0x9a; packet[5]=0xbc;
@@ -89,13 +90,16 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     packet[12]=0x86;
     packet[13]=0xdd;
 
+    /* layer 3 */
     struct ip6_hdr *v6 = (struct ip6_hdr *)&packet[14];
     /* leave zeroes v6->ip6_src = 0; */
+    v6->ip6_vfc = 6 << 4;
     memcpy(&v6->ip6_dst, dest, 16);
     v6->ip6_nxt = IPPROTO_ICMPV6;
     v6->ip6_hlim= 64;
     v6->ip6_plen= htons(icmp_len);
 
+    /* layer 4+ */
     unsigned char *payload = (unsigned char *)(v6+1);
     memcpy(payload, icmp_body, icmp_len);
 

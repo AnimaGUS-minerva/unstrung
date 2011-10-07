@@ -30,27 +30,30 @@ extern "C" {
 #include "fakeiface.h"
 
 /* TEST1: send out a basic DAO */
-/* 
+/*
  *   To do this we need to have a dag created with a prefix,
  *   and this has to be attached to an interface.
- * 
+ *
  *   We create the body that ICMPv6 should send out.
  */
 static void t1(rpl_debug *deb)
 {
     pcap_network_interface::scan_devices(deb);
 
-    network_interface *my_if = network_interface::find_by_name("wlan0");
+    pcap_network_interface *my_if = (pcap_network_interface *)network_interface::find_by_name("wlan0");
 
     assert(my_if!=NULL);
-    
+
+    my_if->set_pcap_out("../OUTPUTS/15-dao.pcap", DLT_EN10MB);
+
     unsigned char buf[2048];
     ip_subnet out;
     ttosubnet("fdfd:abcd:ef01::/48",0, AF_INET6, &out);
 
     int len = my_if->build_dao(buf, 2048, out);
     assert(len == 40);
-    /* XXX should do more */
+
+    my_if->send_raw_icmp(NULL, buf, len);
 }
 
 int main(int argc, char *argv[])
@@ -59,7 +62,7 @@ int main(int argc, char *argv[])
 
     rpl_debug *deb = new rpl_debug(true, stderr);
     printf("builddao-01 t1\n");     t1(deb);
-    
+
     printf("builddao-01 tests finished\n");
     exit(0);
 }

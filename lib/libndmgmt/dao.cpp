@@ -36,11 +36,28 @@ extern "C" {
 
 void network_interface::receive_dao(struct in6_addr from,
                                     const  time_t now,
-                                    const u_char *dao, const int dao_len)
+                                    const u_char *dat, const int dao_len)
 {
     if(VERBOSE(this))
         fprintf(this->verbose_file, "  processing dao(%u)\n",dao_len);
 
+    struct nd_rpl_dao *dao = (struct nd_rpl_dao *)dat;
+    unsigned char *dat2 = (unsigned char *)(dao+1);
+
+    if(this->packet_too_short("dao", dao_len, sizeof(*dao))) return;
+
+    char dagid[16*6];
+    dagid[0]=0;
+    if(RPL_DAO_D(dao->rpl_flags)) {
+        format_dagid(dagid, dat2);
+        dat2 += DAGID_LEN;
+    }
+
+    debug->info(" [instance:%u,daoseq:%u,%sdagid:%s]\n",
+                dao->rpl_instanceid,
+                dao->rpl_daoseq,
+                RPL_DAO_K(dao->rpl_flags) ? "dao-ack," : "",
+                dagid[0] ? dagid : "<elided>");
 }
 
 
@@ -78,7 +95,7 @@ int network_interface::build_dao(unsigned char *buff,
 
     icmp6 = (struct icmp6_hdr *)buff;
     icmp6->icmp6_type = ND_RPL_MESSAGE;
-    icmp6->icmp6_code = ND_RPL_DAG_IO;
+    icmp6->icmp6_code = ND_RPL_DAO;
     icmp6->icmp6_cksum = 0;
 
     dao = (struct nd_rpl_dao *)icmp6->icmp6_data8;

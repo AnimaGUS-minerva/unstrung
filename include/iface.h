@@ -166,6 +166,7 @@ protected:
     void add_to_list(void);
 
 private:
+    static void format_dagid(char *dagidstr, u_int8_t rpl_dagid[DAGID_LEN]);
     int packet_too_short(const char *thing, const int avail, const int needed);
     int                     nd_socket;
     int                     error_cnt;
