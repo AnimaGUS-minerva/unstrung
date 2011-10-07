@@ -51,7 +51,7 @@ pcap_network_interface::pcap_network_interface(const char *name) :
         fprintf(stderr, "Creating PCAP interface: %s\n", name);
 }
 
-pcap_network_interface::~pcap_network_interface() 
+pcap_network_interface::~pcap_network_interface()
 {
         pcap_dump_close(pcap_out);
         pcap_out=NULL;
@@ -108,7 +108,7 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     h.caplen = 14+40+icmp_len;
     h.len    = h.caplen;
     gettimeofday(&h.ts, NULL);
-    
+
     pcap_dump((u_char *)this->pcap_out, &h, packet);
 
 }
@@ -134,7 +134,7 @@ void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
     case DLT_EN10MB:
         skip_10mb_pcap_headers(h, bytes);
         break;
-                
+
     default:
         fprintf(stderr, "unimplemented dlt type: %s (%u)",
                 pcap_datalink_val_to_name(pcap_link),pcap_link);
@@ -149,7 +149,7 @@ void pcap_network_interface::skip_10mb_pcap_headers(const struct pcap_pkthdr *h,
 	int len = h->len;
 
 	/* validate input packet a bit, before passing to receive layer */
-	/* first, check ethernet, and reject non EthernetII frames 
+	/* first, check ethernet, and reject non EthernetII frames
 	 * from Unit testing.
 	 */
 	this->increment_packet();
@@ -159,7 +159,7 @@ void pcap_network_interface::skip_10mb_pcap_headers(const struct pcap_pkthdr *h,
                             this->packet_num(), bytes[12], bytes[13]);
 		return;
 	}
-	
+
 	/* make sure it's IPv6! */
 	if((bytes[14] & 0xf0) != 0x60) {
 		debug->warn("packet %u is not IPv6: %u\n", bytes[14] >> 4);
@@ -247,7 +247,7 @@ void pcap_network_interface::skip_linux_pcap_headers(const struct pcap_pkthdr *h
 		case LINUX_SLL_P_802_2:
                         bytes = p;
                         /* not correct */
-                        
+
 			break;
 
 		default:
@@ -257,7 +257,7 @@ void pcap_network_interface::skip_linux_pcap_headers(const struct pcap_pkthdr *h
 		}
 	} else {
                 /* validate input packet a bit, before passing to receive
-                 * layer, check ethernet, and reject non EthernetII frames 
+                 * layer, check ethernet, and reject non EthernetII frames
                  * from Unit testing.
                  */
 
@@ -268,7 +268,7 @@ void pcap_network_interface::skip_linux_pcap_headers(const struct pcap_pkthdr *h
                 }
                 bytes = p;
         }
-	
+
 	/* make sure it's IPv6! */
 	if((bytes[0] & 0xf0) != 0x60) {
 		debug->warn("packet %u is not IPv6: %u\n", bytes[14] >> 4);
@@ -295,7 +295,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 unsigned int     ifmtu_value;
         } fake1;
 
-        
+
 
         memset(&who, 0, sizeof(who));
         int myindex;
@@ -309,24 +309,24 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 nlh->nlmsg_flags = 0;  /* not sure what to set here */
                 nlh->nlmsg_seq   = ++seq;
                 nlh->nlmsg_pid   = getpid();
-                
+
                 ifi->ifi_index   = myindex = ++ifindex;
                 ifi->ifi_type    = ARPHRD_ETHER;
                 //ifi->ifi_family  = PF_ETHER;
                 ifi->ifi_flags   = IFF_BROADCAST;
-                
+
                 rtname->rta_type = IFLA_IFNAME;
                 char *ifname = (char *)RTA_DATA(rtname);
                 ifname[0]='\0';
                 strncat(ifname, "wlan0", sizeof(fake1.ifnamespace));
                 rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
-                
+
                 struct rtattr *rtmtu = RTA_NEXT(rtname, len);
                 rtmtu->rta_type = IFLA_MTU;
                 unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
                 *mtu            = 1500;
                 rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
-                
+
                 struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
                 rtaddr->rta_type= IFLA_ADDRESS;
                 unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
@@ -334,9 +334,9 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 hwaddr[2]=0x3e;        hwaddr[3]=0x11;
                 hwaddr[4]=0x34;        hwaddr[5]=0x24;
                 rtaddr->rta_len = RTA_LENGTH(6);
-                
+
                 struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
-                
+
                 nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
                 gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
         }
@@ -363,13 +363,13 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 addr6[0] = 0xfe;                addr6[1] = 0x80;
                 addr6[2] = 0x00;                addr6[3] = 0x00;
                 addr6[4] = 0x00;                addr6[5] = 0x00;
-                addr6[6] = 0x00;                addr6[7] = 0x00; 
+                addr6[6] = 0x00;                addr6[7] = 0x00;
                 addr6[8] = 0x10;                addr6[9] = 0x00;
                 addr6[10]= 0x00;                addr6[11]= 0xff;
                 addr6[12]= 0xfe;                addr6[13]= 0x64;
                 addr6[14]= 0x64;                addr6[15]= 0x23;
                 rtaddr6->rta_len = RTA_LENGTH(16);
-                
+
                 struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
                 nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
                 gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
@@ -384,9 +384,9 @@ int pcap_network_interface::nisystem(const char *cmd)
 
 int pcap_network_interface::process_infile(const char *ifname,
                                            const char *infile,
-                                           const char *outfile) 
+                                           const char *outfile)
 {
-        pcap_network_interface *ndproc = 
+        pcap_network_interface *ndproc =
             setup_infile_outfile(ifname, infile, outfile);
 
         rpl_debug *deb = new rpl_debug(true, stdout);
@@ -404,9 +404,9 @@ void pcap_network_interface::set_pcap_out(const char *outfile,
         fprintf(stderr, "can not create pcap_open_deads\n");
         exit(1);
     }
-    
+
     this->pcap_out = pcap_dump_open(pout, outfile);
-    
+
     if(!pcap_out) {
         fprintf(stderr, "can not open output %s\n", outfile);
         exit(1);
@@ -435,7 +435,7 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
 		fprintf(stderr, "can not create pcap_open_deads\n");
 		exit(1);
 	}
-		
+
 	pcap_dumper_t *out = pcap_dump_open(pout, outfile);
 
 	if(!out) {
@@ -452,7 +452,7 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
 
 
 int pcap_network_interface::process_pcap(void)
-{	
+{
         if(pol==NULL) return -1;
 
 	pcap_loop(pol, 0, sunshine_pcap_input, (u_char *)this);

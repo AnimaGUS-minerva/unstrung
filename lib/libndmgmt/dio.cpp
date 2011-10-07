@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -76,7 +76,7 @@ void network_interface::receive_dio(struct in6_addr from,
                 (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
                 dag_network::mop_decode(dag_network::mop_extract(dio)),
                 dagid);
-    
+
     /* find the relevant DAG */
     class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid,
                                                                this->debug);
@@ -118,7 +118,7 @@ void network_interface::set_rpl_prefix(const ip_subnet prefix) {
     }
 }
 
-void network_interface::set_rpl_interval(const int msec) 
+void network_interface::set_rpl_interval(const int msec)
 {
     rpl_interval_msec = msec;
     rpl_event *re  = new rpl_event(0, msec, rpl_event::rpl_send_dio,
@@ -137,7 +137,7 @@ void network_interface::send_dio(void)
     debug->log("sending DIO on if: %s for prefix: %s\n",
                this->if_name, this->rpl_prefix_str);
     memset(icmp_body, 0, sizeof(icmp_body));
-    
+
     unsigned int icmp_len = build_dio(icmp_body, sizeof(icmp_body),
                                       rpl_prefix);
 
@@ -201,16 +201,16 @@ int network_interface::build_dio(unsigned char *buff,
     unsigned char *nextopt;
     int optlen;
     int len = 0;
-    
+
     memset(buff, 0, buff_len);
-    
+
     icmp6 = (struct icmp6_hdr *)buff;
     icmp6->icmp6_type = ND_RPL_MESSAGE;
     icmp6->icmp6_code = ND_RPL_DAG_IO;
     icmp6->icmp6_cksum = 0;
-    
+
     dio = (struct nd_rpl_dio *)icmp6->icmp6_data8;
-    
+
     dio->rpl_instanceid = this->rpl_instanceid;
     dio->rpl_version    = this->rpl_version;
     dio->rpl_flags = 0;
@@ -218,7 +218,7 @@ int network_interface::build_dio(unsigned char *buff,
     if(this->rpl_grounded) {
         dio->rpl_mopprf |= ND_RPL_DIO_GROUNDED;
     }
-    
+
     /* XXX need to non-storing mode is a MUST */
     dio->rpl_mopprf |= (rpl_mode << RPL_DIO_MOP_SHIFT);
 
@@ -229,7 +229,7 @@ int network_interface::build_dio(unsigned char *buff,
     memcpy(dio->rpl_dagid, this->rpl_dagid, 16);
 
     nextopt = (unsigned char *)&dio[1];
-    
+
     /* now announce the prefix using a destination option */
     /* this stores the option in this->optbuff */
     build_prefix_dioopt(prefix);
@@ -244,7 +244,7 @@ int network_interface::build_dio(unsigned char *buff,
         return -1;
     }
     nextopt += nextoptlen;
-    
+
     /* recalculate length */
     len = ((caddr_t)nextopt - (caddr_t)buff);
 
@@ -253,7 +253,7 @@ int network_interface::build_dio(unsigned char *buff,
 }
 
 
-/* 
+/*
  * here are routines to crack open DIO messages
  */
 rpl_dio::rpl_dio(rpl_node &peer,
@@ -294,7 +294,7 @@ struct nd_rpl_genoption *rpl_dio::search_subopt(enum RPL_SUBOPT optnum,
 
     /* if we have already scanned to end of options... */
     if(mOptions[optnum] == -1) return NULL;
-    
+
     /* else initialize to mOptions[optnum] */
     offset       += mOptions[optnum];
     opt_bytes    += offset;
@@ -345,7 +345,7 @@ struct rpl_dio_destprefix *rpl_dio::destprefix(void)
         //(*mStats)[PS_SUBOPTION_UNDERRUN]++;
         return NULL;
     }
-    
+
     return dp;
 }
 
