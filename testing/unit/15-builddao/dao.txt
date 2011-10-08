@@ -1,1 +1,1 @@
-IP6 :: > ff02::1: ICMP6, RPL, (CLR)Destination Advertisement Object, length 40
+IP6 :: > ff02::1: ICMP6, RPL, (CLR)Destination Advertisement Object, length 56

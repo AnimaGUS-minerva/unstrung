@@ -44,15 +44,32 @@ static void t1(rpl_debug *deb)
 
     assert(my_if!=NULL);
 
+    dagid_t dag1name;
+    memset(dag1name, 0, DAGID_LEN);
+    dag1name[0]='T';
+    dag1name[1]='1';
+
+    class dag_network dag1(dag1name);
+
     my_if->set_pcap_out("../OUTPUTS/15-dao.pcap", DLT_EN10MB);
-    my_if->set_rpl_dagid("mydagid");
+    my_if->set_rpl_dagid(dag1name);
 
     unsigned char buf[2048];
     ip_subnet out;
-    ttosubnet("fdfd:abcd:ef01::/48",0, AF_INET6, &out);
+    ttosubnet("2001:db8::abcd:0002/128",0, AF_INET6, &out);
+
+#if 0
+    /* make a new dn */
+    class dag_network *dn1 = new dag_network(dag1name);
+
+    /* add a host to this network */
+    class rpl_node n1("2001:db8::abcd:0002/128");
+    class rpl_node via1("2001:db8::abcd:1005");
+    dn1->addnode(n1, via1);
+#endif
 
     int len = my_if->build_dao(buf, 2048, out);
-    assert(len == 40);
+    assert(len == 56);
 
     my_if->send_raw_icmp(NULL, buf, len);
 }
