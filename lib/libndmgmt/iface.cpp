@@ -72,6 +72,11 @@ void network_interface::set_if_name(const char *if_name)
     strncat(this->if_name, if_name, sizeof(this->if_name));
 }
 
+void network_interface::set_rpl_dagid(dagid_t dag)
+{
+    memcpy(this->rpl_dagid, dag, DAGID_LEN);
+}
+
 void network_interface::set_rpl_dagid(const char *dagstr)
 {
     if(dagstr[0]=='0' && dagstr[1]=='x') {

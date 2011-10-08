@@ -17,6 +17,7 @@ extern "C" {
 #include "prefix.h"
 #include "event.h"
 #include "debug.h"
+#include "dag.h"
 
 enum network_interface_exceptions {
     TOOSHORT = 1,
@@ -76,6 +77,7 @@ public:
     };
 
     void set_rpl_dagid(const char *dagstr);
+    void set_rpl_dagid(dagid_t dagid);
     void set_rpl_dagrank(const unsigned int dagrank) {
         rpl_dagrank = dagrank;
     };
@@ -190,7 +192,7 @@ private:
     unsigned int            rpl_dagrank;
     unsigned int            rpl_lifetime;
     unsigned int            rpl_version;
-    unsigned char           rpl_dagid[16];
+    dagid_t                 rpl_dagid;            // this does not belong.
     unsigned int            rpl_dio_lifetime;
     ip_subnet               rpl_prefix;
     char                    rpl_prefix_str[SUBNETTOT_BUF];
