@@ -1,0 +1,4 @@
+This test case validates that we can receive a DAO message, and that we
+install source routes for the destinations listed.
+
+
