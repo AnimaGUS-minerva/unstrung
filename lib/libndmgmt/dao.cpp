@@ -46,10 +46,12 @@ void network_interface::receive_dao(struct in6_addr from,
 
     if(this->packet_too_short("dao", dao_len, sizeof(*dao))) return;
 
-    char dagid[16*6];
+    dagid_t dagid;
+    char dagid_str[16*6];
     dagid[0]=0;
     if(RPL_DAO_D(dao->rpl_flags)) {
-        format_dagid(dagid, dat2);
+        memcpy(&dagid, dat2, DAGID_LEN);
+        format_dagid(dagid_str, dat2);
         dat2 += DAGID_LEN;
     }
 
@@ -57,7 +59,16 @@ void network_interface::receive_dao(struct in6_addr from,
                 dao->rpl_instanceid,
                 dao->rpl_daoseq,
                 RPL_DAO_K(dao->rpl_flags) ? "dao-ack," : "",
-                dagid[0] ? dagid : "<elided>");
+                dagid_str[0] ? dagid_str : "<elided>");
+
+    /* XXX if rpl_instanceid is 0, then we are using a default DAG? */
+
+    /* find the relevant DAG */
+    class dag_network *dn = dag_network::find_or_make_by_dagid(dagid,
+                                                               this->debug);
+
+    /* and process it */
+    dn->receive_dao(this, from, now, dao, (unsigned char *)dat, dao_len);
 }
 
 
@@ -147,9 +158,6 @@ void network_interface::send_dao(rpl_node &parent, prefix_node &pre)
     struct in6_addr dest = parent.node_number();
     send_raw_icmp(&dest, icmp_body, icmp_len);
 }
-
-
-
 
 /*
  * Local Variables:

@@ -16,6 +16,8 @@ enum packet_stats {
         PS_LOWER_RANK_REJECTED,
         PS_SUBOPTION_UNDERRUN,
         PS_SELF_PACKET_RECEIVED,
+        PS_DAO_PACKET_RECEIVED,
+        PS_DIO_PACKET_RECEIVED,
         PS_MAX,
 };
 
@@ -60,6 +62,12 @@ public:
                          struct in6_addr from,
                          const time_t    now,
                          const struct nd_rpl_dio *dio, int dio_len);
+
+        void receive_dao(network_interface *iface,
+                         struct in6_addr from,
+                         const time_t    now,
+                         const struct nd_rpl_dao *dao,
+                         unsigned char *data, int data_len);
         void addprefix(rpl_node peer,
                        network_interface *iface,
                        ip_subnet prefix);
@@ -80,7 +88,7 @@ public:
         /* send a unicast summary to new parent */
         void send_dao(rpl_node &parent, prefix_node &pre);
         void schedule_dio(void);
-        
+
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
 
@@ -101,13 +109,19 @@ public:
         static const unsigned int mop_extract(const struct nd_rpl_dio *dio) {
             return RPL_DIO_MOP(dio->rpl_mopprf);
         };
-                
+
 private:
         /* information about this DAG */
-        
+
         void discard_dio(enum packet_stats dr);
         bool check_security(const struct nd_rpl_dio *dio,
                                          int dio_len);
+        bool check_security(const struct nd_rpl_dao *dao,
+                                         int dao_len);
+
+        rpl_node *update_origin(network_interface *iface,
+                                struct in6_addr from,
+                                const time_t now);
         void seq_update(unsigned int seq);
 
         static const char *packet_stat_names[PS_MAX+1];

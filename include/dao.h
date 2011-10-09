@@ -1,5 +1,5 @@
-#ifndef _UNSTRUNG_DIO_H_
-#define _UNSTRUNG_DIO_H_
+#ifndef _UNSTRUNG_DAO_H_
+#define _UNSTRUNG_DAO_H_
 
 extern "C" {
 #include <errno.h>
@@ -10,26 +10,13 @@ extern "C" {
 #include "rpl.h"
 }
 
+#include "rplmsg.h"
 #include "node.h"
 
-class rpl_dao {
+class rpl_dao : public rpl_msg {
 public:
-    rpl_dao(rpl_node &peer,
-            const struct nd_rpl_dao *dao, int dao_len);
-    struct nd_rpl_genoption *search_subopt(enum RPL_SUBOPT optnum,
-                                           int *p_opt_len = NULL);
-    void   reset_options(void);
-    
-private:
-    rpl_node                &mPeer;
-    u_int8_t                mBytes[2048];
-    int                     mLen;
-
-    /*
-     * this structure is a set of virtual pointers,
-     * where we last found an an option of that particular type.
-     */
-    int16_t                  mOptions[256]; 
+    rpl_dao(unsigned char *data, int dao_len);
+    struct rpl_dao_target *rpltarget(void);
 };
 
 

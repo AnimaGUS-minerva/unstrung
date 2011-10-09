@@ -18,10 +18,11 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 #include "dio.h"
+#include "dao.h"
 
 class dag_network *dag_network::all_dag = NULL;
 
-void dag_network::init_stats(void) 
+void dag_network::init_stats(void)
 {
 }
 
@@ -61,7 +62,7 @@ class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
                                                       rpl_debug *debug)
 {
         class dag_network *dn = find_by_dagid(n_dagid);
-        
+
         if(dn==NULL) {
                 dn = new dag_network(n_dagid);
                 dn->set_debug(debug);
@@ -83,9 +84,14 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
 /* provide a count of discards */
 const char *dag_network::packet_stat_names[PS_MAX+1]={
     "sequence too old",
-    "packets receied"
+    "packets received"
     "packets processed",
     "packets with <dagrank",
+    "packets with <dagrank rejected",
+    "packets where subopt was too short",
+    "packets from self that were ignored",
+    "DAO packets received",
+    "DIO packets received",
     "max reason"
 };
 
@@ -150,6 +156,12 @@ bool dag_network::check_security(const struct nd_rpl_dio *dio, int dio_len)
     return true;
 }
 
+bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
+{
+    /* XXXX */
+    return true;
+}
+
 void dag_network::addprefix(rpl_node peer,
                             network_interface *iface,
                             ip_subnet prefix)
@@ -208,7 +220,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
         ip_subnet prefix;
         prefix.maskbits = dp->rpl_dio_prefixlen;
         memset(v6bytes, 0, 16);
-        memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes); 
+        memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes);
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
         addprefix(peer, iface, prefix);
@@ -244,8 +256,30 @@ void dag_network::schedule_dio(void)
 }
 
 
+rpl_node *dag_network::update_origin(network_interface *iface,
+                                     struct in6_addr from, const time_t now)
+{
+    rpl_node &peer = this->dag_members[from];
+
+    if(peer.isself() ||
+       iface->if_ifaddr(from)) {
+        peer.markself(iface->get_if_index());
+
+        this->mStats[PS_SELF_PACKET_RECEIVED]++;
+        debug->info("  received self packet (%u/%u)\n",
+                    this->mStats[PS_SELF_PACKET_RECEIVED],
+                    this->mStats[PS_PACKET_RECEIVED]);
+        return false;
+    }
+
+    peer.makevalid(from, this, this->debug);
+    peer.set_last_seen(now);
+
+    return &peer;
+}
+
 /*
- * Process an incoming DIO. 
+ * Process an incoming DIO.
  *
  */
 void dag_network::receive_dio(network_interface *iface,
@@ -258,6 +292,7 @@ void dag_network::receive_dio(network_interface *iface,
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_RECEIVED]++;
+    this->mStats[PS_DIO_PACKET_RECEIVED]++;
 
     if(this->seq_too_old(dio->rpl_dtsn)) {
         this->discard_dio(PS_SEQ_OLD);
@@ -267,27 +302,17 @@ void dag_network::receive_dio(network_interface *iface,
     /* validate this packet */
     this->check_security(dio, dio_len);
 
+    rpl_node *peer;
+
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
-    rpl_node &peer = this->dag_members[from];
-
-    if(peer.isself() ||
-       iface->if_ifaddr(from)) {
-        peer.markself(iface->get_if_index());
-
-        this->mStats[PS_SELF_PACKET_RECEIVED]++;
-        debug->info("  received self packet (%u/%u)\n",
-                    this->mStats[PS_SELF_PACKET_RECEIVED],
-                    this->mStats[PS_PACKET_RECEIVED]);
+    if((peer = this->update_origin(iface, from, now)) == NULL) {
         return;
     }
 
-    peer.makevalid(from, this, this->debug);
-    peer.set_last_seen(now);
-
     this->seq_update(dio->rpl_dtsn);
 
-    this->potentially_lower_rank(peer, iface, dio, dio_len);
+    this->potentially_lower_rank(*peer, iface, dio, dio_len);
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;
@@ -307,6 +332,56 @@ rpl_node *dag_network::get_member(const struct in6_addr memberaddr)
 }
 
 
+/*
+ * Process an incoming DAO
+ *
+ */
+void dag_network::receive_dao(network_interface *iface,
+                              struct in6_addr from,
+                              const time_t    now,
+                              const struct nd_rpl_dao *dao,
+                              unsigned char *data, int dao_len)
+{
+    /* it has already been checked to be at least sizeof(*dio) */
+    int dao_payload_len = dao_len - sizeof(*dao);
+
+    /* increment stat of number of packets processed */
+    this->mStats[PS_PACKET_RECEIVED]++;
+    this->mStats[PS_DAO_PACKET_RECEIVED]++;
+
+    /* validate this packet */
+    this->check_security(dao, dao_len);
+
+    rpl_node *peer;
+
+    /* find the node entry from this source IP, and update seen time */
+    /* this will create the node if it does not already exist! */
+    if((peer = this->update_origin(iface, from, now)) == NULL) {
+        return;
+    }
+
+    /* look for the suboptions */
+    rpl_dao decoded_dao(data, dao_payload_len);
+
+    struct rpl_dao_target *rpltarget;
+    while((rpltarget = decoded_dao.rpltarget()) != NULL) {
+        char addrfound[SUBNETTOT_BUF];
+        unsigned char v6bytes[16];
+        int prefixbytes = ((rpltarget->rpl_dao_prefixlen+7) / 8);
+        ip_subnet prefix;
+        prefix.maskbits = rpltarget->rpl_dao_prefixlen;
+        memset(v6bytes, 0, 16);
+        memcpy(v6bytes, rpltarget->rpl_dao_prefix, prefixbytes);
+        initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
+
+        subnettot(&prefix, 0, addrfound, sizeof(addrfound));
+
+        debug->verbose("received DAO about network %s", addrfound);
+    }
+
+    /* increment stat of number of packets processed */
+    this->mStats[PS_PACKET_PROCESSED]++;
+}
 
 
 /*

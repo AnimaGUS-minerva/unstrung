@@ -25,7 +25,7 @@ MANDIR=$(MANTREE)/man3
 
 ONEFILE=iface.cpp
 CXXSRCS=iface.cpp dio.cpp dag.cpp node.cpp prefix.cpp netlink.cpp
-CXXSRCS+=event.cpp debug.cpp dao.cpp
+CXXSRCS+=event.cpp debug.cpp dao.cpp rplmsg.cpp
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
