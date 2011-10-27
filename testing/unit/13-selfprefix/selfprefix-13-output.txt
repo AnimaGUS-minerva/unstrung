@@ -11,17 +11,25 @@ would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr show
 SENDING dao for dagname to: fe80::1000:ff:fe64:6423 to unset on if=unknown
 packet 1 is being processed
-  processing dao(36)
- [instance:0,daoseq:1,dagid:<elided>]
-packet 2 is being processed
-  processing dao(36)
- [instance:0,daoseq:1,dagid:<elided>]
+Got neighbour solicitation from ::, looking for 2001:db8:1:0:1200:ff:fe64:6423, has 0 bytes of options
+packet 2 is not ICMPv6, but=proto:0
 packet 3 is being processed
-  processing dao(36)
- [instance:0,daoseq:1,dagid:<elided>]
-packet 4 is being processed
-  processing dao(36)
- [instance:0,daoseq:1,dagid:<elided>]
+ processing dio(44)
+ [seq:0,instance:210,rank:1,version:0,non-storing,dagid:internet0x00 ]
+  received self packet (1/1)
+packet 4 is not ICMPv6, but=proto:0
+packet 5 is being processed
+ processing dio(44)
+ [seq:0,instance:210,rank:1,version:0,non-storing,dagid:internet0x00 ]
+  received self packet (2/2)
+packet 6 is being processed
+ processing dio(44)
+ [seq:0,instance:210,rank:1,version:0,non-storing,dagid:internet0x00 ]
+  received self packet (3/3)
+packet 7 is being processed
+ processing dio(44)
+ [seq:0,instance:210,rank:1,version:0,non-storing,dagid:internet0x00 ]
+  received self packet (4/4)
 iface1[1]: wlan0
 iface2[1]: wlan0
 Processing input file
