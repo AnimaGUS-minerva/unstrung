@@ -67,8 +67,8 @@ void rpl_msg::reset_options(void)
 struct nd_rpl_genoption *rpl_msg::search_subopt(enum RPL_SUBOPT optnum,
                                                 int *p_opt_len)
 {
-    u_int8_t*opt_bytes = (mBytes+sizeof(nd_rpl_dio));
-    int opt_left_len = mLen-sizeof(struct nd_rpl_dio);
+    u_int8_t*opt_bytes = mBytes;
+    int opt_left_len = mLen;
     int offset = 0;
 
     if(p_opt_len) *p_opt_len = 0;
@@ -134,13 +134,13 @@ struct rpl_dio_destprefix *rpl_dio::destprefix(void)
 rpl_dio::rpl_dio(rpl_node &peer,
                  const struct nd_rpl_dio *dio, int dio_len) :
     mPeer(peer),
-    rpl_msg((unsigned char *)(dio+1), dio_len)
+    rpl_msg((unsigned char *)(dio+1), dio_len-sizeof(*dio))
 {
 }
 
 
 rpl_dao::rpl_dao(unsigned char *data, int dao_len) :
-    rpl_msg(data, dao_len)
+    rpl_msg(data, dao_len - sizeof(struct nd_rpl_dao))
 {
 }
 
