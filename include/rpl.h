@@ -3,7 +3,7 @@
 #define PACKED __attribute__((packed))
 
 /*
- * DIO: Updated to RPL-19 on 2011-07-25, section 6. (page 30) 
+ * DIO: Updated to RPL-19 on 2011-07-25, section 6. (page 30)
  */
 
 #define ND_RPL_MESSAGE 155  /* 0x9B */
@@ -56,7 +56,7 @@ struct nd_rpl_dio {
     u_int8_t  rpl_mopprf;   /* bit 7=G, 5-3=MOP, 2-0=PRF */
     u_int8_t  rpl_dtsn;     /* Dest. Advertisement Trigger Sequence Number */
     u_int8_t  rpl_flags;    /* no flags defined yet */
-    u_int8_t  rpl_resv1;   
+    u_int8_t  rpl_resv1;
     u_int8_t  rpl_dagid[DAGID_LEN];
 } PACKED;
 #define RPL_DIO_GROUND_FLAG 0x80
@@ -88,8 +88,8 @@ enum RPL_SUBOPT {
 
 struct rpl_dio_genoption {
     u_int8_t rpl_dio_type;
-    u_int8_t rpl_dio_len;  
-    u_int8_t rpl_dio_data[0];   
+    u_int8_t rpl_dio_len;        /* suboption length, not including type/len */
+    u_int8_t rpl_dio_data[0];
 } PACKED;
 
 #define RPL_DIO_LIFETIME_INFINITE   0xffffffff
@@ -97,7 +97,7 @@ struct rpl_dio_genoption {
 
 struct rpl_dio_destprefix {
     u_int8_t rpl_dio_type;
-    u_int8_t rpl_dio_len; 
+    u_int8_t rpl_dio_len;
     u_int8_t rpl_dio_prefixlen;        /* in bits */
     u_int8_t rpl_dio_prf;              /* flags, including Route Preference */
     u_int32_t rpl_dio_prefixlifetime;  /* in seconds */
@@ -108,8 +108,8 @@ struct rpl_dio_destprefix {
 struct nd_rpl_dao {
     u_int8_t  rpl_instanceid;
     u_int8_t  rpl_flags;      /* bit 7=K, 6=D */
-    u_int8_t  rpl_resv;      
-    u_int8_t  rpl_daoseq;        
+    u_int8_t  rpl_resv;
+    u_int8_t  rpl_daoseq;
     /* u_int8_t  rpl_dagid[DAGID_LEN];*/  /* present when D set. */
 } PACKED;
 
@@ -125,7 +125,7 @@ struct nd_rpl_dao {
 
 struct rpl_dao_target {
     u_int8_t rpl_dao_type;
-    u_int8_t rpl_dao_len; 
+    u_int8_t rpl_dao_len;
     u_int8_t rpl_dao_flags;            /* unused */
     u_int8_t rpl_dao_prefixlen;        /* in bits */
     u_int8_t rpl_dao_prefix[0];        /* variables number of bytes */
