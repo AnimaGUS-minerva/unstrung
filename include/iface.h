@@ -145,6 +145,11 @@ public:
     static int foreach_if(int (*func)(network_interface*, void*), void*arg);
     static void remove_marks(void);
 
+    struct in6_addr         link_local(void) {
+        if(!eui64set) generate_eui64();
+        return ipv6_link_addr;
+    };
+
     /* event lists */
     static event_map              things_to_do;
 
@@ -231,8 +236,10 @@ private:
 
     /* interface to netlink */
     void                    generate_eui64();
+    bool                    eui64set;
     unsigned char           eui48[6];
     unsigned char           eui64[8];
+    struct in6_addr         ipv6_link_addr;
     prefix_map              ipv6_prefix_list;  /* always /128 networks */
 
 

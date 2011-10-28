@@ -92,6 +92,8 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
 
     /* layer 3 */
     struct ip6_hdr *v6 = (struct ip6_hdr *)&packet[14];
+
+    v6->ip6_src = link_local();
     /* leave zeroes v6->ip6_src = 0; */
     v6->ip6_vfc = 6 << 4;
     memcpy(&v6->ip6_dst, dest, 16);

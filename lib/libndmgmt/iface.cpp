@@ -104,6 +104,7 @@ void network_interface::set_rpl_dagid(const char *dagstr)
 void network_interface::generate_eui64(void)
 {
     if(eui64[0]!=0) return;
+    eui64set=true;
 
     /*
      * eui64 is upper 3 bytes of eui48, with bit 0x02 set to indicate
@@ -121,6 +122,11 @@ void network_interface::generate_eui64(void)
     eui64[5]=eui48[3];
     eui64[6]=eui48[4];
     eui64[7]=eui48[5];
+
+    memset(ipv6_link_addr.s6_addr, 0, 16);
+    ipv6_link_addr.s6_addr[0]=0xfe;
+    ipv6_link_addr.s6_addr[1]=0x80;
+    memcpy(ipv6_link_addr.s6_addr+8, eui64, 8);
 }
 
 char *network_interface::eui64_str(char *str, int strlen)
