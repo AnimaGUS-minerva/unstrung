@@ -172,6 +172,15 @@ protected:
     /* maintain list of all interfaces */
     void add_to_list(void);
 
+    unsigned short csum_ipv6_magic(
+        const struct in6_addr *saddr,
+        const struct in6_addr *daddr,
+        __u32 len, unsigned short proto,
+        unsigned sum);
+    unsigned short csum_partial(
+        const unsigned char *buff,
+        int len, unsigned sum);
+
 private:
     static void format_dagid(char *dagidstr, u_int8_t rpl_dagid[DAGID_LEN]);
     int packet_too_short(const char *thing, const int avail, const int needed);

@@ -27,6 +27,7 @@ extern "C" {
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
 #include <poll.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
@@ -907,6 +908,54 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 bool network_interface::faked(void) {
     return false;
 };
+
+/*
+ * computes the checksum of a memory block at buff, length len,
+ *
+ * THIS IS BROKEN.
+ */
+unsigned short network_interface::csum_partial(
+    const unsigned char *buff, int len, unsigned sum)
+{
+    const unsigned short *data = (const unsigned short *)buff;
+
+    sum = ntohs(sum);
+
+    while(len > 0) {
+        sum = sum + *data;
+        if(sum & 0x10000) {
+            sum = 1 + sum & 0xffff;
+        }
+        len -= 2;
+        data++;
+    }
+    return htons(sum);
+}
+
+unsigned short network_interface::csum_ipv6_magic(
+    const struct in6_addr *saddr,
+    const struct in6_addr *daddr,
+    __u32 len, unsigned short proto,
+    unsigned sum)
+{
+    struct {
+        struct in6_addr ph_src;
+        struct in6_addr ph_dst;
+        u_int32_t       ph_len;
+        u_int8_t        ph_zero[3];
+        u_int8_t        ph_nxt;
+    } ph;
+
+    /* pseudo-header */
+    memset(&ph, 0, sizeof(ph));
+    ph.ph_src = *saddr;
+    ph.ph_dst = *daddr;
+    ph.ph_len = htonl(len);
+    ph.ph_nxt = proto;
+
+    sum = csum_partial((unsigned char *)&ph, sizeof(ph), sum);
+    return sum;
+}
 
 /*
  * Local Variables:
