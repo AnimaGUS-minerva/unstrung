@@ -9,6 +9,7 @@ public:
     void test1(void);
     void test2(void);
     void test3(void);
+    void test4(void);
 };
 
 void csum_network_interface::test1(void)
@@ -84,6 +85,20 @@ void csum_network_interface::test3(void)
     assert(icmp6sum == result2);
 }
 
+/* validate checksum of entire packet */
+void csum_network_interface::test4(void)
+{
+    unsigned char pkt[]={
+        0xfe,0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x16,0x3e,0xff,0xfe,0x11,0x34,0x24,
+        0xff,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,
+        0x00,0x00,0x00,0x18,0x00,0x00,0x00,0x3a,
+    };
+
+    unsigned short result = csum_partial(pkt, sizeof(pkt), 0);
+    printf("checksum: %04x\n", result);
+}
+
+
 
 int main(int argc, char *argv[])
 {
@@ -92,6 +107,7 @@ int main(int argc, char *argv[])
     n1.test1();
     n1.test2();
     n1.test3();
+    n1.test4();
 
     exit(0);
 }
