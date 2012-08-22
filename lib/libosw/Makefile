@@ -24,6 +24,8 @@ LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
 
 ONEFILE=
+# turn off -Wcast-qual
+WCASTQUAL= 
 CFLAGS+=${WERROR}
 
 SRCS = ttosubnet.c ttoaddr.c addrtypeof.c subnettypeof.c 

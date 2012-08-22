@@ -11,6 +11,8 @@ endif
 
 OSDEP?=$(shell uname -s | tr 'A-Z' 'a-z')
 
+WCASTQUAL?=-Wcast-qual
+
 # Original flags
 INCLUDES+=-I. -I${UNSTRUNG_SRCDIR}
 INCLUDES+=-I${UNSTRUNG_SRCDIR}/include 
@@ -26,7 +28,7 @@ endif
 #CFLAGS+= -Wconversion
 #CFLAGS+= -Wmissing-prototypes
 CFLAGS+= -Wpointer-arith
-CFLAGS+= -Wcast-qual
+CFLAGS+= ${WCASTQUAL}
 #CFLAGS+= -Wmissing-declarations
 CFLAGS+= -Wstrict-prototypes
 #CFLAGS+= -pedantic
