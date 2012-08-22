@@ -11,8 +11,7 @@ LDFLAGS+=${LIBFAKEIFACE}
 LDFLAGS+=${LIBNDMGMT}
 LDFLAGS+=${LIBOSW}
 LDFLAGS+=${LIBNETLINK}
-#LDFLAGS+=/sandel/lib/libpcap.a
-LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
+LDFLAGS+=${LIBPCAP}
 
 TESTNAME=vf
 

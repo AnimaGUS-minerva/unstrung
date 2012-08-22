@@ -9,9 +9,7 @@ INC=${UNSTRUNG_SRCDIR}/include
 CXXFLAGS+=-I/sandel/include -g
 LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBOSW} 
-LDFLAGS+=${LIBNETLINK} ${LIBFAKEIFACE}
-#LDFLAGS+=/sandel/lib/libpcap.a
-LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
+LDFLAGS+=${LIBNETLINK} ${LIBFAKEIFACE} ${LIBPCAP}
 
 dioopt-01: dioopt-01.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o dioopt-01 dioopt-01.cpp ${LDFLAGS}

@@ -7,9 +7,7 @@ INC=${UNSTRUNG_SRCDIR}/include
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CXXFLAGS+=-I/sandel/include -g
-LDFLAGS+=${LIBNDMGMT} ${LIBNETLINK} ${LIBOSW}
-#LDFLAGS+=/sandel/lib/libpcap.a
-LDFLAGS+=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
+LDFLAGS+=${LIBNDMGMT} ${LIBNETLINK} ${LIBOSW} ${LIBPCAP}
 
 event-01: event-01.cpp ${INC}/event.h 
 	${CXX} ${CXXFLAGS} -o event-01 event-01.cpp ${LDFLAGS}
