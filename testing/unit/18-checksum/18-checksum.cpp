@@ -23,8 +23,9 @@ void csum_network_interface::test1(void)
 
 
     unsigned short result = csum_partial(ex1, 8, 0);
+    result = (~result & 0xffff);
     printf("result=%04x\n",result);
-    assert(result == 0xddf2);
+    assert(result == htons(0x220d));
 }
 
 void csum_network_interface::test2(void)
@@ -41,8 +42,9 @@ void csum_network_interface::test2(void)
 
     unsigned short result = csum_partial(ex1, 4, 0);
     result = csum_partial(ex2, 4, result);
+    result = (~result & 0xffff);
     printf("result=%04x\n",result);
-    assert(result == 0xddf2);
+    assert(result == htons(0x220d));
 }
 
 /* validate calculation of pseudo-header */
@@ -71,6 +73,7 @@ void csum_network_interface::test3(void)
                                               &v6.ip6_dst,
                                               icmp_len, IPPROTO_ICMPV6,
                                               0);
+    icmp6sum = (~icmp6sum & 0xffff);
 
     unsigned char all[]={
         0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -80,8 +83,10 @@ void csum_network_interface::test3(void)
         0x00, 0x00, 0x00, 0x18, 0x00, 0x00, 0x00, 0x3a
     };
     unsigned short result2 = csum_partial(all, 5*8, 0);
+    result2 = (~result2 & 0xffff);
 
-    assert(result2 == 0x7122);
+    printf("result2=%04x\n",result2);
+    assert(result2 == htons(0x8edd));
     assert(icmp6sum == result2);
 }
 
@@ -97,26 +102,15 @@ void csum_network_interface::test4(void)
         0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,
         0x00,0x00,0x00,0x18,0x00,0x00,0x00,0x3a,
         /* icmp payload */
-        0x9b,0x02,0x00,0x00, 0x00,0x40,0x00,0x00,
-        0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
-        0x00,0x00,0x00,0x00, 0x00,0x00,0x00,0x00,
-        0x05,0x0d,0x00,0x30, 0x20,0x01,0x0d,0xb8,
-        0x00,0x01,0x00,0x00, 0x00,0x00,0x00,0x00
+        0x9b, 0x02, 0x39, 0x8d, 0x01, 0x40, 0x00, 0x01,
+        0x70, 0x61, 0x6e, 0x64, 0x6f, 0x72, 0x61, 0x20,
+        0x69, 0x73, 0x20, 0x66, 0x75, 0x6e, 0x0a, 0x6c
     };
 
-/* what tcpdump saw.
-0000: fe 80 00 00  00 00 00 00  02 16 3e ff  fe 11 34 24
-0010: ff 02 00 00  00 00 00 00  00 00 00 00  00 00 00 01
-0020: 00 00 00 18  00 00 00 3a
-0000: 9b 02 72 c6  01 40 00 01  70 61 6e 64  6f 72 61 20
-0010: 69 73 20 66  75 6e 0a 6c
-
- */
-
     unsigned short result = csum_partial(pkt, sizeof(pkt), 0);
-    printf("checksum: %04x\n", result);
+    result = (~result & 0xffff);
+    assert(result == 0);
 }
-
 
 
 int main(int argc, char *argv[])

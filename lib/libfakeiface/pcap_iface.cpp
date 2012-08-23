@@ -92,7 +92,8 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     packet[13]=0xdd;
 
     /* layer 3 */
-    struct ip6_hdr *v6 = (struct ip6_hdr *)&packet[14];
+    unsigned char *layer3 = &packet[14];
+    struct ip6_hdr *v6 = (struct ip6_hdr *)layer3;
 
     v6->ip6_src = link_local();
     /* leave zeroes v6->ip6_src = 0; */
@@ -107,16 +108,22 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     memcpy(payload, icmp_body, icmp_len);
 
     struct icmp6_hdr *icmp6h = (struct icmp6_hdr *)payload;
+
     /* compute checksum */
     icmp6h->icmp6_cksum = 0;
     unsigned short icmp6sum = csum_ipv6_magic(&v6->ip6_src,
                                           &v6->ip6_dst,
                                           icmp_len, IPPROTO_ICMPV6,
                                           0);
+
 #if 0
-    hexdump(packet, 0, icmp_len+14+40);
+    unsigned int chksum_len = icmp_len+sizeof(struct ip6_hdr);
+    printf("iface output of %u bytes (%u)\n", chksum_len, icmp_len);
+    hexdump(layer3, 0, chksum_len);
 #endif
-    icmp6h->icmp6_cksum = csum_partial(payload, icmp_len, icmp6sum);
+    icmp6sum = csum_partial(payload, icmp_len, icmp6sum);
+    icmp6sum = (~icmp6sum & 0xffff);
+    icmp6h->icmp6_cksum = icmp6sum;
 
     struct pcap_pkthdr h;
     memset(&h, 0, sizeof(h));

@@ -38,6 +38,7 @@ SUBDIRS+=14-senddao
 SUBDIRS+=15-builddao
 SUBDIRS+=16-vf
 SUBDIRS+=17-recvdao
+SUBDIRS+=18-checksum
 
 
 

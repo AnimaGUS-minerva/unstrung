@@ -34,6 +34,7 @@ extern "C" {
 #include <linux/if.h>           /* for IFNAMSIZ */
 #include <time.h>
 #include "rpl.h"
+#include "hexdump.c"
 
 #ifndef IPV6_ADDR_LINKLOCAL
 #define IPV6_ADDR_LINKLOCAL   0x0020U
@@ -910,26 +911,23 @@ bool network_interface::faked(void) {
 };
 
 /*
- * computes the checksum of a memory block at buff, length len,
+ * updates the checksum of a memory block at buff, length len,
  *
- * THIS IS BROKEN.
+ * THIS seems BROKEN, (18-checksum) but it must be something outside.
  */
 unsigned short network_interface::csum_partial(
     const unsigned char *buff, int len, unsigned sum)
 {
     const unsigned short *data = (const unsigned short *)buff;
 
-    sum = ntohs(sum);
-
     while(len > 0) {
         sum = sum + *data;
-        if(sum & 0x10000) {
-            sum = 1 + sum & 0xffff;
-        }
         len -= 2;
         data++;
     }
-    return htons(sum);
+    sum = (sum & 0xFFFF) + (sum >> 16);
+    sum = (sum & 0xFFFF) + (sum >> 16);
+    return sum;
 }
 
 unsigned short network_interface::csum_ipv6_magic(
@@ -944,7 +942,7 @@ unsigned short network_interface::csum_ipv6_magic(
         u_int32_t       ph_len;
         u_int8_t        ph_zero[3];
         u_int8_t        ph_nxt;
-    } ph;
+    } ph PACKED;
 
     /* pseudo-header */
     memset(&ph, 0, sizeof(ph));
@@ -952,6 +950,11 @@ unsigned short network_interface::csum_ipv6_magic(
     ph.ph_dst = *daddr;
     ph.ph_len = htonl(len);
     ph.ph_nxt = proto;
+
+#if 0
+    printf("pseudo: %u\n", sizeof(ph));
+    hexdump((unsigned char *)&ph, 0, sizeof(ph));
+#endif
 
     sum = csum_partial((unsigned char *)&ph, sizeof(ph), sum);
     return sum;
