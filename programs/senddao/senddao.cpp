@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Michael Richardson <mcr@sandelman.ca>
+ * Copyright (C) 2012 Michael Richardson <mcr@sandelman.ca>
  *
  * SEE FILE COPYING in root of source.
  */
@@ -25,7 +25,7 @@ extern "C" {
 #include "iface.h"
 #include "fakeiface.h"
 
-/* open a raw IPv6 socket, and 
+/* open a raw IPv6 socket, and
    - send a RPL Destination Advertisement Object for a specific host.
    - send data from file (in hex)  (-d)
 */
@@ -74,6 +74,8 @@ int main(int argc, char *argv[])
     unsigned int verbose=0;
     unsigned int fakesend=0;
     struct option longoptions[]={
+        {"debug",    0, NULL, 'v'},
+        {"verbose",  0, NULL, 'v'},
         {"fake",     0, NULL, 'T'},
         {"testing",  0, NULL, 'T'},
         {"prefix",   1, NULL, 'p'},
@@ -86,14 +88,14 @@ int main(int argc, char *argv[])
         {0,0,0,0},
     };
 
-    class rpl_debug *deb;
+    class rpl_debug *deb = new rpl_debug(verbose, stderr);
     class network_interface *iface = NULL;
     class dag_network       *dn = NULL;
     class pcap_network_interface *piface = NULL;
     bool initted = false;
     bool ackreq  = false;
     memset(icmp_body, 0, sizeof(icmp_body));
-	
+
     while((c=getopt_long(argc, argv, "AD:G:I:O:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
         switch(c) {
         case 'A':
@@ -142,7 +144,7 @@ int main(int argc, char *argv[])
                 }
             }
             break;
-			
+
         case 'T':
             if(initted) {
                 fprintf(stderr, "--fake MUST be first argument\n");
@@ -228,7 +230,7 @@ int main(int argc, char *argv[])
 
     exit(0);
 }
-	
+
 /*
  * Local Variables:
  * c-basic-offset:4
