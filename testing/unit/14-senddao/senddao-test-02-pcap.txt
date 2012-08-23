@@ -1,1 +1,1 @@
-IP6 (hlim 64, next-header ICMPv6 (58) payload length: 24) :: > ff02::1: [bad icmp6 cksum 59ab!] ICMP6, RPL, (CLR)Destination Advertisement Object
+IP6 (hlim 64, next-header ICMPv6 (58) payload length: 24) fe80::216:3eff:fe11:3424 > ff02::1: [icmp6 sum ok] ICMP6, RPL, (CLR)Destination Advertisement Object
