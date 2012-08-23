@@ -15,7 +15,7 @@
 #ifndef hexdump_printf
 #define hexdump_printf printf
 #endif
-void hexdump(const unsigned char *base, unsigned int offset, int len)
+static void hexdump(const unsigned char *base, unsigned int offset, int len)
 {
 	const unsigned char *b = base+offset;
         char line[81];

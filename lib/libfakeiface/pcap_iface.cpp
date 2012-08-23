@@ -24,6 +24,7 @@ extern "C" {
 #include <net/if_arp.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "hexdump.c"
 }
 
 #include <netlink/rt_names.h>
@@ -104,6 +105,18 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     /* layer 4+ */
     unsigned char *payload = (unsigned char *)(v6+1);
     memcpy(payload, icmp_body, icmp_len);
+
+    struct icmp6_hdr *icmp6h = (struct icmp6_hdr *)payload;
+    /* compute checksum */
+    icmp6h->icmp6_cksum = 0;
+    unsigned short icmp6sum = csum_ipv6_magic(&v6->ip6_src,
+                                          &v6->ip6_dst,
+                                          icmp_len, IPPROTO_ICMPV6,
+                                          0);
+#if 0
+    hexdump(packet, 0, icmp_len+14+40);
+#endif
+    icmp6h->icmp6_cksum = csum_partial(payload, icmp_len, icmp6sum);
 
     struct pcap_pkthdr h;
     memset(&h, 0, sizeof(h));
