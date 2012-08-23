@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # 
 # $Id: make-uml.sh,v 1.51 2005/11/21 08:44:57 mcr Exp $
