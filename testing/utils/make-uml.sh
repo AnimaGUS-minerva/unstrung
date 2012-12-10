@@ -113,7 +113,7 @@ do
 	if [ -z "${UMLKERNEL}" ]
 	then
 	    # must need stock kernel.
-	    UMLKERNEL=${UMLPLAIN}/linux
+	    UMLKERNEL=${UMLPLAIN}/vmlinux
 	    NEED_plain=true
 	fi
     fi
@@ -185,7 +185,7 @@ do
 	if [ -z "${UMLKERNEL}" ]
 	then
 	    # must need stock kernel.
-	    UMLKERNEL=${UMLSWAN}/linux
+	    UMLKERNEL=${UMLSWAN}/vmlinux
 	    NEED_swan=true
 	fi
     fi

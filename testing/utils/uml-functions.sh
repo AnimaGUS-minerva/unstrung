@@ -13,8 +13,10 @@ setup_make() {
     echo "# RULES for making module"
 
     # figure out our base architecture, as we'll need in the Makefiles.
+    # also force i386 build even for x86_64 platforms.
     SUBARCH=${ARCH-`uname -m`}
     case $SUBARCH in
+	x86_64) SUBARCH=i386;; 
 	i?86) SUBARCH=i386;;
     esac
 
