@@ -4,8 +4,9 @@ default:: programs
 
 # stuff.
 INC=${UNSTRUNG_SRCDIR}/include
-CFLAGS+=-I${INC}
-CXXFLAGS+=-I${INC}
+CROSSFLAGS=-m32
+CFLAGS+=-I${INC} 
+CXXFLAGS+=-I${INC} 
 
 USE_OBJDIR=false
 UNSTRUNG_OBJDIR=${UNSTRUNG_SRCDIR}/.
@@ -20,8 +21,10 @@ LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${UNSTRUNG_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
-#LIBPCAP=/corp/projects/Misc/tcpdump/libpcap/libpcap.a
-LIBPCAP=-lpcap
+LIBPCAP=/usr/local/ia32/lib/libpcap.a
+#LIBPCAP=-L/usr/local/ia32/lib -lpcap
+# needed by libpcap
+EXTRALIBS=-lusb-1.0
 
 NEEDCHECK?=check
 
