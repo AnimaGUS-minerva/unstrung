@@ -3,15 +3,7 @@ UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 all: check
 
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
-INC=${UNSTRUNG_SRCDIR}/include
-
-# local install of pcap.h, or make sure you have libpcap-dev installed.
-CXXFLAGS+=-I/sandel/include -g
-LDFLAGS+=${LIBFAKEIFACE}
-LDFLAGS+=${LIBNDMGMT}
-LDFLAGS+=${LIBOSW}
-LDFLAGS+=${LIBNETLINK}
-LDFLAGS+=${LIBPCAP}
+include ../Makefile.testing
 
 TESTNAME=builddao-01
 

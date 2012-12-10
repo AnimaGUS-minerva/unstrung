@@ -16,6 +16,7 @@
 UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 
 include ${UNSTRUNG_SRCDIR}/Makefile.ver
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=${UNSTRUNG_SRCDIR}/lib/libfakeiface/
 

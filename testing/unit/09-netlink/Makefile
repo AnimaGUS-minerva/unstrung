@@ -3,11 +3,7 @@ UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 all: check
 
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
-INC=${UNSTRUNG_SRCDIR}/include
-
-# local install of pcap.h, or make sure you have libpcap-dev installed.
-CXXFLAGS+=-I/sandel/include -g
-LDFLAGS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBPCAP}
+include ../Makefile.testing
 
 dumpif: dumpif.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o dumpif dumpif.cpp ${LDFLAGS}

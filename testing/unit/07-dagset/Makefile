@@ -3,12 +3,7 @@ UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 all: check
 
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
-INC=${UNSTRUNG_SRCDIR}/include
-
-# local install of pcap.h, or make sure you have libpcap-dev installed.
-CXXFLAGS+=-I/sandel/include -g
-LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
-LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt ${LIBPCAP}
+include ../Makefile.testing
 
 TESTNAME=dagset-01
 

@@ -1,6 +1,7 @@
 UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ../Makefile.testing
 INC=${UNSTRUNG_SRCDIR}/include
 
 export SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio
