@@ -25,13 +25,13 @@ struct hash_entry {
   unsigned char dst[ETH_ALEN];
 };
 
-static int calc_hash(char *src)
+static int calc_hash(unsigned char *src)
 {
   return ((*(u_int32_t *) &src[0] % HASH_MOD) ^ src[4] ^ src[5] ) % HASH_SIZE ;
 }
 
 static struct hash_entry *find_entry(struct nethub *nh,
-				     char *dst)
+				     unsigned char *dst)
 {
   struct hash_entry *e;
   int k = calc_hash(dst);
@@ -43,7 +43,7 @@ static struct hash_entry *find_entry(struct nethub *nh,
 }
 
 void *find_in_hash(struct nethub *nh,
-		   char *dst)
+		   unsigned char *dst)
 {
   struct hash_entry *e = find_entry(nh, dst);
   if(e == NULL) return(NULL);
@@ -51,7 +51,7 @@ void *find_in_hash(struct nethub *nh,
 }
 
 void insert_into_hash(struct nethub *nh,
-		      char *src, void *port)
+		      unsigned char *src, void *port)
 {
   struct hash_entry *new;
   int k = calc_hash(src);
@@ -75,7 +75,7 @@ void insert_into_hash(struct nethub *nh,
 }
 
 void update_entry_time(struct nethub *nh,
-		       char *src)
+		       unsigned char *src)
 {
   struct hash_entry *e;
 
@@ -96,7 +96,7 @@ static void delete_hash_entry(struct nethub *nh,
 }
 
 void delete_hash(struct nethub *nh,
-		 char *dst)
+		 unsigned char *dst)
 {
   struct hash_entry *old = find_entry(nh, dst);
 

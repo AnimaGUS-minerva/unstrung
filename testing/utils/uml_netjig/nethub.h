@@ -43,7 +43,7 @@ struct request_v0 {
 #define SWITCH_MAGIC 0xfeedface
 
 struct request_v1 {
-  unsigned long magic;
+  uint32_t magic;
   enum request_type type;
   union {
     struct {
@@ -54,8 +54,8 @@ struct request_v1 {
 };
 
 struct request_v2 {
-  unsigned long magic;
-  int version;
+  uint32_t magic;
+  uint32_t version;
   enum request_type type;
   struct sockaddr_un sock;
 };
@@ -66,8 +66,8 @@ struct reply_v2 {
 };
 
 struct request_v3 {
-  unsigned long magic;
-  int version;
+  uint32_t magic;
+  uint32_t version;
   enum request_type type;
   struct sockaddr_un sock;
 };

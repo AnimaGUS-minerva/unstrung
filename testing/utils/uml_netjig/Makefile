@@ -13,7 +13,7 @@
 #
 # RCSID $Id: Makefile,v 1.22 2004/04/03 19:44:52 ken Exp $
 
-OPENSWANSRCDIR=../../..
+UNSTRUNG_SRCDIR=../../..
 OBJS = nethub.o cmdmode.o port.o hash.o tuntap.o
 OBJS+=getopt_long.o
 
@@ -47,13 +47,13 @@ CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
 LIBS = ${NETDISSECTLIB} ${PCAPLIB} ${OPENSSL}
 
 
-include $(OPENSWANSRCDIR)/Makefile.inc
+include $(UNSTRUNG_SRCDIR)/Makefile.inc
 
 def:
 	@echo "Please read doc/intro.html or INSTALL before running make"
 	@false
 
-checkprograms: uml_netjig uml_switch
+checkprograms:: uml_netjig uml_switch
 
 uml_netjig : $(NOBJS)
 	$(CC) $(CFLAGS) -o uml_netjig $(NOBJS) $(LIBS)
@@ -61,7 +61,7 @@ uml_netjig : $(NOBJS)
 uml_switch : $(SOBJS)
 	$(CC) $(CFLAGS) -o uml_switch $(SOBJS) $(LIBS)
 
-clean : 
+clean::
 	rm -f uml_netjig uml_switch $(SOBJS) $(NOBJS) *~
 
 install_check: uml_netjig
@@ -71,7 +71,7 @@ install_check: uml_netjig
 install_file_list:
 	@true
 
-install programs check: 
+install programs check::
 	@true
 
 depend: 

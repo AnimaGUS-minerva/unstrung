@@ -495,7 +495,6 @@ int tickcmd(struct netjig_state *ns, int argc, char **argv)
 int waitplay(struct netjig_state *ns, int argc, char **argv)
 {
 	int opt;
-	char *switchname;
 	static struct option long_options[] =
 		{
 			{"help",        no_argument, 0, 'h'},
@@ -520,7 +519,7 @@ int waitplay(struct netjig_state *ns, int argc, char **argv)
 			fflush(stdout);
 			return 1;
 		case 's':
-			switchname=optarg;
+			//switchname=optarg;
 			break;
 		}
 	}
@@ -636,8 +635,8 @@ int cmdparse(struct netjig_state *ns,
 
 	ce=cmds;
 	if(strcasecmp("help", argv[0]) == 0) {
-		fprintf(ns->cmdproto_out, "FAIL %d LINES\n",
-			(sizeof(cmds)/sizeof(struct cmd_entry))-1);
+		fprintf(ns->cmdproto_out, "FAIL %lu LINES\n",
+			(unsigned long)(sizeof(cmds)/sizeof(struct cmd_entry))-1);
 		while(ce->cmdname != NULL) {
 			fprintf(ns->cmdproto_out, "\t%s\n", ce->cmdname);
 			ce++;

@@ -335,7 +335,8 @@ void handle_sock_data(struct netjig_state *ns,
 {
   struct packet packet;
   struct sock_data data;
-  int len, socklen = sizeof(data.sock);
+  int len;
+  unsigned int socklen = sizeof(data.sock);
 
   len = recvfrom(nh->data_fd,
 		 &packet, sizeof(packet), 0, 
@@ -412,7 +413,7 @@ void new_port_v0(struct netjig_state *ns,
 	  break;
     
   default:
-	  fprintf(stderr, "Bad request type : %d\n", req->type);
+	  fprintf(stderr, "v0 bad request type : %08x\n", req->type);
 	  close_descriptor(ns, nh, nh->data_fd);
   }
 }
@@ -436,7 +437,7 @@ void new_port_v1_v3(struct netjig_state *ns,
     }
     break;
   default:
-    fprintf(stderr, "Bad request type : %d\n", type);
+    fprintf(stderr, "v1/v3 bad request type : %08x\n", type);
     close_descriptor(ns, nh, port->control);
   }
 }
@@ -475,31 +476,31 @@ void handle_new_port(struct netjig_state *ns,
   }
 
   if(req.v1.magic == SWITCH_MAGIC) {
-          if(ns->verbose) {
-	    fprintf(stderr,
-		    "switch %s: new connection using daemon v.%d on port %d\n",
-		    nh->nh_name, req.v2.version, p->control);
-	  }
-	  switch(req.v2.version) {
-	  case 2:
-		  new_port_v2(ns, nh, p, &req.v2);
-		  break;
-		  
-	  case 3:
-		  new_port_v1_v3(ns, nh, p, req.v3.type, &req.v3.sock);
-		  break;
-		  
-	  case 1:
-		  new_port_v1_v3(ns, nh, p, req.v1.type, &req.v1.u.new_control.name);
-		  break;
-		  
-	  default:
-		  fprintf(stderr, "Request for a version %d port, which this "
-			  "uml_switch doesn't support\n", req.v2.version);
-		  break;
-	  }
+    if(ns->verbose) {
+      fprintf(stderr,
+	      "switch %s: new connection using daemon v.%d on port %d\n",
+	      nh->nh_name, req.v2.version, p->control);
+    }
+    switch(req.v2.version) {
+    case 2:
+      new_port_v2(ns, nh, p, &req.v2);
+      break;
+      
+    case 3:
+      new_port_v1_v3(ns, nh, p, req.v3.type, &req.v3.sock);
+      break;
+      
+    case 1:
+      new_port_v1_v3(ns, nh, p, req.v1.type, &req.v1.u.new_control.name);
+      break;
+      
+    default:
+      fprintf(stderr, "Request for a version %d port, which this "
+	      "uml_switch doesn't support\n", req.v2.version);
+      break;
+    }
   } else {
-	  new_port_v0(ns, nh, p, &req.v0);
+    new_port_v0(ns, nh, p, &req.v0);
   }
 }
 
@@ -550,7 +551,8 @@ void accept_connection(struct netjig_state *ns,
 {
   struct sockaddr addr;
   struct port *new_port;
-  int len, new;
+  unsigned int len;
+  int new;
 
   len = sizeof(addr);
   new = accept(nh->ctl_listen_fd, &addr, &len);

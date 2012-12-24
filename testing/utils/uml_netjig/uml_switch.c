@@ -56,8 +56,8 @@ void *xmalloc1(size_t size, char *file, int linenum)
 
 	space = malloc(size);
 	if(space == NULL) {
-		fprintf(stderr, "no memory allocating %d bytes at %s:%d\n",
-			size, file, linenum);
+		fprintf(stderr, "no memory allocating %ld bytes at %s:%d\n",
+			(unsigned long)size, file, linenum);
 		exit(1);
 	}
 	return space;

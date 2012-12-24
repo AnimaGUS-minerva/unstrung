@@ -7,12 +7,12 @@
 
 struct nethub;
 
-extern void *find_in_hash(struct nethub *nh, char *dst);
-extern void insert_into_hash(struct nethub *nh, char *src, void *port);
-extern void delete_hash(struct nethub *nh, char *dst);
+extern void *find_in_hash(struct nethub *nh, unsigned char *dst);
+extern void insert_into_hash(struct nethub *nh, unsigned char *src, void *port);
+extern void delete_hash(struct nethub *nh, unsigned char *dst);
 extern void print_hash(struct nethub *nh,
 		       char *(*port_id)(void *));
-extern void update_entry_time(struct nethub *nh, char *src);
+extern void update_entry_time(struct nethub *nh, unsigned char *src);
 extern void hash_init(struct nethub *nh);
 extern void hash_periodic(struct nethub *nh);
 
