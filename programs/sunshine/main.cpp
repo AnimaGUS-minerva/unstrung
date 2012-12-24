@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
+ * Copyright (C) 2009-2012 Michael Richardson <mcr@sandelman.ca>
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -123,28 +123,47 @@ int main(int argc, char *argv[])
             err_t e = ttosubnet(optarg, strlen(optarg),
                                 AF_INET6, &prefix);
 
-            if(!iface) usage();
+	    if(e) {
+		fprintf(stderr, "invalid prefix string: %s\n", optarg);
+		usage();
+	    }
+            if(!iface) {
+		fprintf(stderr, "must set interface (-i) before prefix\n");
+		usage();
+	    }
             iface->set_rpl_prefix(prefix);
         }
         break;
 
         case 'I':
-            if(!iface) usage();
+            if(!iface) {
+		fprintf(stderr, "must set interface before instanceid\n");
+		usage();
+	    }
             iface->set_rpl_instanceid(atoi(optarg));
             break; 
 
         case 'W':
-            if(!iface) usage();
+            if(!iface) {
+		fprintf(stderr, "must set interface before interval\n");
+		usage();
+	    }
             iface->set_rpl_interval(atoi(optarg));
             break; 
 
         case 'R':
-            if(!iface) usage();
+            if(!iface) {
+		fprintf(stderr, "must set interface before dagrank\n");
+		usage();
+	    }
             iface->set_rpl_dagrank(atoi(optarg));
             break; 
 
         case 'G':
-            if(!iface) usage();
+            if(!iface) {
+		fprintf(stderr, "must set interface before dagid\n");
+		usage();
+	    }
             iface->set_rpl_dagid(optarg);
             break;
 
@@ -169,7 +188,10 @@ int main(int argc, char *argv[])
 	}
     }
 
-    if(!iface) usage();
+    if(!iface) {
+	fprintf(stderr, "must pick one interface to run on\n");
+	usage();
+    }
 
     /* should check for already running instance before stomping PID file */
 
