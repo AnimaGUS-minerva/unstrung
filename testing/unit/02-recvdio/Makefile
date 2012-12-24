@@ -1,13 +1,7 @@
 UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
-INC=${UNSTRUNG_SRCDIR}/include
-
-# local install of pcap.h, or make sure you have libpcap-dev installed.
-CXXFLAGS+=-I/sandel/include -g ${CROSSFLAGS}
-LIBS=${LIBFAKEIFACE} ${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} 
-LIBS+=${LIBPCAP} 
-LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt  ${LIBS} ${EXTRALIBS}
+include ../Makefile.testing
 
 recv-01: recv-01.cpp ${INC}/iface.h ${LIBS}
 	${CXX} ${CXXFLAGS} -o recv-01 recv-01.cpp ${LDFLAGS}

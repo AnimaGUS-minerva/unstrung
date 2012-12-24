@@ -1,11 +1,11 @@
 UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ../Makefile.testing
+
 all: check
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
-INC=${UNSTRUNG_SRCDIR}/include
 OSWDIR=${UNSTRUNG_SRCDIR}/lib/libosw
-LDFLAGS+=${LIBOSW}
 
 addrtot-01: ${OSWDIR}/addrtot.c
 	${CC} -DADDRTOT_MAIN ${CFLAGS} -o addrtot-01 ${OSWDIR}/addrtot.c ${LDFLAGS}

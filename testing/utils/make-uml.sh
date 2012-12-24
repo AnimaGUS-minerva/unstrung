@@ -129,7 +129,7 @@ do
 done
 
 # build a plain kernel if we need it!
-if $NEED_plain && [ ! -x $UMLPLAIN/linux ]
+if $NEED_plain && [ ! -x $UMLPLAIN/vmlinux ]
 then
     cd $UMLPLAIN
 
@@ -200,7 +200,7 @@ do
     setup_host_make $host $UMLKERNEL pandora ${KERNVER} $NEED_swan >>$UMLMAKE
 done
 
-if $NEED_swan && [ ! -x $UMLSWAN/linux ]
+if $NEED_swan && [ ! -x $UMLSWAN/vmlinux ]
 then
     cd $UMLSWAN
     lndirkerndirnogit $KERNPOOL .
@@ -216,10 +216,7 @@ then
     KERNDEP=dep
 
     grep CONFIG_KLIPS $UMLSWAN/.config || exit 1
-fi
 
-if $NEED_swan && [ ! -x $UMLSWAN/linux ]
-then
     cd $UNSTRUNG_SRCDIR || exit 1
  
     make KERNMAKEOPTS='ARCH=um' SUBARCH=${SUBARCH} KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR verset kpatch rcf kernel || exit 1 </dev/null 
