@@ -15,6 +15,12 @@ case $# in
 esac
 
 CC=${CC-cc}
+SUBARCH=${ARCH-`uname -m`}
+case $SUBARCH in
+    x86_64) SUBARCH=i386;; 
+    i?86) SUBARCH=i386;;
+esac
+
 
 if [ `id -u` = 0 ]
 then
@@ -135,7 +141,7 @@ then
     rm -f .config
     cp ${TESTINGROOT}/kernelconfigs/umlplain.config .config
     
-    (make CC=${CC} ARCH=um $NONINTCONFIG && make CC=${CC} ARCH=um dep && make ARCH=um CC=${CC} linux ) || exit 1 </dev/null 
+    (make CC=${CC} ARCH=um SUBARCH=${SUBARCH} $NONINTCONFIG && make CC=${CC} ARCH=um SUBARCH=${SUBARCH} dep && make ARCH=um SUBARCH=${SUBARCH} CC=${CC} linux ) || exit 1 </dev/null 
 fi
 
 BUILD_MODULES=${BUILD_MODULES-true}
@@ -216,7 +222,7 @@ if $NEED_swan && [ ! -x $UMLSWAN/linux ]
 then
     cd $UNSTRUNG_SRCDIR || exit 1
  
-    make KERNMAKEOPTS='ARCH=um' KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR verset kpatch rcf kernel || exit 1 </dev/null 
+    make KERNMAKEOPTS='ARCH=um' SUBARCH=${SUBARCH} KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR verset kpatch rcf kernel || exit 1 </dev/null 
 
     # mark it as read-only, so that we don't edit the wrong files by mistake!
     find $UMLSWAN/net/ipsec $UMLSWAN/include/openswan -name '*.[ch]' -type f -print | xargs chmod a-w

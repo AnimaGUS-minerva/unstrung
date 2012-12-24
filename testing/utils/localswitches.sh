@@ -19,7 +19,7 @@ done
 # suck in local test configuration, if any.
 if [ -f testparams.sh ]
 then
-    source testparams.sh
+    . testparams.sh
 fi
 
 # XXX

@@ -169,7 +169,8 @@ setup_host_make() {
     depends="$depends $hostroot/etc/fstab"
 
     echo "$hostroot/lib/modules/stamp: ${KERNDIR}/.config"
-    echo "${TAB}(cd ${KERNDIR} && make ARCH=um INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules modules_install)"
+    echo "${TAB}echo make ARCH=um SUBARCH=${SUBARCH} INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules modules_install"
+    echo "${TAB}(cd ${KERNDIR} && make ARCH=um SUBARCH=${SUBARCH} INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules modules_install)"
     echo "${TAB}touch ${hostroot}/lib/modules/stamp"
     echo ""
     depends="$depends $hostroot/lib/modules/stamp"

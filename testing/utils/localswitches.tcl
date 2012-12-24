@@ -18,6 +18,9 @@ set env(NETJIGVERBOSE) 1
 
 set netjig1 [netjigstart]
 
+# do this to create the expect_out set of variables.
+expect *
+
 netjigsetup $netjig1
 
 foreach net $managednets {
