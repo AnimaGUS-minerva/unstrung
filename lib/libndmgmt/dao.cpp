@@ -38,11 +38,13 @@ void network_interface::receive_dao(struct in6_addr from,
                                     const  time_t now,
                                     const u_char *dat, const int dao_len)
 {
+    unsigned int dat_len = dao_len;
     if(VERBOSE(this))
         fprintf(this->verbose_file, "  processing dao(%u)\n",dao_len);
 
     struct nd_rpl_dao *dao = (struct nd_rpl_dao *)dat;
     unsigned char *dat2 = (unsigned char *)(dao+1);
+    dat_len -= sizeof(struct nd_rpl_dao);
 
     if(this->packet_too_short("dao", dao_len, sizeof(*dao))) return;
 
@@ -53,6 +55,7 @@ void network_interface::receive_dao(struct in6_addr from,
         memcpy(&dagid, dat2, DAGID_LEN);
         format_dagid(dagid_str, dat2);
         dat2 += DAGID_LEN;
+	dat_len -= DAGID_LEN;
     }
 
     debug->info(" [instance:%u,daoseq:%u,%sdagid:%s]\n",
@@ -68,7 +71,7 @@ void network_interface::receive_dao(struct in6_addr from,
                                                                this->debug);
 
     /* and process it */
-    dn->receive_dao(this, from, now, dao, (unsigned char *)dat, dao_len);
+    dn->receive_dao(this, from, now, dao, dat2, dat_len);
 }
 
 
