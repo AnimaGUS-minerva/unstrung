@@ -1,5 +1,5 @@
 #
-# $Id: net.east.sh,v 1.6 2004/02/03 20:14:01 mcr Exp $
+# network for E, between n1 and n2. (parallel to B)
 #
 if [ -n "$UML_n2_CTL" ]
 then
