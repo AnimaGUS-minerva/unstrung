@@ -296,7 +296,8 @@ rpl_node *dag_network::update_origin(network_interface *iface,
 }
 
 /*
- * Process an incoming DIO.
+ * Process an incoming DODAG Information Object (DIO)
+ * the DIO is the downward announcement.
  *
  */
 void dag_network::receive_dio(network_interface *iface,
@@ -356,7 +357,8 @@ rpl_node *dag_network::get_member(const struct in6_addr memberaddr)
 
 
 /*
- * Process an incoming DAO
+ * Process an incoming DAG Advertisement Object.
+ * the DAO is the upward announcement.
  *
  */
 void dag_network::receive_dao(network_interface *iface,

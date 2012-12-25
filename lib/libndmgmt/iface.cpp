@@ -312,7 +312,7 @@ class dag_network *network_interface::find_or_make_dag_by_dagid(const char *name
         memset(n, 0, DAGID_LEN);
         while(--i>0) n[i]=name[i];
 
-        return dag_network::find_or_make_by_dagid(n, debug);
+        return dag_network::find_or_make_by_dagid(n, debug, false);
 }
 
 

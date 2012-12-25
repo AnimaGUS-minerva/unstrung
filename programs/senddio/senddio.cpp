@@ -83,12 +83,14 @@ int main(int argc, char *argv[])
     const char *datafilename;
     FILE *datafile;
     char *prefixvalue = NULL;
+    char *pcapoutfile = NULL;
     unsigned char icmp_body[2048];
     unsigned int  icmp_len = 0;
     unsigned int verbose=0;
     unsigned int fakesend=0;
     struct option longoptions[]={
         {"fake",     0, NULL, 'T'},
+        {"pcapout",  required_argument, NULL,   'w'},
         {"testing",  0, NULL, 'T'},
         {"prefix",   1, NULL, 'p'},
         {"prefixlifetime",   1, NULL, 'P'},
@@ -102,20 +104,19 @@ int main(int argc, char *argv[])
         {"multicast",      0, NULL, 'm'},
         {"non-multicast",  0, NULL, 'M'},
         {"iface",    1, NULL, 'i'},
-        {"iface",    1, NULL, 'i'},
         {"version",  1, NULL, 'V'},
         {"verbose",  0, NULL, 'v'},
         {0,0,0,0},
     };
 
     class rpl_debug *deb;
-    class network_interface *iface;
+    class pcap_network_interface *iface;
     bool initted = false;
     memset(icmp_body, 0, sizeof(icmp_body));
 
     deb = new rpl_debug(verbose, stderr);
 	
-    while((c=getopt_long(argc, argv, "D:GI:P:R:S:Td:i:h?p:sv", longoptions, NULL))!=EOF){
+    while((c=getopt_long(argc, argv, "D:GI:P:R:S:Td:i:h?p:svw:", longoptions, NULL))!=EOF){
         switch(c) {
         case 'd':
             datafilename=optarg;
@@ -141,9 +142,13 @@ int main(int argc, char *argv[])
                 }
                 initted = true;
             }
-            iface = network_interface::find_by_name(optarg);
+            iface = (pcap_network_interface *)pcap_network_interface::find_by_name(optarg);
             break;
 			
+        case 'w': /* --pcapout */
+	    pcapoutfile = optarg;
+	    
+	    /* FALLTHROUGH */
         case 'T':
             if(initted) {
                 fprintf(stderr, "--fake MUST be first argument\n");
@@ -213,6 +218,10 @@ int main(int argc, char *argv[])
         }
     }
 
+    if(pcapoutfile) {
+	iface->set_pcap_out(pcapoutfile, DLT_EN10MB);
+    }
+
     if(prefixvalue) {
         ip_subnet prefix;
 
@@ -234,7 +243,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(!fakesend && icmp_len > 0) {
+    if(icmp_len > 0 && (!fakesend || pcapoutfile)) {
         iface->send_raw_icmp(NULL, icmp_body, icmp_len);
     }
 
