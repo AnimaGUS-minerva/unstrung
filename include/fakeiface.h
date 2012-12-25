@@ -55,7 +55,8 @@ public:
         static pcap_network_interface *setup_infile_outfile(
                 const char *ifname,
                 const char *infile,
-                const char *outfile);
+                const char *outfile,
+		rpl_debug *debug);
 
         void set_pcap_out(const char *outfile, int pcap_link);
 

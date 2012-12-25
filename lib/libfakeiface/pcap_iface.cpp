@@ -53,7 +53,7 @@ class pcap_iface_factory pcap_factory;
 pcap_network_interface::pcap_network_interface(const char *name) :
         network_interface(name)
 {
-        fprintf(stderr, "Creating PCAP interface: %s\n", name);
+    debug->verbose("Creating PCAP interface: %s\n", name);
 }
 
 pcap_network_interface::~pcap_network_interface()
@@ -163,8 +163,8 @@ void pcap_network_interface::skip_pcap_headers(const struct pcap_pkthdr *h,
         break;
 
     default:
-        fprintf(stderr, "unimplemented dlt type: %s (%u)",
-                pcap_datalink_val_to_name(pcap_link),pcap_link);
+        debug->info("unimplemented dlt type: %s (%u)",
+		    pcap_datalink_val_to_name(pcap_link),pcap_link);
         exit(1);
     }
 }
@@ -413,11 +413,9 @@ int pcap_network_interface::process_infile(const char *ifname,
                                            const char *infile,
                                            const char *outfile)
 {
-        pcap_network_interface *ndproc =
-            setup_infile_outfile(ifname, infile, outfile);
-
         rpl_debug *deb = new rpl_debug(true, stdout);
-	ndproc->set_debug(deb);
+        pcap_network_interface *ndproc =
+            setup_infile_outfile(ifname, infile, outfile, deb);
 
         ndproc->process_pcap();
         return 0;
@@ -428,14 +426,14 @@ void pcap_network_interface::set_pcap_out(const char *outfile,
 {
     pcap_t *pout = pcap_open_dead(pcap_link, 65535);
     if(!pout) {
-        fprintf(stderr, "can not create pcap_open_deads\n");
+	debug->error("can not create pcap_open_deads\n");
         exit(1);
     }
 
     this->pcap_out = pcap_dump_open(pout, outfile);
 
     if(!pcap_out) {
-        fprintf(stderr, "can not open output %s\n", outfile);
+	debug->error("can not open output %s\n", outfile);
         exit(1);
     }
 }
@@ -443,7 +441,8 @@ void pcap_network_interface::set_pcap_out(const char *outfile,
 pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *ifname,
     const char *infile,
-    const char *outfile)
+    const char *outfile,
+    rpl_debug *debug)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
         pcap_t *ppol;
@@ -452,27 +451,28 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
         pcap_network_interface *ndproc;
 
 	if(!ppol) {
-		fprintf(stderr, "can not open input %s: %s\n", infile, errbuf);
-		exit(1);
+	    debug->error("can not open input %s: %s\n", infile, errbuf);
+	    exit(1);
 	}
 
         int pcap_link = pcap_datalink(ppol);
 	pcap_t *pout = pcap_open_dead(pcap_link, 65535);
 	if(!pout) {
-		fprintf(stderr, "can not create pcap_open_deads\n");
+	    debug->error("can not create pcap_open_deads\n");
 		exit(1);
 	}
 
 	pcap_dumper_t *out = pcap_dump_open(pout, outfile);
 
 	if(!out) {
-		fprintf(stderr, "can not open output %s\n", outfile);
-		exit(1);
+	    debug->error("can not open output %s\n", outfile);
+	    exit(1);
 	}
 
         ndproc = (pcap_network_interface *)find_by_name(ifname);
         ndproc->set_link_encap(pcap_link);
         ndproc->pol = ppol;
+	ndproc->set_debug(debug);
 
         return ndproc;
 }
