@@ -1,5 +1,4 @@
 Using faked interfaces
-Creating PCAP interface: wlan0
 found[1]: wlan0 type=ether (inactive new) faked
   adding ifindex: 1
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424

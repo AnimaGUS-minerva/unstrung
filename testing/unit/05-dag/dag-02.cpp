@@ -177,6 +177,7 @@ int main(int argc, char *argv[])
         
         dn = new dag_network(d);
         dn->set_debug(deb);
+	dn->set_active();
 
         printf("dag-02 t1\n");        t1(iface);
         printf("dag-02 t2\n");        t2(iface);

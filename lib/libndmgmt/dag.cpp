@@ -65,9 +65,19 @@ class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
 
         if(dn==NULL) {
                 dn = new dag_network(n_dagid);
+		dn->set_inactive();             /* in active by default */
                 dn->set_debug(debug);
         }
         return dn;
+}
+
+class dag_network *dag_network::find_or_make_by_string(const char *dagid,
+						       rpl_debug *debug)
+{
+    dagid_t d;
+    memset(d, 0, sizeof(dagid_t));
+    strncat((char *)d, dagid, sizeof(dagid_t));
+    return find_or_make_by_dagid(d, debug);
 }
 
 class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
@@ -269,7 +279,7 @@ rpl_node *dag_network::update_origin(network_interface *iface,
         debug->info("  received self packet (%u/%u)\n",
                     this->mStats[PS_SELF_PACKET_RECEIVED],
                     this->mStats[PS_PACKET_RECEIVED]);
-        return false;
+        return NULL;
     }
 
     peer.makevalid(from, this, this->debug);
@@ -300,7 +310,7 @@ void dag_network::receive_dio(network_interface *iface,
     }
 
     /* validate this packet */
-    this->check_security(dio, dio_len);
+    bool secure = this->check_security(dio, dio_len);
 
     rpl_node *peer;
 
@@ -312,6 +322,12 @@ void dag_network::receive_dio(network_interface *iface,
 
     this->seq_update(dio->rpl_dtsn);
 
+    if(mActive == false) {
+	this->mStats[PS_PACKETS_WATCHED]++;
+	return;
+    }
+
+    /* must be an active DAG, so see what we should do */
     this->potentially_lower_rank(*peer, iface, dio, dio_len);
 
     /* increment stat of number of packets processed */
@@ -349,8 +365,8 @@ void dag_network::receive_dao(network_interface *iface,
     this->mStats[PS_PACKET_RECEIVED]++;
     this->mStats[PS_DAO_PACKET_RECEIVED]++;
 
-    /* validate this packet */
-    this->check_security(dao, dao_len);
+    /* validate this packet, if possible */
+    bool secure = this->check_security(dao, dao_len);
 
     rpl_node *peer;
 
@@ -360,7 +376,12 @@ void dag_network::receive_dao(network_interface *iface,
         return;
     }
 
-    /* look for the suboptions */
+    if(mActive == false) {
+	this->mStats[PS_PACKETS_WATCHED]++;
+	return;
+    }
+
+    /* look for the suboptions, process them */
     rpl_dao decoded_dao(data, dao_payload_len);
 
     struct rpl_dao_target *rpltarget;

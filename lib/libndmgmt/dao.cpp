@@ -67,11 +67,21 @@ void network_interface::receive_dao(struct in6_addr from,
     /* XXX if rpl_instanceid is 0, then we are using a default DAG? */
 
     /* find the relevant DAG */
-    class dag_network *dn = dag_network::find_or_make_by_dagid(dagid,
-                                                               this->debug);
-
-    /* and process it */
-    dn->receive_dao(this, from, now, dao, dat2, dat_len);
+    /* if watching, then we find_or_make, which returns us an
+     * inactive DAO.  This might be used to watch a network for RPL
+     * activity.
+     */
+    class dag_network *dn;
+    if(watching) {
+	dn = dag_network::find_or_make_by_dagid(dagid, this->debug);
+    } else {
+	dn = dag_network::find_by_dagid(dagid);
+    }
+	
+    if(dn) {
+	/* and process it */
+	dn->receive_dao(this, from, now, dao, dat2, dat_len);
+    }
 }
 
 

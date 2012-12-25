@@ -12,6 +12,7 @@ enum packet_stats {
         PS_SEQ_OLD,
         PS_PACKET_RECEIVED,
         PS_PACKET_PROCESSED,
+        PS_PACKETS_WATCHED,
         PS_LOWER_RANK_CONSIDERED,
         PS_LOWER_RANK_REJECTED,
         PS_SUBOPTION_UNDERRUN,
@@ -30,6 +31,8 @@ public:
         static class dag_network *find_by_dagid(dagid_t dagid);
         static class dag_network *find_or_make_by_dagid(dagid_t dagid,
                                                         rpl_debug *debug);
+	static class dag_network *find_or_make_by_string(const char *dagid,
+							rpl_debug *debug);
         static void init_stats(void);
 
         int cmp_dag(dagid_t n_dagid) {
@@ -37,10 +40,14 @@ public:
         };
 
 	void set_debug(rpl_debug *deb) { debug = deb; };
+	void set_active()   { mActive = true; };
+	void set_inactive() { mActive = false;};
+
         rpl_debug        *debug;
 
         /* prime key for the DAG */
         dagid_t                    mDagid;
+	bool                       mActive;
 
         unsigned int               mLastSeq;
         bool seq_too_old(unsigned int seq);

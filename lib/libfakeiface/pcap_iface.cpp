@@ -37,12 +37,14 @@ extern "C" {
 
 class pcap_iface_factory : public iface_factory {
 public:
-    virtual network_interface *newnetwork_interface(const char *name);
+    virtual network_interface *newnetwork_interface(const char *name,
+						    rpl_debug *deb);
 };
 
-network_interface *pcap_iface_factory::newnetwork_interface(const char *name)
+network_interface *pcap_iface_factory::newnetwork_interface(const char *name,
+							    rpl_debug *deb)
 {
-    return new pcap_network_interface(name);
+    return new pcap_network_interface(name, deb);
 }
 
 /* new factory / creates pcap_network_interface */
@@ -50,10 +52,12 @@ class pcap_iface_factory pcap_factory;
 
 
 /* constructor */
-pcap_network_interface::pcap_network_interface(const char *name) :
-        network_interface(name)
+pcap_network_interface::pcap_network_interface(const char *name, rpl_debug *deb) :
+    network_interface(name, deb)
 {
-    debug->verbose("Creating PCAP interface: %s\n", name);
+    if(debug) {
+	debug->verbose("Creating PCAP interface: %s\n", name);
+    }
 }
 
 pcap_network_interface::~pcap_network_interface()

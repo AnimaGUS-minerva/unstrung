@@ -1,14 +1,9 @@
+found[1]: wlan0 type=ether (inactive new) faked
+  adding ifindex: 1
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+PROCESSING ../INPUTS/senddio-example.pcap
 packet 1 is being processed
  processing dio(40)
  [seq:13,instance:42,rank:0,version:17,grounded,non-storing,dagid:HELLO0x00 ]
-  new RPL node: fe80::1022:ff:fe64:6423 
-  does peer 'fe80::1022:ff:fe64:6423' have better rank? (0 < 4294967295)
-  Yes, 'fe80::1022:ff:fe64:6423' has best rank 0
-  peer 'fe80::1022:ff:fe64:6423' announces prefix: 2001:db8:1::/48
-  adding prefix: 2001:db8:1::/48 to iface: wlan0
-  invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr show
-SENDING dao for dagname to: fe80::1022:ff:fe64:6423 to fe80::1022:ff:fe64:6423 on if=wlan0
-sending DAO on if: wlan0 for prefix: fe80::1022:ff:fe64:6423 faked
-Scheduling earlier dio
+  new RPL node: fe80::1022:ff:fe64:6423

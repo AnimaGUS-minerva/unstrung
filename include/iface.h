@@ -32,7 +32,7 @@ public:
     int announce_network();
     network_interface();
     network_interface(int fd);
-    network_interface(const char *if_name);
+    network_interface(const char *if_name, rpl_debug *deb);
 
     // setup the object, open sockets, etc.
     bool setup(void);
@@ -167,6 +167,7 @@ protected:
     rpl_node               *node;
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
+    bool                    watching;   /* true if we should collect all DAGs*/
     struct in6_addr         if_addr;
 
     /* maintain list of all interfaces */
@@ -267,7 +268,7 @@ private:
 
 class iface_factory {
 public:
-    virtual network_interface *newnetwork_interface(const char *name);
+    virtual network_interface *newnetwork_interface(const char *name, rpl_debug *deb);
 };
 extern class iface_factory *iface_maker;
 

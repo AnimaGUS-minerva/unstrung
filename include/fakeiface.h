@@ -27,7 +27,7 @@ extern "C" {
 
 class pcap_network_interface : public network_interface {
 public:
-	pcap_network_interface(const char *name);
+  pcap_network_interface(const char *name, rpl_debug *deb);
 	pcap_network_interface(pcap_dumper_t *pd);
         ~pcap_network_interface();
         int nisystem(const char *cmd);

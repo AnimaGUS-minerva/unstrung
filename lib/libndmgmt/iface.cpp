@@ -59,11 +59,12 @@ network_interface::network_interface(int fd)
     debug = NULL;
 }
 
-network_interface::network_interface(const char *if_name)
+network_interface::network_interface(const char *if_name, rpl_debug *deb)
 {
     alive = false;
     nd_socket = -1;
-
+    set_debug(deb);
+    
     this->set_if_name(if_name);
     debug = NULL;
 }

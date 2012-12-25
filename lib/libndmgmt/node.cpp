@@ -63,11 +63,8 @@ void rpl_node::makevalid(const struct in6_addr v6,
         mDN    = dn;
         valid  = true;
         this->debug  = deb;
-        
-        if(debug->verbose_test()) {
-            fprintf(debug->file, "  new RPL node: %s \n",
-                    node_name());
-        }
+
+	debug->verbose("  new RPL node: %s\n", node_name());
     }
 }
 
