@@ -21,6 +21,8 @@ extern "C" {
 #include "dao.h"
 
 class dag_network *dag_network::all_dag = NULL;
+u_int32_t dag_network::globalStats[PS_MAX];
+
 
 void dag_network::init_stats(void)
 {
@@ -59,12 +61,16 @@ void dag_network::remove_from_list(void)
 
 
 class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
-                                                      rpl_debug *debug)
+                                                      rpl_debug *debug,
+						      bool watching)
 {
         class dag_network *dn = find_by_dagid(n_dagid);
 
         if(dn==NULL) {
                 dn = new dag_network(n_dagid);
+		if(watching) {
+		    globalStats[PS_DAG_CREATED_FOR_WATCHING]++;
+		}
 		dn->set_inactive();             /* in active by default */
                 dn->set_debug(debug);
         }
@@ -72,12 +78,13 @@ class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
 }
 
 class dag_network *dag_network::find_or_make_by_string(const char *dagid,
-						       rpl_debug *debug)
+						       rpl_debug *debug, 
+						       bool watching)
 {
     dagid_t d;
     memset(d, 0, sizeof(dagid_t));
     strncat((char *)d, dagid, sizeof(dagid_t));
-    return find_or_make_by_dagid(d, debug);
+    return find_or_make_by_dagid(d, debug, watching);
 }
 
 class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
@@ -397,7 +404,7 @@ void dag_network::receive_dao(network_interface *iface,
 
         subnettot(&prefix, 0, addrfound, sizeof(addrfound));
 
-        debug->verbose("received DAO about network %s", addrfound);
+        debug->verbose("received DAO about network %s\n", addrfound);
     }
 
     /* increment stat of number of packets processed */

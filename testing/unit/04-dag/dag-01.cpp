@@ -98,7 +98,7 @@ static void t5(void)
         d[1]='5';
         
         /* verify that we can not find it */
-        class dag_network *dn2 = dag_network::find_or_make_by_dagid(d, debug);
+        class dag_network *dn2 = dag_network::find_or_make_by_dagid(d, debug, false);
         assert(dn2 != NULL);
 
         assert(dn2->mDagid[0]=='T');

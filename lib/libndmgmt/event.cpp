@@ -136,7 +136,6 @@ struct timeval rpl_event::occurs_in() {
     return occurs_in(now);
 }
 
-
 void printevents(FILE *out, event_map em) {
     int i = 1;
     event_map_iterator one = em.begin();

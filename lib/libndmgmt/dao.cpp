@@ -73,7 +73,9 @@ void network_interface::receive_dao(struct in6_addr from,
      */
     class dag_network *dn;
     if(watching) {
-	dn = dag_network::find_or_make_by_dagid(dagid, this->debug);
+	dn = dag_network::find_or_make_by_dagid(dagid,
+						this->debug,
+						watching);
     } else {
 	dn = dag_network::find_by_dagid(dagid);
     }
@@ -81,6 +83,8 @@ void network_interface::receive_dao(struct in6_addr from,
     if(dn) {
 	/* and process it */
 	dn->receive_dao(this, from, now, dao, dat2, dat_len);
+    } else {
+	dag_network::globalStats[PS_DAO_PACKET_IGNORED]++;
     }
 }
 

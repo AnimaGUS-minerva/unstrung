@@ -19,6 +19,9 @@ enum packet_stats {
         PS_SELF_PACKET_RECEIVED,
         PS_DAO_PACKET_RECEIVED,
         PS_DIO_PACKET_RECEIVED,
+        PS_DAO_PACKET_IGNORED,
+        PS_DIO_PACKET_IGNORED,
+        PS_DAG_CREATED_FOR_WATCHING,
         PS_MAX,
 };
 
@@ -30,9 +33,11 @@ public:
         ~dag_network();
         static class dag_network *find_by_dagid(dagid_t dagid);
         static class dag_network *find_or_make_by_dagid(dagid_t dagid,
-                                                        rpl_debug *debug);
+                                                        rpl_debug *debug,
+							bool watching);
 	static class dag_network *find_or_make_by_string(const char *dagid,
-							rpl_debug *debug);
+							 rpl_debug *debug,
+							 bool watching);
         static void init_stats(void);
 
         int cmp_dag(dagid_t n_dagid) {
@@ -98,6 +103,9 @@ public:
 
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
+
+        /* let global stats public */
+        static u_int32_t globalStats[PS_MAX];
 
         /* some decode routines */
         static const char *mop_decode(unsigned int mop) {

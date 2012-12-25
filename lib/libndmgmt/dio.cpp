@@ -77,12 +77,21 @@ void network_interface::receive_dio(struct in6_addr from,
                 dag_network::mop_decode(dag_network::mop_extract(dio)),
                 dagid);
 
-    /* find the relevant DAG */
-    class dag_network *dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid,
-                                                               this->debug);
-
-    /* and process it */
-    dn->receive_dio(this, from, now, dio, dio_len);
+    class dag_network *dn;
+    if(watching) {
+	dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid,
+						this->debug,
+						watching);
+    } else {
+	dn = dag_network::find_by_dagid(dio->rpl_dagid);
+    }
+	
+    if(dn) {
+	/* and process it */
+	dn->receive_dio(this, from, now, dio, dio_len);
+    } else {
+	dag_network::globalStats[PS_DIO_PACKET_IGNORED]++;
+    }
 }
 
 rpl_node *network_interface::my_dag_node(void) {
@@ -103,7 +112,7 @@ rpl_node *network_interface::my_dag_node(void) {
 dag_network *network_interface::my_dag_net(void) {
     if(this->dagnet != NULL) return this->dagnet;
 
-    this->dagnet = dag_network::find_or_make_by_dagid(rpl_dagid,debug);
+    this->dagnet = dag_network::find_or_make_by_dagid(rpl_dagid, debug, false);
     return this->dagnet;
 }
 
