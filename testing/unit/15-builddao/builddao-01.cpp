@@ -58,17 +58,17 @@ static void t1(rpl_debug *deb)
     ip_subnet out;
     ttosubnet("2001:db8::abcd:0002/128",0, AF_INET6, &out);
 
-#if 0
     /* make a new dn */
     class dag_network *dn1 = new dag_network(dag1name);
 
     /* add a host to this network */
-    class rpl_node n1("2001:db8::abcd:0002/128");
-    class rpl_node via1("2001:db8::abcd:1005");
-    dn1->addnode(n1, via1);
-#endif
+    rpl_node n1("2001:db8::abcd:0002/128");
+    struct in6_addr via1;
+    inet_pton(AF_INET6, "2001:db8::abcd:1005", &via1);
+    prefix_node pvia1(deb, via1, 128);
+    dn1->addprefix(n1, my_if, pvia1.get_prefix());
 
-    int len = my_if->build_dao(buf, 2048, out);
+    int len = my_if->build_dao(buf, 2048, dn1);
     assert(len == 56);
 
     my_if->send_raw_icmp(NULL, buf, len);

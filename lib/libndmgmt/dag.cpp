@@ -197,7 +197,7 @@ void dag_network::addprefix(rpl_node peer,
                             network_interface *iface,
                             ip_subnet prefix)
 {
-    prefix_node &pre = this->dag_prefixes[prefix];
+    prefix_node &pre = this->dag_children[prefix];
 
     if(!pre.is_installed()) {
         pre.set_debug(this->debug);
@@ -264,17 +264,16 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
 /*
  * send out outgoing DAO
  */
-void dag_network::send_dao(rpl_node &parent, prefix_node &pre)
+void dag_network::send_dao(void)
 {
-    debug->verbose("SENDING dao for %s to: %s to %s on if=%s\n",
-                   "dagname", parent.node_name(),
-                   dag_parent   ? dag_parent->node_name() : "unset",
+    debug->verbose("SENDING dao for %s to: %s on if=%s\n",
+                   mDagName, dag_parent->node_name(),
                    dag_parentif ? dag_parentif->get_if_name():"unknown");
 
     if(dag_parent == NULL || dag_parentif ==NULL) return;
 
     /* need to tell our parent about how to reach us */
-    dag_parentif->send_dao(parent, pre);
+    dag_parentif->send_dao(*dag_parent, *this);
 }
 
 /*

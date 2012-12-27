@@ -961,6 +961,34 @@ unsigned short network_interface::csum_ipv6_magic(
     return sum;
 }
 
+
+void network_interface::send_dio_all(void)
+{
+    class network_interface *iface = all_if;
+    while(iface != NULL) {
+	iface->debug->log("iface %s sending dio\n", iface->if_name);
+	if(iface->nd_socket != -1) {
+            iface->send_dio();
+	}
+	iface = iface->next;
+    }
+}
+
+/* really, seldom used */
+#if 0
+void network_interface::send_dao_all(dag_network *dag)
+{
+    class network_interface *iface = all_if;
+    while(iface != NULL) {
+	iface->debug->log("iface %s sending dao\n", iface->if_name);
+	if(iface->nd_socket != -1) {
+            dag->send_dao();
+	}
+	iface = iface->next;
+    }
+}
+#endif
+
 /*
  * Local Variables:
  * c-basic-offset:4

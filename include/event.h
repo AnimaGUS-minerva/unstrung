@@ -24,6 +24,7 @@ public:
 
     enum event_types {
         rpl_send_dio = 1,
+        rpl_send_dao = 2,
     };
 
     rpl_event() { };
@@ -47,6 +48,9 @@ public:
 
     /* invoke this event */
     bool doit(void);
+    bool send_dio_all(void);
+    bool send_dao_all(void);
+
     bool passed(struct timeval &now) {
         //fprintf(stderr, "passed([%u,%u] < [%u,%u])\n",
         //        alarm_time.tv_sec, alarm_time.tv_usec,
@@ -106,6 +110,7 @@ private:
     unsigned int        repeat_sec;
     unsigned int        repeat_msec;
     struct timeval      last_time;
+    dag_network        *mDag;
     char mReason[16];
     rpl_debug *debug;
 };

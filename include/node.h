@@ -59,8 +59,8 @@ public:
     }
 };
 
-typedef std::map<struct in6_addr, rpl_node, rpl_less>           node_map;
-typedef std::map<struct in6_addr, rpl_node, rpl_less>::iterator node_map_iterator;
+typedef std::map<struct in6_addr, rpl_node , rpl_less>           node_map;
+typedef std::map<struct in6_addr, rpl_node , rpl_less>::iterator node_map_iterator;
 typedef std::pair<struct in6_addr, rpl_node> node_pair;
 
 #endif /* NODE_H */

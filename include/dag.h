@@ -84,8 +84,9 @@ public:
                        network_interface *iface,
                        ip_subnet prefix);
         unsigned int prefixcount(void) {
-            return dag_prefixes.size();
+            return dag_children.size();
         };
+	void maybe_send_dao(void);
         void potentially_lower_rank(rpl_node &peer,
                                     network_interface *iface,
                                     const struct nd_rpl_dio *dio, int dio_len);
@@ -98,7 +99,7 @@ public:
         rpl_node *find_or_make_member(const struct in6_addr memberaddr);
 
         /* send a unicast summary to new parent */
-        void send_dao(rpl_node &parent, prefix_node &pre);
+        void send_dao(void);
         void schedule_dio(void);
 
         /* let stats be public */
@@ -125,6 +126,9 @@ public:
             return RPL_DIO_MOP(dio->rpl_mopprf);
         };
 
+	/* public for now, need better inteface */
+        prefix_map         dag_children;     /* list of addresses downstream */
+
 private:
         /* information about this DAG */
 
@@ -142,7 +146,6 @@ private:
         static const char *packet_stat_names[PS_MAX+1];
 
         node_map           dag_members;
-        prefix_map         dag_prefixes;     /* usually only one */
         rpl_node          *dag_parent;       /* current parent (shared_ptr) */
         network_interface *dag_parentif;     /* how to get to parent, shared_ptr */
 

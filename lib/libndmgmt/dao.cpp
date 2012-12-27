@@ -108,7 +108,7 @@ int network_interface::build_target_opt(ip_subnet prefix)
 
 int network_interface::build_dao(unsigned char *buff,
                                  unsigned int buff_len,
-                                 ip_subnet prefix)
+				 dag_network *dag)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;
@@ -127,6 +127,7 @@ int network_interface::build_dao(unsigned char *buff,
     icmp6->icmp6_cksum = 0;
 
     dao = (struct nd_rpl_dao *)icmp6->icmp6_data8;
+    nextopt = (unsigned char *)(dao+1);
 
     dao->rpl_instanceid = this->rpl_instanceid;
     dao->rpl_flags = 0;
@@ -134,19 +135,26 @@ int network_interface::build_dao(unsigned char *buff,
 
     dao->rpl_daoseq     = this->rpl_sequence;
 
+    /* insert dagid, advance */
     {
         unsigned char *dagid = (unsigned char *)&dao[1];
         memcpy(dagid, this->rpl_dagid, 16);
         nextopt = dagid + 16;
     }
 
-    /* add RPL_TARGET  */
-    build_target_opt(prefix);
+    prefix_map         &dag_children = dag->dag_children;
+    prefix_map_iterator pi = dag_children.begin();
+    while(pi != dag->dag_children.end()) {
+	prefix_node &pm = pi->second;
 
-    int nextoptlen;
-    len = ((caddr_t)nextopt - (caddr_t)buff);
-    nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
-    nextopt += nextoptlen;
+	/* add RPL_TARGET  */
+	build_target_opt(pm.get_prefix());
+
+	int nextoptlen;
+	len = ((caddr_t)nextopt - (caddr_t)buff);
+	nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
+	nextopt += nextoptlen;
+    }
 
     /* add RPL_TRANSIT */
     /* add RPL_TARGET DESCRIPTION */
@@ -159,18 +167,16 @@ int network_interface::build_dao(unsigned char *buff,
 }
 
 
-void network_interface::send_dao(rpl_node &parent, prefix_node &pre)
+void network_interface::send_dao(rpl_node &parent, dag_network &dag)
 {
     unsigned char icmp_body[2048];
 
-    /* this is wrong, it needs to send the entire set of prefixes */
-    debug->log("sending DAO on if: %s for prefix: %s%s\n",
-               this->if_name, parent.node_name(),
-               this->faked() ? " faked" : "");
+    debug->log("sending DAO on if: %s%s\n",
+               this->if_name,
+	       this->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = build_dao(icmp_body, sizeof(icmp_body),
-                                      pre.get_prefix());
+    unsigned int icmp_len = build_dao(icmp_body, sizeof(icmp_body), &dag);
 
     struct in6_addr dest = parent.node_number();
     send_raw_icmp(&dest, icmp_body, icmp_len);

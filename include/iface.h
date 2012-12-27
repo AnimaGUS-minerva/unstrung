@@ -59,14 +59,17 @@ public:
                      const u_char *dio_bytes, const int dio_len);
 
     void send_dio(void);
-    void send_dao(rpl_node &n, prefix_node &pre);
+    void send_dao(rpl_node &parent, dag_network &dag);
+    static void send_dio_all(void);
+    static void send_dao_all(dag_network *dag);
+
     virtual void send_raw_icmp(struct in6_addr *dest,
                                const unsigned char *icmp_body,
                                const unsigned int icmp_len);
     virtual bool faked(void);
 
     int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
-    int  build_dao(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
+    int  build_dao(unsigned char *buff, unsigned int buff_len, dag_network *dag);
 
     void set_if_name(const char *ifname);
     const char *get_if_name(void) { return if_name; };

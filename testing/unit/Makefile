@@ -39,7 +39,9 @@ SUBDIRS+=15-builddao
 SUBDIRS+=16-vf
 SUBDIRS+=17-recvdao
 SUBDIRS+=18-checksum
-
+SUBDIRS+=19-pickdag
+SUBDIRS+=20-prefix
+SUBDIRS+=21-node
 
 
 

@@ -52,8 +52,15 @@ bool rpl_event::doit(void)
             debug->log("doing send_dio\n");
             interface->send_dio();
         } else {
-            debug->log("event did not have associated interface\n");
+	    network_interface::send_dio_all();
         }
+        return true;
+        
+    case rpl_send_dao:
+        if(mDag!=NULL) {
+            debug->log("event send_dao to parent\n");
+            mDag->send_dao();
+        } 
         return true;
         
     default:
