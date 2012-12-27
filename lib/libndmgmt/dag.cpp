@@ -28,6 +28,20 @@ void dag_network::init_stats(void)
 {
 }
 
+void dag_network::init_dag_name(void)
+{
+    memset(mDagName, 0, sizeof(mDagName));
+    char *dn = mDagName;
+    for(int i=0; i<DAGID_LEN && dn < mDagName+sizeof(mDagName)-1; i++) {
+	if(isprint(mDagid[i])) {
+	    *dn++ = mDagid[i];
+	} else {
+	    sprintf(dn, "%02x", mDagid[i]);
+	    dn += 2;
+	}
+    }
+}
+
 dag_network::dag_network(dagid_t n_dagid)
 {
         memcpy(mDagid, n_dagid, DAGID_LEN);
