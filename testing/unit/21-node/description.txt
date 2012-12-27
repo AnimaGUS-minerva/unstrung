@@ -1,0 +1,7 @@
+This test case just confirms some C++ std properties which were originally
+unclear:  iterators have both .things and ->things which are different.
+The -> things are really (*blah).thing, which is to say that it first
+applies *, which results in a foo_pair.
+
+
+
