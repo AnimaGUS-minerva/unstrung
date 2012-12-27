@@ -49,6 +49,7 @@ dag_network::dag_network(dagid_t n_dagid)
         mDagRank = UINT_MAX;
         memset(mStats, 0, sizeof(mStats));
 
+	init_dag_name();
         this->add_to_list();
 }
 
@@ -193,6 +194,11 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
     return true;
 }
 
+void dag_network::maybe_send_dao(void)
+{
+    mTimeToSendDao=true;
+}
+
 void dag_network::addprefix(rpl_node peer,
                             network_interface *iface,
                             ip_subnet prefix)
@@ -205,7 +211,7 @@ void dag_network::addprefix(rpl_node peer,
         pre.set_dn(this);
         pre.set_prefix(prefix);
         pre.configureip(iface);
-        send_dao(peer, pre);
+        maybe_send_dao();
     }
 }
 

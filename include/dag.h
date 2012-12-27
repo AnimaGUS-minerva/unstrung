@@ -142,12 +142,17 @@ private:
                                 struct in6_addr from,
                                 const time_t now);
         void seq_update(unsigned int seq);
+	void init_dag_name(void);
 
         static const char *packet_stat_names[PS_MAX+1];
 
         node_map           dag_members;
         rpl_node          *dag_parent;       /* current parent (shared_ptr) */
         network_interface *dag_parentif;     /* how to get to parent, shared_ptr */
+
+	/* flag that it is time to send DAO */
+	bool               mTimeToSendDao;
+	char               mDagName[32];
 
         // XXX replace with dag_network_map!!!
         class dag_network *next;
