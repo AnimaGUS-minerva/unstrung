@@ -42,18 +42,14 @@ extern "C" {
 #include "iface.h"
 #include "event.h"
 
+
 bool rpl_event::doit(void)
 {
     debug->log("invoking doit on rpl_event %p (if_name=%s)\n",
             this, interface->get_if_name());
     switch(event_type) {
     case rpl_send_dio:
-        if(interface!=NULL) {
-            debug->log("doing send_dio\n");
-            interface->send_dio();
-        } else {
-	    network_interface::send_dio_all();
-        }
+	network_interface::send_dio_all(mDag);
         return true;
         
     case rpl_send_dao:

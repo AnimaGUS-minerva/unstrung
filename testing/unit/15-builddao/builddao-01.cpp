@@ -52,7 +52,6 @@ static void t1(rpl_debug *deb)
     class dag_network dag1(dag1name);
 
     my_if->set_pcap_out("../OUTPUTS/15-dao.pcap", DLT_EN10MB);
-    my_if->set_rpl_dagid(dag1name);
 
     unsigned char buf[2048];
     ip_subnet out;
@@ -68,7 +67,7 @@ static void t1(rpl_debug *deb)
     prefix_node pvia1(deb, via1, 128);
     dn1->addprefix(n1, my_if, pvia1.get_prefix());
 
-    int len = my_if->build_dao(buf, 2048, dn1);
+    int len = dn1->build_dao(buf, 2048);
     assert(len == 56);
 
     my_if->send_raw_icmp(NULL, buf, len);

@@ -27,7 +27,6 @@ class network_interface {
 
 public:
     bool mark;
-    bool                    rpl_grounded;
 
     int announce_network();
     network_interface();
@@ -58,9 +57,9 @@ public:
                      time_t          now,
                      const u_char *dio_bytes, const int dio_len);
 
-    void send_dio(void);
+    void send_dio(dag_network *dag);
     void send_dao(rpl_node &parent, dag_network &dag);
-    static void send_dio_all(void);
+    static void send_dio_all(dag_network *dag);
     static void send_dao_all(dag_network *dag);
 
     virtual void send_raw_icmp(struct in6_addr *dest,
@@ -68,61 +67,13 @@ public:
                                const unsigned int icmp_len);
     virtual bool faked(void);
 
-    int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
-    int  build_dao(unsigned char *buff, unsigned int buff_len, dag_network *dag);
-
-    void set_if_name(const char *ifname);
+    void        set_if_name(const char *ifname);
     const char *get_if_name(void) { return if_name; };
-    int        get_if_index(void);
+    int         get_if_index(void);
 
     bool if_ifaddr(struct in6_addr ia) {
         return (memcmp(&ia, &if_addr, sizeof(ia))==0);
     };
-
-    void set_rpl_dagid(const char *dagstr);
-    void set_rpl_dagid(dagid_t dagid);
-    void set_rpl_dagrank(const unsigned int dagrank) {
-        rpl_dagrank = dagrank;
-    };
-    void set_rpl_sequence(const unsigned int sequence) {
-        rpl_sequence = sequence;
-    };
-    void set_rpl_instanceid(const unsigned int instanceid) {
-        rpl_instanceid = instanceid;
-    };
-    void set_rpl_prefixlifetime(const unsigned int lifetime) {
-        rpl_lifetime = lifetime;
-    };
-    void set_rpl_version(const unsigned int version) {
-        rpl_version = version;
-    };
-    void set_rpl_prefix(const ip_subnet prefix);
-    void set_rpl_interval(const int msec);
-    rpl_node    *my_dag_node(void);
-    dag_network *my_dag_net(void);
-
-    void set_rpl_mode(enum RPL_DIO_MOP m) {
-        rpl_mode = m;
-    };
-    void set_rpl_nomulticast() {
-        if(rpl_mode == RPL_DIO_NONSTORING ||
-           rpl_mode == RPL_DIO_NONSTORING_MULTICAST) {
-            rpl_mode = RPL_DIO_NONSTORING;
-        } else if(rpl_mode == RPL_DIO_STORING ||
-           rpl_mode == RPL_DIO_STORING_MULTICAST) {
-            rpl_mode = RPL_DIO_STORING;
-        }
-    }
-
-    void set_rpl_multicast() {
-        if(rpl_mode == RPL_DIO_NONSTORING ||
-           rpl_mode == RPL_DIO_NONSTORING_MULTICAST) {
-            rpl_mode = RPL_DIO_NONSTORING_MULTICAST;
-        } else if(rpl_mode == RPL_DIO_STORING ||
-           rpl_mode == RPL_DIO_STORING_MULTICAST) {
-            rpl_mode = RPL_DIO_STORING_MULTICAST;
-        }
-    }
 
     void update_multicast_time(void) {
         struct timeval tv;
@@ -147,6 +98,7 @@ public:
     static network_interface *find_by_name(const char *name);
     static int foreach_if(int (*func)(network_interface*, void*), void*arg);
     static void remove_marks(void);
+    static void force_next_event(void);
 
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
@@ -203,21 +155,6 @@ private:
     bool                    on_list;
     bool                    alive;
 
-    /* RiPpLe statistics */
-    enum RPL_DIO_MOP        rpl_mode;
-    unsigned int            rpl_sequence;
-    unsigned int            rpl_instanceid;
-    unsigned int            rpl_dagrank;
-    unsigned int            rpl_lifetime;
-    unsigned int            rpl_version;
-    dagid_t                 rpl_dagid;            // this does not belong.
-    unsigned int            rpl_dio_lifetime;
-    ip_subnet               rpl_prefix;
-    char                    rpl_prefix_str[SUBNETTOT_BUF];
-
-    unsigned int            rpl_interval_msec;
-
-
     /* timers */
     time_t			last_multicast_sec;
     suseconds_t		last_multicast_usec;
@@ -231,18 +168,6 @@ private:
     /* private helper functions */
     void setup_allrouters_membership(void);
     void check_allrouters_membership(void);
-
-    /* space to format various messages */
-    int append_suboption(unsigned char *buff,
-                             unsigned int buff_len,
-                             enum RPL_SUBOPT subopt_type,
-                             unsigned char *subopt_data,
-                             unsigned int subopt_len);
-    int append_suboption(unsigned char *buff,
-                             unsigned int buff_len,
-                             enum RPL_SUBOPT subopt_type);
-    int build_prefix_dioopt(ip_subnet prefix);
-    int build_target_opt(ip_subnet prefix);
 
     unsigned char           optbuff[256];
     unsigned int            optlen;

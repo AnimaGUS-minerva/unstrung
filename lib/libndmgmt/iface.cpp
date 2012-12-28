@@ -75,35 +75,6 @@ void network_interface::set_if_name(const char *if_name)
     strncat(this->if_name, if_name, sizeof(this->if_name));
 }
 
-void network_interface::set_rpl_dagid(dagid_t dag)
-{
-    memcpy(this->rpl_dagid, dag, DAGID_LEN);
-}
-
-void network_interface::set_rpl_dagid(const char *dagstr)
-{
-    if(dagstr[0]=='0' && dagstr[1]=='x') {
-        const char *digits;
-        int i;
-        digits = dagstr+2;
-        for(i=0; i<16 && *digits!='\0'; i++) {
-            unsigned int value;
-            if(sscanf(digits, "%2x",&value)==0) break;
-            this->rpl_dagid[i]=value;
-
-            /* advance two characters, carefully */
-            digits++;
-            if(digits[0]) digits++;
-        }
-    } else {
-        int len = strlen(dagstr);
-        if(len > 16) len=16;
-
-        memset(this->rpl_dagid, 0, 16);
-        memcpy(this->rpl_dagid, dagstr, len);
-    }
-}
-
 void network_interface::generate_eui64(void)
 {
     if(eui64[0]!=0) return;
@@ -153,7 +124,6 @@ bool network_interface::setup()
 {
     if(alive && nd_socket != -1) return true;
 
-    rpl_dio_lifetime = 0;       // zero out to avoid garbage.
     generate_eui64();
 
     debug->verbose("Starting setup for %s\n", this->if_name);
@@ -962,13 +932,13 @@ unsigned short network_interface::csum_ipv6_magic(
 }
 
 
-void network_interface::send_dio_all(void)
+void network_interface::send_dio_all(dag_network *dag)
 {
     class network_interface *iface = all_if;
     while(iface != NULL) {
 	iface->debug->log("iface %s sending dio\n", iface->if_name);
 	if(iface->nd_socket != -1) {
-            iface->send_dio();
+            iface->send_dio(dag);
 	}
 	iface = iface->next;
     }

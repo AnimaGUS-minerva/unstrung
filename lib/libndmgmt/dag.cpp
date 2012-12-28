@@ -23,6 +23,9 @@ extern "C" {
 class dag_network *dag_network::all_dag = NULL;
 u_int32_t dag_network::globalStats[PS_MAX];
 
+unsigned char           dag_network::optbuff[256];
+unsigned int            dag_network::optlen;
+
 
 void dag_network::init_stats(void)
 {
@@ -42,15 +45,27 @@ void dag_network::init_dag_name(void)
     }
 }
 
-dag_network::dag_network(dagid_t n_dagid)
+void dag_network::init_dag(void)
 {
-        memcpy(mDagid, n_dagid, DAGID_LEN);
-        mLastSeq = 0;
-        mDagRank = UINT_MAX;
-        memset(mStats, 0, sizeof(mStats));
+    mLastSeq = 0;
+    mDagRank = UINT_MAX;
+    memset(mStats, 0, sizeof(mStats));
 
-	init_dag_name();
-        this->add_to_list();
+    init_dag_name();
+    this->add_to_list();
+}
+
+dag_network::dag_network(dagid_t n_dagid) 
+{
+    set_dagid(n_dagid);
+    init_dag();
+}
+
+
+dag_network::dag_network(char *s_dagid)
+{
+    set_dagid(s_dagid);
+    init_dag();
 }
 
 dag_network::~dag_network()
@@ -118,12 +133,16 @@ const char *dag_network::packet_stat_names[PS_MAX+1]={
     "sequence too old",
     "packets received"
     "packets processed",
+    "packets received due to watch",
     "packets with <dagrank",
     "packets with <dagrank rejected",
     "packets where subopt was too short",
     "packets from self that were ignored",
     "DAO packets received",
     "DIO packets received",
+    "DAO packets ignored (non-local DODAG id)",
+    "DIO packets ignored (non-local DODAG id)",
+    "DAG created due to watch",
     "max reason"
 };
 
@@ -194,6 +213,7 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
     return true;
 }
 
+/* here we mark that a DAO is needed soon */
 void dag_network::maybe_send_dao(void)
 {
     mTimeToSendDao=true;
@@ -227,7 +247,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
 
     this->mStats[PS_LOWER_RANK_CONSIDERED]++;
 
-    if(rank >= mDagRank) {
+    if(rank > mDagRank) {
         this->mStats[PS_LOWER_RANK_REJECTED]++;
         return;
     }
@@ -237,9 +257,9 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
 
     /* XXX
      * this is actually quite a big deal (SEE ID), setting my RANK.
-     * just fake it for now
+     * just fake it for now by adding 1.
      */
-    mDagRank = rank;
+    mDagRank     = rank + 1;
     dag_parentif = iface;
     dag_parent   = &peer;
 
@@ -288,8 +308,8 @@ void dag_network::send_dao(void)
  */
 void dag_network::schedule_dio(void)
 {
-    debug->verbose("Scheduling earlier dio\n");
-}
+    debug->verbose("Scheduling dio soon\n");
+}    
 
 
 rpl_node *dag_network::update_origin(network_interface *iface,
@@ -373,6 +393,37 @@ rpl_node *dag_network::get_member(const struct in6_addr memberaddr)
     if(ni == dag_members.end()) return NULL;
     else return &ni->second;
 }
+
+void dag_network::set_dagid(const char *dagstr)
+{
+    if(dagstr[0]=='0' && dagstr[1]=='x') {
+        const char *digits;
+        int i;
+        digits = dagstr+2;
+        for(i=0; i<16 && *digits!='\0'; i++) {
+            unsigned int value;
+            if(sscanf(digits, "%2x",&value)==0) break;
+            mDagid[i]=value;
+
+            /* advance two characters, carefully */
+            digits++;
+            if(digits[0]) digits++;
+        }
+    } else {
+        int len = strlen(dagstr);
+        if(len > 16) len=16;
+
+        memset(this->mDagid, 0, 16);
+        memcpy(this->mDagid, dagstr, len);
+    }
+}
+
+void dag_network::set_dagid(dagid_t dag)
+{
+    memcpy(this->mDagid, dag, DAGID_LEN);
+}
+
+
 
 
 /*

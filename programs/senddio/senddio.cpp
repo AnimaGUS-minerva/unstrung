@@ -77,6 +77,15 @@ unsigned int read_hex_values(FILE *in, unsigned char *buffer)
     return count;
 }
 
+bool check_dag(dag_network *dag)
+{
+    if(dag==NULL) {
+	fprintf(stderr, "--dagid must preceed DODAG parameters\n");
+	usage();
+    }
+    return true;
+}
+
 int main(int argc, char *argv[])
 {
     int c;
@@ -111,6 +120,7 @@ int main(int argc, char *argv[])
 
     class rpl_debug *deb;
     class pcap_network_interface *iface;
+    dag_network *dag;
     bool initted = false;
     memset(icmp_body, 0, sizeof(icmp_body));
 
@@ -158,22 +168,27 @@ int main(int argc, char *argv[])
             break;
 
         case 'G':
-            iface->rpl_grounded=true;
+	    check_dag(dag);
+            dag->set_grounded(true);
             break;
+
         case 'D':
-            iface->set_rpl_dagid(optarg);
+	    dag = new dag_network(optarg);
             break;
 
         case 'R':
-            iface->set_rpl_dagrank(strtoul(optarg, NULL, 0));
+	    check_dag(dag);
+            dag->set_dagrank(strtoul(optarg, NULL, 0));
             break;
 
         case 'S':
-            iface->set_rpl_sequence(strtoul(optarg, NULL, 0));
+	    check_dag(dag);
+            dag->set_sequence(strtoul(optarg, NULL, 0));
             break;
 
         case 'I':
-            iface->set_rpl_instanceid(strtoul(optarg, NULL, 0));
+	    check_dag(dag);
+            dag->set_instanceid(strtoul(optarg, NULL, 0));
             break;
 
         case 'p':
@@ -181,27 +196,33 @@ int main(int argc, char *argv[])
             break;
 
         case 'P':
-            iface->set_rpl_prefixlifetime(strtoul(optarg, NULL, 0));
+	    check_dag(dag);
+            dag->set_prefixlifetime(strtoul(optarg, NULL, 0));
             break;
 
         case 'V':
-            iface->set_rpl_version(strtoul(optarg, NULL, 0));
+	    check_dag(dag);
+            dag->set_version(strtoul(optarg, NULL, 0));
             break;
 
         case 's':
-            iface->set_rpl_mode(RPL_DIO_STORING);
+	    check_dag(dag);
+            dag->set_mode(RPL_DIO_STORING);
             break;
 
         case 'N':
-            iface->set_rpl_mode(RPL_DIO_NONSTORING);
+	    check_dag(dag);
+            dag->set_mode(RPL_DIO_NONSTORING);
             break;
 
         case 'm':
-            iface->set_rpl_nomulticast();
+	    check_dag(dag);
+            dag->set_nomulticast();
             break;
 
         case 'M':
-            iface->set_rpl_multicast();
+	    check_dag(dag);
+            dag->set_multicast();
             break;
 
         case 'v':
@@ -228,7 +249,7 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
                             AF_INET6, &prefix);
 
-        icmp_len = iface->build_dio(icmp_body, sizeof(icmp_body), prefix);
+        icmp_len = dag->build_dio(icmp_body, sizeof(icmp_body), prefix);
     }
 
     if(icmp_len == 0) {

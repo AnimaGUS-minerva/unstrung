@@ -30,6 +30,7 @@ class rpl_dio;
 class dag_network {
 public:
         dag_network(dagid_t dagid);
+        dag_network(char *dagid);
         ~dag_network();
         static class dag_network *find_by_dagid(dagid_t dagid);
         static class dag_network *find_or_make_by_dagid(dagid_t dagid,
@@ -126,10 +127,87 @@ public:
             return RPL_DIO_MOP(dio->rpl_mopprf);
         };
 
+	void set_dagid(const char *dagstr);
+	void set_dagid(dagid_t dagid);
+	void set_dagrank(const unsigned int dagrank) {
+	    mDagRank = dagrank;
+	};
+	void set_sequence(const unsigned int sequence) {
+	    mSequence = sequence;
+	};
+	void set_instanceid(const unsigned int instanceid) {
+	    mInstanceid = instanceid;
+	};
+	void set_prefixlifetime(const unsigned int lifetime) {
+	    mLifetime = lifetime;
+	};
+	void set_version(const unsigned int version) {
+	    mVersion = version;
+	};
+	void set_grounded(const bool grounded) {
+	    mGrounded = grounded;
+	};
+	void set_interval(const int msec) {
+	    mInterval_msec = msec;
+	};
+	void set_prefix(const ip_subnet prefix);
+	rpl_node    *my_dag_node(void);
+	dag_network *my_dag_net(void);
+	
+	void set_mode(enum RPL_DIO_MOP m) {
+	    mMode = m;
+	};
+
+	void set_nomulticast() {
+	    if(mMode == RPL_DIO_NONSTORING ||
+	       mMode == RPL_DIO_NONSTORING_MULTICAST) {
+		mMode = RPL_DIO_NONSTORING;
+	    } else if(mMode == RPL_DIO_STORING ||
+		      mMode == RPL_DIO_STORING_MULTICAST) {
+		mMode = RPL_DIO_STORING;
+	    }
+	}
+	
+	void set_multicast() {
+	    if(mMode == RPL_DIO_NONSTORING ||
+	       mMode == RPL_DIO_NONSTORING_MULTICAST) {
+		mMode = RPL_DIO_NONSTORING_MULTICAST;
+	    } else if(mMode == RPL_DIO_STORING ||
+		      mMode == RPL_DIO_STORING_MULTICAST) {
+		mMode = RPL_DIO_STORING_MULTICAST;
+	    }
+	}
+
+
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream */
 
+	int build_prefix_dioopt(ip_subnet prefix);
+	int build_target_opt(ip_subnet prefix);
+
+	int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
+	int  build_dao(unsigned char *buff, unsigned int buff_len);
+
+	/* should be private */
+	ip_subnet               mPrefix;
+	char                    mPrefix_str[SUBNETTOT_BUF];
+
 private:
+        dag_network(void);
+	void init_dag(void);
+	static unsigned char           optbuff[256];
+	static unsigned int            optlen;
+
+    /* space to format various messages */
+    int append_suboption(unsigned char *buff,
+                             unsigned int buff_len,
+                             enum RPL_SUBOPT subopt_type,
+                             unsigned char *subopt_data,
+                             unsigned int subopt_len);
+    int append_suboption(unsigned char *buff,
+                             unsigned int buff_len,
+                             enum RPL_SUBOPT subopt_type);
+
         /* information about this DAG */
 
         void discard_dio(enum packet_stats dr);
@@ -154,6 +232,17 @@ private:
 	bool               mTimeToSendDao;
 	char               mDagName[32];
 
+	/* RiPpLe statistics */
+	enum RPL_DIO_MOP        mMode;
+	unsigned int            mSequence;
+	unsigned int            mInstanceid;
+	unsigned int            mDagrank;
+	unsigned int            mLifetime;      /* dag lifetime */
+	unsigned int            mVersion;
+	unsigned int            mDio_lifetime;  /* dio lifetime */
+	bool                    mGrounded;
+	unsigned int            mInterval_msec;
+	
         // XXX replace with dag_network_map!!!
         class dag_network *next;
         static class dag_network *all_dag;

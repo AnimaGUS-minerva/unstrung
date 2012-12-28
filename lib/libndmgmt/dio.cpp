@@ -94,7 +94,8 @@ void network_interface::receive_dio(struct in6_addr from,
     }
 }
 
-rpl_node *network_interface::my_dag_node(void) {
+#if 0
+rpl_node *dag_network::my_dag_node(void) {
     time_t n;
     time(&n);
 
@@ -108,58 +109,36 @@ rpl_node *network_interface::my_dag_node(void) {
     this->node->markself(ifindex);
     return this->node;
 }
+#endif
 
-dag_network *network_interface::my_dag_net(void) {
-    if(this->dagnet != NULL) return this->dagnet;
+void dag_network::set_prefix(const ip_subnet prefix) {
+    mPrefix = prefix;
+    subnettot(&prefix, 0, mPrefix_str, sizeof(mPrefix_str));
 
-    this->dagnet = dag_network::find_or_make_by_dagid(rpl_dagid, debug, false);
-    return this->dagnet;
+    // addprefix()
 }
 
-void network_interface::set_rpl_prefix(const ip_subnet prefix) {
-    rpl_prefix = prefix;
-    subnettot(&prefix, 0, rpl_prefix_str, sizeof(rpl_prefix_str));
-
-    rpl_node    *myself= my_dag_node();
-    dag_network *mynet = my_dag_net();
-    if(mynet != NULL && myself != NULL) {
-        mynet->addprefix(*myself, this, prefix);
-    }
-}
-
-void network_interface::set_rpl_interval(const int msec)
-{
-    rpl_interval_msec = msec;
-    rpl_event *re  = new rpl_event(0, msec, rpl_event::rpl_send_dio,
-                                   if_name, this->debug);
-    re->event_type = rpl_event::rpl_send_dio;
-
-    re->interface = this;
-    re->requeue();
-    //this->dio_event = re;        // needs to be smart-pointer
-}
-
-void network_interface::send_dio(void)
+void network_interface::send_dio(dag_network *dag)
 {
     unsigned char icmp_body[2048];
 
     debug->log("sending DIO on if: %s for prefix: %s\n",
-               this->if_name, this->rpl_prefix_str);
+               this->if_name, dag->mPrefix_str);
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = build_dio(icmp_body, sizeof(icmp_body),
-                                      rpl_prefix);
+    unsigned int icmp_len = dag->build_dio(icmp_body, sizeof(icmp_body),
+					   dag->mPrefix);
 
     /* NULL indicates use multicast */
     this->send_raw_icmp(NULL, icmp_body, icmp_len);
 }
 
 /* returns number of bytes used */
-int network_interface::append_suboption(unsigned char *buff,
-                                            unsigned int buff_len,
-                                            enum RPL_SUBOPT subopt_type,
-                                            unsigned char *subopt_data,
-                                            unsigned int subopt_len)
+int dag_network::append_suboption(unsigned char *buff,
+				  unsigned int buff_len,
+				  enum RPL_SUBOPT subopt_type,
+				  unsigned char *subopt_data,
+				  unsigned int subopt_len)
 {
     struct rpl_dio_genoption *gopt = (struct rpl_dio_genoption *)buff;
     if(buff_len < (subopt_len+2)) {
@@ -173,21 +152,21 @@ int network_interface::append_suboption(unsigned char *buff,
     return subopt_len+2;
 }
 
-int network_interface::append_suboption(unsigned char *buff,
-                                            unsigned int buff_len,
-                                            enum RPL_SUBOPT subopt_type)
+int dag_network::append_suboption(unsigned char *buff,
+				  unsigned int buff_len,
+				  enum RPL_SUBOPT subopt_type)
 {
     return append_suboption(buff, buff_len, subopt_type,
                                 this->optbuff+2, this->optlen-2);
 }
 
-int network_interface::build_prefix_dioopt(ip_subnet prefix)
+int dag_network::build_prefix_dioopt(ip_subnet prefix)
 {
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dio_destprefix *diodp = (struct rpl_dio_destprefix *)optbuff;
 
     diodp->rpl_dio_prf  = 0x00;
-    diodp->rpl_dio_prefixlifetime = htonl(this->rpl_dio_lifetime);
+    diodp->rpl_dio_prefixlifetime = htonl(this->mDio_lifetime);
     diodp->rpl_dio_prefixlen = prefix.maskbits;
     for(int i=0; i < (prefix.maskbits+7)/8; i++) {
         diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
@@ -198,9 +177,9 @@ int network_interface::build_prefix_dioopt(ip_subnet prefix)
     return this->optlen;
 }
 
-int network_interface::build_dio(unsigned char *buff,
-                                 unsigned int buff_len,
-                                 ip_subnet prefix)
+int dag_network::build_dio(unsigned char *buff,
+			   unsigned int buff_len,
+			   ip_subnet prefix)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;
@@ -220,22 +199,22 @@ int network_interface::build_dio(unsigned char *buff,
 
     dio = (struct nd_rpl_dio *)icmp6->icmp6_data8;
 
-    dio->rpl_instanceid = this->rpl_instanceid;
-    dio->rpl_version    = this->rpl_version;
+    dio->rpl_instanceid = mInstanceid;
+    dio->rpl_version    = mVersion;
     dio->rpl_flags = 0;
     dio->rpl_mopprf     = 0;
-    if(this->rpl_grounded) {
+    if(mGrounded) {
         dio->rpl_mopprf |= ND_RPL_DIO_GROUNDED;
     }
 
     /* XXX need to non-storing mode is a MUST */
-    dio->rpl_mopprf |= (rpl_mode << RPL_DIO_MOP_SHIFT);
+    dio->rpl_mopprf |= (mMode << RPL_DIO_MOP_SHIFT);
 
     /* XXX need to set PRF */
 
-    dio->rpl_dtsn       = this->rpl_sequence;
-    dio->rpl_dagrank    = htons(this->rpl_dagrank);
-    memcpy(dio->rpl_dagid, this->rpl_dagid, 16);
+    dio->rpl_dtsn       = mSequence;
+    dio->rpl_dagrank    = htons(mDagrank);
+    memcpy(dio->rpl_dagid, mDagid, 16);
 
     nextopt = (unsigned char *)&dio[1];
 

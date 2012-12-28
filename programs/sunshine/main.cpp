@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
     rpl_debug *deb = new rpl_debug(false, NULL);
 
     dag_network::init_stats();
+    dag_network *dag;
 
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
 	switch(c) {
@@ -127,44 +128,40 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "invalid prefix string: %s\n", optarg);
 		usage();
 	    }
-            if(!iface) {
-		fprintf(stderr, "must set interface (-i) before prefix\n");
+            if(!dag) {
+		fprintf(stderr, "must set dag (-i) before prefix\n");
 		usage();
 	    }
-            iface->set_rpl_prefix(prefix);
+            dag->set_prefix(prefix);
         }
         break;
 
         case 'I':
-            if(!iface) {
-		fprintf(stderr, "must set interface before instanceid\n");
+            if(!dag) {
+		fprintf(stderr, "must set dag before instanceid\n");
 		usage();
 	    }
-            iface->set_rpl_instanceid(atoi(optarg));
+            dag->set_instanceid(atoi(optarg));
             break; 
 
         case 'W':
-            if(!iface) {
-		fprintf(stderr, "must set interface before interval\n");
+            if(!dag) {
+		fprintf(stderr, "must set dag before interval\n");
 		usage();
 	    }
-            iface->set_rpl_interval(atoi(optarg));
+            dag->set_interval(atoi(optarg));
             break; 
 
         case 'R':
-            if(!iface) {
-		fprintf(stderr, "must set interface before dagrank\n");
+            if(!dag) {
+		fprintf(stderr, "must set dag before dagrank\n");
 		usage();
 	    }
-            iface->set_rpl_dagrank(atoi(optarg));
+            dag->set_dagrank(atoi(optarg));
             break; 
 
         case 'G':
-            if(!iface) {
-		fprintf(stderr, "must set interface before dagid\n");
-		usage();
-	    }
-            iface->set_rpl_dagid(optarg);
+	    dag = new dag_network(optarg);
             break;
 
         case 'v':

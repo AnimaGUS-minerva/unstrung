@@ -88,8 +88,8 @@ void network_interface::receive_dao(struct in6_addr from,
     }
 }
 
-
-int network_interface::build_target_opt(ip_subnet prefix)
+// XXX
+int dag_network::build_target_opt(ip_subnet prefix)
 {
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dao_target *daotg = (struct rpl_dao_target *)optbuff;
@@ -106,9 +106,8 @@ int network_interface::build_target_opt(ip_subnet prefix)
 }
 
 
-int network_interface::build_dao(unsigned char *buff,
-                                 unsigned int buff_len,
-				 dag_network *dag)
+int dag_network::build_dao(unsigned char *buff,
+			   unsigned int buff_len)
 {
     uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;
@@ -129,22 +128,21 @@ int network_interface::build_dao(unsigned char *buff,
     dao = (struct nd_rpl_dao *)icmp6->icmp6_data8;
     nextopt = (unsigned char *)(dao+1);
 
-    dao->rpl_instanceid = this->rpl_instanceid;
+    dao->rpl_instanceid = mInstanceid;
     dao->rpl_flags = 0;
     dao->rpl_flags |= RPL_DAO_D_MASK;
 
-    dao->rpl_daoseq     = this->rpl_sequence;
+    dao->rpl_daoseq     = mSequence;
 
     /* insert dagid, advance */
     {
         unsigned char *dagid = (unsigned char *)&dao[1];
-        memcpy(dagid, this->rpl_dagid, 16);
+        memcpy(dagid, mDagid, 16);
         nextopt = dagid + 16;
     }
 
-    prefix_map         &dag_children = dag->dag_children;
     prefix_map_iterator pi = dag_children.begin();
-    while(pi != dag->dag_children.end()) {
+    while(pi != dag_children.end()) {
 	prefix_node &pm = pi->second;
 
 	/* add RPL_TARGET  */
@@ -176,7 +174,7 @@ void network_interface::send_dao(rpl_node &parent, dag_network &dag)
 	       this->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = build_dao(icmp_body, sizeof(icmp_body), &dag);
+    unsigned int icmp_len = dag.build_dao(icmp_body, sizeof(icmp_body));
 
     struct in6_addr dest = parent.node_number();
     send_raw_icmp(&dest, icmp_body, icmp_len);

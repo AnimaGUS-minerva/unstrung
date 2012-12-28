@@ -62,6 +62,15 @@ unsigned int read_hex_values(FILE *in, unsigned char *buffer)
     return count;
 }
 
+bool check_dag(dag_network *dag)
+{
+    if(dag==NULL) {
+	fprintf(stderr, "--dagid must preceed DODAG parameters\n");
+	usage();
+    }
+    return true;
+}
+
 int main(int argc, char *argv[])
 {
     int c;
@@ -167,15 +176,18 @@ int main(int argc, char *argv[])
             break;
 
         case 'R':
-            iface->set_rpl_dagrank(atoi(optarg));
+	    check_dag(dn);
+            dn->set_dagrank(atoi(optarg));
             break;
 
         case 'S':
-            iface->set_rpl_sequence(atoi(optarg));
+	    check_dag(dn);
+            dn->set_sequence(atoi(optarg));
             break;
 
         case 'I':
-            iface->set_rpl_instanceid(atoi(optarg));
+	    check_dag(dn);
+            dn->set_instanceid(atoi(optarg));
             break;
 
         case 'p':
@@ -201,7 +213,8 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
                             AF_INET6, &prefix);
 
-        icmp_len = iface->build_dao(icmp_body, sizeof(icmp_body), prefix);
+	dn->set_prefix(prefix);
+        icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));
     }
 
     if(icmp_len == 0) {
