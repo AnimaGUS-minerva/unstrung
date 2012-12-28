@@ -4,11 +4,26 @@ found[1]: wlan0 type=ether (inactive new) faked
 found[1]: wlan0 address=fe80::1000:ff:fe64:6423
 Processing input file 1
 packet 1 is being processed
-  processing dao(52)
- [instance:0,daoseq:0,dagid:T10x00 ]
+ processing dio(44)
+ [seq:10,instance:42,rank:2,version:1,grounded,storing,dagid:T10x00 ]
   new RPL node: fe80::216:3eff:fe11:3424
-received DAO about network 2001:db8::abcd:2/128
+  does peer 'fe80::216:3eff:fe11:3424' have better rank? (2 < 4294967295)
+  Yes, 'fe80::216:3eff:fe11:3424' has best rank 2
+  peer 'fe80::216:3eff:fe11:3424' announces prefix: 2001:db8:1::/48
+  adding prefix: 2001:db8:1::/48 to iface: wlan0
+  invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
+would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
+would invoke cmd: ip -6 addr show
+Scheduling earlier dio
+Events created for file 1
+       SOME EVENTS FOR DIO
+       SOME EVENTS FOR DAO
+Forcing events created for file 1
+       SEND OUT DIO
+
 Processing input file 2
 packet 2 is being processed
-  processing dao(52)
- [instance:0,daoseq:0,dagid:T20x00 ]
+ processing dio(44)
+ [seq:11,instance:42,rank:2,version:2,grounded,storing,dagid:T20x00 ]
+Events created for file 2 (should be none)
+Forcing events created for file 2 (should be none)

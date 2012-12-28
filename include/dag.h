@@ -103,6 +103,9 @@ public:
         void send_dao(void);
         void schedule_dio(void);
 
+	/* send out a new downstream announcement */
+        void schedule_dao(void);
+
         /* let stats be public */
         u_int32_t mStats[PS_MAX];
 
@@ -242,6 +245,9 @@ private:
 	unsigned int            mDio_lifetime;  /* dio lifetime */
 	bool                    mGrounded;
 	unsigned int            mInterval_msec;
+
+	rpl_event              *mSendDioEvent;  /* when to send a DIO */
+	rpl_event              *mSendDaoEvent;  /* when to send a DAO */
 	
         // XXX replace with dag_network_map!!!
         class dag_network *next;

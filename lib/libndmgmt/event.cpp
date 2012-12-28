@@ -42,11 +42,13 @@ extern "C" {
 #include "iface.h"
 #include "event.h"
 
+bool rpl_event::event_debug_time = false;
 
 bool rpl_event::doit(void)
 {
-    debug->log("invoking doit on rpl_event %p (if_name=%s)\n",
-            this, interface->get_if_name());
+    debug->log("invoked doit(%s) on rpl_event (if_name=%s)\n",
+	       event_name(),
+	       interface ? interface->get_if_name() : "none");
     switch(event_type) {
     case rpl_send_dio:
 	network_interface::send_dio_all(mDag);
@@ -82,21 +84,30 @@ const char *rpl_event::event_name()
     switch(event_type) {
     case rpl_send_dio:
         return "send_dio";
+    case rpl_send_dao:
+        return "send_dao";
     }
 
-    return "<unknown>";
+    return "<unknown-event>";
 }
 
 void rpl_event::printevent(FILE *out)
 {
     char b1[256];
     struct tm tm1;
+    struct timeval tmp_alarm_time = alarm_time;
 
     gmtime_r(&alarm_time.tv_sec, &tm1);
 
-    strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
-    fprintf(out, "event(%s) at (%s)<%d:%d>, type: %s",
-            mReason,  b1, alarm_time.tv_sec, alarm_time.tv_usec,
+    if(event_debug_time) {
+	strcpy(b1, "1999-12-31 12:59:60");
+	tmp_alarm_time.tv_sec = 1234;
+	tmp_alarm_time.tv_usec= 9999;
+    } else {
+	strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
+    }
+    fprintf(out, "event(%s) at (%s)<%u:%u>, type: %s",
+            mReason,  b1, tmp_alarm_time.tv_sec, tmp_alarm_time.tv_usec,
             event_name());
 }
 

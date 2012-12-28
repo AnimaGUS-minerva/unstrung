@@ -787,6 +787,23 @@ int network_interface::if_count(void)
 
 event_map network_interface::things_to_do;
 
+/* this runs the next event, even if it is not time yet */
+void network_interface::force_next_event(void) { 
+    event_map_iterator one = things_to_do.begin();
+
+    struct timeval now;
+    gettimeofday(&now, NULL);
+
+    if(one != things_to_do.end()) {
+	rpl_event *re = one->second;
+	if(re->doit()) {
+	    re->requeue(now);
+	} else {
+	    delete re;
+	}
+    }
+}
+
 void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 {
     bool done = false;
@@ -913,7 +930,7 @@ unsigned short network_interface::csum_ipv6_magic(
         u_int32_t       ph_len;
         u_int8_t        ph_zero[3];
         u_int8_t        ph_nxt;
-    } ph PACKED;
+    } ph /*PACKED*/;
 
     /* pseudo-header */
     memset(&ph, 0, sizeof(ph));

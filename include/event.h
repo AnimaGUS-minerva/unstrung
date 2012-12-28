@@ -25,6 +25,7 @@ public:
     enum event_types {
         rpl_send_dio = 1,
         rpl_send_dao = 2,
+	rpl_event_max
     };
 
     rpl_event() { };
@@ -82,7 +83,6 @@ public:
         return mReason;
     };
 
-private:
     void set_alarm(struct timeval &relative,
                    unsigned int sec, unsigned int msec)
     {
@@ -97,6 +97,19 @@ private:
         }
     };
 
+    void reset_alarm(unsigned int sec, unsigned int msec) {
+        struct timeval now;
+        gettimeofday(&now, NULL);
+	set_alarm(now, sec, msec);
+    };
+
+    dag_network        *mDag;
+
+    /* set to true to remove variable dates from debug output 
+     * used by regression testing routines.
+     */
+    static bool         event_debug_time;          
+private:
     void init_event(struct timeval &relative,
                     unsigned int sec, unsigned int msec,
                     event_types t, const char *reason, rpl_debug *deb) {
@@ -110,7 +123,6 @@ private:
     unsigned int        repeat_sec;
     unsigned int        repeat_msec;
     struct timeval      last_time;
-    dag_network        *mDag;
     char mReason[16];
     rpl_debug *debug;
 };

@@ -35,14 +35,17 @@ void dag_network::init_dag_name(void)
 {
     memset(mDagName, 0, sizeof(mDagName));
     char *dn = mDagName;
-    for(int i=0; i<DAGID_LEN && dn < mDagName+sizeof(mDagName)-1; i++) {
+    for(int i=0; i<DAGID_LEN && dn < mDagName+sizeof(mDagName)-2; i++) {
 	if(isprint(mDagid[i])) {
 	    *dn++ = mDagid[i];
+	} else if(mDagid[i]==0) {
+	    /* nothing */
 	} else {
 	    sprintf(dn, "%02x", mDagid[i]);
 	    dn += 2;
 	}
     }
+    *dn='\0';
 }
 
 void dag_network::init_dag(void)
@@ -285,6 +288,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
 
     /* now schedule sending out packets */
     schedule_dio();
+    schedule_dao();
 }
 
 /*
@@ -308,7 +312,38 @@ void dag_network::send_dao(void)
  */
 void dag_network::schedule_dio(void)
 {
-    debug->verbose("Scheduling dio soon\n");
+    debug->verbose("Scheduling dio in %u ms\n", mInterval_msec);
+
+    if(!mSendDioEvent) {
+	mSendDioEvent = new rpl_event(0, mInterval_msec, rpl_event::rpl_send_dio,
+				      mDagName, this->debug);
+    }
+    mSendDioEvent->event_type = rpl_event::rpl_send_dio;
+    mSendDioEvent->reset_alarm(0, mInterval_msec);
+
+    mSendDioEvent->mDag = this;
+    mSendDioEvent->requeue();
+    //this->dio_event = re;        // needs to be smart-pointer
+    
+}    
+
+/*
+ * this routine needs to send out a DAO sooner than
+ * we would otherwise.
+ */
+void dag_network::schedule_dao(void)
+{
+    debug->verbose("Scheduling dao in %u ms\n", mInterval_msec);
+
+    if(!mSendDaoEvent) {
+	mSendDaoEvent = new rpl_event(0, mInterval_msec, rpl_event::rpl_send_dao,
+				      mDagName, this->debug);
+    }
+    mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
+    mSendDaoEvent->reset_alarm(0, mInterval_msec);
+
+    mSendDaoEvent->mDag = this;
+    mSendDaoEvent->requeue();
 }    
 
 
