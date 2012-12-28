@@ -35,6 +35,7 @@ CFLAGS+= -Wstrict-prototypes
 #CFLAGS+= -W
 #CFLAGS+= -Wwrite-strings
 CFLAGS+= -Wbad-function-cast 
+CFLAGS+= ${CROSSFLAGS}
 
 ifeq ($(USE_NAT_TRAVERSAL),true)
 CFLAGS+= -DNAT_TRAVERSAL

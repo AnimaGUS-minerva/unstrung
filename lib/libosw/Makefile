@@ -18,6 +18,7 @@
 UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 
 include ${UNSTRUNG_SRCDIR}/Makefile.ver
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 LIBRARY=osw
 LIB=lib${LIBRARY}.a
@@ -35,8 +36,8 @@ CXXSRCS=
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
-CXXFLAGS+=-g
-CFLAGS+=-g
+CXXFLAGS+=-g ${CROSSFLAGS}
+CFLAGS+=-g ${CROSSFLAGS}
 
 OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o} 
 
