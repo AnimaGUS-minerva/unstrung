@@ -14,16 +14,24 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr show
-Scheduling earlier dio
+Scheduling dio in 50 ms
+Scheduling dao in 50 ms
 Events created for file 1
-       SOME EVENTS FOR DIO
-       SOME EVENTS FOR DAO
+1: event(T1) at (1999-12-31 12:59:60)<1234:9999>, type: send_dio
+2: event(T1) at (1999-12-31 12:59:60)<1234:9999>, type: send_dao
 Forcing events created for file 1
-       SEND OUT DIO
+invoked doit(send_dio) on rpl_event (if_name=none)
+iface wlan0 sending dio
 
 Processing input file 2
 packet 2 is being processed
  processing dio(44)
  [seq:11,instance:42,rank:2,version:2,grounded,storing,dagid:T20x00 ]
 Events created for file 2 (should be none)
+1: event(T1) at (1999-12-31 12:59:60)<1234:9999>, type: send_dao
+2: event(T1) at (1999-12-31 12:59:60)<1234:9999>, type: send_dio
 Forcing events created for file 2 (should be none)
+invoked doit(send_dao) on rpl_event (if_name=none)
+event send_dao to parent
+SENDING dao for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
+sending DAO on if: wlan0(faked)

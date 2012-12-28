@@ -796,6 +796,7 @@ void network_interface::force_next_event(void) {
 
     if(one != things_to_do.end()) {
 	rpl_event *re = one->second;
+	things_to_do.erase(one);
 	if(re->doit()) {
 	    re->requeue(now);
 	} else {
@@ -826,7 +827,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         while(rei != things_to_do.end()) {
             rpl_event *re = rei->second;
             if(re->passed(now)) {
-                things_to_do.erase(rei);
+                 things_to_do.erase(rei);
                 if(re->doit()) {
                     re->requeue(now);
                 } else {

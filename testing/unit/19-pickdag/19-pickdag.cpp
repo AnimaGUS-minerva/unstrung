@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
         deb->log("Forcing events created for file 1\n");
 	iface->force_next_event();
 
+	iface->close_pcap_files();
+
 	/* this has a DAGID: T2 (should not be processed */
         iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-19-t2.pcap", "/dev/null", deb);
 

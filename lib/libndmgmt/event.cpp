@@ -46,6 +46,7 @@ bool rpl_event::event_debug_time = false;
 
 bool rpl_event::doit(void)
 {
+    cancel();
     debug->log("invoked doit(%s) on rpl_event (if_name=%s)\n",
 	       event_name(),
 	       interface ? interface->get_if_name() : "none");
@@ -70,6 +71,10 @@ bool rpl_event::doit(void)
 
 void rpl_event::requeue(void) {
     network_interface::things_to_do[this->alarm_time] = this;
+}
+
+void rpl_event::cancel(void) {
+    network_interface::things_to_do.erase(this->alarm_time);
 }
 
 void rpl_event::requeue(struct timeval &now) {

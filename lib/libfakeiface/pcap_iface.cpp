@@ -434,6 +434,7 @@ void pcap_network_interface::set_pcap_out(const char *outfile,
         exit(1);
     }
 
+    close_pcap_files();
     this->pcap_out = pcap_dump_open(pout, outfile);
 
     if(!pcap_out) {
@@ -441,6 +442,16 @@ void pcap_network_interface::set_pcap_out(const char *outfile,
         exit(1);
     }
 }
+
+void pcap_network_interface::close_pcap_files(void)
+{
+    if(this->pcap_out) {
+	pcap_dump_close(this->pcap_out);
+    }
+    this->pcap_out = NULL;
+}
+
+
 
 pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *ifname,

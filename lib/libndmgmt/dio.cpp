@@ -126,11 +126,13 @@ void network_interface::send_dio(dag_network *dag)
                this->if_name, dag->mPrefix_str);
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = dag->build_dio(icmp_body, sizeof(icmp_body),
+    int icmp_len = dag->build_dio(icmp_body, sizeof(icmp_body),
 					   dag->mPrefix);
 
-    /* NULL indicates use multicast */
-    this->send_raw_icmp(NULL, icmp_body, icmp_len);
+    if(icmp_len > 0) {
+	/* NULL indicates use multicast */
+	this->send_raw_icmp(NULL, icmp_body, icmp_len);
+    }
 }
 
 /* returns number of bytes used */
@@ -142,8 +144,8 @@ int dag_network::append_suboption(unsigned char *buff,
 {
     struct rpl_dio_genoption *gopt = (struct rpl_dio_genoption *)buff;
     if(buff_len < (subopt_len+2)) {
-        fprintf(this->verbose_file, "Failed to add option %u, length %u>avail:%u\n",
-                subopt_type, buff_len, subopt_len+2);
+	debug->error("Failed to add option %u, length %u>avail:%u\n",
+		   subopt_type, buff_len, subopt_len+2);
         return -1;
     }
     gopt->rpl_dio_type = subopt_type;
@@ -225,7 +227,7 @@ int dag_network::build_dio(unsigned char *buff,
     int nextoptlen = 0;
 
     len = ((caddr_t)nextopt - (caddr_t)buff);
-    nextoptlen += append_suboption(nextopt, buff_len-len, RPL_DIO_DESTPREFIX);
+    nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DIO_DESTPREFIX);
 
     if(nextoptlen < 0) {
         /* failed to build DIO prefix option */

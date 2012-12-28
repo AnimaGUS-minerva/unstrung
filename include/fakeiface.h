@@ -59,6 +59,7 @@ public:
 		rpl_debug *debug);
 
         void set_pcap_out(const char *outfile, int pcap_link);
+	void close_pcap_files(void);
 
         static int process_infile(
                 const char *ifname,

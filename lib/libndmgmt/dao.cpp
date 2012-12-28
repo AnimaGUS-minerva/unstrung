@@ -152,6 +152,9 @@ int dag_network::build_dao(unsigned char *buff,
 	len = ((caddr_t)nextopt - (caddr_t)buff);
 	nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
 	nextopt += nextoptlen;
+
+	/* advance to next prefix */
+	pi++;
     }
 
     /* add RPL_TRANSIT */

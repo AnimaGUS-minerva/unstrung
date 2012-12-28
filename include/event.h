@@ -71,6 +71,7 @@ public:
 
     void requeue(void);
     void requeue(struct timeval &now);
+    void cancel(void);
 
     /* dump this event for humans */
     void printevent(FILE *out);
