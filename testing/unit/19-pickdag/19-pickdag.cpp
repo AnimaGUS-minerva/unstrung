@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
         pcap_network_interface *iface2 = NULL;
         struct in6_addr iface_src2;
 
-	rpl_event::event_debug_time = true;
+	//	rpl_event::event_debug_time = true;
 
         rpl_debug *deb = new rpl_debug(true, stderr);
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);

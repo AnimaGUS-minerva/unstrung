@@ -43,6 +43,7 @@ extern "C" {
 #include "event.h"
 
 bool rpl_event::event_debug_time = false;
+unsigned int rpl_event::event_counter = 1;
 
 bool rpl_event::doit(void)
 {
@@ -70,11 +71,16 @@ bool rpl_event::doit(void)
 }
 
 void rpl_event::requeue(void) {
+    debug->verbose("inserting event #%u at %u/%u\n",
+		   event_number, alarm_time.tv_sec, alarm_time.tv_usec);
+
     network_interface::things_to_do[this->alarm_time] = this;
 }
 
 void rpl_event::cancel(void) {
+    debug->verbose("removing event #%u\n", event_number);
     network_interface::things_to_do.erase(this->alarm_time);
+    printevents(stderr, network_interface::things_to_do);
 }
 
 void rpl_event::requeue(struct timeval &now) {
@@ -111,7 +117,8 @@ void rpl_event::printevent(FILE *out)
     } else {
 	strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
     }
-    fprintf(out, "event(%s) at (%s)<%u:%u>, type: %s",
+    fprintf(out, "event#%u(%s) at (%s)<%u:%u>, type: %s",
+	    event_number,
             mReason,  b1, tmp_alarm_time.tv_sec, tmp_alarm_time.tv_usec,
             event_name());
 }
@@ -158,6 +165,7 @@ struct timeval rpl_event::occurs_in() {
 void printevents(FILE *out, event_map em) {
     int i = 1;
     event_map_iterator one = em.begin();
+    fprintf(out, "event list (%u events)\n", em.size());
     while(one != em.end()) {
         rpl_event *n = one->second;
         fprintf(out, "%d: ", i);

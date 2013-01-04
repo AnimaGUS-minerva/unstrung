@@ -119,8 +119,11 @@ private:
         mReason[0]='\0';
         strncat(mReason, reason, sizeof(mReason));
         debug = deb;
+	event_number = event_counter++;
     };
 
+    unsigned int        event_number;
+    static unsigned int event_counter;
     unsigned int        repeat_sec;
     unsigned int        repeat_msec;
     struct timeval      last_time;

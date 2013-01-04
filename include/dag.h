@@ -246,8 +246,9 @@ private:
 	bool                    mGrounded;
 	unsigned int            mInterval_msec;
 
-	rpl_event              *mSendDioEvent;  /* when to send a DIO */
-	rpl_event              *mSendDaoEvent;  /* when to send a DAO */
+	/* must be class, due to forward reference */
+	class rpl_event        *mSendDioEvent;  /* when to send a DIO */
+	class rpl_event        *mSendDaoEvent;  /* when to send a DAO */
 	
         // XXX replace with dag_network_map!!!
         class dag_network *next;

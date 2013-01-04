@@ -796,7 +796,6 @@ void network_interface::force_next_event(void) {
 
     if(one != things_to_do.end()) {
 	rpl_event *re = one->second;
-	things_to_do.erase(one);
 	if(re->doit()) {
 	    re->requeue(now);
 	} else {
@@ -827,7 +826,6 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         while(rei != things_to_do.end()) {
             rpl_event *re = rei->second;
             if(re->passed(now)) {
-                 things_to_do.erase(rei);
                 if(re->doit()) {
                     re->requeue(now);
                 } else {
@@ -953,11 +951,14 @@ unsigned short network_interface::csum_ipv6_magic(
 void network_interface::send_dio_all(dag_network *dag)
 {
     class network_interface *iface = all_if;
+
+    /*
+     * would be more efficient to move build_dio here. because we can
+     * probably build the same DIO message for all interfaces.
+     */
     while(iface != NULL) {
 	iface->debug->log("iface %s sending dio\n", iface->if_name);
-	if(iface->nd_socket != -1) {
-            iface->send_dio(dag);
-	}
+	iface->send_dio(dag);
 	iface = iface->next;
     }
 }
