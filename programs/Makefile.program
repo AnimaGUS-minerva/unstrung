@@ -8,7 +8,7 @@ RM=rm
 PROGRAMDIR?=/sbin
 
 
-INCLUDES+=-I${UNSTRUNG_SRCDIR} -I${KLIPSINC} -I${UNSTRUNG_SRCDIR}/include
+INCLUDES+=-I${UNSTRUNG_SRCDIR} -I${UNSTRUNG_SRCDIR}/include
 CFLAGS+=${USERCOMPILE} ${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 CXXFLAGS+=${USERCPPCOMPILE} ${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 
@@ -195,7 +195,7 @@ UNSTRUNG_SRCDIRREL?=../..
 
 # Gather dependencies caused by explicit #includes within .c files
 depend: ${DISTSRC}
-	@(ls $(DISTSRC) | grep '\.c' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
+	@(ls $(DISTSRC) | egrep '\.c$$|\.cpp$$' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
 
 Makefile.depend:
 Makefile.depend.${OSDEP}:

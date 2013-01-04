@@ -7,7 +7,7 @@ INC=${UNSTRUNG_SRCDIR}/include
 CROSSFLAGS=-m32
 CFLAGS+=-I${INC} 
 CXXFLAGS+=-I${INC} 
-OSDEP=$(shell arch)
+OSDEP=$(shell uname -s).$(shell arch)
 
 USE_OBJDIR=false
 UNSTRUNG_OBJDIR=${UNSTRUNG_SRCDIR}/.
