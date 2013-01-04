@@ -1,6 +1,8 @@
 #ifndef _UNSTRUNG_IFACE_H_
 #define _UNSTRUNG_IFACE_H_
 
+#include <map>
+
 extern "C" {
 #include <errno.h>
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */

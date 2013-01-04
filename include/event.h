@@ -8,9 +8,10 @@ extern "C" {
 }
 
 #include <map>
+#include <algorithm>
+#include <vector>
 
 #include "prefix.h"
-#include "iface.h"
 
 class network_interface;
 class dag_network;
@@ -73,7 +74,6 @@ public:
     void requeue(struct timeval &now);
     void cancel(void);
 
-    /* dump this event for humans */
     void printevent(FILE *out);
 
     /* the associated iface for this event */
@@ -110,7 +110,6 @@ public:
      * used by regression testing routines.
      */
     static bool         event_debug_time;          
-private:
     void init_event(struct timeval &relative,
                     unsigned int sec, unsigned int msec,
                     event_types t, const char *reason, rpl_debug *deb) {
@@ -122,6 +121,7 @@ private:
 	event_number = event_counter++;
     };
 
+private:
     unsigned int        event_number;
     static unsigned int event_counter;
     unsigned int        repeat_sec;
@@ -145,6 +145,40 @@ public:
         return true;
     }
 };  
+
+class rpl_event_queue {
+public:
+    std::vector<class rpl_event *> queue;
+
+    rpl_event_queue() {
+	make_heap(queue.begin(), queue.end());
+    };
+
+    class rpl_event *next_event(void) {
+	rpl_event *n = queue.front();
+	pop_heap(queue.begin(), queue.end()); queue.pop_back();
+	return n;
+    };
+
+    void add_event(class rpl_event *n) {
+	queue.push_back(n);
+	push_heap(queue.begin(), queue.end());
+    };
+
+    /* dump this event for humans */
+    void printevents(FILE *out, char *prefix) {
+	int i = 0;
+	std::vector<class rpl_event *>::iterator one = queue.begin();
+	fprintf(out, "event list (%u events)\n", queue.size());
+	while(one != queue.end()) {
+	    fprintf(out, "%s%d: ", prefix, i);
+	    (*one)->printevent(out);
+	    fprintf(out, "\n");
+	    i++; one++;
+	}
+    };
+
+};
 
 typedef std::map<struct timeval,rpl_event *,rpl_eventless>           event_map;
 typedef std::map<struct timeval,rpl_event *,rpl_eventless>::iterator event_map_iterator;
