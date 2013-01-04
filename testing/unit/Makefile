@@ -42,6 +42,7 @@ SUBDIRS+=18-checksum
 SUBDIRS+=19-pickdag
 SUBDIRS+=20-prefix
 SUBDIRS+=21-node
+SUBDIRS+=22-queues
 
 
 
