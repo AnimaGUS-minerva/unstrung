@@ -488,6 +488,7 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
         ndproc->set_link_encap(pcap_link);
         ndproc->pol = ppol;
 	ndproc->set_debug(debug);
+	ndproc->pcap_out = out;
 
         return ndproc;
 }

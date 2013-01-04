@@ -48,7 +48,7 @@ unsigned int            rpl_event::event_counter = 1;
 
 bool rpl_event::doit(void)
 {
-    cancel();
+
     debug->log("invoked doit(%s) on rpl_event (if_name=%s)\n",
 	       event_name(),
 	       interface ? interface->get_if_name() : "none");

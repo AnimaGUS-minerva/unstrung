@@ -23,7 +23,9 @@ int main(int argc, char *argv[])
         pcap_network_interface::scan_devices(deb);
 
 	/* this has a DAGID: T1 */
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-19-t1.pcap", "../OUTPUTS/19-pickdag.pcap", deb);
+        iface = pcap_network_interface::setup_infile_outfile("wlan0",
+							     "../INPUTS/dio-19-t1.pcap",
+							     "../OUTPUTS/19-pickdag.pcap", deb);
         iface->set_debug(deb);
 
 	struct timeval n;
