@@ -44,6 +44,9 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 
+bool                  network_interface::faked_time;
+struct timeval        network_interface::fake_time;
+class rpl_event_queue network_interface::things_to_do;
 
 network_interface::network_interface()
 {
@@ -785,17 +788,14 @@ int network_interface::if_count(void)
     return count;
 }
 
-event_map network_interface::things_to_do;
-
 /* this runs the next event, even if it is not time yet */
 void network_interface::force_next_event(void) { 
-    event_map_iterator one = things_to_do.begin();
+    rpl_event *re = things_to_do.next_event();
 
     struct timeval now;
     gettimeofday(&now, NULL);
 
-    if(one != things_to_do.end()) {
-	rpl_event *re = one->second;
+    if(re) {
 	if(re->doit()) {
 	    re->requeue(now);
 	} else {
@@ -822,9 +822,9 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                     "checking things to do list, has %d items\n",
                     things_to_do.size());
         }
-        event_map_iterator rei = things_to_do.begin();
-        while(rei != things_to_do.end()) {
-            rpl_event *re = rei->second;
+
+        rpl_event *re = things_to_do.peek_event();
+        while((re = things_to_do.peek_event()) != NULL) {
             if(re->passed(now)) {
                 if(re->doit()) {
                     re->requeue(now);
@@ -843,7 +843,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 } else if(newtimeout < timeout) timeout = newtimeout;
                 break;
             }
-            rei++;
+	    things_to_do.eat_event();
         }
 
         /*

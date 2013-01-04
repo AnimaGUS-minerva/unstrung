@@ -42,8 +42,9 @@ extern "C" {
 #include "iface.h"
 #include "event.h"
 
-bool rpl_event::event_debug_time = false;
-unsigned int rpl_event::event_counter = 1;
+bool                    rpl_event::faked_time;
+struct timeval          rpl_event::fake_time;
+unsigned int            rpl_event::event_counter = 1;
 
 bool rpl_event::doit(void)
 {
@@ -74,18 +75,21 @@ void rpl_event::requeue(void) {
     debug->verbose("inserting event #%u at %u/%u\n",
 		   event_number, alarm_time.tv_sec, alarm_time.tv_usec);
 
-    network_interface::things_to_do[this->alarm_time] = this;
+    network_interface::things_to_do.add_event(this);
 }
 
 void rpl_event::cancel(void) {
     debug->verbose("removing event #%u\n", event_number);
-    network_interface::things_to_do.erase(this->alarm_time);
-    printevents(stderr, network_interface::things_to_do);
+
+    // how do heaps remove items not at the head?
+    //network_interface::things_to_do.erase(this->alarm_time);
+    network_interface::things_to_do.printevents(stderr, "");
 }
 
 void rpl_event::requeue(struct timeval &now) {
     set_alarm(now, repeat_sec, repeat_msec);
-    network_interface::things_to_do[this->alarm_time] = this;
+
+    network_interface::things_to_do.add_event(this);
 }
 
 
@@ -110,13 +114,7 @@ void rpl_event::printevent(FILE *out)
 
     gmtime_r(&alarm_time.tv_sec, &tm1);
 
-    if(event_debug_time) {
-	strcpy(b1, "1999-12-31 12:59:60");
-	tmp_alarm_time.tv_sec = 1234;
-	tmp_alarm_time.tv_usec= 9999;
-    } else {
-	strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
-    }
+    strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
     fprintf(out, "event#%u(%s) at (%s)<%u:%u>, type: %s",
 	    event_number,
             mReason,  b1, tmp_alarm_time.tv_sec, tmp_alarm_time.tv_usec,
@@ -162,6 +160,7 @@ struct timeval rpl_event::occurs_in() {
     return occurs_in(now);
 }
 
+#if 0
 void printevents(FILE *out, event_map em) {
     int i = 1;
     event_map_iterator one = em.begin();
@@ -174,7 +173,7 @@ void printevents(FILE *out, event_map em) {
         i++; one++;
     }
 }
-
+#endif
 
 /*
  * Local Variables:

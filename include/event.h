@@ -37,11 +37,17 @@ public:
         init_event(relative, sec, msec, t, reason, deb);
     };
 
+    static bool                    faked_time;
+    static struct timeval          fake_time;
+    static void set_fake_time(struct timeval n) {
+	faked_time = true;
+	fake_time  = n;
+    };
+
     rpl_event(unsigned int sec, unsigned int msec,
               event_types t, const char *reason, rpl_debug *deb) {
         struct timeval now;
-        gettimeofday(&now, NULL);
-
+	gettimeofday(&now, NULL);
         init_event(now, sec, msec, t, reason, deb);
     };
 
@@ -87,15 +93,21 @@ public:
     void set_alarm(struct timeval &relative,
                    unsigned int sec, unsigned int msec)
     {
-        last_time  = relative;
+        struct timeval rel = relative;
+	if(faked_time) {
+	    rel = fake_time;
+	} 
+
+        last_time  = rel;
         repeat_sec = sec;
         repeat_msec= msec;
-        alarm_time.tv_usec = relative.tv_usec + msec*1000;
-        alarm_time.tv_sec  = relative.tv_sec  + sec;
+        alarm_time.tv_usec = rel.tv_usec + msec*1000;
+        alarm_time.tv_sec  = rel.tv_sec  + sec;
         while(alarm_time.tv_usec > 1000000) {
             alarm_time.tv_usec -= 1000000;
             alarm_time.tv_sec++;
         }
+	fprintf(stderr, "%u: alarm for %u/%u + %u/%u\n", event_number, rel.tv_sec, rel.tv_usec, sec, msec);
     };
 
     void reset_alarm(unsigned int sec, unsigned int msec) {
@@ -109,16 +121,15 @@ public:
     /* set to true to remove variable dates from debug output 
      * used by regression testing routines.
      */
-    static bool         event_debug_time;          
     void init_event(struct timeval &relative,
                     unsigned int sec, unsigned int msec,
                     event_types t, const char *reason, rpl_debug *deb) {
-        set_alarm(relative, sec, msec);
         event_type = t;
         mReason[0]='\0';
         strncat(mReason, reason, sizeof(mReason));
         debug = deb;
 	event_number = event_counter++;
+        set_alarm(relative, sec, msec);
     };
 
 private:
@@ -131,21 +142,6 @@ private:
     rpl_debug *debug;
 };
 
-class rpl_eventless {
-public:
-    bool operator()(const struct timeval &a, const struct timeval &b) const {
-        int match = b.tv_sec - a.tv_sec;
-        //printf("compare1 a:%u b:%u match:%d\n", a.tv_sec, b.tv_sec, match);
-        if(match < 0) return true;
-        if(match > 0) return false;
-
-        match = b.tv_usec - a.tv_usec;
-        //printf("compare2 a:%u b:%u match:%d\n", a.tv_usec, b.tv_usec, match);
-        if(match < 0) return false;
-        return true;
-    }
-};  
-
 class rpl_event_queue {
 public:
     std::vector<class rpl_event *> queue;
@@ -154,9 +150,17 @@ public:
 	make_heap(queue.begin(), queue.end());
     };
 
-    class rpl_event *next_event(void) {
-	rpl_event *n = queue.front();
+    class rpl_event *peek_event(void) {
+	return queue.front();
+    };
+
+    void eat_event(void) {
 	pop_heap(queue.begin(), queue.end()); queue.pop_back();
+    };
+
+    class rpl_event *next_event(void) {
+	rpl_event *n = peek_event();
+	eat_event();
 	return n;
     };
 
@@ -165,8 +169,12 @@ public:
 	push_heap(queue.begin(), queue.end());
     };
 
+    int size(void) {
+	return queue.size();
+    };
+
     /* dump this event for humans */
-    void printevents(FILE *out, char *prefix) {
+    void printevents(FILE *out, const char *prefix) {
 	int i = 0;
 	std::vector<class rpl_event *>::iterator one = queue.begin();
 	fprintf(out, "event list (%u events)\n", queue.size());
@@ -179,12 +187,6 @@ public:
     };
 
 };
-
-typedef std::map<struct timeval,rpl_event *,rpl_eventless>           event_map;
-typedef std::map<struct timeval,rpl_event *,rpl_eventless>::iterator event_map_iterator;
-typedef std::map<struct timeval,rpl_event *,rpl_eventless>::reverse_iterator event_map_riterator;
-
-void printevents(FILE *out, event_map em);
 
 #endif /* _UNSTRUNG_EVENT_H */
 

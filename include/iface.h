@@ -108,7 +108,15 @@ public:
     };
 
     /* event lists */
-    static event_map              things_to_do;
+    static class rpl_event_queue   things_to_do;
+
+    static bool                    faked_time;
+    static struct timeval          fake_time;
+    void set_fake_time(struct timeval n) {
+	faked_time = true;
+	fake_time  = n;
+	rpl_event::set_fake_time(fake_time);
+    };
 
 protected:
     static int    gather_linkinfo(const struct sockaddr_nl *who,

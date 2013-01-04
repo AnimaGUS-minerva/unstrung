@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
 	/* this has a DAGID: T1 */
         iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-19-t1.pcap", "../OUTPUTS/19-pickdag.pcap", deb);
         iface->set_debug(deb);
+
+	struct timeval n;
+	n.tv_sec = 1024*1024*1024;
+	n.tv_usec = 1024;
+	iface->set_fake_time(n);
         iface->set_if_index(1);
         iface->set_if_addr(iface_src2);
 
@@ -32,7 +37,7 @@ int main(int argc, char *argv[])
         iface->process_pcap();
 
         deb->log("Events created for file 1\n");
-	printevents(stderr, iface->things_to_do);
+	iface->things_to_do.printevents(stderr, "");
 
         deb->log("Forcing events created for file 1\n");
 	iface->force_next_event();
@@ -46,7 +51,7 @@ int main(int argc, char *argv[])
         iface->process_pcap();
 
         deb->log("Events created for file 2 (should be none)\n");
-	printevents(stderr, iface->things_to_do);
+	iface->things_to_do.printevents(stderr, "");
 
         deb->log("Forcing events created for file 2 (should be none)\n");
 	iface->force_next_event();
