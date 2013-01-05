@@ -318,9 +318,7 @@ void dag_network::schedule_dio(void)
     if(!mSendDioEvent) {
 	mSendDioEvent = new rpl_event(0, mInterval_msec, rpl_event::rpl_send_dio,
 				      mDagName, this->debug);
-    } else {
-	mSendDioEvent->cancel();
-    }
+    } 
     mSendDioEvent->event_type = rpl_event::rpl_send_dio;
     mSendDioEvent->reset_alarm(0, mInterval_msec);
 
@@ -341,9 +339,7 @@ void dag_network::schedule_dao(void)
     if(!mSendDaoEvent) {
 	mSendDaoEvent = new rpl_event(0, mInterval_msec, rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
-    } else {
-	mSendDaoEvent->cancel();
-    }
+    } 
 	
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
     mSendDaoEvent->reset_alarm(0, mInterval_msec);

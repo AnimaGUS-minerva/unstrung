@@ -78,7 +78,6 @@ public:
 
     void requeue(void);
     void requeue(struct timeval &now);
-    void cancel(void);
 
     void printevent(FILE *out);
 
@@ -107,7 +106,7 @@ public:
             alarm_time.tv_usec -= 1000000;
             alarm_time.tv_sec++;
         }
-	fprintf(stderr, "%u: alarm for %u/%u + %u/%u\n", event_number, rel.tv_sec, rel.tv_usec, sec, msec);
+	//fprintf(stderr, "%u: alarm for %u/%u + %u/%u\n", event_number, rel.tv_sec, rel.tv_usec, sec, msec);
     };
 
     void reset_alarm(unsigned int sec, unsigned int msec) {
@@ -142,12 +141,15 @@ private:
     rpl_debug *debug;
 };
 
+bool rpl_eventless(const class rpl_event *a, const class rpl_event *b);
+
 class rpl_event_queue {
 public:
     std::vector<class rpl_event *> queue;
 
+
     rpl_event_queue() {
-	make_heap(queue.begin(), queue.end());
+	make_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 
     class rpl_event *peek_event(void) {
@@ -155,7 +157,7 @@ public:
     };
 
     void eat_event(void) {
-	pop_heap(queue.begin(), queue.end()); queue.pop_back();
+	pop_heap(queue.begin(), queue.end(), rpl_eventless); queue.pop_back();
     };
 
     class rpl_event *next_event(void) {
@@ -166,7 +168,7 @@ public:
 
     void add_event(class rpl_event *n) {
 	queue.push_back(n);
-	push_heap(queue.begin(), queue.end());
+	push_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 
     int size(void) {

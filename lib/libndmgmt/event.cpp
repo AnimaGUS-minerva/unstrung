@@ -46,6 +46,19 @@ bool                    rpl_event::faked_time;
 struct timeval          rpl_event::fake_time;
 unsigned int            rpl_event::event_counter = 1;
 
+bool rpl_eventless(const class rpl_event *a, const class rpl_event *b) 
+{
+    int match = b->alarm_time.tv_sec - a->alarm_time.tv_sec;
+    //printf("compare1 a:%u b:%u match:%d\n", a->alarm_time.tv_sec, b->alarm_time.tv_sec, match);
+    if(match > 0) return true;
+    if(match < 0) return false;
+    
+    match = b->alarm_time.tv_usec - a->alarm_time.tv_usec;
+    //printf("compare2 a:%u b:%u match:%d\n", a->alarm_time.tv_usec, b->alarm_time.tv_usec, match);
+    if(match > 0) return false;
+    return true;
+};  
+
 bool rpl_event::doit(void)
 {
 
@@ -76,14 +89,6 @@ void rpl_event::requeue(void) {
 		   event_number, alarm_time.tv_sec, alarm_time.tv_usec);
 
     network_interface::things_to_do.add_event(this);
-}
-
-void rpl_event::cancel(void) {
-    debug->verbose("removing event #%u\n", event_number);
-
-    // how do heaps remove items not at the head?
-    //network_interface::things_to_do.erase(this->alarm_time);
-    network_interface::things_to_do.printevents(stderr, "");
 }
 
 void rpl_event::requeue(struct timeval &now) {
