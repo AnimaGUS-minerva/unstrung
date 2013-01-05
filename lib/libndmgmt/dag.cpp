@@ -36,12 +36,13 @@ void dag_network::init_dag_name(void)
     memset(mDagName, 0, sizeof(mDagName));
     char *dn = mDagName;
     for(int i=0; i<DAGID_LEN && dn < mDagName+sizeof(mDagName)-2; i++) {
-	if(isprint(mDagid[i])) {
-	    *dn++ = mDagid[i];
-	} else if(mDagid[i]==0) {
+	int c = mDagid[i];
+	if(c > ' ' && c < 127) {
+	    *dn++ = c;
+	} else if(c==0) {
 	    /* nothing */
 	} else {
-	    sprintf(dn, "%02x", mDagid[i]);
+	    sprintf(dn, "%02x", c);
 	    dn += 2;
 	}
     }
@@ -456,11 +457,13 @@ void dag_network::set_dagid(const char *dagstr)
         memset(this->mDagid, 0, 16);
         memcpy(this->mDagid, dagstr, len);
     }
+    init_dag_name();
 }
 
 void dag_network::set_dagid(dagid_t dag)
 {
     memcpy(this->mDagid, dag, DAGID_LEN);
+    init_dag_name();
 }
 
 

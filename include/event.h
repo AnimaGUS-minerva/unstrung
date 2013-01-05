@@ -126,7 +126,7 @@ public:
                     event_types t, const char *reason, rpl_debug *deb) {
         event_type = t;
         mReason[0]='\0';
-        strncat(mReason, reason, sizeof(mReason));
+        strncat(mReason, reason, sizeof(mReason)-1);
         debug = deb;
 	event_number = event_counter++;
         set_alarm(relative, sec, msec);
@@ -138,7 +138,7 @@ private:
     unsigned int        repeat_sec;
     unsigned int        repeat_msec;
     struct timeval      last_time;
-    char mReason[16];
+    char mReason[32];
     rpl_debug *debug;
 };
 
