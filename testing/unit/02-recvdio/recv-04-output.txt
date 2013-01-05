@@ -6,4 +6,3 @@ PROCESSING ../INPUTS/senddio-example.pcap
 packet 1 is being processed
  processing dio(40)
  [seq:13,instance:42,rank:0,version:17,grounded,non-storing,dagid:HELLO0x00 ]
-  new RPL node: fe80::1022:ff:fe64:6423
