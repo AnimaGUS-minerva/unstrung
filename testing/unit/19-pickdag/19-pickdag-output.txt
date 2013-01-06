@@ -14,42 +14,24 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
 would invoke cmd: ip -6 addr show
-Scheduling dio in 50 ms
-1: alarm for 1073741824/1024 + 0/50
-1: alarm for 1073741824/1024 + 0/50
+Scheduling dio in 51 ms
 inserting event #1 at 1073741824/51024
-Scheduling dao in 50 ms
-2: alarm for 1073741824/1024 + 0/50
-2: alarm for 1073741824/1024 + 0/50
+Scheduling dao in 52 ms
 inserting event #2 at 1073741824/51024
 Events created for file 1
 event list (2 events)
 0: event#2(T1) at (2004-January-10 01:37:04 PM)<1073741824:51024>, type: send_dao
 1: event#1(T1) at (2004-January-10 01:37:04 PM)<1073741824:51024>, type: send_dio
 Forcing events created for file 1
-removing event #2
-event list (1 events)
-0: event#1(T1) at (2004-January-10 01:37:04 PM)<1073741824:51024>, type: send_dio
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING dao for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-2: alarm for 1073741824/1024 + 0/50
 
 Processing input file 2
 packet 2 is being processed
  processing dio(44)
  [seq:11,instance:42,rank:2,version:2,grounded,storing,dagid:T20x00 ]
 Events created for file 2 (should be none)
-event list (2 events)
-0: event#2(T1) at (2004-January-10 01:37:04 PM)<1073741824:51024>, type: send_dao
-1: event#1(T1) at (2004-January-10 01:37:04 PM)<1073741824:51024>, type: send_dio
-Forcing events created for file 2 (should be none)
-removing event #2
-event list (1 events)
-0: event#1(T1) at (2004-January-10 01:37:04 PM)<1073741824:51024>, type: send_dio
-invoked doit(send_dao) on rpl_event (if_name=none)
-event send_dao to parent
-SENDING dao for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
-sending DAO on if: wlan0(faked)
-2: alarm for 1073741824/1024 + 0/50
+event list (4294967295 events)
+0: 

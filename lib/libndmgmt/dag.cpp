@@ -318,10 +318,10 @@ void dag_network::send_dao(void)
  */
 void dag_network::schedule_dio(void)
 {
-    debug->verbose("Scheduling dio in %u ms\n", mInterval_msec);
+    debug->verbose("Scheduling dio in %u ms\n", mInterval_msec+1);
 
     if(!mSendDioEvent) {
-	mSendDioEvent = new rpl_event(0, mInterval_msec, rpl_event::rpl_send_dio,
+	mSendDioEvent = new rpl_event(0, mInterval_msec+1, rpl_event::rpl_send_dio,
 				      mDagName, this->debug);
     } 
     mSendDioEvent->event_type = rpl_event::rpl_send_dio;
@@ -339,10 +339,10 @@ void dag_network::schedule_dio(void)
  */
 void dag_network::schedule_dao(void)
 {
-    debug->verbose("Scheduling dao in %u ms\n", mInterval_msec);
+    debug->verbose("Scheduling dao in %u ms\n", mInterval_msec+2);
 
     if(!mSendDaoEvent) {
-	mSendDaoEvent = new rpl_event(0, mInterval_msec, rpl_event::rpl_send_dao,
+	mSendDaoEvent = new rpl_event(0, mInterval_msec+1, rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
     } 
 	

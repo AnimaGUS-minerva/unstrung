@@ -6,21 +6,21 @@ PROCESSING ../INPUTS/senddio.pcap
   new RPL node: fe80::1022:ff:fe64:6423
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
-Scheduling dio in 500 ms
+Scheduling dio in 501 ms
 inserting event #1 at 1073741824/501024
-Scheduling dao in 500 ms
+Scheduling dao in 502 ms
 inserting event #2 at 1073741824/501024
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 2)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
-Scheduling dio in 500 ms
+Scheduling dio in 501 ms
 inserting event #1 at 1073741824/501024
-Scheduling dao in 500 ms
+Scheduling dao in 502 ms
 inserting event #2 at 1073741824/501024
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 2)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
-Scheduling dio in 500 ms
+Scheduling dio in 501 ms
 inserting event #1 at 1073741824/501024
-Scheduling dao in 500 ms
+Scheduling dao in 502 ms
 inserting event #2 at 1073741824/501024
 packet 1 is being processed
  processing dio(24)
