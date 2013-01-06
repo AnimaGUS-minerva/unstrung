@@ -4,7 +4,7 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
 17-recvdao: 17-recvdao.cpp ${INC}/iface.h ${LIBS}
-	${CXX} ${CXXFLAGS} -o 17-recvdao 17-recvdao.cpp ${LDFLAGS}
+	${CXX} ${CXXFLAGS} -o 17-recvdao 17-recvdao.cpp ${LDFLAGS} ${LIBS}
 
 checkprograms:: 17-recvdao
 programs::

@@ -31,7 +31,8 @@ rpl_node::rpl_node(const char *ipv6) {
 }
 
 rpl_node::rpl_node(const struct in6_addr v6) {
-        nodeip = v6;
+        nodeip.u.v6.sin6_addr = v6;
+	nodeip.u.v6.sin6_family=AF_INET6;
         valid = true;
         self  = false;
         name[0]='\0';
@@ -47,7 +48,7 @@ const char *rpl_node::node_name() {
             addr += 4;
         }
 
-        inet_ntop(AF_INET6, &nodeip, addr, INET6_ADDRSTRLEN-(addr-name));
+        inet_ntop(AF_INET6, &nodeip.u.v6.sin6_addr, addr, INET6_ADDRSTRLEN-(addr-name));
         return name;
     } else {
         return "<node-not-valid>";
@@ -59,7 +60,8 @@ void rpl_node::makevalid(const struct in6_addr v6,
                          rpl_debug *deb)
 {
     if(!valid) {
-        nodeip = v6;
+        nodeip.u.v6.sin6_addr = v6;
+	nodeip.u.v6.sin6_family=AF_INET6;
         mDN    = dn;
         valid  = true;
         this->debug  = deb;

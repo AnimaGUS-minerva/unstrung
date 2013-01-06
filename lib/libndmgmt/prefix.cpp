@@ -17,6 +17,7 @@ extern "C" {
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include "oswlibs.h"
 };
 
 #include "dag.h"

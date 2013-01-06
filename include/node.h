@@ -10,6 +10,7 @@ extern "C" {
 }
 
 #include <map>
+#include "oswlibs.h"
 #include "debug.h"
 
 class dag_network;
@@ -30,7 +31,8 @@ public:
             strncat(name, nodename, sizeof(name));
         };
         const char *node_name();
-        const struct in6_addr& node_number() { return nodeip; };
+        struct in6_addr& node_number() { return nodeip.u.v6.sin6_addr; };
+        ip_address &node_address() { return nodeip; };
         void  makevalid(const struct in6_addr v6,
                         const dag_network *dn, rpl_debug *deb);
         rpl_debug *debug;
@@ -41,7 +43,7 @@ public:
         bool  isself() { return self; };
         
 protected:
-        struct in6_addr nodeip;
+	ip_address nodeip;
 
 private:
         bool       valid;

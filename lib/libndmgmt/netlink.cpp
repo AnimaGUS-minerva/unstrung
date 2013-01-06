@@ -33,8 +33,7 @@ extern "C" {
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
 #include <time.h>
-
-
+#include "oswlibs.h"
 
 #include <netlink/rt_names.h>
 #include <netlink/utils.h>
