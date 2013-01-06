@@ -131,6 +131,18 @@ public:
         set_alarm(relative, sec, msec);
     };
 
+    bool operator<(const class rpl_event &b) const {
+        int match = b.alarm_time.tv_sec - alarm_time.tv_sec;
+        printf("compare1 a:%u b:%u match:%d\n", alarm_time.tv_sec, b.alarm_time.tv_sec, match);
+        if(match > 0) return true;
+        if(match < 0) return false;
+
+        match = b.alarm_time.tv_usec - alarm_time.tv_usec;
+        printf("compare2 a:%u b:%u match:%d\n", alarm_time.tv_usec, b.alarm_time.tv_usec, match);
+        if(match > 0) return false;
+        return true;
+    }
+
 private:
     unsigned int        event_number;
     static unsigned int event_counter;
