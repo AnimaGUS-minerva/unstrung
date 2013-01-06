@@ -1,14 +1,17 @@
+compare1 a:1073741944 b:1073741884 match:-60
+compare1 a:1073741944 b:1073741825 match:-119
 event list (3 events)
-0: event#3(test3) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dio
-1: event#1(test1) at (2004-January-10 01:39:04 PM)<1073741944:10024>, type: send_dio
-2: event#2(test2) at (2004-January-10 01:38:04 PM)<1073741884:8024>, type: send_dao
+0: event#1(test1) at (2004-January-10 01:39:04 PM)<1073741944:10024>, type: send_dio
+1: event#2(test2) at (2004-January-10 01:38:04 PM)<1073741884:8024>, type: send_dao
+2: event#3(test3) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dio
 t2:
-event#3(test3) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dio
+compare1 a:1073741884 b:1073741825 match:-59
+event#1(test1) at (2004-January-10 01:39:04 PM)<1073741944:10024>, type: send_dio
 event list (2 events)
   0: event#2(test2) at (2004-January-10 01:38:04 PM)<1073741884:8024>, type: send_dao
-  1: event#1(test1) at (2004-January-10 01:39:04 PM)<1073741944:10024>, type: send_dio
+  1: event#3(test3) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dio
 event#2(test2) at (2004-January-10 01:38:04 PM)<1073741884:8024>, type: send_dao
 event list (1 events)
-  0: event#1(test1) at (2004-January-10 01:39:04 PM)<1073741944:10024>, type: send_dio
-event#1(test1) at (2004-January-10 01:39:04 PM)<1073741944:10024>, type: send_dio
+  0: event#3(test3) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dio
+event#3(test3) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dio
 event list (0 events)

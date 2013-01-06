@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixstr, strlen(prefixstr),
                             AF_INET6, &prefix);
         dn->set_prefix(prefix);
+	dn->set_active();
 
         printf("Processing input file\n");
         iface->process_pcap();

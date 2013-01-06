@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(pcapoutfile) {
+    if(pcapoutfile && iface) {
 	iface->set_pcap_out(pcapoutfile, DLT_EN10MB);
     }
 

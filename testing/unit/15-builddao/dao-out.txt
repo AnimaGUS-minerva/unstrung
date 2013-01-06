@@ -1,2 +1,11 @@
 builddao-01 t1
+found[1]: wlan0 type=ether (inactive new) faked
+  adding ifindex: 1
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+  peer '<node-not-valid>' announces prefix: <invalid>/128
+  adding prefix: <invalid>/128 to iface: wlan0
+  invoking ip -6 addr add <invalid>/128 dev wlan0
+would invoke cmd: ip -6 addr add <invalid>/128 dev wlan0
+would invoke cmd: ip -6 addr show
 builddao-01 tests finished

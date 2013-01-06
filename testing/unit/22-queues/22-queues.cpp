@@ -12,8 +12,8 @@ extern "C" {
 #include <time.h>
 }
 
-class rpl_event e1;
 class rpl_event e2;
+class rpl_event e1;
 class rpl_event e3;
 class rpl_event_queue eq1;
 

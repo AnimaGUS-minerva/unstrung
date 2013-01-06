@@ -115,9 +115,14 @@ class dag_network *dag_network::find_or_make_by_string(const char *dagid,
 						       rpl_debug *debug, 
 						       bool watching)
 {
+    int len = strlen(dagid);
     dagid_t d;
+
     memset(d, 0, sizeof(dagid_t));
-    strncat((char *)d, dagid, sizeof(dagid_t));
+    if(len > sizeof(dagid_t)) {
+	len = sizeof(dagid_t);
+    }
+    memcpy(d, dagid, len);
     return find_or_make_by_dagid(d, debug, watching);
 }
 

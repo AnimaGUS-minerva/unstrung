@@ -278,14 +278,7 @@ void network_interface::check_allrouters_membership(void)
 
 class dag_network *network_interface::find_or_make_dag_by_dagid(const char *name)
 {
-        dagid_t n;
-        int i = DAGID_LEN;
-        int len = strlen(name);
-
-        memset(n, 0, DAGID_LEN);
-        while(--i>0) n[i]=name[i];
-
-        return dag_network::find_or_make_by_dagid(n, debug, false);
+        return dag_network::find_or_make_by_string(name, debug, false);
 }
 
 
@@ -826,6 +819,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         rpl_event *re = things_to_do.peek_event();
         while((re = things_to_do.peek_event()) != NULL) {
             if(re->passed(now)) {
+		things_to_do.eat_event();
                 if(re->doit()) {
                     re->requeue(now);
                 } else {
@@ -843,7 +837,6 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 } else if(newtimeout < timeout) timeout = newtimeout;
                 break;
             }
-	    things_to_do.eat_event();
         }
 
         /*
@@ -868,6 +861,10 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         /* now poll for input */
         debug->log("sleeping with %d file descriptors, for %d ms\n",
                     pollnum, timeout);
+	if(debug->flag) {
+	    things_to_do.printevents(debug->file, "loop");
+	}
+
         int n = poll(poll_if, pollnum, timeout);
 
         if(n == 0) {

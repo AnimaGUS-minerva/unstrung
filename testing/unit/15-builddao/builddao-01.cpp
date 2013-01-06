@@ -49,7 +49,7 @@ static void t1(rpl_debug *deb)
     dag1name[0]='T';
     dag1name[1]='1';
 
-    class dag_network dag1(dag1name);
+    //class dag_network dag1(dag1name);
 
     my_if->set_pcap_out("../OUTPUTS/15-dao.pcap", DLT_EN10MB);
 
@@ -59,6 +59,8 @@ static void t1(rpl_debug *deb)
 
     /* make a new dn */
     class dag_network *dn1 = new dag_network(dag1name);
+    dn1->set_debug(deb);
+    dn1->set_active();
 
     /* add a host to this network */
     rpl_node n1("2001:db8::abcd:0002/128");
@@ -77,7 +79,7 @@ int main(int argc, char *argv[])
 {
     int i;
 
-    rpl_debug *deb = new rpl_debug(true, stderr);
+    rpl_debug *deb = new rpl_debug(true, stdout);
     printf("builddao-01 t1\n");     t1(deb);
 
     printf("builddao-01 tests finished\n");
