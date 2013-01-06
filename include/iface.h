@@ -86,6 +86,7 @@ public:
         last_multicast_usec = tv.tv_usec;
     };
     bool addprefix(prefix_node &prefix);
+    bool add_route_to_node(ip_subnet &prefix, rpl_node *peer);
 
     /* eui string functions */
     char *eui48_str(char *str, int strlen);

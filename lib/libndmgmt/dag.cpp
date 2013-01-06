@@ -353,8 +353,33 @@ void dag_network::schedule_dao(void)
     mSendDaoEvent->requeue();
 }    
 
+rpl_node *dag_network::update_route(network_interface *iface,
+				    ip_subnet &prefix, const time_t now)
+{
+    struct in6_addr *from = &prefix.addr.u.v6.sin6_addr;
 
-rpl_node *dag_network::update_origin(network_interface *iface,
+    rpl_node &peer = this->dag_members[*from];
+    peer.makevalid(*from, this, this->debug);
+
+    peer.set_last_seen(now);
+}
+
+
+rpl_node *dag_network::update_parent(network_interface *iface,
+				    struct in6_addr from, const time_t now)
+{
+    /* no difference for parent or child for now */
+    return update_node(iface, from, now);
+}
+
+rpl_node *dag_network::update_child(network_interface *iface,
+				    struct in6_addr from, const time_t now)
+{
+    /* no difference for parent or child for now */
+    return update_node(iface, from, now);
+}
+
+rpl_node *dag_network::update_node(network_interface *iface,
                                      struct in6_addr from, const time_t now)
 {
     rpl_node &peer = this->dag_members[from];
@@ -405,7 +430,7 @@ void dag_network::receive_dio(network_interface *iface,
 
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
-    if((peer = this->update_origin(iface, from, now)) == NULL) {
+    if((peer = this->update_parent(iface, from, now)) == NULL) {
         return;
     }
 
@@ -495,7 +520,7 @@ void dag_network::receive_dao(network_interface *iface,
 
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
-    if((peer = this->update_origin(iface, from, now)) == NULL) {
+    if((peer = this->update_child(iface, from, now)) == NULL) {
         return;
     }
 

@@ -86,6 +86,29 @@ bool network_interface::addprefix(prefix_node &prefix)
     return true;
 }
 
+/* XXX do this with netlink too  */
+bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
+{
+    char buf[1024];
+            
+    char pbuf[SUBNETTOT_BUF], tbuf[SUBNETTOT_BUF];
+
+    prefix_node &n = ipv6_prefix_list[prefix];
+    n.set_prefix(prefix);
+
+    subnettot(&n.prefix_number(), 0, pbuf, sizeof(pbuf));
+    addrtot(&peer->node_address(),  0, tbuf, sizeof(tbuf));
+    
+    snprintf(buf, 1024,
+             "ip -6 addr route add %s via %s dev %s", pbuf, tbuf, if_name);
+
+    debug->log("  invoking %s\n", buf);
+    nisystem(buf);
+    nisystem("ip -6 route show");
+
+    return true;
+}
+
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 
                            struct nlmsghdr *n, void *arg)
 {

@@ -219,9 +219,19 @@ private:
         bool check_security(const struct nd_rpl_dao *dao,
                                          int dao_len);
 
-        rpl_node *update_origin(network_interface *iface,
+        rpl_node *update_node(network_interface *iface,
+			      struct in6_addr from,
+			      const time_t now);
+
+        rpl_node *update_child(network_interface *iface,
+			       struct in6_addr from,
+			       const time_t now);
+        rpl_node *update_parent(network_interface *iface,
                                 struct in6_addr from,
                                 const time_t now);
+        rpl_node *update_route(network_interface *iface,
+			       ip_subnet &prefix,
+			       const time_t now);
         void seq_update(unsigned int seq);
 	void init_dag_name(void);
 
