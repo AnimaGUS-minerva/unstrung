@@ -39,8 +39,7 @@ void network_interface::receive_dao(struct in6_addr from,
                                     const u_char *dat, const int dao_len)
 {
     unsigned int dat_len = dao_len;
-    if(VERBOSE(this))
-        fprintf(this->verbose_file, "  processing dao(%u)\n",dao_len);
+    debug->verbose("  processing dao(%u)\n",dao_len);
 
     struct nd_rpl_dao *dao = (struct nd_rpl_dao *)dat;
     unsigned char *dat2 = (unsigned char *)(dao+1);
