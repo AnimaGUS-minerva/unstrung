@@ -25,7 +25,7 @@ rpl_node::rpl_node(const char *ipv6) {
         self  = false;
         name[0]='\0';
 
-        if(inet_pton(AF_INET6, ipv6, &nodeip) == 1) {
+        if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
                 valid=true;
         }
 }
