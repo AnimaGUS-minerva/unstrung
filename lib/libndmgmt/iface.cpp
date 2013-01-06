@@ -797,6 +797,15 @@ void network_interface::force_next_event(void) {
     }
 }
 
+/* empty all events */
+void network_interface::clear_events(void) { 
+    rpl_event *re;
+    while((re = things_to_do.next_event()) != NULL) {
+	delete re;
+    }
+}
+
+
 void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 {
     bool done = false;

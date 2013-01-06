@@ -102,6 +102,7 @@ public:
     static int foreach_if(int (*func)(network_interface*, void*), void*arg);
     static void remove_marks(void);
     static void force_next_event(void);
+    static void clear_events(void);
 
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();

@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 	iface->force_next_event();
 
 	iface->close_pcap_files();
+	iface->clear_events();
 
 	/* this has a DAGID: T2 (should not be processed */
         iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-19-t2.pcap", "/dev/null", deb);

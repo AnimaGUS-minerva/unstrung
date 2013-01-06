@@ -153,7 +153,11 @@ public:
     };
 
     class rpl_event *peek_event(void) {
-	return queue.front();
+	if(!queue.empty()) {
+	    return queue.front();
+	} else {
+	    return NULL;
+	}
     };
 
     void eat_event(void) {
