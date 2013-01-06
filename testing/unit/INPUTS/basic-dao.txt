@@ -1,0 +1,19 @@
+# send out a DIO
+# ICMP v6 type
+9B
+# ICMP v6 code
+02
+# ICMP v6 checksum
+00 00
+# DAG options
+# instanceid
+01
+# flags: D (DODAGID present)
+40
+# reserved
+00
+# sequence
+01
+# dagid (16 bytes)
+70 61 6e 64 6f 72 61 20  69 73 20 66 75 6e 0a 6c
+
