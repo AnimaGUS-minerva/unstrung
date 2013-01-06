@@ -545,7 +545,9 @@ void dag_network::receive_dao(network_interface *iface,
 
         subnettot(&prefix, 0, addrfound, sizeof(addrfound));
 
-        debug->verbose("received DAO about network %s\n", addrfound);
+        debug->verbose("received DAO about network %s, target %s\n", addrfound, peer->node_name());
+
+	iface->add_route_to_node(prefix, peer);
     }
 
     /* increment stat of number of packets processed */

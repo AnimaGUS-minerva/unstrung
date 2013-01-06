@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
         struct in6_addr iface_src2;
 
 
-        rpl_debug *deb = new rpl_debug(true, stderr);
+        rpl_debug *deb = new rpl_debug(true, stdout);
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
         /* now finish setting things up with netlink */
@@ -38,6 +38,8 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixstr, strlen(prefixstr),
                             AF_INET6, &prefix);
         dn->set_prefix(prefix);
+	dn->set_active();
+	dn->set_debug(deb);
 
         printf("Processing input file\n");
         iface->process_pcap();
