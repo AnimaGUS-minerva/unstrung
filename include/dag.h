@@ -22,6 +22,8 @@ enum packet_stats {
         PS_DAO_PACKET_IGNORED,
         PS_DIO_PACKET_IGNORED,
         PS_DAG_CREATED_FOR_WATCHING,
+        PS_SAME_PARENT_IGNORED,
+        PS_SAME_SEQUENCE_IGNORED,
         PS_MAX,
 };
 

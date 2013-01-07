@@ -127,7 +127,7 @@ void network_interface::send_dio(dag_network *dag)
     memset(icmp_body, 0, sizeof(icmp_body));
 
     int icmp_len = dag->build_dio(icmp_body, sizeof(icmp_body),
-					   dag->mPrefix);
+				  dag->mPrefix);
 
     if(icmp_len > 0) {
 	/* NULL indicates use multicast */
@@ -203,7 +203,7 @@ int dag_network::build_dio(unsigned char *buff,
 
     dio->rpl_instanceid = mInstanceid;
     dio->rpl_version    = mVersion;
-    dio->rpl_flags = 0;
+    dio->rpl_flags      = 0;
     dio->rpl_mopprf     = 0;
     if(mGrounded) {
         dio->rpl_mopprf |= ND_RPL_DIO_GROUNDED;
@@ -215,7 +215,7 @@ int dag_network::build_dio(unsigned char *buff,
     /* XXX need to set PRF */
 
     dio->rpl_dtsn       = mSequence;
-    dio->rpl_dagrank    = htons(mDagrank);
+    dio->rpl_dagrank    = htons(mMyRank & 0xffff);
     memcpy(dio->rpl_dagid, mDagid, 16);
 
     nextopt = (unsigned char *)&dio[1];

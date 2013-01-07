@@ -153,6 +153,8 @@ const char *dag_network::packet_stat_names[PS_MAX+1]={
     "DAO packets ignored (non-local DODAG id)",
     "DIO packets ignored (non-local DODAG id)",
     "DAG created due to watch",
+    "packet with same parent ignored",
+    "packet with same sequence ignored",
     "max reason"
 };
 
@@ -273,12 +275,29 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     debug->verbose("  Yes, '%s' has best rank %u\n",
                    peer.node_name(), rank);
 
+    if(dag_parent == &peer) {
+	debug->verbose("  But it is the same parent as before: ignored\n");
+        this->mStats[PS_SAME_PARENT_IGNORED]++;
+	return;
+    }
     /* XXX
      * this is actually quite a big deal (SEE ID), setting my RANK.
      * just fake it for now by adding 1.
      */ 
+    if(mSequence >= dio->rpl_dtsn) {
+	debug->verbose("  Same sequence number, ignore\n");
+        this->mStats[PS_SAME_SEQUENCE_IGNORED]++;
+	return;
+    }
+
+    mSequence     = dio->rpl_dtsn;
     mBestRank     = rank;
-    mMyRank       = rank + 1;
+    mMyRank       = rank + 1;   // XXX
+    mGrounded     = RPL_DIO_GROUNDED(dio->rpl_mopprf);
+    mInstanceid   = dio->rpl_instanceid;
+    mVersion      = dio->rpl_version;
+    mMode         = RPL_DIO_PRF(dio->rpl_mopprf);
+
     dag_parentif = iface;
     dag_parent   = &peer;
 
@@ -335,7 +354,7 @@ void dag_network::schedule_dio(void)
 				      mDagName, this->debug);
     } 
     mSendDioEvent->event_type = rpl_event::rpl_send_dio;
-    mSendDioEvent->reset_alarm(0, mInterval_msec);
+    mSendDioEvent->reset_alarm(0, mInterval_msec+1);
 
     mSendDioEvent->mDag = this;
     mSendDioEvent->requeue();
@@ -352,12 +371,12 @@ void dag_network::schedule_dao(void)
     debug->verbose("Scheduling dao in %u ms\n", mInterval_msec+2);
 
     if(!mSendDaoEvent) {
-	mSendDaoEvent = new rpl_event(0, mInterval_msec+1, rpl_event::rpl_send_dao,
+	mSendDaoEvent = new rpl_event(0, mInterval_msec+2, rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
     } 
 	
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
-    mSendDaoEvent->reset_alarm(0, mInterval_msec);
+    mSendDaoEvent->reset_alarm(0, mInterval_msec+2);
 
     mSendDaoEvent->mDag = this;
     mSendDaoEvent->requeue();

@@ -7,21 +7,15 @@ PROCESSING ../INPUTS/senddio.pcap
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
 Scheduling dio in 501 ms
-inserting event #1 at 1073741824/501024
+inserting event #1 at 1073741824/502024
 Scheduling dao in 502 ms
-inserting event #2 at 1073741824/501024
+inserting event #2 at 1073741824/503024
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 1)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
-Scheduling dio in 501 ms
-inserting event #1 at 1073741824/501024
-Scheduling dao in 502 ms
-inserting event #2 at 1073741824/501024
+  But it is the same parent as before: ignored
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 1)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
-Scheduling dio in 501 ms
-inserting event #1 at 1073741824/501024
-Scheduling dao in 502 ms
-inserting event #2 at 1073741824/501024
+  But it is the same parent as before: ignored
 packet 1 is being processed
  processing dio(24)
  [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]

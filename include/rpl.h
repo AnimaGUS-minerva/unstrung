@@ -66,7 +66,7 @@ struct nd_rpl_dio {
 #define RPL_DIO_PRF_MASK    (7 << RPL_DIO_MOP_SHIFT)
 #define RPL_DIO_GROUNDED(X) ((X)&RPL_DIO_GROUND_FLAG)
 #define RPL_DIO_MOP(X)      (((X)&RPL_DIO_MOP_MASK) >> RPL_DIO_MOP_SHIFT)
-#define RPL_DIO_PRF(X)      (((X)&RPL_DIO_PRF_MASK) >> RPL_DIO_PRF_SHIFT)
+#define RPL_DIO_PRF(X)      (enum RPL_DIO_MOP)(((X)&RPL_DIO_PRF_MASK) >> RPL_DIO_PRF_SHIFT)
 enum RPL_DIO_MOP {
     RPL_DIO_NONSTORING= 0x0,
     RPL_DIO_STORING   = 0x1,
