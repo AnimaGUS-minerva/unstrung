@@ -165,20 +165,19 @@ struct timeval rpl_event::occurs_in() {
     return occurs_in(now);
 }
 
-#if 0
-void printevents(FILE *out, event_map em) {
-    int i = 1;
-    event_map_iterator one = em.begin();
-    fprintf(out, "event list (%u events)\n", em.size());
-    while(one != em.end()) {
-        rpl_event *n = one->second;
-        fprintf(out, "%d: ", i);
-        n->printevent(out);
-        fprintf(out, "\n");
-        i++; one++;
+/* dump this event for humans */
+void rpl_event_queue::printevents(FILE *out, const char *prefix) {
+    int i = 0;
+    std::vector<class rpl_event *>::iterator one = queue.begin();
+
+    fprintf(out, "event list (%u events)\n", queue.size());
+    while(one != queue.end()) {
+	fprintf(out, "%s%d: ", prefix, i);
+	(*one)->printevent(out);
+	fprintf(out, "\n");
+	i++; one++;
     }
-}
-#endif
+};
 
 /*
  * Local Variables:

@@ -161,12 +161,16 @@ public:
     };
 
     void eat_event(void) {
-	pop_heap(queue.begin(), queue.end(), rpl_eventless); queue.pop_back();
+	if(!queue.empty()) {
+	    pop_heap(queue.begin(), queue.end(), rpl_eventless); queue.pop_back();
+	} else {
+	    fprintf(stderr, "attempt to remove from empty event queue");
+	}
     };
 
     class rpl_event *next_event(void) {
 	rpl_event *n = peek_event();
-	eat_event();
+	if(n) eat_event();
 	return n;
     };
 
@@ -180,17 +184,7 @@ public:
     };
 
     /* dump this event for humans */
-    void printevents(FILE *out, const char *prefix) {
-	int i = 0;
-	std::vector<class rpl_event *>::iterator one = queue.begin();
-	fprintf(out, "event list (%u events)\n", queue.size());
-	while(one != queue.end()) {
-	    fprintf(out, "%s%d: ", prefix, i);
-	    (*one)->printevent(out);
-	    fprintf(out, "\n");
-	    i++; one++;
-	}
-    };
+    void printevents(FILE *out, const char *prefix);
 
 };
 
