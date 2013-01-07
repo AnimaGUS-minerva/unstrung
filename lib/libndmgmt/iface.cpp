@@ -819,11 +819,8 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         struct timeval now;
         gettimeofday(&now, NULL);
 
-        if(verbose) {
-            fprintf(verbose,
-                    "checking things to do list, has %d items\n",
-                    things_to_do.size());
-        }
+	debug->verbose2("checking things to do list, has %d items\n",
+			things_to_do.size());
 
         rpl_event *re = things_to_do.peek_event();
         while((re = things_to_do.peek_event()) != NULL) {
@@ -839,10 +836,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 // has not yet passed, then it must be in the future.
                 int newtimeout = re->miliseconds_util(now);
                 if(newtimeout < 0) {
-                    if(verbose) {
-                        fprintf(verbose,
-                                "negative timeout %d\n", newtimeout);
-                    }
+		    debug->warn("negative timeout %d\n", newtimeout);
                 } else if(newtimeout < timeout) timeout = newtimeout;
                 break;
             }
@@ -854,8 +848,8 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
          */
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
-            debug->log("iface %s has socketfd: %d\n",
-                       iface->if_name, iface->nd_socket);
+            debug->verbose2("iface %s has socketfd: %d\n",
+			   iface->if_name, iface->nd_socket);
             if(iface->nd_socket != -1) {
                 poll_if[pollnum].fd = iface->nd_socket;
                 poll_if[pollnum].events = POLLIN;
@@ -868,8 +862,8 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         }
 
         /* now poll for input */
-        debug->log("sleeping with %d file descriptors, for %d ms\n",
-                    pollnum, timeout);
+        debug->verbose2("sleeping with %d file descriptors, for %d ms\n",
+			pollnum, timeout);
 	if(debug->flag) {
 	    things_to_do.printevents(debug->file, "loop");
 	}
@@ -881,7 +875,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         } else if(n > 0) {
             /* there is data ready */
             for(int i=0; i < pollnum && n > 0; i++) {
-                debug->log("checking source %u -> %s\n",
+                debug->verbose2("checking source %u -> %s\n",
                            i,
                            poll_if[i].revents & POLLIN ? "ready" : "no-data");
                 time_t now;

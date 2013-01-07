@@ -32,6 +32,7 @@ public:
         void warn(const char *fmt, ...);
         void error(const char *fmt, ...);
         void verbose(const char *fmt, ...);
+        void verbose2(const char *fmt, ...) { /* nothing */};
         void logv(const char *fmt, va_list vargs);
 };
 
