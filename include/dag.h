@@ -25,6 +25,8 @@ enum packet_stats {
         PS_MAX,
 };
 
+#define RANK_INFINITE 65537     /* rank is otherwise 16bits */
+
 class rpl_dio;
 
 class dag_network {
@@ -60,8 +62,9 @@ public:
         bool upd_seq(unsigned int seq);
         u_int8_t last_seq() { return(mLastSeq & 0xff); };
 
-        unsigned int               mDagRank;
-        bool dag_rank_infinite(void) { return (mDagRank == UINT_MAX); };
+        unsigned int               mMyRank;     /* my rank */
+        unsigned int               mBestRank;   /* my best parent */
+        bool dag_rank_infinite(void) { return (mBestRank >= RANK_INFINITE); };
 
 
         /* STUPID ME: NEED TO USE A LIST TYPE */
@@ -134,7 +137,7 @@ public:
 	void set_dagid(const char *dagstr);
 	void set_dagid(dagid_t dagid);
 	void set_dagrank(const unsigned int dagrank) {
-	    mDagRank = dagrank;
+	    mMyRank = dagrank;
 	};
 	void set_sequence(const unsigned int sequence) {
 	    mSequence = sequence;

@@ -52,7 +52,8 @@ void dag_network::init_dag_name(void)
 void dag_network::init_dag(void)
 {
     mLastSeq = 0;
-    mDagRank = UINT_MAX;
+    mMyRank   = UINT_MAX;
+    mBestRank = UINT_MAX;
     memset(mStats, 0, sizeof(mStats));
 
     init_dag_name();
@@ -260,11 +261,11 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     unsigned int rank = ntohs(dio->rpl_dagrank);
 
     debug->verbose("  does peer '%s' have better rank? (%u < %u)\n",
-                   peer.node_name(), rank, mDagRank);
+                   peer.node_name(), rank, mBestRank);
 
     this->mStats[PS_LOWER_RANK_CONSIDERED]++;
 
-    if(rank > mDagRank) {
+    if(rank > mBestRank) {
         this->mStats[PS_LOWER_RANK_REJECTED]++;
         return;
     }
@@ -275,8 +276,9 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     /* XXX
      * this is actually quite a big deal (SEE ID), setting my RANK.
      * just fake it for now by adding 1.
-     */
-    mDagRank     = rank + 1;
+     */ 
+    mBestRank     = rank;
+    mMyRank       = rank + 1;
     dag_parentif = iface;
     dag_parent   = &peer;
 
