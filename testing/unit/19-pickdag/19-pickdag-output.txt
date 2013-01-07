@@ -33,5 +33,5 @@ packet 2 is being processed
  processing dio(44)
  [seq:11,instance:42,rank:2,version:2,grounded,storing,dagid:T20x00 ]
 Events created for file 2 (should be none)
-event list (4294967295 events)
-0: 
+event list (0 events)
+Forcing events created for file 2 (should be none)
