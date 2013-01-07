@@ -84,6 +84,7 @@ public:
         void addprefix(rpl_node peer,
                        network_interface *iface,
                        ip_subnet prefix);
+	void addselfprefix(network_interface *iface);
         unsigned int prefixcount(void) {
             return dag_children.size();
         };

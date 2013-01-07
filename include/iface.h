@@ -42,6 +42,8 @@ public:
         return error_cnt;
     }
 
+    bool is_active() { return alive; };
+
     void set_debug(class rpl_debug *deb) {
         debug = deb;
     }
@@ -120,6 +122,9 @@ public:
 	rpl_event::set_fake_time(fake_time);
     };
 
+    rpl_node *host_node(void) { return node; };
+    struct in6_addr         if_addr;
+
 protected:
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
@@ -135,7 +140,6 @@ protected:
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
     bool                    watching;   /* true if we should collect all DAGs*/
-    struct in6_addr         if_addr;
 
     /* maintain list of all interfaces */
     void add_to_list(void);

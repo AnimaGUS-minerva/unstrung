@@ -963,8 +963,10 @@ void network_interface::send_dio_all(dag_network *dag)
      * probably build the same DIO message for all interfaces.
      */
     while(iface != NULL) {
-	iface->debug->log("iface %s sending dio\n", iface->if_name);
-	iface->send_dio(dag);
+	if(iface->is_active()) {
+	    iface->debug->log("iface %s sending dio\n", iface->if_name);
+	    iface->send_dio(dag);
+	}
 	iface = iface->next;
     }
 }

@@ -54,6 +54,15 @@ void usage()
     exit(EX_USAGE);
 }
 
+bool check_dag(dag_network *dag)
+{
+    if(dag==NULL) {
+	fprintf(stderr, "--dagid must preceed DODAG parameters\n");
+	usage();
+    }
+    return true;
+}
+
 const char *pidfilename="/var/run/sunshine.pid";
 void killanydaemon(void)
 {
@@ -128,40 +137,29 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "invalid prefix string: %s\n", optarg);
 		usage();
 	    }
-            if(!dag) {
-		fprintf(stderr, "must set dag (-i) before prefix\n");
-		usage();
-	    }
+	    check_dag(dag);
             dag->set_prefix(prefix);
         }
         break;
 
         case 'I':
-            if(!dag) {
-		fprintf(stderr, "must set dag before instanceid\n");
-		usage();
-	    }
+	    check_dag(dag);
             dag->set_instanceid(atoi(optarg));
             break; 
 
         case 'W':
-            if(!dag) {
-		fprintf(stderr, "must set dag before interval\n");
-		usage();
-	    }
+	    check_dag(dag);
             dag->set_interval(atoi(optarg));
             break; 
 
         case 'R':
-            if(!dag) {
-		fprintf(stderr, "must set dag before dagrank\n");
-		usage();
-	    }
+	    check_dag(dag);
             dag->set_dagrank(atoi(optarg));
             break; 
 
         case 'G':
 	    dag = new dag_network(optarg);
+	    dag->set_debug(deb);
             break;
 
         case 'v':
@@ -178,6 +176,9 @@ int main(int argc, char *argv[])
             if(!iface) {
                 deb->log("Can not find interface %s\n", optarg);
             } else {
+		deb->verbose("Setting up interface[%d] %s\n",
+			     iface->get_if_index(),
+			     iface->get_if_name());
                 iface->set_debug(deb);
                 iface->setup();
             }
@@ -204,6 +205,10 @@ int main(int argc, char *argv[])
         fprintf(pidfile, "%u\n", getpid());
         fclose(pidfile);
     }
+
+    dag->addselfprefix(iface);
+    dag->set_debug(deb);
+    dag->schedule_dio();
 
     network_interface::main_loop(stderr, deb);
 

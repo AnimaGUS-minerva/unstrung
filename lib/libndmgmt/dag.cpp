@@ -244,6 +244,14 @@ void dag_network::addprefix(rpl_node peer,
     }
 }
 
+void dag_network::addselfprefix(network_interface *iface)
+{
+    rpl_node *me = find_or_make_member(iface->if_addr);
+
+    addprefix(*me, iface, mPrefix);
+
+}
+
 void dag_network::potentially_lower_rank(rpl_node &peer,
                                          network_interface *iface,
                                          const struct nd_rpl_dio *dio,
