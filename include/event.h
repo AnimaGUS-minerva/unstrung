@@ -43,6 +43,9 @@ public:
 	faked_time = true;
 	fake_time  = n;
     };
+    static void advance_fake_time(void) {
+	fake_time.tv_sec++;
+    };
 
     rpl_event(unsigned int sec, unsigned int msec,
               event_types t, const char *reason, rpl_debug *deb) {

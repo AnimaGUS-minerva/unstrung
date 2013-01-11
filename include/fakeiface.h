@@ -71,6 +71,10 @@ public:
                 pcap_link=link;
         };
 
+	void advance_fake_time(void) {
+	  rpl_event::advance_fake_time();
+	};
+
 
 protected:
         void filter_and_receive_icmp6(const time_t now,

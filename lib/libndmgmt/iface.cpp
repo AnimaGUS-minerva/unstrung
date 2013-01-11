@@ -864,9 +864,11 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         /* now poll for input */
         debug->verbose2("sleeping with %d file descriptors, for %d ms\n",
 			pollnum, timeout);
+#if 0	
 	if(debug->flag) {
 	    things_to_do.printevents(debug->file, "loop");
 	}
+#endif
 
         int n = poll(poll_if, pollnum, timeout);
 

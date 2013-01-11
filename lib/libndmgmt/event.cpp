@@ -98,6 +98,9 @@ void rpl_event::requeue(void) {
 }
 
 void rpl_event::requeue(struct timeval &now) {
+    debug->verbose("re-inserting event #%u repeat: %u/%u\n",
+		   event_number, repeat_sec, repeat_msec);
+
     set_alarm(now, repeat_sec, repeat_msec);
 
     network_interface::things_to_do.add_event(this);

@@ -41,8 +41,15 @@ int main(int argc, char *argv[])
         deb->log("Events created for file 1\n");
 	iface->things_to_do.printevents(stderr, "");
 
-        deb->log("Forcing events created for file 1\n");
+        deb->log("Forcing event1 created for file 1\n");
+	iface->advance_fake_time();
+	iface->force_next_event();  
+	iface->things_to_do.printevents(stderr, "");
+
+        deb->log("Forcing event2 created for file 1\n");
+	iface->advance_fake_time();
 	iface->force_next_event();
+	iface->things_to_do.printevents(stderr, "");
 
 	iface->close_pcap_files();
 	iface->clear_events();
