@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
+ * Copyright (C) 2009-2013 Michael Richardson <mcr@sandelman.ca>
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -49,12 +49,18 @@ unsigned int            rpl_event::event_counter = 1;
 bool rpl_eventless(const class rpl_event *a, const class rpl_event *b) 
 {
     int match = b->alarm_time.tv_sec - a->alarm_time.tv_sec;
-    //printf("compare1 a:%u b:%u match:%d\n", a->alarm_time.tv_sec, b->alarm_time.tv_sec, match);
-    if(match > 0) return true;
-    if(match < 0) return false;
+#if 0
+    printf("  comp a=%s b=%s 1 a:%010u < b:%010u match:%d\n",
+	   a->getReason(), b->getReason(),
+	   a->alarm_time.tv_sec, b->alarm_time.tv_sec, match);
+#endif
+    if(match > 0) return false;
+    if(match < 0) return true;
     
     match = b->alarm_time.tv_usec - a->alarm_time.tv_usec;
-    //printf("compare2 a:%u b:%u match:%d\n", a->alarm_time.tv_usec, b->alarm_time.tv_usec, match);
+#if 0
+    printf("                     2 a:%010u < b:%10u match:%d\n", a->alarm_time.tv_usec, b->alarm_time.tv_usec, match);
+#endif
     if(match > 0) return false;
     return true;
 };  
@@ -99,7 +105,7 @@ void rpl_event::requeue(struct timeval &now) {
 
 
 
-const char *rpl_event::event_name()
+const char *rpl_event::event_name() const
 {
     switch(event_type) {
     case rpl_send_dio:

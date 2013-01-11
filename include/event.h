@@ -52,7 +52,7 @@ public:
     };
 
     enum event_types event_type;
-    const char *event_name();
+    const char *event_name() const;
 
     /* invoke this event */
     bool doit(void);
@@ -85,7 +85,7 @@ public:
     network_interface  *interface;
 
     struct timeval      alarm_time;
-    const char *getReason() {
+    const char *getReason() const {
         return mReason;
     };
 
@@ -149,6 +149,10 @@ public:
 
 
     rpl_event_queue() {
+	make_event_heap();
+    };
+
+    void make_event_heap() {
 	make_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 

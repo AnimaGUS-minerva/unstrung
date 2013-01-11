@@ -5,7 +5,7 @@ all: check
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
-event-01: event-01.cpp ${INC}/event.h 
+event-01: event-01.cpp ${INC}/event.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o event-01 event-01.cpp ${LDFLAGS}
 
 check::	event-01

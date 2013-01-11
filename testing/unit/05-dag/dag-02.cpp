@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 		
-	pcap_dumper_t *out = pcap_dump_open(pout, "t1.pcap");
+	pcap_dumper_t *out = pcap_dump_open(pout, "../OUTPUTS/05-dag-t1.pcap");
         pcap_network_interface *iface = new pcap_network_interface(out);
 
         rpl_debug *deb = new rpl_debug(false, stdout);

@@ -23,6 +23,31 @@ extern "C" {
 #include "iface.h"
 #include "event.h"
 
+
+static void order_test(rpl_event_queue &eq1,
+		       rpl_event &e1, rpl_event &e2,
+		       rpl_event &e3,
+		       rpl_event &e4)
+{
+    rpl_event *n1;
+
+    /* first event is e3 */
+    n1 = eq1.next_event();
+    assert(n1 == &e3);
+
+    /* second event is e1 */
+    n1 = eq1.next_event();
+    assert(n1 == &e1);
+
+    /* third event is e2 */
+    n1 = eq1.next_event();
+    assert(n1 == &e2);
+
+    /* fourth event is e4 */
+    n1 = eq1.next_event();
+    assert(n1 == &e4);
+}
+
 /*
  * TEST1: insert three events, see that the youngest comes first.
  */
@@ -33,37 +58,33 @@ static void t1(rpl_debug *deb)
     rpl_event e3(0, 150, rpl_event::rpl_send_dio, "e3", deb);
     rpl_event e4(1, 150, rpl_event::rpl_send_dio, "e4", deb);
 
-    event_map n;
+    class rpl_event_queue eq1;
 
-    n[e1.alarm_time] = &e1;
-    n[e2.alarm_time] = &e2;
-    n[e3.alarm_time] = &e3;
-    n[e4.alarm_time] = &e4;
+    eq1.add_event(&e1);
+    eq1.add_event(&e2);
+    eq1.add_event(&e3);
+    eq1.add_event(&e4);
+    //eq1.printevents(stdout, "e1-e4   ");
 
-    event_map_iterator first = n.begin();
-    assert(first != n.end());
+    order_test(eq1, e1, e2, e3, e4);
 
-    printevents(stdout, n);
-    
-    rpl_event *n1 = first->second;
-    printf("first interval: %u %s\n",
-           n1->alarm_time.tv_usec, n1->getReason());
+    /* now put all the events back on the list in a different order */
+    eq1.add_event(&e2);
+    eq1.add_event(&e1);
+    eq1.add_event(&e4);
+    eq1.add_event(&e3);
+    //eq1.printevents(stdout, "swapped ");
 
-    assert(n1->occurs_in().tv_usec == 150000);
+    order_test(eq1, e1, e2, e3, e4);
 
-    /* we want the last item, but n.end() is the one after that one */
-    /* need to read the STL manual */
-    event_map_riterator last = n.rbegin();
-    assert(last != n.rend());
-    
-    rpl_event *n2 = last->second;
-    printf("last alarm_time: %u %u %s\n",
-           n2->alarm_time.tv_sec,
-           n2->alarm_time.tv_usec,
-           n2->getReason());
-    assert(n2->alarm_time.tv_sec  == 1);
-    assert(n2->alarm_time.tv_usec == 150000);
-    
+    /* now put all the events back on the list in a different order */
+    eq1.add_event(&e4);
+    eq1.add_event(&e3);
+    eq1.add_event(&e2);
+    eq1.add_event(&e1);
+    //eq1.printevents(stdout, "e4-e1   ");
+
+    order_test(eq1, e1, e2, e3, e4);
 }
 
 
