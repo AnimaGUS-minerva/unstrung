@@ -50,7 +50,7 @@ private:
         bool       self;
         int        ifindex;
         time_t     lastseen;
-        char       name[INET6_ADDRSTRLEN];
+        char       name[INET6_ADDRSTRLEN+10];
         const dag_network *mDN;          /* should be shared_ptr */
 };
 
