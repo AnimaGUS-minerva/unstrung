@@ -143,8 +143,14 @@ public:
             return RPL_DIO_MOP(dio->rpl_mopprf);
         };
 
+	const char *get_dagName(void) {
+	    return mDagName;
+	};
 	void set_dagid(const char *dagstr);
 	void set_dagid(dagid_t dagid);
+	unsigned int get_dagRank(void) {
+	    return mMyRank;
+	};
 	void set_dagrank(const unsigned int dagrank) {
 	    mMyRank = dagrank;
 	};

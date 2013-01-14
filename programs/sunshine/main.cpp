@@ -154,7 +154,12 @@ int main(int argc, char *argv[])
 
         case 'R':
 	    check_dag(dag);
-            dag->set_dagrank(atoi(optarg));
+	    {	
+		int rank = atoi(optarg);
+		dag->set_dagrank(rank);
+		//fprintf(stderr, "setting rank for %s to %u\n", dag->get_dagName(),
+		//    rank, dag->get_dagRank());
+	    }
             break; 
 
         case 'G':
