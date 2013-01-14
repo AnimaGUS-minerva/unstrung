@@ -52,7 +52,7 @@ void network_interface::receive_dao(struct in6_addr from,
     dagid[0]=0;
     if(RPL_DAO_D(dao->rpl_flags)) {
         memcpy(&dagid, dat2, DAGID_LEN);
-        format_dagid(dagid_str, dat2);
+	dag_network::format_dagid(dagid_str, dat2);
         dat2 += DAGID_LEN;
 	dat_len -= DAGID_LEN;
     }

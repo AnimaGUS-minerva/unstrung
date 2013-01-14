@@ -27,6 +27,29 @@ unsigned char           dag_network::optbuff[256];
 unsigned int            dag_network::optlen;
 
 
+void dag_network::format_dagid(char *dagidstr,
+			       const u_int8_t rpl_dagid[DAGID_LEN])
+{
+    char *d = dagidstr;
+    bool lastwasnull=false;
+    int  i;
+
+    /* should attempt to format as IPv6 address too */
+    for(i=0;i<16;i++) {
+        if(isprint(rpl_dagid[i])) {
+            *d++ = rpl_dagid[i];
+            lastwasnull=false;
+        } else {
+            if(rpl_dagid[i] != '\0' || !lastwasnull) {
+                int cnt=snprintf(d, 6,"0x%02x ", rpl_dagid[i]);
+                d += strlen(d);
+            }
+            lastwasnull = (rpl_dagid[i] == '\0');
+        }
+    }
+    *d++ = '\0';
+}
+
 void dag_network::init_stats(void)
 {
 }
@@ -458,6 +481,19 @@ rpl_node *dag_network::update_node(network_interface *iface,
     return &peer;
 }
 
+void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio) 
+{
+    char dagid[16*6];
+
+    format_dagid(dagid, dio->rpl_dagid);
+    debug->info(" [seq:%u,instance:%u,rank:%u,version:%u,%s%s,dagid:%s]\n",
+                dio->rpl_dtsn, dio->rpl_instanceid, ntohs(dio->rpl_dagrank),
+                dio->rpl_version,
+                (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
+                dag_network::mop_decode(dag_network::mop_extract(dio)),
+                dagid);
+}
+
 /*
  * Process an incoming DODAG Information Object (DIO)
  * the DIO is the downward announcement.
@@ -490,6 +526,10 @@ void dag_network::receive_dio(network_interface *iface,
     if((peer = this->update_parent(iface, from, now)) == NULL) {
         return;
     }
+
+    debug->verbose(" processing dio(%u) ",dio_len);  /* \n will be below */
+    dump_dio(debug, dio);
+
 
     this->seq_update(dio->rpl_dtsn);
 

@@ -135,6 +135,10 @@ public:
             }
         };
 
+	static void format_dagid(char *dagidstr,
+				 const u_int8_t rpl_dagid[DAGID_LEN]);
+	static void dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio);
+
         static const unsigned int mop_extract(const struct nd_rpl_dio *dio) {
             return RPL_DIO_MOP(dio->rpl_mopprf);
         };

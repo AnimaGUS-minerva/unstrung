@@ -34,48 +34,17 @@ extern "C" {
 #include "dag.h"
 #include "dio.h"
 
-void network_interface::format_dagid(char *dagidstr, u_int8_t rpl_dagid[DAGID_LEN])
-{
-    char *d = dagidstr;
-    bool lastwasnull=false;
-    int  i;
-
-    /* should attempt to format as IPv6 address too */
-    for(i=0;i<16;i++) {
-        if(isprint(rpl_dagid[i])) {
-            *d++ = rpl_dagid[i];
-            lastwasnull=false;
-        } else {
-            if(rpl_dagid[i] != '\0' || !lastwasnull) {
-                int cnt=snprintf(d, 6,"0x%02x ", rpl_dagid[i]);
-                d += strlen(d);
-            }
-            lastwasnull = (rpl_dagid[i] == '\0');
-        }
-    }
-    *d++ = '\0';
-}
-
 void network_interface::receive_dio(struct in6_addr from,
                                     const  time_t now,
                                     const u_char *dat, const int dio_len)
 {
-    if(debug->verbose_test()) {
-        debug->verbose(" processing dio(%u)\n",dio_len);
-    }
+    //debug->verbose(" processing dio(%u) ",dio_len);  /* \n will be below */
 
     struct nd_rpl_dio *dio = (struct nd_rpl_dio *)dat;
 
     if(this->packet_too_short("dio", dio_len, sizeof(*dio))) return;
 
-    char dagid[16*6];
-    format_dagid(dagid, dio->rpl_dagid);
-    debug->info(" [seq:%u,instance:%u,rank:%u,version:%u,%s%s,dagid:%s]\n",
-                dio->rpl_dtsn, dio->rpl_instanceid, ntohs(dio->rpl_dagrank),
-                dio->rpl_version,
-                (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
-                dag_network::mop_decode(dag_network::mop_extract(dio)),
-                dagid);
+    //dag_network::dump_dio(debug, dio);
 
     class dag_network *dn;
     if(watching) {
