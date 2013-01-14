@@ -113,7 +113,10 @@ public:
         void schedule_dao(void);
 
         /* let stats be public */
+	u_int32_t old_mStats[PS_MAX];
         u_int32_t mStats[PS_MAX];
+	void print_stats(FILE *out, const char *prefix);
+	static void print_all_dagstats(FILE *out, const char *prefix);
 
         /* let global stats public */
         static u_int32_t globalStats[PS_MAX];

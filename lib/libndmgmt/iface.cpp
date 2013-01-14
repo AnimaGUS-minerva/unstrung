@@ -44,6 +44,7 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 
+bool                  network_interface::signal_usr2;
 bool                  network_interface::faked_time;
 struct timeval        network_interface::fake_time;
 class rpl_event_queue network_interface::things_to_do;
@@ -805,10 +806,27 @@ void network_interface::clear_events(void) {
     }
 }
 
+void network_interface::catch_signal_usr2(int signum,
+						 siginfo_t *si,
+						 void *ucontext)
+{
+    /* should be atomic */
+    network_interface::signal_usr2 = true;
+}
+
+
 
 void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 {
     bool done = false;
+
+    struct sigaction usr2;
+    usr2.sa_sigaction = catch_signal_usr2;
+    usr2.sa_flags = SA_SIGINFO|SA_RESTART;
+
+    if(sigaction(SIGUSR2, &usr2, NULL) != 0) {
+	perror("sigaction USR2");
+    }
 
     while(!done) {
         struct pollfd            poll_if[network_interface::if_count()];
@@ -889,9 +907,15 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 }
             }
         } else {
-            /* there was an error */
+            /* there was an error, maybe exited due to signal */
             perror("sunshine poll");
         }
+	if(signal_usr2) {
+	    things_to_do.printevents(debug->file, "usr2 ");
+	    dag_network::print_all_dagstats(debug->file, "usr2 ");
+	    signal_usr2 = false;
+	}
+	    
     }
 }
 

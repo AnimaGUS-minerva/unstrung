@@ -158,6 +158,32 @@ const char *dag_network::packet_stat_names[PS_MAX+1]={
     "max reason"
 };
 
+void dag_network::print_stats(FILE *out, const char *prefix)
+{
+    int i; 
+
+    for(i=0; i<PS_MAX; i++) {
+	fprintf(out, "%s %04u (+%04d) %s\n", prefix,
+		mStats[i],
+		mStats[i] - old_mStats[i],
+		packet_stat_names[i]);
+	old_mStats[i] = mStats[i];
+    }
+}
+
+void dag_network::print_all_dagstats(FILE *out, const char *prefix)
+{
+    char prefixbuf2[64];
+
+    for(class dag_network *dn = dag_network::all_dag;
+	dn != NULL;
+	dn = dn->next) {
+	snprintf(prefixbuf2, sizeof(prefixbuf2), "%s(%s) ",
+		 prefix, dn->get_dagName());
+	dn->print_stats(out, prefixbuf2);
+    }
+}
+
 void dag_network::discard_dio(enum packet_stats dr)
 {
     mStats[dr]++;

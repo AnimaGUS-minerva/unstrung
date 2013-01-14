@@ -5,6 +5,7 @@
 
 extern "C" {
 #include <errno.h>
+#include <signal.h>
 #include <pathnames.h>		/* for PATH_PROC_NET_IF_INET6 */
 #include <arpa/inet.h>
 #include <netinet/ip6.h>
@@ -114,6 +115,8 @@ public:
     /* event lists */
     static class rpl_event_queue   things_to_do;
 
+    static bool                    signal_usr2;
+    static void                    catch_signal_usr2(int, siginfo_t *, void*);
     static bool                    faked_time;
     static struct timeval          fake_time;
     void set_fake_time(struct timeval n) {
