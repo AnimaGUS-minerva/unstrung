@@ -159,12 +159,14 @@ int main(int argc, char *argv[])
 		dag->set_dagrank(rank);
 		//fprintf(stderr, "setting rank for %s to %u\n", dag->get_dagName(),
 		//    rank, dag->get_dagRank());
+		dag->set_sequence(1);
 	    }
             break; 
 
         case 'G':
 	    dag = new dag_network(optarg);
 	    dag->set_debug(deb);
+	    dag->set_active();
             break;
 
         case 'v':

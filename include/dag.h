@@ -152,7 +152,8 @@ public:
 	    return mMyRank;
 	};
 	void set_dagrank(const unsigned int dagrank) {
-	    mMyRank = dagrank;
+	    mMyRank   = dagrank;
+	    mBestRank = dagrank;
 	};
 	void set_sequence(const unsigned int sequence) {
 	    mSequence = sequence;
