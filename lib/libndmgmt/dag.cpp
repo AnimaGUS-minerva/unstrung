@@ -77,7 +77,11 @@ void dag_network::init_dag(void)
     mLastSeq = 0;
     mMyRank   = UINT_MAX;
     mBestRank = UINT_MAX;
-    memset(mStats, 0, sizeof(mStats));
+    mSequence = 1;
+    mInstanceid = 1;
+    mVersion  = 1;
+    memset(mStats,     0, sizeof(mStats));
+    memset(old_mStats, 0, sizeof(old_mStats));
 
     init_dag_name();
     this->add_to_list();
