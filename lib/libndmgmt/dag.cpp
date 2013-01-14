@@ -167,22 +167,22 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
 
 /* provide a count of discards */
 const char *dag_network::packet_stat_names[PS_MAX+1]={
-    "sequence too old",
-    "packets received"
-    "packets processed",
-    "packets received due to watch",
-    "packets with <dagrank",
-    "packets with <dagrank rejected",
-    "packets where subopt was too short",
-    "packets from self that were ignored",
-    "DAO packets received",
-    "DIO packets received",
-    "DAO packets ignored (non-local DODAG id)",
-    "DIO packets ignored (non-local DODAG id)",
-    "DAG created due to watch",
-    "packet with same parent ignored",
-    "packet with same sequence ignored",
-    "max reason"
+    [PS_SEQ_OLD]                = "sequence too old",                              
+    [PS_PACKET_RECEIVED]        = "packets received",
+    [PS_PACKET_PROCESSED]       = "packets processed",                             
+    [PS_PACKETS_WATCHED]        = "packets received due to watch",                 
+    [PS_LOWER_RANK_CONSIDERED]  = "packets with <dagrank",
+    [PS_LOWER_RANK_REJECTED]    = "packets with <dagrank rejected",
+    [PS_SUBOPTION_UNDERRUN]     = "packets where subopt was too short",
+    [PS_SELF_PACKET_RECEIVED]   = "packets from self that were ignored",
+    [PS_DAO_PACKET_RECEIVED]    = "DAO packets received",
+    [PS_DIO_PACKET_RECEIVED]    = "DIO packets received",
+    [PS_DAO_PACKET_IGNORED]     = "DAO packets ignored (non-local DODAG id)",
+    [PS_DIO_PACKET_IGNORED]     = "DIO packets ignored (non-local DODAG id)",
+    [PS_DAG_CREATED_FOR_WATCHING]="DAG created due to watch",
+    [PS_SAME_PARENT_IGNORED]    = "packet with same parent ignored",
+    [PS_SAME_SEQUENCE_IGNORED]  = "packet with same sequence ignored",
+    [PS_MAX]                    = "max reason"
 };
 
 void dag_network::print_stats(FILE *out, const char *prefix)
