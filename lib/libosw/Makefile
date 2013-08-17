@@ -26,7 +26,7 @@ MANDIR=$(MANTREE)/man3
 
 ONEFILE=
 # turn off -Wcast-qual
-WCASTQUAL= 
+WCASTQUAL= -Wno-error=cast-qual
 CFLAGS+=${WERROR}
 
 SRCS = ttosubnet.c ttoaddr.c addrtypeof.c subnettypeof.c 

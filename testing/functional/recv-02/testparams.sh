@@ -5,7 +5,7 @@ TEST_PROB_REPORT=0
 TEST_TYPE=pkttest
 
 XHOST_LIST="E"
-XNET_LIST="ground n1"
+XNET_LIST="ground n1 n2 n3"
 
 TESTNAME=recv-02
 EHOST=E
