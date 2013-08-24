@@ -56,8 +56,17 @@ Programs include:
 	blow		- cmd line utility to control sunshine and glow.
 
 
+====== Testing environment
+
+This is based upon the UML-Network Testing Infrastructure (UNTI or "AUNTIE")
+UML is UserModeLinux -- a completely paravirtualized virtualization technnology.
+
+The UMLroot image that goes with it can not be created as stock wheezy
+"debootstrap" image.  An image that works can be found at:
+        http://junk.sandelman.ca/umlroot/umlroot-38.tgz
+
 Michael Richardson <mcr@sandelman.ca>,
-Ottawa, Ontario, October 2009 (on a train, where Internet is broken)
+Ottawa, Ontario, October 2009-2013.
 
 
 
