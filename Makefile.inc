@@ -22,8 +22,9 @@ LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${UNSTRUNG_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
-LIBPCAP=/usr/local/ia32/lib/libpcap.a
+#LIBPCAP=/usr/local/ia32/lib/libpcap.a
 #LIBPCAP=-L/usr/local/ia32/lib -lpcap
+LIBPCAP=-lpcap
 # needed by libpcap
 EXTRALIBS=-lusb-1.0
 
