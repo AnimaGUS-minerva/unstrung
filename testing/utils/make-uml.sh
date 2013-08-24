@@ -11,7 +11,7 @@
 set -e
 
 case $# in
-    1) UNSTRUNG_SRCDIR=$1; shift;;
+    1) UNTI_SRCDIR=$1; shift;;
 esac
 
 CC=${CC-cc}
@@ -33,23 +33,23 @@ export USE_OBJDIR=true
 
 # include this dir, in particular so that we can get the local "touch"
 # program.
-export PATH=$UNSTRUNG_SRCDIR/testing/utils:$PATH 
+export PATH=$UNTI_SRCDIR/testing/utils:$PATH 
 
 
 #
-# configuration for this file has moved to $UNSTRUNG_SRCDIR/umlsetup.sh
+# configuration for this file has moved to $UNTI_SRCDIR/umlsetup.sh
 # By default, that file does not exist. A sample is at umlsetup-sample.sh
-# in this directory. Copy it to $UNSTRUNG_SRCDIR and edit it.
+# in this directory. Copy it to $UNTI_SRCDIR and edit it.
 #
-UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR-../..}
-if [ ! -f ${UNSTRUNG_SRCDIR}/umlsetup.sh ]
+UNTI_SRCDIR=${UNTI_SRCDIR-../..}
+if [ ! -f ${UNTI_SRCDIR}/umlsetup.sh ]
 then
     echo No umlsetup.sh. Please read instructions in doc/umltesting.html and testing/utils/umlsetup-sample.sh.
     exit 1
 fi
 
-. ${UNSTRUNG_SRCDIR}/umlsetup.sh
-. ${UNSTRUNG_SRCDIR}/testing/utils/uml-functions.sh
+. ${UNTI_SRCDIR}/umlsetup.sh
+. ${UNTI_SRCDIR}/testing/utils/uml-functions.sh
 
 KERNVERSION=2.6;
 
@@ -57,18 +57,18 @@ echo Setting up for kernel KERNVERSION=$KERNVERSION
 
 
 # make absolute so that we can reference it from POOLSPACE
-UNSTRUNG_SRCDIR=`cd $UNSTRUNG_SRCDIR && pwd`;export UNSTRUNG_SRCDIR
+UNTI_SRCDIR=`cd $UNTI_SRCDIR && pwd`;export UNTI_SRCDIR
 
 # what this script does is create some Makefile
 #  (if they do not already exist)
 # that will copy everything where it needs to go.
 
-if [ ! -d $UNSTRUNG_SRCDIR/testing ]
+if [ ! -d $UNTI_SRCDIR/testing ]
 then
-    echo Where is ${UNSTRUNG_SRCDIR}/testing '????'
+    echo Where is ${UNTI_SRCDIR}/testing '????'
     exit 1
 fi
-TESTINGROOT=$UNSTRUNG_SRCDIR/testing
+TESTINGROOT=$UNTI_SRCDIR/testing
 
 # more defaults
 NONINTCONFIG=oldconfig
@@ -78,7 +78,7 @@ UMLVERSION=`basename $UMLPATCH .bz2 | sed -e 's/uml-patch-//'`
 EXTRAPATCH=${TESTINGROOT}/kernelconfigs/extras.$UMLVERSION.patch
 
 # dig the kernel revision out.
-KERNEL_MAJ_VERSION=`${UNSTRUNG_SRCDIR}/testing/utils/kernelversion-short $KERNPOOL/Makefile`
+KERNEL_MAJ_VERSION=`${UNTI_SRCDIR}/testing/utils/kernelversion-short $KERNPOOL/Makefile`
 
 
 echo -n Looking for Extra patch at $EXTRAPATCH..
@@ -91,7 +91,7 @@ else
 fi
 
 mkdir -p $POOLSPACE
-if [ ! -d ${UNSTRUNG_SRCDIR}/UMLPOOL/. ]; then ln -s $POOLSPACE ${UNSTRUNG_SRCDIR}/UMLPOOL; fi
+if [ ! -d ${UNTI_SRCDIR}/UMLPOOL/. ]; then ln -s $POOLSPACE ${UNTI_SRCDIR}/UMLPOOL; fi
 
 UMLMAKE=$POOLSPACE/Makefile
 NOW=`date`
@@ -217,7 +217,7 @@ then
 
     grep CONFIG_KLIPS $UMLSWAN/.config || exit 1
 
-    cd $UNSTRUNG_SRCDIR || exit 1
+    cd $UNTI_SRCDIR || exit 1
  
     make KERNMAKEOPTS='ARCH=um' SUBARCH=${SUBARCH} KERNELSRC=$UMLSWAN KERNCLEAN='' KERNDEP=$KERNDEP KERNEL=linux DESTDIR=$DESTDIR verset kpatch rcf kernel || exit 1 </dev/null 
 
@@ -225,10 +225,10 @@ then
     find $UMLSWAN/net/ipsec $UMLSWAN/include/openswan -name '*.[ch]' -type f -print | xargs chmod a-w
 fi
 
-cd $UNSTRUNG_SRCDIR || exit 1
+cd $UNTI_SRCDIR || exit 1
 
 make programs
 
 # now, execute the Makefile that we have created!
-cd $POOLSPACE && make $UNSTRUNG_HOSTS 
+cd $POOLSPACE && make $UNTI_HOSTS 
 

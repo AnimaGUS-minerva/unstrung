@@ -20,11 +20,11 @@ setup_make() {
 	i?86) SUBARCH=i386;;
     esac
 
-    echo "IPSECDIR=${UNSTRUNG_SRCDIR}/linux/net/ipsec"
+    echo "IPSECDIR=${UNTI_SRCDIR}/linux/net/ipsec"
     echo "USE_OBJDIR=${USE_OBJDIR}"
-    echo "UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR}"
-    echo "include ${UNSTRUNG_SRCDIR}/Makefile.inc"
-    echo "include ${UNSTRUNG_SRCDIR}/Makefile.ver"
+    echo "UNTI_SRCDIR=${UNTI_SRCDIR}"
+    echo "include ${UNTI_SRCDIR}/Makefile.inc"
+    echo "include ${UNTI_SRCDIR}/Makefile.ver"
     echo 
     
     echo "all: "
@@ -34,20 +34,20 @@ setup_make() {
 
     if $domodules
     then
-	echo "module/ipsec.o: ${UNSTRUNG_SRCDIR}/packaging/makefiles/module.make \${IPSECDIR}/*.c"
+	echo "module/ipsec.o: ${UNTI_SRCDIR}/packaging/makefiles/module.make \${IPSECDIR}/*.c"
 	echo "$TAB mkdir -p module"
-	echo "$TAB make -C ${UNSTRUNG_SRCDIR} UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} MODBUILDDIR=$POOLSPACE/module MODBUILDDIR=$POOLSPACE/module KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module "
+	echo "$TAB make -C ${UNTI_SRCDIR} UNTI_SRCDIR=${UNTI_SRCDIR} MODBUILDDIR=$POOLSPACE/module MODBUILDDIR=$POOLSPACE/module KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module "
 	echo
 
-	echo "module26/ipsec.ko: ${UNSTRUNG_SRCDIR}/packaging/makefiles/module26.make \${IPSECDIR}/*.c"
+	echo "module26/ipsec.ko: ${UNTI_SRCDIR}/packaging/makefiles/module26.make \${IPSECDIR}/*.c"
 	echo "$TAB mkdir -p module26"
-	echo "$TAB make -C ${UNSTRUNG_SRCDIR} UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} MODBUILDDIR=$POOLSPACE/module MOD26BUILDDIR=$POOLSPACE/module26 KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module26 "
+	echo "$TAB make -C ${UNTI_SRCDIR} UNTI_SRCDIR=${UNTI_SRCDIR} MODBUILDDIR=$POOLSPACE/module MOD26BUILDDIR=$POOLSPACE/module26 KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module26 "
 	echo
     fi
 
     # now describe how to build the initrd.
-    echo "initrd.cpio: ${UNSTRUNG_SRCDIR}/testing/utils/initrd.list"
-    echo "$TAB fakeroot ${UNSTRUNG_SRCDIR}/testing/utils/buildinitrd ${UNSTRUNG_SRCDIR}/testing/utils/initrd.list ${UNSTRUNG_SRCDIR} ${BASICROOT}" 
+    echo "initrd.cpio: ${UNTI_SRCDIR}/testing/utils/initrd-`uname -m`.list"
+    echo "$TAB fakeroot ${UNTI_SRCDIR}/testing/utils/buildinitrd ${UNTI_SRCDIR}/testing/utils/initrd-`uname -m`.list ${UNTI_SRCDIR} ${BASICROOT}"
 }
 
 # output should directed to a Makefile
@@ -162,7 +162,7 @@ setup_host_make() {
     echo "$TAB cp ${TESTINGROOT}/${fsname} $hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/share		     hostfs   defaults,ro,$SHAREROOT 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /testing		     hostfs   defaults,ro,${TESTINGROOT} 0 0 >>$hostroot/etc/fstab"
-    echo "$TAB echo none	   /usr/src		     hostfs   defaults,ro,${UNSTRUNG_SRCDIR} 0 0 >>$hostroot/etc/fstab"
+    echo "$TAB echo none	   /usr/src		     hostfs   defaults,ro,${UNTI_SRCDIR} 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/obj		     hostfs   defaults,ro,\${OBJDIRTOP} 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/local		     hostfs   defaults,rw,${POOLSPACE}/${hostroot}/usr/local 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /var/tmp		     hostfs   defaults,rw,${POOLSPACE}/${hostroot}/var/tmp 0 0 >>$hostroot/etc/fstab"
@@ -179,8 +179,8 @@ setup_host_make() {
     then
 	# install FreeSWAN if appropriate.
         
-	echo "$hostroot/usr/local/sbin/ipsec : ${UNSTRUNG_SRCDIR}/Makefile.inc ${UNSTRUNG_SRCDIR}/Makefile.ver"
-	echo "$TAB cd ${UNSTRUNG_SRCDIR} && make DESTDIR=$POOLSPACE/$hostroot USE_OBJDIR=true install"
+	echo "$hostroot/usr/local/sbin/ipsec : ${UNTI_SRCDIR}/Makefile.inc ${UNTI_SRCDIR}/Makefile.ver"
+	echo "$TAB cd ${UNTI_SRCDIR} && make DESTDIR=$POOLSPACE/$hostroot USE_OBJDIR=true install"
 	echo
 	depends="$depends $hostroot/usr/local/sbin/ipsec"
 
@@ -199,7 +199,7 @@ setup_host_make() {
 
 	    # make module startup script
 	    startscript=$host/startmodule.sh
-	    echo "$startscript : $UNSTRUNG_SRCDIR/umlsetup.sh $hostroot/ipsec.o initrd.cpio"
+	    echo "$startscript : $UNTI_SRCDIR/umlsetup.sh $hostroot/ipsec.o initrd.cpio"
 	    echo "$TAB echo '#!/bin/sh' >$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
@@ -217,7 +217,7 @@ setup_host_make() {
 
     # make startup script
     startscript=$host/start.sh
-    echo "$startscript : $UNSTRUNG_SRCDIR/umlsetup.sh initrd.cpio"
+    echo "$startscript : $UNTI_SRCDIR/umlsetup.sh initrd.cpio"
     echo "$TAB echo '#!/bin/sh' >$startscript"
     echo "$TAB echo ''          >>$startscript"
     echo "$TAB echo 'if [ -z \"\$\${TEST_PURPOSE}\" ] && [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"

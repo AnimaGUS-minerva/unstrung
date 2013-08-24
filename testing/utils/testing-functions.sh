@@ -17,14 +17,14 @@ TCPDUMPFLAGS=${TCPDUMPFLAGS-}
 TEST_GOAL_ITEM=${TEST_GOAL_ITEM-0}
 TEST_PROB_REPORT=${TEST_PROB_REPORT-0}
 TEST_EXPLOIT_URL=${TEST_EXPLOIT_URL-http://www.openswan.org/vuln/}
-TESTUTILS=${UNSTRUNG_SRCDIR}/testing/utils
-FIXUPDIR=${UNSTRUNG_SRCDIR}/testing/utils/fixups
+TESTUTILS=${UNTI_SRCDIR}/testing/utils
+FIXUPDIR=${UNTI_SRCDIR}/testing/utils/fixups
 NJ=${TESTUTILS}/uml_netjig/uml_netjig
 MAKE=${MAKE-make}
 
 summarize_results() {
     if $SUMMARIZE_RESULTS; then
-        perl ${UNSTRUNG_SRCDIR}/testing/utils/regress-summarize-results.pl ${REGRESSRESULTS} ${TESTNAME}${KLIPS_MODULE}
+        perl ${UNTI_SRCDIR}/testing/utils/regress-summarize-results.pl ${REGRESSRESULTS} ${TESTNAME}${KLIPS_MODULE}
     fi
 }
 
@@ -202,7 +202,9 @@ export_variables() {
     export SOUTH_PLAY
     export XHOST_LIST
     export XNET_LIST
+    UNTI_SRCDIR=${UNSTRUNG_SRCDIR}
     export UNSTRUNG_SRCDIR
+    export UNTI_SRCDIR
     export TEST_PURPOSE
 }
 
@@ -653,7 +655,7 @@ pkttest() {
 
 do_unittest() {
 
-    export ROOTDIR=${UNSTRUNG_SRCDIR}
+    export ROOTDIR=${UNTI_SRCDIR}
     eval `(cd $ROOTDIR; make --no-print-directory env )`
     failnum=1
 
