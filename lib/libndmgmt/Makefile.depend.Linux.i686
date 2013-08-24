@@ -1,0 +1,120 @@
+dag.o: dag.cpp ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/dag.h \
+ ../../include/dio.h \
+ ../../include/rplmsg.h \
+ ../../include/dao.h
+dao.o: dao.cpp ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/dag.h \
+ ../../include/dao.h \
+ ../../include/rplmsg.h
+debug.o: debug.cpp ../../include/debug.h
+dio.o: dio.cpp ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/dag.h \
+ ../../include/dio.h \
+ ../../include/rplmsg.h
+event.o: event.cpp ../../include/pathnames.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/event.h
+iface.o: iface.cpp ../../include/pathnames.h \
+ ../../include/rpl.h \
+ ../../include/hexdump.c \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/dag.h
+neighbour.o: neighbour.cpp
+netlink.o: netlink.cpp \
+ ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/netlink/rt_names.h \
+ ../../include/netlink/utils.h \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h \
+ ../../include/netlink/rtm_map.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/prefix.h
+node.o: node.cpp ../../include/node.h \
+ ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/debug.h
+peers.o: peers.cpp
+prefix.o: prefix.cpp ../../include/oswlibs.h \
+ ../../include/dag.h \
+ ../../include/rpl.h \
+ ../../include/node.h \
+ ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/debug.h \
+ ../../include/prefix.h \
+ ../../include/node.h \
+ ../../include/prefix.h \
+ ../../include/iface.h \
+ ../../include/event.h \
+ ../../include/dag.h
+rplmsg.o: rplmsg.cpp ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/dag.h \
+ ../../include/rplmsg.h \
+ ../../include/dio.h \
+ ../../include/rplmsg.h \
+ ../../include/dao.h
