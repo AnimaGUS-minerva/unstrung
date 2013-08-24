@@ -6,19 +6,19 @@
 # use this script to run a single test from within that test directory.
 #
 
-if [ -z "${UNSTRUNG_SRCDIR}" ]
+if [ -z "${UNTI_SRCDIR}" ]
 then
     if [ -f ../../umlsetup.sh ]; then
-        UNSTRUNG_SRCDIR=`cd ../.. && pwd`
+        UNTI_SRCDIR=`cd ../.. && pwd`
     else 
         if [ -f ../../../umlsetup.sh ]; then 
-	    UNSTRUNG_SRCDIR=`cd ../../.. && pwd`
+	    UNTI_SRCDIR=`cd ../../.. && pwd`
         fi
     fi  	
 fi
 
 . ../../../umlsetup.sh
-TESTINGROOT=${UNSTRUNG_SRCDIR}/testing
+TESTINGROOT=${UNTI_SRCDIR}/testing
 UTILS=`cd ${TESTINGROOT}/utils && pwd`
 
 . $UTILS/testing-functions.sh
