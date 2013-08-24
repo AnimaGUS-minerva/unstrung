@@ -37,7 +37,7 @@ make_extra_nodes() {
     case "$type" in
       L) ln -s $arg1 /root/dev/$name ;;
       D) mkdir -p /root/dev/$name ;;
-      M) mknod -m=600 /root/dev/$name $arg1 ;;
+      M) mknod --mode=600 /root/dev/$name $arg1 ;;
       *) echo "links.conf: unparseable line ($type $name $arg1)" ;;
     esac
   done
