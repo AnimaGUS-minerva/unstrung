@@ -46,8 +46,8 @@ setup_make() {
     fi
 
     # now describe how to build the initrd.
-    echo "initrd.cpio: ${UNTI_SRCDIR}/testing/utils/initrd.list"
-    echo "$TAB fakeroot ${UNTI_SRCDIR}/testing/utils/buildinitrd ${UNTI_SRCDIR}/testing/utils/initrd.list ${UNTI_SRCDIR} ${BASICROOT}" 
+    echo "initrd.cpio: ${UNTI_SRCDIR}/testing/utils/initrd-`uname -m`.list"
+    echo "$TAB fakeroot ${UNTI_SRCDIR}/testing/utils/buildinitrd ${UNTI_SRCDIR}/testing/utils/initrd-`uname -m`.list ${UNTI_SRCDIR} ${BASICROOT}"
 }
 
 # output should directed to a Makefile
