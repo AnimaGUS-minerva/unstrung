@@ -4,12 +4,12 @@
  * Copyright (C) 2001 Michael Richardson  <mcr@freeswan.org>
  * Copyright (C) 2005 Michael Richardson  <mcr@xelerance.com>
  * Copyright (C) 2010 Michael Richardson  <mcr@sandelman.ca>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -60,7 +60,7 @@ int quitprog(struct netjig_state *ns, int argc, char **argv)
 
 
 /*
- * NEWSWITCH --arpreply switch-name 
+ * NEWSWITCH --arpreply switch-name
  */
 int create_new_switch(struct netjig_state *ns, int argc, char **argv)
 {
@@ -166,7 +166,7 @@ int setdebug(struct netjig_state *ns, int argc, char **argv)
 			fprintf(ns->cmdproto_out,"debug=%d\n", ns->debug);
 			return 0;
 	}
-		
+
 	return 0;
 }
 
@@ -219,7 +219,7 @@ int setrate(struct netjig_state *ns, int argc, char **argv)
 	    return 0;
 	  }
 	}
-		
+
 	return 0;
 }
 
@@ -282,13 +282,13 @@ int setarp(struct netjig_state *ns, int argc, char **argv)
 		fprintf(ns->cmdproto_out,"ERROR - switch '%s' not found\n", switchname);
 		return 2;
 	}
-	  
+
 	if(arpon == -1) {
 		fprintf(ns->cmdproto_out,"OK 1 LINES\n");
 		fprintf(ns->cmdproto_out,"switch '%s' ARP state is: %d\n", switchname, nh->nh_allarp);
 		return 3;
 	}
-		
+
 	if(ns->debug) {
 	  fprintf(stderr, "%s: switch '%s' setting arp reply to %d\n",
 		  progname, nh->nh_name, arpon);
@@ -301,7 +301,7 @@ int setarp(struct netjig_state *ns, int argc, char **argv)
 }
 
 /*
- * RECORDFILE --switchname=foo --recordfile=bar 
+ * RECORDFILE --switchname=foo --recordfile=bar
  */
 int recordfile(struct netjig_state *ns, int argc, char **argv)
 {
@@ -357,7 +357,7 @@ int recordfile(struct netjig_state *ns, int argc, char **argv)
 	  fprintf(ns->cmdproto_out,"ERROR - switch '%s' not found\n", switchname);
 	  return 2;
 	}
-	  
+
 	if(ns->debug) {
 	  fprintf(stderr, "%s: will record %s from '%s' network\n",
 		  progname, recordfilename, nh->nh_name);
@@ -371,7 +371,7 @@ int recordfile(struct netjig_state *ns, int argc, char **argv)
 	  fprintf(ns->cmdproto_out,"ERROR - recordfile '%s' failed\n", recordfilename);
 	  return 3;
 	}
-	  
+
 	nh->nh_outputFile = strdup(recordfilename);
 
 	fprintf(ns->cmdproto_out,"OK 0 LINES\n");
@@ -398,7 +398,7 @@ int playfile(struct netjig_state *ns, int argc, char **argv)
 			{"playfile",    required_argument, 0, 'f'},
 			{"file",        required_argument, 0, 'f'},
 			{"rate",        required_argument, 0, 'r'},
-			{ NULL,         0, 0, 0}, 
+			{ NULL,         0, 0, 0},
 		};
 
 	opterr=0;
@@ -456,7 +456,7 @@ int playfile(struct netjig_state *ns, int argc, char **argv)
 	  fprintf(ns->cmdproto_out,"ERROR - switch '%s' not found\n", switchname);
 	  return 2;
 	}
-	  
+
 	if(ns->debug) {
 	  fprintf(stderr, "%s: will play %s to '%s' network\n",
 		  progname, playfilename, nh->nh_name);
@@ -471,10 +471,10 @@ int playfile(struct netjig_state *ns, int argc, char **argv)
 	  fprintf(stderr, "pcap_open_offline: %s\n", errbuf);
 	  return 3;
 	}
-	  
+
 
 	nh->nh_rate = rate;
-	
+
 	fprintf(ns->cmdproto_out,"OK 0 LINES\n");
 	fflush(ns->cmdproto_out);
 	return 0;
@@ -562,7 +562,7 @@ int dochdir(struct netjig_state *ns, int argc, char **argv)
 	  /* no arguments! */
 	  goto usage;
 	}
-	
+
 	if(chdir(argv[optind])!=0) {
 	  int e;
 	  e=errno;
@@ -571,7 +571,7 @@ int dochdir(struct netjig_state *ns, int argc, char **argv)
 		  argv[optind], strerror(e));
 	  return 1;
 	}
-	  
+
 	fprintf(ns->cmdproto_out,"OK 1 LINES\n");
 	fprintf(ns->cmdproto_out,"DIR=%s\n",getcwd(NULL, 0));
 	return 0;
@@ -645,7 +645,7 @@ int cmdparse(struct netjig_state *ns,
 		cmdprompt(ns);
 		return 0;
 	}
-	
+
 	while(ce->cmdname != NULL) {
 		if(strcasecmp(ce->cmdname, argv[0])==0) {
 			ns->cmdlaststat=(*ce->cmdfunc)(ns, argc, argv);
@@ -668,17 +668,17 @@ int cmdread(struct netjig_state *ns,
 	     char  *buf,
 	     int    len)
 {
-	char *nl;
+        char *nl, *cmdline;
 	int   cmdlen;
 
-	/* 
+	/*
 	 * have to handle partial reads and multiple commands
 	 * per read, since this may in fact be a file or a pipe.
 	 */
 	if((ns->cmdloc + len) > CMDBUF_LEN-1) {
 		fprintf(stderr, "Command is too long, discarding!\n");
 		fflush(stdout);
-		
+
 		ns->cmdloc=0;
 		return 0;
 	}
@@ -701,11 +701,6 @@ int cmdread(struct netjig_state *ns,
 	}
 	return 1;
 }
-
-/*
- * $Log
- *
- */
 
 /*
  *
