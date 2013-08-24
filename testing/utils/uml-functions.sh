@@ -143,7 +143,7 @@ setup_host_make() {
         case $file in
 	    *~) ;;
 	    *CVS/*);;
-	    etc/fstab) fsname=baseconfig/$host/etc/fstab; echo ${fsname} >makeuml-fsname.$$;;
+	    etc/fstab) fsname=baseconfigs/$host/etc/fstab; echo ${fsname} >makeuml-fsname.$$;;
 	    */.\#*);;
 	    *) echo "$hostroot/$file : ${TESTINGROOT}/baseconfigs/$host/$file $hostroot"
 	       echo "$TAB rm -f $hostroot/$file && mkdir -p `dirname $hostroot/$file` && cp ${TESTINGROOT}/baseconfigs/$host/$file $hostroot/$file"
