@@ -41,7 +41,7 @@ public:
             ifindex    = index;
         };
         bool  isself() { return self; };
-        
+
 protected:
 	ip_address nodeip;
 

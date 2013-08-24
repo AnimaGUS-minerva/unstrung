@@ -31,7 +31,7 @@ public:
 
     rpl_event() { };
 
-    rpl_event(struct timeval &relative, 
+    rpl_event(struct timeval &relative,
               unsigned int sec, unsigned int msec,
               event_types t, const char *reason, rpl_debug *deb) {
         init_event(relative, sec, msec, t, reason, deb);
@@ -68,14 +68,14 @@ public:
         //        now.tv_sec, now.tv_usec);
 
         if(alarm_time.tv_sec  <  now.tv_sec)  return true;
-        if(alarm_time.tv_sec  == now.tv_sec && 
+        if(alarm_time.tv_sec  == now.tv_sec &&
            alarm_time.tv_usec <= now.tv_usec) return true;
         return false;
     };
-    
+
     /* calculate against this event */
     struct timeval      occurs_in(struct timeval &now);
-    struct timeval      occurs_in(void);     
+    struct timeval      occurs_in(void);
     const int           miliseconds_util(void);
     const int           miliseconds_util(struct timeval &now);
 
@@ -98,7 +98,7 @@ public:
         struct timeval rel = relative;
 	if(faked_time) {
 	    rel = fake_time;
-	} 
+	}
 
         last_time  = rel;
         repeat_sec = sec;
@@ -120,7 +120,7 @@ public:
 
     dag_network        *mDag;
 
-    /* set to true to remove variable dates from debug output 
+    /* set to true to remove variable dates from debug output
      * used by regression testing routines.
      */
     void init_event(struct timeval &relative,

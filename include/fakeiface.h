@@ -1,7 +1,7 @@
 /*
  * This code was originally written by Michael Richardson <mcr@sandelman.ca>
  * as part of the Unstrung project (http://unstrung.sandelman.ca/), and was originally
- * released under the GPL.  
+ * released under the GPL.
  *
  * The original author (me) thinks that this code is generally useful to others who want
  * to use pcap files as sources of testing data, and the rights to this file are hereby
