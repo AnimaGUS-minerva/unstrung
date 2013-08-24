@@ -13,16 +13,18 @@ setup_make() {
     echo "# RULES for making module"
 
     # figure out our base architecture, as we'll need in the Makefiles.
+    # also force i386 build even for x86_64 platforms.
     SUBARCH=${ARCH-`uname -m`}
     case $SUBARCH in
+	x86_64) SUBARCH=i386;; 
 	i?86) SUBARCH=i386;;
     esac
 
-    echo "IPSECDIR=${PANDORA_SRCDIR}/linux/net/ipsec"
+    echo "IPSECDIR=${UNTI_SRCDIR}/linux/net/ipsec"
     echo "USE_OBJDIR=${USE_OBJDIR}"
-    echo "PANDORA_SRCDIR=${PANDORA_SRCDIR}"
-    echo "include ${PANDORA_SRCDIR}/Makefile.inc"
-    echo "include ${PANDORA_SRCDIR}/Makefile.ver"
+    echo "UNTI_SRCDIR=${UNTI_SRCDIR}"
+    echo "include ${UNTI_SRCDIR}/Makefile.inc"
+    echo "include ${UNTI_SRCDIR}/Makefile.ver"
     echo 
     
     echo "all: "
@@ -32,20 +34,20 @@ setup_make() {
 
     if $domodules
     then
-	echo "module/ipsec.o: ${PANDORA_SRCDIR}/packaging/makefiles/module.make \${IPSECDIR}/*.c"
+	echo "module/ipsec.o: ${UNTI_SRCDIR}/packaging/makefiles/module.make \${IPSECDIR}/*.c"
 	echo "$TAB mkdir -p module"
-	echo "$TAB make -C ${PANDORA_SRCDIR} PANDORA_SRCDIR=${PANDORA_SRCDIR} MODBUILDDIR=$POOLSPACE/module MODBUILDDIR=$POOLSPACE/module KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module "
+	echo "$TAB make -C ${UNTI_SRCDIR} UNTI_SRCDIR=${UNTI_SRCDIR} MODBUILDDIR=$POOLSPACE/module MODBUILDDIR=$POOLSPACE/module KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module "
 	echo
 
-	echo "module26/ipsec.ko: ${PANDORA_SRCDIR}/packaging/makefiles/module26.make \${IPSECDIR}/*.c"
+	echo "module26/ipsec.ko: ${UNTI_SRCDIR}/packaging/makefiles/module26.make \${IPSECDIR}/*.c"
 	echo "$TAB mkdir -p module26"
-	echo "$TAB make -C ${PANDORA_SRCDIR} PANDORA_SRCDIR=${PANDORA_SRCDIR} MODBUILDDIR=$POOLSPACE/module MOD26BUILDDIR=$POOLSPACE/module26 KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module26 "
+	echo "$TAB make -C ${UNTI_SRCDIR} UNTI_SRCDIR=${UNTI_SRCDIR} MODBUILDDIR=$POOLSPACE/module MOD26BUILDDIR=$POOLSPACE/module26 KERNELSRC=$UMLPLAIN ARCH=um SUBARCH=${SUBARCH} module26 "
 	echo
     fi
 
     # now describe how to build the initrd.
-    echo "initrd.cpio: ${PANDORA_SRCDIR}/testing/utils/initrd.list"
-    echo "$TAB fakeroot ${PANDORA_SRCDIR}/testing/utils/buildinitrd ${PANDORA_SRCDIR}/testing/utils/initrd.list ${PANDORA_SRCDIR} ${BASICROOT}" 
+    echo "initrd.cpio: ${UNTI_SRCDIR}/testing/utils/initrd.list"
+    echo "$TAB fakeroot ${UNTI_SRCDIR}/testing/utils/buildinitrd ${UNTI_SRCDIR}/testing/utils/initrd.list ${UNTI_SRCDIR} ${BASICROOT}" 
 }
 
 # output should directed to a Makefile
@@ -57,24 +59,25 @@ setup_host_make() {
     domodules=$5          # true or false
     KERNDIR=`dirname $KERNEL`
     TAB="	@"
+    #TAB="	"
     hostroot=$host/root
     depends=""
 
     echo "# RULES for host $host"
     echo 
 
-    echo "$hostroot:"
+    echo "$hostroot: $hostroot/etc/localtime"
     echo "$TAB mkdir -p $host $hostroot"
     echo
     depends="$depends $host/root"
 
     echo "# make a hard link copy of the ROOT, but"
     echo "# make private copy of /var."
-    echo "$hostroot/sbin/init : ${BASICROOT}/sbin/init"
-    echo "$TAB -(cd ${BASICROOT} && find . -print | cpio -pld $POOLSPACE/$hostroot 2>/dev/null )"
+    echo "$hostroot/etc/localtime : ${BASICROOT}/ROOTVERSION"
+    echo "${TAB}- (cd ${BASICROOT} && find . -print | cpio -pld $POOLSPACE/$hostroot 2>&1 | grep -v 'newer or same age' )"
     echo "$TAB rm -rf $hostroot/var"
 
-    echo "$TAB (cd ${BASICROOT} && find var -print | cpio -pd $POOLSPACE/$hostroot 2>/dev/null )"
+    echo "$TAB (cd ${BASICROOT} && find var -print | cpio -pd $POOLSPACE/$hostroot 2>&1 | grep -v 'newer or same age' )"
 
     # make sure that we have /dev, /tmp and /var/run
     echo "$TAB mkdir -p $hostroot/dev $hostroot/tmp $hostroot/var/run $hostroot/usr/share $hostroot/proc $hostroot/var/log/pluto/peer"
@@ -108,7 +111,9 @@ setup_host_make() {
     echo "$TAB (cd ${TESTINGROOT}/baseconfigs/$host && find . -type f -print) | (cd $hostroot && xargs rm -f)"
     # okay, that's all the stock stuff
     echo 
-    depends="$depends $hostroot/sbin/init"
+    depends="$depends $hostroot/etc/localtime"
+
+    touch makeuml-fsname.$$
 
     # copy global configuration files, and make sure that they are up-to-date.
     (cd ${TESTINGROOT}/baseconfigs/all && find . -type f -print) | sed -e 's,^\./,,' >makeuml.$$
@@ -119,7 +124,7 @@ setup_host_make() {
 	    *~) ;;
 	    *CVS/*);;
 	    */.\#*);;
-	    etc/fstab);;
+	    etc/fstab) fsname=baseconfigs/all/etc/fstab; echo ${fsname} >makeuml-fsname.$$;;
 	    *) echo "$hostroot/$file : ${TESTINGROOT}/baseconfigs/all/$file $hostroot"
 	       echo "$TAB rm -f $hostroot/$file && mkdir -p `dirname $hostroot/$file` && cp ${TESTINGROOT}/baseconfigs/all/$file $hostroot/$file"
 	       echo
@@ -138,7 +143,7 @@ setup_host_make() {
         case $file in
 	    *~) ;;
 	    *CVS/*);;
-	    etc/fstab);;
+	    etc/fstab) fsname=baseconfig/$host/etc/fstab; echo ${fsname} >makeuml-fsname.$$;;
 	    */.\#*);;
 	    *) echo "$hostroot/$file : ${TESTINGROOT}/baseconfigs/$host/$file $hostroot"
 	       echo "$TAB rm -f $hostroot/$file && mkdir -p `dirname $hostroot/$file` && cp ${TESTINGROOT}/baseconfigs/$host/$file $hostroot/$file"
@@ -149,21 +154,23 @@ setup_host_make() {
  
     nicelists=`cat makeuml2.$$`
     depends="$depends $nicelists"
-    rm -f makeuml.$$ makeuml2.$$
+    fsname=`cat makeuml-fsname.$$`
+    rm -f makeuml.$$ makeuml2.$$ makeuml-fsname.$$
 
     # setup the mount of /usr/share
     echo "$hostroot/etc/fstab : "
-    echo "$TAB cp ${TESTINGROOT}/baseconfigs/$host/etc/fstab $hostroot/etc/fstab"
+    echo "$TAB cp ${TESTINGROOT}/${fsname} $hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/share		     hostfs   defaults,ro,$SHAREROOT 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /testing		     hostfs   defaults,ro,${TESTINGROOT} 0 0 >>$hostroot/etc/fstab"
-    echo "$TAB echo none	   /usr/src		     hostfs   defaults,ro,${PANDORA_SRCDIR} 0 0 >>$hostroot/etc/fstab"
+    echo "$TAB echo none	   /usr/src		     hostfs   defaults,ro,${UNTI_SRCDIR} 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/obj		     hostfs   defaults,ro,\${OBJDIRTOP} 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /usr/local		     hostfs   defaults,rw,${POOLSPACE}/${hostroot}/usr/local 0 0 >>$hostroot/etc/fstab"
     echo "$TAB echo none	   /var/tmp		     hostfs   defaults,rw,${POOLSPACE}/${hostroot}/var/tmp 0 0 >>$hostroot/etc/fstab"
     depends="$depends $hostroot/etc/fstab"
 
     echo "$hostroot/lib/modules/stamp: ${KERNDIR}/.config"
-    echo "${TAB}(cd ${KERNDIR} && make ARCH=um INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules_install)"
+    echo "${TAB}echo make ARCH=um SUBARCH=${SUBARCH} INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules modules_install"
+    echo "${TAB}(cd ${KERNDIR} && make ARCH=um SUBARCH=${SUBARCH} INSTALL_MOD_PATH=${POOLSPACE}/${hostroot} modules modules_install)"
     echo "${TAB}touch ${hostroot}/lib/modules/stamp"
     echo ""
     depends="$depends $hostroot/lib/modules/stamp"
@@ -172,8 +179,8 @@ setup_host_make() {
     then
 	# install FreeSWAN if appropriate.
         
-	echo "$hostroot/usr/local/sbin/ipsec : ${PANDORA_SRCDIR}/Makefile.inc ${PANDORA_SRCDIR}/Makefile.ver"
-	echo "$TAB cd ${PANDORA_SRCDIR} && make DESTDIR=$POOLSPACE/$hostroot USE_OBJDIR=true install"
+	echo "$hostroot/usr/local/sbin/ipsec : ${UNTI_SRCDIR}/Makefile.inc ${UNTI_SRCDIR}/Makefile.ver"
+	echo "$TAB cd ${UNTI_SRCDIR} && make DESTDIR=$POOLSPACE/$hostroot USE_OBJDIR=true install"
 	echo
 	depends="$depends $hostroot/usr/local/sbin/ipsec"
 
@@ -192,15 +199,16 @@ setup_host_make() {
 
 	    # make module startup script
 	    startscript=$host/startmodule.sh
-	    echo "$startscript : $PANDORA_SRCDIR/umlsetup.sh $hostroot/ipsec.o initrd.cpio"
+	    echo "$startscript : $UNTI_SRCDIR/umlsetup.sh $hostroot/ipsec.o initrd.cpio"
 	    echo "$TAB echo '#!/bin/sh' >$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
-	    echo "$TAB echo 'if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
+
+	    echo "$TAB echo 'if [ -z \"$UML_n1_CTL\" ]; then if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi; fi' >>$startscript"
 	    echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB # the umlroot= is a local hack >>$startscript"
-	    echo "$TAB echo '$POOLSPACE/plain${KERNVER}/linux initrd=$POOLSPACE/initrd.cpio umlroot=$POOLSPACE/$hostroot root=/dev/ram0 rw ssl=pty umid=$host \$\$net \$\$UML_DEBUG_OPT \$\$UML_"${host}"_OPT  rdinit=/linuxrc gim\$\$*' >>$startscript"
+	    echo "$TAB echo '$POOLSPACE/plain${KERNVER}/vmlinux initrd=$POOLSPACE/initrd.cpio umlroot=$POOLSPACE/$hostroot root=/dev/ram0 rw ssl=pty umid=$host \$\$net \$\$UML_DEBUG_OPT \$\$UML_"${host}"_OPT  rdinit=/linuxrc gim\$\$*' >>$startscript"
 	    echo "$TAB chmod +x $startscript"
 	    echo
 	    depends="$depends $startscript"
@@ -209,10 +217,10 @@ setup_host_make() {
 
     # make startup script
     startscript=$host/start.sh
-    echo "$startscript : $PANDORA_SRCDIR/umlsetup.sh initrd.cpio"
+    echo "$startscript : $UNTI_SRCDIR/umlsetup.sh initrd.cpio"
     echo "$TAB echo '#!/bin/sh' >$startscript"
     echo "$TAB echo ''          >>$startscript"
-    echo "$TAB echo 'if [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
+    echo "$TAB echo 'if [ -z \"\$\${TEST_PURPOSE}\" ] && [ -f ${POOLSPACE}/.switches.sh ]; then . ${POOLSPACE}/.switches.sh; fi' >>$startscript"
     echo "$TAB echo '# get $net value from baseconfig'          >>$startscript"
     echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
     echo "$TAB echo ''          >>$startscript"

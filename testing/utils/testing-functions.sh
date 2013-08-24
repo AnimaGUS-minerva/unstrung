@@ -17,14 +17,14 @@ TCPDUMPFLAGS=${TCPDUMPFLAGS-}
 TEST_GOAL_ITEM=${TEST_GOAL_ITEM-0}
 TEST_PROB_REPORT=${TEST_PROB_REPORT-0}
 TEST_EXPLOIT_URL=${TEST_EXPLOIT_URL-http://www.openswan.org/vuln/}
-TESTUTILS=${UNSTRUNG_SRCDIR}/testing/utils
-FIXUPDIR=${UNSTRUNG_SRCDIR}/testing/utils/fixups
+TESTUTILS=${UNTI_SRCDIR}/testing/utils
+FIXUPDIR=${UNTI_SRCDIR}/testing/utils/fixups
 NJ=${TESTUTILS}/uml_netjig/uml_netjig
 MAKE=${MAKE-make}
 
 summarize_results() {
     if $SUMMARIZE_RESULTS; then
-        perl ${UNSTRUNG_SRCDIR}/testing/utils/regress-summarize-results.pl ${REGRESSRESULTS} ${TESTNAME}${KLIPS_MODULE}
+        perl ${UNTI_SRCDIR}/testing/utils/regress-summarize-results.pl ${REGRESSRESULTS} ${TESTNAME}${KLIPS_MODULE}
     fi
 }
 
@@ -202,7 +202,8 @@ export_variables() {
     export SOUTH_PLAY
     export XHOST_LIST
     export XNET_LIST
-    export UNSTRUNG_SRCDIR
+    export UNTI_SRCDIR
+    export TEST_PURPOSE
 }
 
 # this is called to set additional variables that depend upon testparams.sh
@@ -516,6 +517,34 @@ pcap_filter() {
     fi
 }
 
+compareoutputs() {
+    for net in $XNET_LIST
+    do
+      NET=`echo $net | tr a-z A-Z`
+      REF_OUTPUT=REF_${NET}_OUTPUT
+      OUTPUT=${net}
+      REF_FILTER=REF_${NET}_FILTER
+      verboseecho "Processing ${net} with var ${REF_OUTPUT}/${OUTPUT}/${REF_FILTER}"
+      verboseecho "Variables are: ref: '${!REF_OUTPUT-}' output: '${OUTPUT}' filter: '${!REF_FILTER-}'"
+
+      if [ -n "${!REF_OUTPUT}" ]; then
+          pcap_filter $net "${!REF_OUTPUT-}" "${OUTPUT}" "${!REF_FILTER-}"
+      fi
+    done
+
+    for host in $XHOST_LIST
+    do
+       local consoleref
+       consoleref=REF${KERNVER}_${host}_CONSOLE_OUTPUT
+       lhost=`echo $host | tr 'A-Z' 'a-z'`
+
+	if [ -n "${!consoleref-}" ]
+	then
+	    consolediff ${KERNVER}$lhost OUTPUT/${KERNVER}${lhost}console.txt ${!consoleref}
+	fi
+    done
+}
+
 ###################################
 #
 #  test type: skiptest - do nothing right now.
@@ -570,31 +599,8 @@ do_umlX_test() {
     $NETJIGDEBUG && echo NETJIGCMD: $cmd
     eval $cmd
 
-    for net in $XNET_LIST
-    do
-      NET=`echo $net | tr a-z A-Z`
-      REF_OUTPUT=REF_${NET}_OUTPUT
-      OUTPUT=${net}
-      REF_FILTER=REF_${NET}_FILTER
-      verboseecho "Processing ${net} with var ${REF_OUTPUT}/${OUTPUT}/${REF_FILTER}"
-      verboseecho "Variables are: ref: '${!REF_OUTPUT-}' output: '${OUTPUT}' filter: '${!REF_FILTER-}'"
+    compareoutputs;
 
-      if [ -n "${!REF_OUTPUT}" ]; then
-          pcap_filter $net "${!REF_OUTPUT-}" "${OUTPUT}" "${!REF_FILTER-}"
-      fi
-    done
-
-    for host in $XHOST_LIST
-    do
-       local consoleref
-       consoleref=REF${KERNVER}_${host}_CONSOLE_OUTPUT
-       lhost=`echo $host | tr 'A-Z' 'a-z'`
-
-	if [ -n "${!consoleref-}" ]
-	then
-	    consolediff ${KERNVER}$lhost OUTPUT/${KERNVER}${lhost}console.txt ${!consoleref}
-	fi
-    done
 
     case "$success" in
     true)	exit 0 ;;
@@ -647,7 +653,7 @@ pkttest() {
 
 do_unittest() {
 
-    export ROOTDIR=${UNSTRUNG_SRCDIR}
+    export ROOTDIR=${UNTI_SRCDIR}
     eval `(cd $ROOTDIR; make --no-print-directory env )`
     failnum=1
 
