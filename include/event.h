@@ -126,6 +126,7 @@ public:
     void init_event(struct timeval &relative,
                     unsigned int sec, unsigned int msec,
                     event_types t, const char *reason, rpl_debug *deb) {
+        interface = NULL;
         event_type = t;
         mReason[0]='\0';
         strncat(mReason, reason, sizeof(mReason)-1);
