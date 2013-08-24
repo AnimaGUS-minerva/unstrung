@@ -198,6 +198,11 @@ int main(int argc, char *argv[])
 	usage();
     }
 
+    if(dag==NULL) {
+	fprintf(stderr, "must set at least one DAG to announce\n");
+	usage();
+    }
+
     /* should check for already running instance before stomping PID file */
 
     if(bedaemon) {
@@ -211,6 +216,9 @@ int main(int argc, char *argv[])
     if(pidfile) {
         fprintf(pidfile, "%u\n", getpid());
         fclose(pidfile);
+    } else {
+        fprintf(stderr, "Can not write pid=%u to %s: %s\n",
+                getpid(), pidfilename, strerror(errno));
     }
 
     if(dag == NULL) {
