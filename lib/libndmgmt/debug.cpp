@@ -16,12 +16,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+extern "C" {
+#include <sys/time.h>
+#include <time.h>
+}
 
 #include "debug.h"
+bool want_time_log = true;
 
 void rpl_debug::logv(const char *fmt, va_list vargs)
 {
     if(flag) {
+        if(want_time_log) {
+            struct timeval tv1;
+            gettimeofday(&tv1, NULL);
+
+            struct tm tm1;
+            localtime_r(&tv1.tv_sec, &tm1);
+
+            char tbuf[64];
+            strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
+            fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
+        }
         vfprintf(file, fmt, vargs);
 
 #if 0
