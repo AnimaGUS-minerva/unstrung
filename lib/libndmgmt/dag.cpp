@@ -306,6 +306,12 @@ void dag_network::addselfprefix(network_interface *iface)
     me->makevalid(iface->if_addr, this, this->debug);
     me->markself(iface->get_if_index());
 
+    err_t blah = initsubnet(&me->node_address(), 128, '0', &mPrefix);
+    if(blah) {
+        debug->verbose("initsubnet says: %s\n", blah);
+    }
+    mPrefix.maskbits = 128;
+    debug->verbose("addselfprefix: %u\n", mPrefix.maskbits);
     addprefix(*me, iface, mPrefix);
 
 }
