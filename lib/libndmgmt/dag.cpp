@@ -87,7 +87,7 @@ void dag_network::init_dag(void)
     this->add_to_list();
 }
 
-dag_network::dag_network(dagid_t n_dagid) 
+dag_network::dag_network(dagid_t n_dagid)
 {
     set_dagid(n_dagid);
     init_dag();
@@ -140,7 +140,7 @@ class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
 }
 
 class dag_network *dag_network::find_or_make_by_string(const char *dagid,
-						       rpl_debug *debug, 
+						       rpl_debug *debug,
 						       bool watching)
 {
     int len = strlen(dagid);
@@ -167,10 +167,10 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
 
 /* provide a count of discards */
 const char *dag_network::packet_stat_names[PS_MAX+1]={
-    [PS_SEQ_OLD]                = "sequence too old",                              
+    [PS_SEQ_OLD]                = "sequence too old",
     [PS_PACKET_RECEIVED]        = "packets received",
-    [PS_PACKET_PROCESSED]       = "packets processed",                             
-    [PS_PACKETS_WATCHED]        = "packets received due to watch",                 
+    [PS_PACKET_PROCESSED]       = "packets processed",
+    [PS_PACKETS_WATCHED]        = "packets received due to watch",
     [PS_LOWER_RANK_CONSIDERED]  = "packets with <dagrank",
     [PS_LOWER_RANK_REJECTED]    = "packets with <dagrank rejected",
     [PS_SUBOPTION_UNDERRUN]     = "packets where subopt was too short",
@@ -187,7 +187,7 @@ const char *dag_network::packet_stat_names[PS_MAX+1]={
 
 void dag_network::print_stats(FILE *out, const char *prefix)
 {
-    int i; 
+    int i;
 
     for(i=0; i<PS_MAX; i++) {
 	fprintf(out, "%s %04u (+%04d) %s\n", prefix,
@@ -338,7 +338,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     /* XXX
      * this is actually quite a big deal (SEE ID), setting my RANK.
      * just fake it for now by adding 1.
-     */ 
+     */
     if(mSequence >= dio->rpl_dtsn) {
 	debug->verbose("  Same sequence number, ignore\n");
         this->mStats[PS_SAME_SEQUENCE_IGNORED]++;
@@ -407,15 +407,15 @@ void dag_network::schedule_dio(void)
     if(!mSendDioEvent) {
 	mSendDioEvent = new rpl_event(0, mInterval_msec+1, rpl_event::rpl_send_dio,
 				      mDagName, this->debug);
-    } 
+    }
     mSendDioEvent->event_type = rpl_event::rpl_send_dio;
     mSendDioEvent->reset_alarm(0, mInterval_msec+1);
 
     mSendDioEvent->mDag = this;
     mSendDioEvent->requeue();
     //this->dio_event = re;        // needs to be smart-pointer
-    
-}    
+
+}
 
 /*
  * this routine needs to send out a DAO sooner than
@@ -428,14 +428,14 @@ void dag_network::schedule_dao(void)
     if(!mSendDaoEvent) {
 	mSendDaoEvent = new rpl_event(0, mInterval_msec+2, rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
-    } 
-	
+    }
+
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
     mSendDaoEvent->reset_alarm(0, mInterval_msec+2);
 
     mSendDaoEvent->mDag = this;
     mSendDaoEvent->requeue();
-}    
+}
 
 rpl_node *dag_network::update_route(network_interface *iface,
 				    ip_subnet &prefix, const time_t now)
@@ -485,7 +485,7 @@ rpl_node *dag_network::update_node(network_interface *iface,
     return &peer;
 }
 
-void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio) 
+void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio)
 {
     char dagid[16*6];
 

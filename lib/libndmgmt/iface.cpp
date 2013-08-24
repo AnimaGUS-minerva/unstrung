@@ -70,7 +70,7 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
     alive = false;
     nd_socket = -1;
     set_debug(deb);
-    
+
     this->set_if_name(if_name);
     debug = NULL;
 }
@@ -785,7 +785,7 @@ int network_interface::if_count(void)
 }
 
 /* this runs the next event, even if it is not time yet */
-void network_interface::force_next_event(void) { 
+void network_interface::force_next_event(void) {
     rpl_event *re = things_to_do.next_event();
 
     struct timeval now;
@@ -801,7 +801,7 @@ void network_interface::force_next_event(void) {
 }
 
 /* empty all events */
-void network_interface::clear_events(void) { 
+void network_interface::clear_events(void) {
     rpl_event *re;
     while((re = things_to_do.next_event()) != NULL) {
 	delete re;
@@ -884,7 +884,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         /* now poll for input */
         debug->verbose2("sleeping with %d file descriptors, for %d ms\n",
 			pollnum, timeout);
-#if 0	
+#if 0
 	if(debug->flag) {
 	    things_to_do.printevents(debug->file, "loop");
 	}
@@ -917,7 +917,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 	    dag_network::print_all_dagstats(debug->file, "usr2 ");
 	    signal_usr2 = false;
 	}
-	    
+
     }
 }
 

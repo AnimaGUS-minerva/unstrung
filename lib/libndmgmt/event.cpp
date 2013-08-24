@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2009-2013 Michael Richardson <mcr@sandelman.ca>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -46,7 +46,7 @@ bool                    rpl_event::faked_time;
 struct timeval          rpl_event::fake_time;
 unsigned int            rpl_event::event_counter = 1;
 
-bool rpl_eventless(const class rpl_event *a, const class rpl_event *b) 
+bool rpl_eventless(const class rpl_event *a, const class rpl_event *b)
 {
     int match = b->alarm_time.tv_sec - a->alarm_time.tv_sec;
 #if 0
@@ -56,14 +56,14 @@ bool rpl_eventless(const class rpl_event *a, const class rpl_event *b)
 #endif
     if(match > 0) return false;
     if(match < 0) return true;
-    
+
     match = b->alarm_time.tv_usec - a->alarm_time.tv_usec;
 #if 0
     printf("                     2 a:%010u < b:%10u match:%d\n", a->alarm_time.tv_usec, b->alarm_time.tv_usec, match);
 #endif
     if(match > 0) return false;
     return true;
-};  
+};
 
 bool rpl_event::doit(void)
 {
@@ -75,14 +75,14 @@ bool rpl_event::doit(void)
     case rpl_send_dio:
 	network_interface::send_dio_all(mDag);
         return true;
-        
+
     case rpl_send_dao:
         if(mDag!=NULL) {
             debug->log("event send_dao to parent\n");
             mDag->send_dao();
-        } 
+        }
         return true;
-        
+
     default:
         debug->log("invalid event %d\n", event_type);
         break;
@@ -143,7 +143,7 @@ struct timeval rpl_event::occurs_in(struct timeval &now) {
     if(usec_interval < 0) {
         usec_interval += 1000000;
         borrow = 1;
-    } 
+    }
 
     diff.tv_usec = usec_interval;
     diff.tv_sec = alarm_time.tv_sec - now.tv_sec - borrow;
@@ -169,7 +169,7 @@ const int rpl_event::miliseconds_util() {
 
 struct timeval rpl_event::occurs_in() {
     struct timeval now;
-    
+
     gettimeofday(&now, NULL);
     return occurs_in(now);
 }
