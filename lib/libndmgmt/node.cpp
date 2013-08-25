@@ -24,31 +24,54 @@ rpl_node::rpl_node(const char *ipv6) {
     valid = false;
     self  = false;
     name[0]='\0';
+}
 
+void rpl_node::set_addr(const char *ipv6) {
     if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
         nodeip.u.v6.sin6_family = AF_INET6;
     }
+    calc_name();
+}
+
+rpl_node::rpl_node(const char *ipv6,
+                   const dag_network *dn, rpl_debug *deb) {
+    set_addr(ipv6);
+    set_dag(dn, deb);
+}
+
+void rpl_node::set_addr(const struct in6_addr v6) {
+    nodeip.u.v6.sin6_addr = v6;
+    nodeip.u.v6.sin6_family=AF_INET6;
+    calc_name();
 }
 
 rpl_node::rpl_node(const struct in6_addr v6) {
-        nodeip.u.v6.sin6_addr = v6;
-	nodeip.u.v6.sin6_family=AF_INET6;
-        valid = true;
-        self  = false;
-        name[0]='\0';
+    set_addr(v6);
+    valid = true;
+    self  = false;
+}
+rpl_node::rpl_node(const struct in6_addr v6,
+                   const dag_network *dn, rpl_debug *deb) {
+    set_addr(v6);
+    set_dag(dn, deb);
+}
+
+void rpl_node::calc_name(void) {
+    char *addr = name;
+    if(self) {
+        strcpy(addr, "<ME>");
+        addr += 4;
+    }
+
+    inet_ntop(AF_INET6, &nodeip.u.v6.sin6_addr, addr, INET6_ADDRSTRLEN-(addr-name));
 }
 
 const char *rpl_node::node_name() {
     if(valid) {
         if(name[0]) return name;
 
-        char *addr = name;
-        if(self) {
-            strcpy(addr, "<ME>");
-            addr += 4;
-        }
+        calc_name();
 
-        inet_ntop(AF_INET6, &nodeip.u.v6.sin6_addr, addr, INET6_ADDRSTRLEN-(addr-name));
         return name;
     } else {
         return "<node-not-valid>";
@@ -84,7 +107,7 @@ void rpl_node::makevalid(const struct in6_addr v6,
 	nodeip.u.v6.sin6_family=AF_INET6;
         mDN    = dn;
         this->debug  = deb;
-
+        couldBeValid();
     }
 }
 

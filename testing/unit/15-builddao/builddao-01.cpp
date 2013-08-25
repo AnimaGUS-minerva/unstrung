@@ -63,8 +63,7 @@ static void t1(rpl_debug *deb)
     dn1->set_active();
 
     /* add a host to this network */
-    rpl_node n1("2001:db8::abcd:0002");
-    n1.set_dag(dn1, deb);
+    rpl_node n1("2001:db8::abcd:0002", dn1, deb);
     assert(n1.validP());
 
     struct in6_addr via1;

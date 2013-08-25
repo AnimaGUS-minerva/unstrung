@@ -37,12 +37,9 @@ prefix_node::prefix_node(rpl_debug *deb, rpl_node *announcer, ip_subnet sub)
 
 prefix_node::prefix_node(rpl_debug *deb, const struct in6_addr v6, const int prefixlen)
 {
-    name[0]='\0';
-    mPrefix.addr.u.v6.sin6_addr = v6;
-    mPrefix.maskbits = prefixlen;
-    valid = true;
-    installed = false;
     debug = deb;
+    name[0]='\0';
+    set_prefix(v6, prefixlen);
 }
 
 void prefix_node::set_prefix(const struct in6_addr v6, const int prefixlen)
