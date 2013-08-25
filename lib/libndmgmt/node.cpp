@@ -66,9 +66,6 @@ void rpl_node::set_dag(const dag_network *dn,
 void rpl_node::couldBeValid(void)
 {
     if(!valid) {
-        debug->verbose("  checking validity: %u %u %u\n",
-                       mDN != NULL, this->debug != NULL,
-                       nodeip.u.v6.sin6_family == AF_INET6);
         if(mDN != NULL
            && this->debug != NULL
            && nodeip.u.v6.sin6_family == AF_INET6) {
