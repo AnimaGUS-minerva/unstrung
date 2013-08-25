@@ -1,1 +1,2 @@
+IP6 (hlim 64, next-header ICMPv6 (58) payload length: 40) fe80::216:3eff:fe11:3424 > ff02::1: [icmp6 sum ok] ICMP6, RPL, (CLR)DODAG Information Object [seq:1,instance:0,rank:3,dagid:0xc]
 IP6 (hlim 64, next-header ICMPv6 (58) payload length: 40) fe80::216:3eff:fe11:3424 > fe80::216:3eff:fe11:3424: [icmp6 sum ok] ICMP6, RPL, (CLR)Destination Advertisement Object
