@@ -38,6 +38,7 @@ static struct option const longopts[] =
     { "rank",      1, NULL, 'R'},
     { "kill",      0, 0, 'K'},
     { "verbose",   0, 0, 'v'},
+    { "timelog",   0, 0, 't'},
     { name: 0 },
 };
 
@@ -50,6 +51,7 @@ void usage()
             "\t [-R rank]   [--rank rank]       Initial rank to announce with\n"
             "\t [-I num]    [--instanceid num]  Instance ID (number)\n"
             "\t [-W msec]   [--interval msec]   Number of miliseconds between DIO\n"
+            "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
         );
     exit(EX_USAGE);
 }
@@ -126,6 +128,10 @@ int main(int argc, char *argv[])
             killanydaemon();
             exit(0);
 
+        case 't':
+            deb->want_time_log = true;
+            break;
+
         case 'p':
         {
             ip_subnet prefix;
@@ -167,6 +173,7 @@ int main(int argc, char *argv[])
 	    dag = new dag_network(optarg);
 	    dag->set_debug(deb);
 	    dag->set_active();
+            dag->set_interval(5000);
             break;
 
         case 'v':
