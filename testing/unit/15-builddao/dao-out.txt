@@ -8,9 +8,9 @@ add a prefix to the dn
   peer '2001:db8::abcd:2' announces prefix: 2001:db8::abcd:1005/128
   adding prefix: 2001:db8::abcd:1005/128 to iface: wlan0
   invoking ip -6 addr del 2001:db8::216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr del 2001:db8::216:3eff:fe11:3424/128 dev wlan0
+    would invoke cmd: ip -6 addr del 2001:db8::216:3eff:fe11:3424/128 dev wlan0
   invoking ip -6 addr add 2001:db8::216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr add 2001:db8::216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 addr add 2001:db8::216:3eff:fe11:3424/128 dev wlan0
+    would invoke cmd: ip -6 addr show
 build DAO
 builddao-01 tests finished

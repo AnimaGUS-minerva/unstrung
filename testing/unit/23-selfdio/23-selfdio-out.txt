@@ -4,7 +4,7 @@ found[1]: wlan0 type=ether (inactive new) faked
 found[1]: wlan0 address=fe80::1000:ff:fe64:6423
   new RPL node: fe80::1000:ff:fe64:6423
 Scheduling dio in 2 ms
-inserting event #1 at 1377451590/599025
+inserting event #1 at 1073741824/3024
 Processing input file
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe66:6602
