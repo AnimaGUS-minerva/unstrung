@@ -316,20 +316,22 @@ void dag_network::addprefix(rpl_node peer,
 
 void dag_network::addselfprefix(network_interface *iface)
 {
+    ip_subnet               ll_prefix;
+
     rpl_node *me = find_or_make_member(iface->if_addr);
     me->makevalid(iface->if_addr, this, this->debug);
     me->markself(iface->get_if_index());
 
-    err_t blah = initsubnet(&me->node_address(), 128, '0', &mPrefix);
+    err_t blah = initsubnet(&me->node_address(), 128, '0', &ll_prefix);
     if(blah) {
         debug->verbose("initsubnet says: %s\n", blah);
     }
-    mPrefix.maskbits = 128;
+    ll_prefix.maskbits = 128;
 
     /* insert self into dag */
-    prefix_node &pre = this->dag_children[mPrefix];
+    prefix_node &pre = this->dag_children[ll_prefix];
 
-    pre.markself(this, mPrefix);
+    pre.markself(this, ll_prefix);
 }
 
 void dag_network::potentially_lower_rank(rpl_node &peer,

@@ -67,6 +67,7 @@ bool network_interface::addprefix(prefix_node &prefix)
 {
     char buf[1024];
     ip_subnet newipv6;
+    const char *viaif = if_name;
 
     if(prefix.prefix_valid()) {
         newipv6 = prefix.get_prefix();
