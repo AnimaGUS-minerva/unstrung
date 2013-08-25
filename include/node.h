@@ -20,12 +20,18 @@ class rpl_node {
 public:
         rpl_node() { valid = false; name[0]='\0'; self = false; };
         rpl_node(const char *ipv6);
+        rpl_node(const char *ipv6,
+                 const dag_network *dn, rpl_debug *deb);
         rpl_node(const struct in6_addr v6);
+        rpl_node(const struct in6_addr v6,
+                 const dag_network *dn, rpl_debug *deb);
         bool validP() { return valid; };
 
         void   set_last_seen(time_t clock) { lastseen = clock; };
         time_t get_last_seen() { return lastseen; };
 
+        void set_addr(const char *ipv6);
+        void set_addr(const struct in6_addr v6);
         void set_name(const char *nodename) {
             name[0]='\0';
             strncat(name, nodename, sizeof(name));
@@ -54,6 +60,7 @@ private:
         char       name[INET6_ADDRSTRLEN+10];
         const dag_network *mDN;          /* should be shared_ptr */
         void       couldBeValid(void);
+        void       calc_name(void);
 };
 
 class rpl_less {
