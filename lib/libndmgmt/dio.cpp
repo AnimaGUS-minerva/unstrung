@@ -38,13 +38,13 @@ void network_interface::receive_dio(struct in6_addr from,
                                     const  time_t now,
                                     const u_char *dat, const int dio_len)
 {
-    //debug->verbose(" processing dio(%u) ",dio_len);  /* \n will be below */
+    debug->verbose(" processing dio(%u) ",dio_len);  /* \n will be below */
 
     struct nd_rpl_dio *dio = (struct nd_rpl_dio *)dat;
 
     if(this->packet_too_short("dio", dio_len, sizeof(*dio))) return;
 
-    //dag_network::dump_dio(debug, dio);
+    dag_network::dump_dio(debug, dio);
 
     class dag_network *dn;
     if(watching) {

@@ -1,0 +1,21 @@
+pcap_iface.o: pcap_iface.cpp \
+ ../../include/iface.h \
+ ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/fakeiface.h \
+ ../../include/sll.h \
+ ../../include/ether.h \
+ ../../include/sll.h \
+ ../../include/ether.h \
+ ../../include/hexdump.c \
+ ../../include/netlink/rt_names.h \
+ ../../include/netlink/utils.h \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h \
+ ../../include/netlink/rtm_map.h

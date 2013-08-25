@@ -1,0 +1,30 @@
+inet_proto.o: inet_proto.c \
+ ../../include/netlink/utils.h \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h \
+ ../../include/netlink/rtm_map.h
+libnetlink.o: libnetlink.c \
+ ../../include/netlink/libnetlink.h
+ll_addr.o: ll_addr.c \
+ ../../include/netlink/rt_names.h \
+ ../../include/netlink/utils.h \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h \
+ ../../include/netlink/rtm_map.h
+ll_map.o: ll_map.c \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h
+ll_proto.o: ll_proto.c \
+ ../../include/netlink/utils.h \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h \
+ ../../include/netlink/rtm_map.h \
+ ../../include/netlink/rt_names.h
+ll_types.o: ll_types.c \
+ ../../include/netlink/rt_names.h
+rt_names.o: rt_names.c \
+ ../../include/netlink/rt_names.h
+utils.o: utils.c ../../include/netlink/utils.h \
+ ../../include/netlink/libnetlink.h \
+ ../../include/netlink/ll_map.h \
+ ../../include/netlink/rtm_map.h
