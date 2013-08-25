@@ -145,6 +145,7 @@ protected:
     rpl_node               *node;
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
+    bool                    alive;
 
     /* maintain list of all interfaces */
     void add_to_list(void);
@@ -173,7 +174,6 @@ private:
 
     /* list states */
     bool                    on_list;
-    bool                    alive;
 
     /* timers */
     time_t			last_multicast_sec;

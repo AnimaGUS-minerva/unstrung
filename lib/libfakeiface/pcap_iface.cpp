@@ -58,6 +58,7 @@ pcap_network_interface::pcap_network_interface(const char *name, rpl_debug *deb)
     if(debug) {
 	debug->verbose("Creating PCAP interface: %s\n", name);
     }
+    alive = true;
 }
 
 pcap_network_interface::~pcap_network_interface()
@@ -421,6 +422,7 @@ int pcap_network_interface::process_infile(const char *ifname,
         pcap_network_interface *ndproc =
             setup_infile_outfile(ifname, infile, outfile, deb);
 
+        ndproc->alive = true;
         ndproc->process_pcap();
         return 0;
 }

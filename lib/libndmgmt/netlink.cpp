@@ -218,9 +218,9 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
 
     /* log it for human */
     deb->log("found[%d]: %s type=%s (%s %s)%s\n",
-             ni->if_index, ni->if_name,
+             ni->if_index, ni->get_if_name(),
              ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
-             ni->alive   ? "alive" : "inactive",
+             ni->alive   ? "active" : "inactive",
              ni->on_list ? "existing" :"new",
              ni->faked() ? " faked" : "");
 
