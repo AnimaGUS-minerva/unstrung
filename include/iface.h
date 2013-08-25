@@ -104,7 +104,8 @@ public:
     static network_interface *find_by_name(const char *name);
     static int foreach_if(int (*func)(network_interface*, void*), void*arg);
     static void remove_marks(void);
-    static void force_next_event(void);
+    static bool force_next_event(void);
+    static void terminating(void);
     static void clear_events(void);
 
     struct in6_addr         link_local(void) {
@@ -116,6 +117,7 @@ public:
     static class rpl_event_queue   things_to_do;
 
     static bool                    signal_usr2;
+    static bool                    terminating_soon;
     static void                    catch_signal_usr2(int, siginfo_t *, void*);
     static bool                    faked_time;
     static struct timeval          fake_time;
