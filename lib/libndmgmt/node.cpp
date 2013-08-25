@@ -21,13 +21,13 @@ extern "C" {
 #include "node.h"
 
 rpl_node::rpl_node(const char *ipv6) {
-        valid = false;
-        self  = false;
-        name[0]='\0';
+    valid = false;
+    self  = false;
+    name[0]='\0';
 
-        if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
-                valid=true;
-        }
+    if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
+        nodeip.u.v6.sin6_family = AF_INET6;
+    }
 }
 
 rpl_node::rpl_node(const struct in6_addr v6) {
@@ -55,6 +55,26 @@ const char *rpl_node::node_name() {
     }
 };
 
+void rpl_node::set_dag(const dag_network *dn,
+                       rpl_debug *deb)
+{
+    if(dn)  mDN = dn;
+    if(deb) this->debug = deb;
+    couldBeValid();
+}
+
+void rpl_node::couldBeValid(void)
+{
+    if(!valid) {
+        if(mDN != NULL
+           && this->debug != NULL
+           && nodeip.u.v6.sin6_family == AF_INET6) {
+            valid  = true;
+            debug->verbose("  new RPL node: %s\n", node_name());
+        }
+    }
+}
+
 void rpl_node::makevalid(const struct in6_addr v6,
                          const dag_network *dn,
                          rpl_debug *deb)
@@ -63,10 +83,8 @@ void rpl_node::makevalid(const struct in6_addr v6,
         nodeip.u.v6.sin6_addr = v6;
 	nodeip.u.v6.sin6_family=AF_INET6;
         mDN    = dn;
-        valid  = true;
         this->debug  = deb;
 
-	debug->verbose("  new RPL node: %s\n", node_name());
     }
 }
 

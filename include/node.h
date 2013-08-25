@@ -35,6 +35,7 @@ public:
         ip_address &node_address() { return nodeip; };
         void  makevalid(const struct in6_addr v6,
                         const dag_network *dn, rpl_debug *deb);
+        void  set_dag(const dag_network *dn, rpl_debug *deb);
         rpl_debug *debug;
         void  markself(int index) {
             this->self = true;
@@ -52,6 +53,7 @@ private:
         time_t     lastseen;
         char       name[INET6_ADDRSTRLEN+10];
         const dag_network *mDN;          /* should be shared_ptr */
+        void       couldBeValid(void);
 };
 
 class rpl_less {
