@@ -99,7 +99,7 @@ bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
     addrtot(&peer->node_address(),  0, tbuf, sizeof(tbuf));
 
     snprintf(buf, 1024,
-             "ip -6 addr route add %s via %s dev %s", pbuf, tbuf, if_name);
+             "ip -6 route add %s via %s dev %s", pbuf, tbuf, if_name);
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
