@@ -11,5 +11,5 @@ packet 1 is being processed
   new RPL node: fe80::216:3eff:fe11:3424
 received DAO about network 2001:db8::abcd:2/128, target fe80::216:3eff:fe11:3424
   invoking ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0
-would invoke cmd: ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0
-would invoke cmd: ip -6 route show
+    would invoke cmd: ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0
+    would invoke cmd: ip -6 route show

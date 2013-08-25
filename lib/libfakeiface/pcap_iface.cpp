@@ -410,7 +410,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
 /* used by addprefix() to change system parameters */
 int pcap_network_interface::nisystem(const char *cmd)
 {
-        debug->log("would invoke cmd: %s\n", cmd);
+        debug->log("    would invoke cmd: %s\n", cmd);
 }
 
 int pcap_network_interface::process_infile(const char *ifname,

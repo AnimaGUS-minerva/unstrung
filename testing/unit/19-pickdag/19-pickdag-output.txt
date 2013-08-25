@@ -11,10 +11,10 @@ packet 1 is being processed
   peer 'fe80::216:3eff:fe11:3424' announces prefix: 2001:db8:1::/48
   adding prefix: 2001:db8:1::/48 to iface: wlan0
   invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
+    would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
-would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev wlan0
+    would invoke cmd: ip -6 addr show
 Scheduling dio in 51 ms
 inserting event #1 at 1073741824/52024
 Scheduling dao in 52 ms
