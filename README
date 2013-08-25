@@ -1,47 +1,46 @@
 Ripple (by the Grateful Dead)
 ======
 
-if my words did glow 
+if my words did glow
 With the gold of sunshine
 and my tunes were played on the harp unstrung
-would you hear my voice 
+would you hear my voice
 come through the music
-would you hold it near 
+would you hold it near
 as it were your own
 
 its a hand me down
 the thoughts are broken
-perhaps 
+perhaps
 they're better left unsung
 
 ripple, in still water
 where there is no pebble tossed
 nor wind to blow.
 
-reach out your hand, 
+reach out your hand,
 if your cup is empty
 if your cup is full,
 may be be again.
 
 =====
 
-RPL, pronounced Ripple is an IETF protocol that provides connectivity among 
+RPL, pronounced Ripple is an IETF protocol that provides connectivity among
 nodes that can not all hear each other, but rather have to form a multihop
 mesh-like network.
 
-Unless other mesh efforts, this all happens at layer-3, in IPv6
-Router Solicitation messages. 
+Unlike other mesh efforts, this all happens at layer-3, in IPv6
+ICMP messages (originally, was going to be in Router Solicitation/ND messages).
 
-The authors thinks that once RPL-style "mesh" routing is loose on 
+The authors thinks that once RPL-style "mesh" routing is loose on
 citizen controlled mobile devices that citizens will no longer be
-held hostage to incumbent telcos that dominate the broadband
-"Internet".
+held hostage to incumbent telcos that dominate the broadband "Internet".
 
 This set of programs, plus a test bed/simulation system is a set of tools
 that runs under the Linux kernel:
-	- on netbooks, 
-	- laptops, and 
-	- on phones like the Google Android and Nokia N800.  
+	- on netbooks,
+	- laptops, and
+	- on phones like the Google Android and Nokia N800.
 
 Programs include:
 	sunshine	- run this on root/grounded server to announce
@@ -58,8 +57,10 @@ Programs include:
 
 ====== Testing environment
 
-This is based upon the UML-Network Testing Infrastructure (UNTI or "AUNTIE")
-UML is UserModeLinux -- a completely paravirtualized virtualization technnology.
+This is based upon the UML-Network Testing Infrastructure (UNTI... pronounced
+like the british "aUNTIe")
+UML is UserModeLinux -- a completely paravirtualized virtualization technnology from the
+turn of the century.
 
 The UMLroot image that goes with it can not be created as stock wheezy
 "debootstrap" image.  An image that works can be found at:
