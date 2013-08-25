@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -67,14 +67,14 @@ bool network_interface::addprefix(prefix_node &prefix)
 {
     char buf[1024];
     ip_subnet newipv6;
-            
+
     newipv6 = prefix.get_prefix();
     newipv6.maskbits = 128;
     memcpy(&newipv6.addr.u.v6.sin6_addr.s6_addr[8], eui64, 8);
 
     char sbuf[SUBNETTOT_BUF];
     subnettot(&newipv6, 0, sbuf, sizeof(sbuf));
-    
+
     snprintf(buf, 1024,
              "ip -6 addr add %s dev %s", sbuf, if_name);
 
@@ -89,7 +89,7 @@ bool network_interface::addprefix(prefix_node &prefix)
 bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
 {
     char buf[1024];
-            
+
     char pbuf[SUBNETTOT_BUF], tbuf[SUBNETTOT_BUF];
 
     prefix_node &n = ipv6_prefix_list[prefix];
@@ -97,7 +97,7 @@ bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
 
     subnettot(&n.prefix_number(), 0, pbuf, sizeof(pbuf));
     addrtot(&peer->node_address(),  0, tbuf, sizeof(tbuf));
-    
+
     snprintf(buf, 1024,
              "ip -6 addr route add %s via %s dev %s", pbuf, tbuf, if_name);
 
@@ -108,7 +108,7 @@ bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
     return true;
 }
 
-int network_interface::gather_linkinfo(const struct sockaddr_nl *who, 
+int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
                            struct nlmsghdr *n, void *arg)
 {
 
@@ -123,7 +123,7 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     }
 }
 
-int network_interface::adddel_ipinfo(const struct sockaddr_nl *who, 
+int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
     rpl_debug *deb = (rpl_debug *)arg;
@@ -167,7 +167,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         if(addr) {
             addrlen = RTA_PAYLOAD(addrattr);
             if(addrlen > sizeof(ni->if_addr)) addrlen=sizeof(ni->if_addr);
-            
+
             memcpy(&ni->if_addr, addr, addrlen);
         }
 
@@ -181,11 +181,11 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
     default:
         break;
     }
-        
+
     return 0;
 }
 
-int network_interface::adddel_linkinfo(const struct sockaddr_nl *who, 
+int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
     rpl_debug *deb = (rpl_debug *)arg;
@@ -216,7 +216,7 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     /* log it for human */
     deb->log("found[%d]: %s type=%s (%s %s)%s\n",
              ni->if_index, ni->if_name,
-             ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),            
+             ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
              ni->alive   ? "alive" : "inactive",
              ni->on_list ? "existing" :"new",
              ni->faked() ? " faked" : "");
@@ -262,7 +262,7 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     deb->log("   adding as new interface %s/%s\n",
              ni->eui48_str(b1,sizeof(b1)),
              ni->eui64_str(b2,sizeof(b2)));
-            
+
     return 0;
 }
 
@@ -323,7 +323,7 @@ void network_interface::scan_devices(rpl_debug *deb)
 	}
 
         /* now look for interfaces with no mark, as they may be removed */
-        
+
 }
 
 
