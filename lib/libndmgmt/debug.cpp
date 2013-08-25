@@ -22,7 +22,17 @@ extern "C" {
 }
 
 #include "debug.h"
-bool want_time_log = true;
+
+void rpl_debug::logv_more(const char *fmt, va_list vargs)
+{
+    vfprintf(file, fmt, vargs);
+#if 0
+    int len = strlen(fmt);
+    if(len > 1 && fmt[len-1]!='\n') {
+        fputc('\n', file);
+    }
+#endif
+}
 
 void rpl_debug::logv(const char *fmt, va_list vargs)
 {
@@ -38,14 +48,7 @@ void rpl_debug::logv(const char *fmt, va_list vargs)
             strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
             fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
         }
-        vfprintf(file, fmt, vargs);
-
-#if 0
-        int len = strlen(fmt);
-        if(len > 1 && fmt[len-1]!='\n') {
-            fputc('\n', file);
-        }
-#endif
+        logv_more(fmt, vargs);
     }
 }
 
@@ -65,6 +68,14 @@ void rpl_debug::info(const char *fmt, ...)
     logv(fmt, vargs);
 }
 
+void rpl_debug::info_more(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    logv_more(fmt, vargs);
+}
+
 void rpl_debug::warn(const char *fmt, ...)
 {
     va_list vargs;
@@ -79,6 +90,14 @@ void rpl_debug::error(const char *fmt, ...)
     va_start(vargs,fmt);
 
     logv(fmt, vargs);
+}
+
+void rpl_debug::verbose_more(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    logv_more(fmt, vargs);
 }
 
 void rpl_debug::verbose(const char *fmt, ...)

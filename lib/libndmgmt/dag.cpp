@@ -497,7 +497,7 @@ void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio)
     char dagid[16*6];
 
     format_dagid(dagid, dio->rpl_dagid);
-    debug->info(" [seq:%u,instance:%u,rank:%u,version:%u,%s%s,dagid:%s]\n",
+    debug->info_more(" [seq:%u,instance:%u,rank:%u,version:%u,%s%s,dagid:%s]\n",
                 dio->rpl_dtsn, dio->rpl_instanceid, ntohs(dio->rpl_dagrank),
                 dio->rpl_version,
                 (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
@@ -538,7 +538,7 @@ void dag_network::receive_dio(network_interface *iface,
         return;
     }
 
-    debug->verbose(" processing dio(%u) ",dio_len);  /* \n will be below */
+    debug->info(" processing dio(%u) ",dio_len);  /* \n will be below */
     dump_dio(debug, dio);
 
 
