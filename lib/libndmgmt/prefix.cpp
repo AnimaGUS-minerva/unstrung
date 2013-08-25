@@ -97,6 +97,15 @@ void prefix_node::configureip(network_interface *iface)
     }
 }
 
+void prefix_node::markself(dag_network *dn, ip_subnet prefix)
+{
+    /* addresses (such as link layer) found on interface at boot are already installed */
+    installed = true;
+    set_debug(dn->debug);
+    set_dn(dn);
+    set_prefix(prefix);
+}
+
 /*
  * Local Variables:
  * c-basic-offset:4

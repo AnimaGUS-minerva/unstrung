@@ -325,9 +325,11 @@ void dag_network::addselfprefix(network_interface *iface)
         debug->verbose("initsubnet says: %s\n", blah);
     }
     mPrefix.maskbits = 128;
-    debug->verbose("addselfprefix: %u\n", mPrefix.maskbits);
-    addprefix(*me, iface, mPrefix);
 
+    /* insert self into dag */
+    prefix_node &pre = this->dag_children[mPrefix];
+
+    pre.markself(this, mPrefix);
 }
 
 void dag_network::potentially_lower_rank(rpl_node &peer,

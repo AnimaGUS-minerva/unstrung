@@ -42,6 +42,9 @@ public:
 
         void set_debug(rpl_debug *deb) { debug = deb; };
 
+        /* mark this prefix as a self-prefix */
+        void markself(dag_network *dn, ip_subnet prefix);
+
         ip_subnet &get_prefix() {
             return mPrefix;
         };
