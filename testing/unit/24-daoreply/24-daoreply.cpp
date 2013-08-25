@@ -22,7 +22,8 @@ int main(int argc, char *argv[])
 
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6602", &iface_src2);
 
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-A-ripple.pcap", "/dev/null", deb);
+        const char *pcapin = "../INPUTS/dio-A-ripple.pcap";
+        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin, "../OUTPUTS/24-node-E-out.pcap", deb);
 
 	struct timeval n;
 	n.tv_sec = 1024*1024*1024;
@@ -37,7 +38,11 @@ int main(int argc, char *argv[])
         dag->addselfprefix(iface);
         dag->set_debug(deb);
 
-        printf("Processing input file\n");
+        printf("Processing input file %s on if=[%u]: %s state: %s %s\n",
+               pcapin,
+               iface->get_if_index(), iface->get_if_name(),
+               iface->is_active() ? "active" : "inactive",
+               iface->faked() ? " faked" : "");
         iface->process_pcap();
 
         /* mark system as going on */
