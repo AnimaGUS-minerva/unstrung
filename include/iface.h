@@ -127,6 +127,7 @@ public:
 
     rpl_node *host_node(void) { return node; };
     struct in6_addr         if_addr;
+    bool                    watching;   /* true if we should collect all DAGs*/
 
 protected:
     static int    gather_linkinfo(const struct sockaddr_nl *who,
@@ -142,7 +143,6 @@ protected:
     rpl_node               *node;
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
-    bool                    watching;   /* true if we should collect all DAGs*/
 
     /* maintain list of all interfaces */
     void add_to_list(void);
