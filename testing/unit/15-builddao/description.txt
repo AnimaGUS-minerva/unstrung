@@ -1,0 +1,4 @@
+This test case builds a DAO message to send.
+To do so, it creates a DAG, adding a node and a prefix to it,
+and then arranges to announce it.
+

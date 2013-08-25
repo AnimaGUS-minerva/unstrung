@@ -12,7 +12,7 @@ public:
         rpl_debug(bool verbose, FILE *out) {
                 flag = verbose;
                 file = out;
-                want_time_log = true;
+                want_time_log = false;
         };
 
         /* debugging */
