@@ -46,6 +46,7 @@ extern "C" {
 
 bool                  network_interface::signal_usr2;
 bool                  network_interface::faked_time;
+bool                  network_interface::terminating_soon = false;
 struct timeval        network_interface::fake_time;
 class rpl_event_queue network_interface::things_to_do;
 
@@ -785,18 +786,26 @@ int network_interface::if_count(void)
 }
 
 /* this runs the next event, even if it is not time yet */
-void network_interface::force_next_event(void) {
+void network_interface::terminating(void) {
+    terminating_soon = true;
+}
+
+/* this runs the next event, even if it is not time yet */
+bool network_interface::force_next_event(void) {
     rpl_event *re = things_to_do.next_event();
 
     struct timeval now;
     gettimeofday(&now, NULL);
 
     if(re) {
-	if(re->doit()) {
-	    re->requeue(now);
+	if(re->doit() && !terminating_soon) {
+            re->requeue(now);
 	} else {
 	    delete re;
 	}
+        return true;
+    } else {
+        return false;
     }
 }
 
