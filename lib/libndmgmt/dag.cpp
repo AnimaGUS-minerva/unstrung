@@ -432,6 +432,9 @@ void dag_network::schedule_dio(void)
 
 void dag_network::schedule_dio(unsigned int msec)
 {
+    /* do nothing if there is no valid DAG */
+    if(dag_rank_infinite()) return;
+
     debug->verbose("Scheduling dio in %u ms\n", msec+1);
 
     if(!mSendDioEvent) {
