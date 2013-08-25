@@ -27,7 +27,8 @@ enum packet_stats {
     PS_MAX,
 };
 
-#define RANK_INFINITE 65537     /* rank is otherwise 16bits */
+#define RANK_INFINITE     65537     /* rank is otherwise 16bits */
+#define INVALID_SEQUENCE    257     /* sequence is 8 bits */
 
 class rpl_dio;
 
@@ -267,7 +268,7 @@ private:
 
 	/* RiPpLe statistics */
 	enum RPL_DIO_MOP        mMode;
-	unsigned int            mSequence;
+	unsigned short          mSequence;
 	unsigned int            mInstanceid;
 	unsigned int            mDagrank;
 	unsigned int            mLifetime;      /* dag lifetime */
