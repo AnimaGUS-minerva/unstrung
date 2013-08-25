@@ -63,12 +63,19 @@ static void t1(rpl_debug *deb)
     dn1->set_active();
 
     /* add a host to this network */
-    rpl_node n1("2001:db8::abcd:0002/128");
+    rpl_node n1("2001:db8::abcd:0002");
+    n1.set_dag(dn1, deb);
+    assert(n1.validP());
+
     struct in6_addr via1;
     inet_pton(AF_INET6, "2001:db8::abcd:1005", &via1);
+
+    /* add a prefix to the network */
     prefix_node pvia1(deb, via1, 128);
+    deb->verbose("add a prefix to the dn\n");
     dn1->addprefix(n1, my_if, pvia1.get_prefix());
 
+    deb->verbose("build DAO\n");
     int len = dn1->build_dao(buf, 2048);
     assert(len == 56);
 
