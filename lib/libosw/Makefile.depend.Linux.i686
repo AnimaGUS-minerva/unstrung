@@ -1,0 +1,18 @@
+addrtot.o: addrtot.c ../../include/oswlibs.h
+addrtypeof.o: addrtypeof.c \
+ ../../include/oswlibs.h
+anyaddr.o: anyaddr.c ../../include/oswlibs.h
+initaddr.o: initaddr.c ../../include/oswlibs.h
+initsubnet.o: initsubnet.c \
+ ../../include/oswlibs.h
+portof.o: portof.c ../../include/oswlibs.h
+subnettot.o: subnettot.c \
+ ../../include/oswlibs.h \
+ ../../include/oswconstants.h
+subnettypeof.o: subnettypeof.c \
+ ../../include/oswlibs.h
+ttoaddr.o: ttoaddr.c ../../include/oswlibs.h
+ttosubnet.o: ttosubnet.c \
+ ../../include/oswlibs.h
+ttoul.o: ttoul.c ../../include/oswlibs.h
+ultot.o: ultot.c ../../include/oswlibs.h

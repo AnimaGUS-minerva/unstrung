@@ -94,7 +94,7 @@ dag_network::dag_network(dagid_t n_dagid)
 }
 
 
-dag_network::dag_network(char *s_dagid)
+dag_network::dag_network(const char *s_dagid)
 {
     set_dagid(s_dagid);
     init_dag();
