@@ -559,11 +559,11 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	}
 	switch(nd_options->nd_opt_type) {
 	case ND_OPT_SOURCE_LINKADDR:
-            debug->verbose(" source-linkaddr \n");
+            debug->verbose_more(" source-linkaddr \n");
 	    break;
 
 	case ND_OPT_TARGET_LINKADDR:
-	    debug->verbose(" target-linkaddr \n");
+	    debug->verbose_more(" target-linkaddr \n");
 	    break;
 
 	case ND_OPT_PREFIX_INFORMATION:
@@ -576,7 +576,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	    if(debug->verbose_test()) {
 		char prefix_addrbuf[INET6_ADDRSTRLEN];
 		inet_ntop(AF_INET6, &nopi->nd_opt_pi_prefix, prefix_addrbuf, INET6_ADDRSTRLEN);
-		fprintf(this->verbose_file, " prefix %s/%u (valid=%us, preferred=%us) flags=%s%s%s\n",
+                debug->verbose(" prefix %s/%u (valid=%us, preferred=%us) flags=%s%s%s\n",
 			prefix_addrbuf, nopi->nd_opt_pi_prefix_len,
 			nopi->nd_opt_pi_valid_time,
 			nopi->nd_opt_pi_preferred_time,
@@ -588,19 +588,19 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	break;
 
 	case ND_OPT_REDIRECTED_HEADER:
-	    debug->verbose(" redirected \n");
+	    debug->verbose_more(" redirected \n");
 	    break;
 
 	case ND_OPT_MTU:
-            debug->verbose(" mtu \n");
+            debug->verbose_more(" mtu \n");
 	    break;
 
 	case ND_OPT_RTR_ADV_INTERVAL:
-	    debug->verbose(" rtr-interval \n");
+	    debug->verbose_more(" rtr-interval \n");
 	    break;
 
 	case ND_OPT_HOME_AGENT_INFO:
-	    debug->verbose(" home-agent-info \n");
+	    debug->verbose_more(" home-agent-info \n");
 	    break;
 
 	default:
