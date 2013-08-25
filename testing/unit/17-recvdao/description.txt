@@ -1,4 +1,5 @@
-This test case validates that we can receive a DAO message, and that we
-install source routes for the destinations listed.
+This test case validates that we can receive a DAO message
+from a node of higher rank, and that we install source routes for the
+destinations listed.
 
 
