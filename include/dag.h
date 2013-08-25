@@ -109,6 +109,7 @@ public:
         /* send a unicast summary to new parent */
         void send_dao(void);
         void schedule_dio(void);
+        void schedule_dio(unsigned int when);
 
 	/* send out a new downstream announcement */
         void schedule_dao(void);

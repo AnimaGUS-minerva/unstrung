@@ -19,6 +19,8 @@ class rpl_node;
 class rpl_eventless;
 class rpl_event;
 
+#define IMMEDIATELY 1  /* ms */
+
 class rpl_event {
 public:
     friend class rpl_eventless;
@@ -101,8 +103,6 @@ public:
 	}
 
         last_time  = rel;
-        repeat_sec = sec;
-        repeat_msec= msec;
         alarm_time.tv_usec = rel.tv_usec + msec*1000;
         alarm_time.tv_sec  = rel.tv_sec  + sec;
         while(alarm_time.tv_usec > 1000000) {
@@ -132,6 +132,8 @@ public:
         strncat(mReason, reason, sizeof(mReason)-1);
         debug = deb;
 	event_number = event_counter++;
+        repeat_sec = sec;
+        repeat_msec= msec;
         set_alarm(relative, sec, msec);
     };
 
