@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
 
     dag->addselfprefix(iface);
     dag->set_debug(deb);
-    dag->schedule_dio();
+    dag->schedule_dio(IMMEDIATELY);
 
     network_interface::main_loop(stderr, deb);
 
