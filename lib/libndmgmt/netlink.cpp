@@ -67,6 +67,7 @@ bool network_interface::addprefix(prefix_node &prefix)
 {
     char buf[1024];
     ip_subnet newipv6;
+    const char *viaif = if_name;
 
     newipv6 = prefix.get_prefix();
     newipv6.maskbits = 128;
@@ -75,8 +76,15 @@ bool network_interface::addprefix(prefix_node &prefix)
     char sbuf[SUBNETTOT_BUF];
     subnettot(&newipv6, 0, sbuf, sizeof(sbuf));
 
+    // this would be better, but results in unreachable routes.
+    // viaif = "lo";
     snprintf(buf, 1024,
-             "ip -6 addr add %s dev lo", sbuf);
+             "ip -6 addr del %s dev %s", sbuf, viaif);
+    debug->log("  invoking %s\n", buf);
+    nisystem(buf);
+
+    snprintf(buf, 1024,
+             "ip -6 addr add %s dev %s", sbuf, viaif);
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
