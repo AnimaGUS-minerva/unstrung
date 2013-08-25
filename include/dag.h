@@ -35,7 +35,7 @@ class rpl_dio;
 class dag_network {
 public:
         dag_network(dagid_t dagid);
-        dag_network(char *dagid);
+        dag_network(const char *dagid);
         ~dag_network();
         static class dag_network *find_by_dagid(dagid_t dagid);
         static class dag_network *find_or_make_by_dagid(dagid_t dagid,
