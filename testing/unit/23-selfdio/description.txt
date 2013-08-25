@@ -1,0 +1,10 @@
+This test case validates that we can receive a DIO message
+from a node of higher rank, and that we will ignore it, because we
+are already lower rank than it.
+This test case starts out with the assumption that it the DAG
+was originally announced from this node, so the DIO we would have sent
+is actually built (but not sent), and then we start to listen for
+the reply.
+
+
+
