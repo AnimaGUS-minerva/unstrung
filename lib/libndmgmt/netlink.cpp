@@ -76,7 +76,7 @@ bool network_interface::addprefix(prefix_node &prefix)
     subnettot(&newipv6, 0, sbuf, sizeof(sbuf));
 
     snprintf(buf, 1024,
-             "ip -6 addr add %s dev %s", sbuf, if_name);
+             "ip -6 addr add %s dev lo", sbuf);
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
