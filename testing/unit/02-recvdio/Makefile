@@ -32,3 +32,10 @@ part04: recv-01
 
 clean::
 	@rm -rf recv-01 *.o
+
+update::
+	cp ../OUTPUTS/recv-02-output.raw recv-02-output.txt
+	cp ../OUTPUTS/recv-03-output.raw recv-03-output.txt
+	cp ../OUTPUTS/recv-04-output.raw recv-04-output.txt
+
+
