@@ -4,27 +4,24 @@ found[1]: wlan0 type=ether (inactive new) faked
 found[1]: wlan0 address=fe80::1000:ff:fe64:6423
 PROCESSING ../INPUTS/senddio.pcap
   new RPL node: fe80::1022:ff:fe64:6423
+ processing dio(24)  [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
 Scheduling dio in 501 ms
 inserting event #1 at 1073741824/502024
 Scheduling dao in 502 ms
 inserting event #2 at 1073741824/503024
+ processing dio(24)  [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 1)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
   But it is the same parent as before: ignored
+ processing dio(24)  [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
   does peer 'fe80::1022:ff:fe64:6423' have better rank? (1 < 1)
   Yes, 'fe80::1022:ff:fe64:6423' has best rank 1
   But it is the same parent as before: ignored
 packet 1 is being processed
- processing dio(24)
- [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
 packet 2 is not ICMPv6, but=proto:0
 packet 3 is being processed
- processing dio(24)
- [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
 packet 4 is not ICMPv6, but=proto:0
 packet 5 is being processed
- processing dio(24)
- [seq:10,instance:42,rank:1,version:17,grounded,non-storing,dagid:thisismynicedag1]
 packet 6 is not ICMPv6, but=proto:0

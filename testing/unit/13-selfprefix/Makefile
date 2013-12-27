@@ -11,8 +11,11 @@ programs::
 
 check::	selfprefix-13
 	@mkdir -p ../OUTPUTS
-	@echo SELFPREFIX13: 
+	@echo SELFPREFIX13:
 	./selfprefix-13 2>&1 | tee ../OUTPUTS/selfprefix-13-output.raw | diff -B - selfprefix-13-output.txt
 
 clean::
 	@rm -rf selfprefix-13 *.o
+
+update::
+	cp ../OUTPUTS/selfprefix-13-output.raw selfprefix-13-output.txt
