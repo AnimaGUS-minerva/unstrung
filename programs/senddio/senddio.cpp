@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
+ * Copyright (C) 2009-2013 Michael Richardson <mcr@sandelman.ca>
  */
 
 /*

@@ -1,6 +1,7 @@
 /*
- * internal definitions for use within the library; do not export!
- * Copyright (C) 1998, 1999  Henry Spencer.
+ * header file for Openswan parsing and utility library
+ * Copyright (C) 1998, 1999  Henry Spencer and FreeS/WAN team
+ * Copyright (C) 2013  Michael Richardson <mcr@sandelman.ca>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Library General Public License as published by
