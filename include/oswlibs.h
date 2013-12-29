@@ -6,7 +6,7 @@
  * under the terms of the GNU Library General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/lgpl.txt>.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
@@ -109,12 +109,12 @@ size_t subnettot(const ip_subnet *src, int format, char *buf, size_t buflen);
 size_t ultot(unsigned long src, int format, char *buf, size_t buflen);
 #define	ULTOT_BUF	(22+1)	/* holds 64 bits in octal */
 
-size_t subnetporttot(const ip_subnet *sub, 
+size_t subnetporttot(const ip_subnet *sub,
                      int format, char *dst,
                      size_t dstlen);
 
 
-#define _OSWLIBS_H_ 
+#define _OSWLIBS_H_
 #endif /* _OSWLIBS_H_ */
 
 /*

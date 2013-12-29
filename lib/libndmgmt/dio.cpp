@@ -54,7 +54,7 @@ void network_interface::receive_dio(struct in6_addr from,
     } else {
 	dn = dag_network::find_by_dagid(dio->rpl_dagid);
     }
-	
+
     if(dn) {
 	/* and process it */
 	dn->receive_dio(this, from, now, dio, dio_len);

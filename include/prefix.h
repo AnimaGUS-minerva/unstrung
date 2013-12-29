@@ -49,7 +49,7 @@ public:
         bool is_installed() {
             return installed;
         };
-        
+
 protected:
         ip_subnet    mPrefix;
         rpl_debug   *debug;

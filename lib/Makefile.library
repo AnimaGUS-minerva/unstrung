@@ -15,7 +15,7 @@ WCASTQUAL?=-Wcast-qual
 
 # Original flags
 INCLUDES+=-I. -I${UNSTRUNG_SRCDIR}
-INCLUDES+=-I${UNSTRUNG_SRCDIR}/include 
+INCLUDES+=-I${UNSTRUNG_SRCDIR}/include
 CFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 CXXFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 
@@ -34,7 +34,7 @@ CFLAGS+= -Wstrict-prototypes
 #CFLAGS+= -pedantic
 #CFLAGS+= -W
 #CFLAGS+= -Wwrite-strings
-CFLAGS+= -Wbad-function-cast 
+CFLAGS+= -Wbad-function-cast
 CFLAGS+= ${CROSSFLAGS}
 
 ifeq ($(USE_NAT_TRAVERSAL),true)
@@ -54,8 +54,8 @@ ifeq ($(SHOULDWERESTART),true${ONEFILE})
 all programs clean install::
 	cd ${UNSTRUNG_SRCDIR} && cd ${OBJDIRTOP}/lib/lib${LIBRARY} && ${MAKE} $@
 else
-all::	$(LIB) 
-programs:: $(LIB) 
+all::	$(LIB)
+programs:: $(LIB)
 clean::	cleanall
 install:: doinstall
 

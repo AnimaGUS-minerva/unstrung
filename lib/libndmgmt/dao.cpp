@@ -78,7 +78,7 @@ void network_interface::receive_dao(struct in6_addr from,
     } else {
 	dn = dag_network::find_by_dagid(dagid);
     }
-	
+
     if(dn) {
 	/* and process it */
 	dn->receive_dao(this, from, now, dao, dat2, dat_len);

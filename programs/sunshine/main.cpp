@@ -5,7 +5,7 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -27,18 +27,18 @@
 char *progname;
 static struct option const longopts[] =
 {
-    { "help",      0, 0, '?'}, 
-    { "interface", 0, 0, 'i'}, 
-    { "daemon",    0, 0, 'D'}, 
+    { "help",      0, 0, '?'},
+    { "interface", 0, 0, 'i'},
+    { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
     { "instance",  1, NULL, 'I'},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
     { "dagid",     1, NULL, 'G'},
     { "rank",      1, NULL, 'R'},
-    { "kill",      0, 0, 'K'}, 
-    { "verbose",   0, 0, 'v'}, 
-    { name: 0 }, 
+    { "kill",      0, 0, 'K'},
+    { "verbose",   0, 0, 'v'},
+    { name: 0 },
 };
 
 void usage()
@@ -86,7 +86,7 @@ void killanydaemon(void)
         perror("kill");
         exit(3);
     }
-   
+
     unlink(pidfilename);
 
     exit(0);
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
         case 'p':
         {
             ip_subnet prefix;
-            
+
             err_t e = ttosubnet(optarg, strlen(optarg),
                                 AF_INET6, &prefix);
 
@@ -145,23 +145,23 @@ int main(int argc, char *argv[])
         case 'I':
 	    check_dag(dag);
             dag->set_instanceid(atoi(optarg));
-            break; 
+            break;
 
         case 'W':
 	    check_dag(dag);
             dag->set_interval(atoi(optarg));
-            break; 
+            break;
 
         case 'R':
 	    check_dag(dag);
-	    {	
+	    {
 		int rank = atoi(optarg);
 		dag->set_dagrank(rank);
 		//fprintf(stderr, "setting rank for %s to %u\n", dag->get_dagName(),
 		//    rank, dag->get_dagRank());
 		dag->set_sequence(1);
 	    }
-            break; 
+            break;
 
         case 'G':
 	    dag = new dag_network(optarg);

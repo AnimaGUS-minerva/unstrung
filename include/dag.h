@@ -176,7 +176,7 @@ public:
 	void set_prefix(const ip_subnet prefix);
 	rpl_node    *my_dag_node(void);
 	dag_network *my_dag_net(void);
-	
+
 	void set_mode(enum RPL_DIO_MOP m) {
 	    mMode = m;
 	};
@@ -190,7 +190,7 @@ public:
 		mMode = RPL_DIO_STORING;
 	    }
 	}
-	
+
 	void set_multicast() {
 	    if(mMode == RPL_DIO_NONSTORING ||
 	       mMode == RPL_DIO_NONSTORING_MULTICAST) {
@@ -279,7 +279,7 @@ private:
 	/* must be class, due to forward reference */
 	class rpl_event        *mSendDioEvent;  /* when to send a DIO */
 	class rpl_event        *mSendDaoEvent;  /* when to send a DAO */
-	
+
         // XXX replace with dag_network_map!!!
         class dag_network *next;
         static class dag_network *all_dag;

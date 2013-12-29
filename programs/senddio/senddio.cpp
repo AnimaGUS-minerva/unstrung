@@ -3,13 +3,13 @@
  */
 
 /*
- * parts of this file are derived from send.c of radvd, by 
+ * parts of this file are derived from send.c of radvd, by
  *
  *   Authors:
  *    Pedro Roque		<roque@di.fc.ul.pt>
- *    Lars Fenneberg		<lf@elemental.net>	 
+ *    Lars Fenneberg		<lf@elemental.net>
  *
- *   This software is Copyright 1996,1997 by the above mentioned author(s), 
+ *   This software is Copyright 1996,1997 by the above mentioned author(s),
  *   All Rights Reserved.
  *
  *   The license which is distributed with this software in the file COPYRIGHT
@@ -39,7 +39,7 @@ extern "C" {
 #include "iface.h"
 #include "fakeiface.h"
 
-/* open a raw IPv6 socket, and 
+/* open a raw IPv6 socket, and
    - send a router advertisement for prefix on argv. (-p)
    - send data from file (in hex)  (-d)
 */
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     memset(icmp_body, 0, sizeof(icmp_body));
 
     deb = new rpl_debug(verbose, stderr);
-	
+
     while((c=getopt_long(argc, argv, "D:GI:P:R:S:Td:i:h?p:svw:", longoptions, NULL))!=EOF){
         switch(c) {
         case 'd':
@@ -154,10 +154,10 @@ int main(int argc, char *argv[])
             }
             iface = (pcap_network_interface *)pcap_network_interface::find_by_name(optarg);
             break;
-			
+
         case 'w': /* --pcapout */
 	    pcapoutfile = optarg;
-	    
+
 	    /* FALLTHROUGH */
         case 'T':
             if(initted) {
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
 
     exit(0);
 }
-	
+
 /*
  * Local Variables:
  * c-basic-offset:4
