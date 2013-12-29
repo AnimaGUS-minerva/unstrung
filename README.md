@@ -1,3 +1,6 @@
+Ripple (by the Grateful Dead)
+======
+
 if my words did glow
 With the gold of sunshine
 and my tunes were played on the harp unstrung
@@ -56,10 +59,15 @@ Programs include:
 
 This is based upon the UML-Network Testing Infrastructure (UNTI... pronounced
 like the british "aUNTIe")
-UML is UserModeLinux -- a completely paravirtualized virtualization technnology from the
-turn of the century.
+UML is UserModeLinux -- a completely paravirtualized virtualization
+technnology from the turn of the century.
 
 The UMLroot image that goes with it can not be created as stock wheezy
+"debootstrap" image.  An image that works can be found at:
+        http://junk.sandelman.ca/umlroot/umlroot-39.xz
+
+Michael Richardson <mcr@sandelman.ca>,
+Ottawa, Ontario, October 2009-2013.
 
 
 
