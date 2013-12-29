@@ -15,7 +15,7 @@
 # RCSID $Id: Makefile.top,v 1.4 2005/07/18 03:46:13 mcr Exp $
 
 clean::
-	-(cd ${PANDORA_SRCDIR} && $(MAKE) modclean && $(MAKE) mod26clean)
+	-echo cleaning
 
 distclean:	clean
 	if [ -f umlsetup.sh ]; then source umlsetup.sh; if [ -d "$$POOLSPACE" ]; then rm -rf $$POOLSPACE; fi; fi

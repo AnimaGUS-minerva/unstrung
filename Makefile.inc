@@ -22,9 +22,9 @@ LIBNDMGMT=${PANDORA_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${PANDORA_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${PANDORA_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${PANDORA_OBJDIR}/lib/libfakeiface/libfakeiface.a
-#LIBPCAP=/usr/local/ia32/lib/libpcap.a
+LIBPCAP=/usr/local/ia32/lib/libpcap.a
 #LIBPCAP=-L/usr/local/ia32/lib -lpcap
-LIBPCAP=-lpcap
+#LIBPCAP=-lpcap
 # needed by libpcap
 EXTRALIBS=-lusb-1.0
 
@@ -33,7 +33,7 @@ NEEDCHECK?=check
 clean ${NEEDCHECK} programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
-		(cd $$d && $(MAKE) srcdir=${srcdir}/$$d/ PANDORA_SRCDIR=${PANDORA_SRCDIR} $@ ) || exit 1; \
+		$(MAKE) -C $$d PANDORA_SRCDIR=${PANDORA_SRCDIR} $@ || exit 1; \
 	done;
 
 env:

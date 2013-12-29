@@ -14,6 +14,7 @@
 
 
 PANDORA_SRCDIR?=$(shell cd ../..; pwd)
+export PANDORA_SRCDIR
 
 include ${PANDORA_SRCDIR}/Makefile.ver
 include ${PANDORA_SRCDIR}/Makefile.inc
