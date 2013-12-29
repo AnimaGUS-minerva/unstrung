@@ -49,6 +49,10 @@ public:
             return mPrefix;
         };
 
+        bool prefix_valid() {
+            return isvalidsubnet(&mPrefix);
+        };
+
         bool is_installed() {
             return installed;
         };
