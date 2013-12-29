@@ -3,14 +3,14 @@
 default:: programs
 
 # stuff.
-INC=${UNSTRUNG_SRCDIR}/include
+INC=${PANDORA_SRCDIR}/include
 CROSSFLAGS=-m32
 CFLAGS+=-I${INC}
 CXXFLAGS+=-I${INC}
 OSDEP=$(shell uname -s).$(shell arch)
 
 USE_OBJDIR=false
-UNSTRUNG_OBJDIR=${UNSTRUNG_SRCDIR}/.
+PANDORA_OBJDIR=${PANDORA_SRCDIR}/.
 XMLTO=xmlto
 
 MANTREE=${DESTDIR}/usr/share/man

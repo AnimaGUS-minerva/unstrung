@@ -1,4 +1,4 @@
-INC=${UNSTRUNG_SRCDIR}/include
+INC=${PANDORA_SRCDIR}/include
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CXXFLAGS+=-I/sandel/include -g ${CROSSFLAGS}

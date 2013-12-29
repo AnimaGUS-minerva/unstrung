@@ -1,6 +1,6 @@
-UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
+PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
 24-daoreply: 24-daoreply.cpp ${INC}/iface.h ${LIBS}

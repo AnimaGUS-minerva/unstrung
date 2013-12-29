@@ -1,4 +1,4 @@
-# Makefile for the UNSTRUNG sunshine daemon
+# Makefile for the PANDORA sunshine daemon
 # Copyright (C) 2009-2013 Michael Richardson <mcr@sandelman.ca>
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -11,8 +11,8 @@
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
 
-UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
-srcdir?=${UNSTRUNG_SRCDIR}/programs/peck/
+PANDORA_SRCDIR?=$(shell cd ../..; pwd)
+srcdir?=${PANDORA_SRCDIR}/programs/peck/
 
 PROGRAM=peck
 # local install of pcap.h, or make sure you have libpcap-dev installed.
@@ -20,4 +20,4 @@ CFLAGS+=-I/sandel/include -g
 PROGRAMDIR=/sbin
 OBJS=peck.o
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
+include ${PANDORA_SRCDIR}/programs/Makefile.program

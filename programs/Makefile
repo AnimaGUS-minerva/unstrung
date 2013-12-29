@@ -14,12 +14,14 @@
 #
 
 
-UNSTRUNG_SRCDIR?=$(shell cd ..; pwd)
-export UNSTRUNG_SRCDIR
+PANDORA_SRCDIR?=$(shell cd ..; pwd)
+export PANDORA_SRCDIR
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
 SUBDIRS=peck senddio sunshine senddao
 
+unitcheck:
+	@true
