@@ -5,27 +5,12 @@
 #include "node.h"
 #include "prefix.h"
 #include "debug.h"
+extern "C" {
+    /* for packet_stats enum */
+#include "counter_names.h"
+}
 
 typedef u_int8_t dagid_t[DAGID_LEN];
-
-enum packet_stats {
-    PS_SEQ_OLD,
-    PS_PACKET_RECEIVED,
-    PS_PACKET_PROCESSED,
-    PS_PACKETS_WATCHED,
-    PS_LOWER_RANK_CONSIDERED,
-    PS_LOWER_RANK_REJECTED,
-    PS_SUBOPTION_UNDERRUN,
-    PS_SELF_PACKET_RECEIVED,
-    PS_DAO_PACKET_RECEIVED,
-    PS_DIO_PACKET_RECEIVED,
-    PS_DAO_PACKET_IGNORED,
-    PS_DIO_PACKET_IGNORED,
-    PS_DAG_CREATED_FOR_WATCHING,
-    PS_SAME_PARENT_IGNORED,
-    PS_SAME_SEQUENCE_IGNORED,
-    PS_MAX,
-};
 
 #define RANK_INFINITE     65537     /* rank is otherwise 16bits */
 #define INVALID_SEQUENCE    257     /* sequence is 8 bits */
