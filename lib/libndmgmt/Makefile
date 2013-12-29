@@ -13,12 +13,13 @@
 #
 
 
-UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
+PANDORA_SRCDIR?=$(shell cd ../..; pwd)
+export PANDORA_SRCDIR
 
-include ${UNSTRUNG_SRCDIR}/Makefile.ver
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.ver
+include ${PANDORA_SRCDIR}/Makefile.inc
 
-srcdir?=${UNSTRUNG_SRCDIR}/lib/libndmgmt/
+srcdir?=${PANDORA_SRCDIR}/lib/libndmgmt/
 
 LIBRARY=ndmgmt
 LIB=lib${LIBRARY}.a
