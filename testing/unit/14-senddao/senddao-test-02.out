@@ -1,5 +1,5 @@
 Using faked interfaces
-found[1]: wlan0 type=ether (inactive new) faked
+found[1]: wlan0 type=ether (active new) faked
   adding ifindex: 1
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
 found[1]: wlan0 address=fe80::1000:ff:fe64:6423
