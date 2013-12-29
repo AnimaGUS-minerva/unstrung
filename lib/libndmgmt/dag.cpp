@@ -345,6 +345,10 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
         this->mStats[PS_SAME_PARENT_IGNORED]++;
 	return;
     }
+    /* XXX
+     * this is actually quite a big deal (SEE rfc6550), setting my RANK.
+     * just fake it for now by adding 1.
+     */
     if(mSequence != INVALID_SEQUENCE && mSequence >= dio->rpl_dtsn) {
 	debug->verbose("  Same sequence number, ignore\n");
         this->mStats[PS_SAME_SEQUENCE_IGNORED]++;

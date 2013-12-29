@@ -6,7 +6,7 @@
 /* open a raw IPv6 socket, and print whatever comes out */
 #include "hexdump.c"
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
 	int s = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
 	unsigned char b[2048];
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 		n++;
 	}
 	perror("recv");
-        
+
         return(0);
 }
-	
+

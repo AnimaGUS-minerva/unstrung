@@ -15,7 +15,7 @@
 <!-- body begins here -->
 <refsynopsisdiv id='synopsis'>
 <cmdsynopsis>
-  <command>senddio</command>    
+  <command>senddio</command>
     <arg choice='plain'><replaceable>setup</replaceable></arg>
     <group choice='opt'><arg choice='plain'>--show </arg><arg choice='plain'>--showonly </arg></group>
     <arg choice='plain'><replaceable>command</replaceable></arg>
