@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     rpl_debug *deb = new rpl_debug(false, NULL);
 
     dag_network::init_stats();
-    dag_network *dag;
+    dag_network *dag = NULL;
 
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
 	switch(c) {
@@ -213,8 +213,13 @@ int main(int argc, char *argv[])
         fclose(pidfile);
     }
 
-    dag->addselfprefix(iface);
+    if(dag == NULL) {
+        fprintf(stderr, "must specify a DAG to manage\n");
+        usage();
+    }
+
     dag->set_debug(deb);
+    dag->addselfprefix(iface);
     dag->schedule_dio();
 
     network_interface::main_loop(stderr, deb);
