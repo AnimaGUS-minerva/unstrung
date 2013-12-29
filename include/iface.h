@@ -187,6 +187,7 @@ private:
 
     /* private helper functions */
     void setup_allrouters_membership(void);
+    void setup_allrpl_membership(void);
     void check_allrouters_membership(void);
 
     unsigned char           optbuff[256];
