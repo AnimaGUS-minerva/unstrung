@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Michael Richardson <mcr@sandelman.ca>
+ * Copyright (C) 2012-2013 Michael Richardson <mcr@sandelman.ca>
  *
  * SEE FILE COPYING in root of source.
  */

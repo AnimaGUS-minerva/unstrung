@@ -1,6 +1,4 @@
 /*
- *   $Id: pathnames.h,v 1.8 2005/12/30 15:13:11 psavola Exp $
- *
  *   Authors:
  *    Pedro Roque		<roque@di.fc.ul.pt>
  *    Lars Fenneberg		<lf@elemental.net>
