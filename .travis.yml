@@ -6,4 +6,4 @@ compiler:
 before_install:
   - "sudo apt-get install libpcap-dev"
 
-script: "make unitcheck"
+script: "make programs && make unitcheck"
