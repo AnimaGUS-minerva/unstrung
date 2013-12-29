@@ -1,8 +1,8 @@
-INC=${UNSTRUNG_SRCDIR}/include
+INC=${PANDORA_SRCDIR}/include
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CXXFLAGS+=-I/sandel/include -g ${CROSSFLAGS}
 CFLAGS+=${CROSSFLAGS}
 LIBS=${LIBFAKEIFACE} ${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBOSW}
-LIBS+=${LIBPCAP} 
-LDFLAGS+=-L${UNSTRUNG_OBJDIR}/lib/libndmgmt -lndmgmt  ${LIBS} ${EXTRALIBS} ${LIBS}
+LIBS+=${LIBPCAP}
+LDFLAGS+=-L${PANDORA_OBJDIR}/lib/libndmgmt -lndmgmt  ${LIBS} ${EXTRALIBS} ${LIBS}

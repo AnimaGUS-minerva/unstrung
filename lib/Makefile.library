@@ -1,4 +1,4 @@
-MANSRCDIR=${UNSTRUNG_SRCDIR}/lib/libopenswan
+MANSRCDIR=${PANDORA_SRCDIR}/lib/libopenswan
 
 LEX=flex
 RANLIB?=ranlib
@@ -14,8 +14,8 @@ OSDEP?=$(shell uname -s | tr 'A-Z' 'a-z')
 WCASTQUAL?=-Wcast-qual
 
 # Original flags
-INCLUDES+=-I. -I${UNSTRUNG_SRCDIR}
-INCLUDES+=-I${UNSTRUNG_SRCDIR}/include
+INCLUDES+=-I. -I${PANDORA_SRCDIR}
+INCLUDES+=-I${PANDORA_SRCDIR}/include
 CFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 CXXFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 
@@ -52,7 +52,7 @@ default:: programs
 SHOULDWERESTART=${USE_OBJDIR}$(wildcard ${ONEFILE})
 ifeq ($(SHOULDWERESTART),true${ONEFILE})
 all programs clean install::
-	cd ${UNSTRUNG_SRCDIR} && cd ${OBJDIRTOP}/lib/lib${LIBRARY} && ${MAKE} $@
+	cd ${PANDORA_SRCDIR} && cd ${OBJDIRTOP}/lib/lib${LIBRARY} && ${MAKE} $@
 else
 all::	$(LIB)
 programs:: $(LIB)
@@ -67,7 +67,7 @@ doinstall:
 	do \
 		$(INSTALL) $(INSTMANFLAGS) $(MANSRCDIR)/$$f $(MANDIR)/ipsec_$$f || exit 1 ; \
 	done
-	@$(UNSTRUNG_SRCDIR)/packaging/utils/manlink $(foreach man, $(MANS), ${MANSRCDIR}/$(man)) | \
+	@$(PANDORA_SRCDIR)/packaging/utils/manlink $(foreach man, $(MANS), ${MANSRCDIR}/$(man)) | \
 	while read from to; \
 	do \
 		ln -s -f ipsec_$$from $(MANDIR)/$$to; \
@@ -79,7 +79,7 @@ install_file_list:
 	do \
 		echo $(MANDIR)/ipsec_$$f;\
 	done;
-	@$(UNSTRUNG_SRCDIR)/packaging/utils/manlink $(foreach man, $(MANS), ${MANSRCDIR}/$(man)) | \
+	@$(PANDORA_SRCDIR)/packaging/utils/manlink $(foreach man, $(MANS), ${MANSRCDIR}/$(man)) | \
 	while read from to; \
 	do \
 		echo $(MANDIR)/$$to; \
@@ -96,7 +96,7 @@ cleanall::
 
 # Gather dependencies caused by explicit #includes within .c files
 depend: ${DISTSRC}
-	@(ls $(DISTSRC) | egrep '\.c$$|\.cpp$$' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
+	@(ls $(DISTSRC) | egrep '\.c$$|\.cpp$$' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${PANDORA_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
 
 Makefile.depend:
 Makefile.depend.${OSDEP}:

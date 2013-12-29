@@ -1,9 +1,9 @@
-UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
+PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
-export SENDDAO=${UNSTRUNG_SRCDIR}/programs/senddao/senddao
+export SENDDAO=${PANDORA_SRCDIR}/programs/senddao/senddao
 
 checkprograms::
 programs::
@@ -13,9 +13,9 @@ clean::
 
 check::
 	@rm -f core.*
-	./senddao-test-01.sh 
-	./senddao-test-02.sh 
-	./senddao-test-03.sh 
-	./senddao-test-04.sh 
+	./senddao-test-01.sh
+	./senddao-test-02.sh
+	./senddao-test-03.sh
+	./senddao-test-04.sh
 	@if [ -f core.* ]; then echo CORE FILES FOUND; exit 1; else exit 0; fi
 

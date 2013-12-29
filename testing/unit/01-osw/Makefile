@@ -1,16 +1,16 @@
-UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
+PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
 all: check
 
-OSWDIR=${UNSTRUNG_SRCDIR}/lib/libosw
+OSWDIR=${PANDORA_SRCDIR}/lib/libosw
 
 addrtot-01: ${OSWDIR}/addrtot.c
 	${CC} -DADDRTOT_MAIN ${CFLAGS} -o addrtot-01 ${OSWDIR}/addrtot.c ${LDFLAGS}
 
-ttoaddr-01: ${OSWDIR}/ttoaddr.c 
+ttoaddr-01: ${OSWDIR}/ttoaddr.c
 	${CC} -DTTOADDR_MAIN ${CFLAGS} -o ttoaddr-01 ${OSWDIR}/ttoaddr.c ${LDFLAGS}
 
 ttosubnet-01: ${OSWDIR}/ttosubnet.c
@@ -21,7 +21,7 @@ check::	addrtot-01 ttoaddr-01 ttosubnet-01
 	./ttoaddr-01 -r
 	./ttosubnet-01 -r
 
-checkprograms:: 
+checkprograms::
 programs::
 
 clean::

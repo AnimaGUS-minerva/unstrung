@@ -12,12 +12,12 @@
 # for more details.
 
 
-UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
-srcdir?=${UNSTRUNG_SRCDIR}/programs/sunshine/
+PANDORA_SRCDIR?=$(shell cd ../..; pwd)
+srcdir?=${PANDORA_SRCDIR}/programs/sunshine/
 
 PROGRAM=sunshine
 OBJS=main.o sendnd.o
 LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK}
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
+include ${PANDORA_SRCDIR}/programs/Makefile.program
 

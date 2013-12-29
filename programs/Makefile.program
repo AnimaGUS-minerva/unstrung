@@ -1,6 +1,6 @@
 
-include ${UNSTRUNG_SRCDIR}/Makefile.ver
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.ver
+include ${PANDORA_SRCDIR}/Makefile.inc
 
 LEX=flex
 BISON=bison
@@ -8,7 +8,7 @@ RM=rm
 PROGRAMDIR?=/sbin
 
 
-INCLUDES+=-I${UNSTRUNG_SRCDIR} -I${UNSTRUNG_SRCDIR}/include
+INCLUDES+=-I${PANDORA_SRCDIR} -I${PANDORA_SRCDIR}/include
 CFLAGS+=${USERCOMPILE} ${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 CXXFLAGS+=${USERCPPCOMPILE} ${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 
@@ -80,7 +80,7 @@ endif
 SHOULDWERESTART=${USE_OBJDIR}$(wildcard ../Makefile.program)
 ifeq ($(SHOULDWERESTART),true../Makefile.program)
 all programs clean install::
-	cd ${UNSTRUNG_SRCDIR} && cd ${OBJDIRTOP}/programs/${SOURCEDIR} && $(MAKE) $@
+	cd ${PANDORA_SRCDIR} && cd ${OBJDIRTOP}/programs/${SOURCEDIR} && $(MAKE) $@
 else
 all: ${PROGRAM}
 programs:: all
@@ -161,14 +161,14 @@ ${PROGRAM}: $(OBJS) ${LIBS}
 %.o: ${srcdir}%.cpp
 	${CXX} -c ${CXXFLAGS} $<
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.manpages
+include ${PANDORA_SRCDIR}/programs/Makefile.manpages
 
 #%.i: %.c
 #	$(CC) $(CFLAGS) -E -o $@ $<
 
-${SCRIPT}: ${srcdir}%.in ${UNSTRUNG_SRCDIR}/Makefile.inc ${UNSTRUNG_SRCDIR}/Makefile.ver
+${SCRIPT}: ${srcdir}%.in ${PANDORA_SRCDIR}/Makefile.inc ${PANDORA_SRCDIR}/Makefile.ver
 	@echo  $< '->' $@
-	@cat $< | sed -e "s/xxx/$(UNSTRUNG_VERSION)/" \
+	@cat $< | sed -e "s/xxx/$(PANDORA_VERSION)/" \
                         -e "s:@MODPROBE@:$(MODPROBE):" \
 			| cat >$@
 	@if [ -x $< ]; then chmod +x $@; fi
@@ -191,11 +191,11 @@ endif
 
 checkprograms::
 
-UNSTRUNG_SRCDIRREL?=../..
+PANDORA_SRCDIRREL?=../..
 
 # Gather dependencies caused by explicit #includes within .c files
 depend: ${DISTSRC}
-	@(ls $(DISTSRC) | egrep '\.c$$|\.cpp$$' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
+	@(ls $(DISTSRC) | egrep '\.c$$|\.cpp$$' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${PANDORA_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
 
 Makefile.depend:
 Makefile.depend.${OSDEP}:

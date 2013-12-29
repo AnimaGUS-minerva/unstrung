@@ -1,8 +1,8 @@
-UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
+PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
 
 all: check
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
 dag-01: dag-01.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
