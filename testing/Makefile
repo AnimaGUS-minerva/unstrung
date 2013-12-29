@@ -21,5 +21,11 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=utils unit
+UNITSUBDIRS=utils unit
+SUBDIRS=${UNITSUBDIRS}
 
+unitcheck::
+	@for d in $(SUBDIRS); \
+	do \
+		(cd $$d && $(MAKE) DESTDIR=${DESTDIR} check || exit 1);\
+	done

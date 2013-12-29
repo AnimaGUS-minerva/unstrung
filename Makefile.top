@@ -1,12 +1,12 @@
 # Pandora master makefile
 #
 # Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
-# 
+#
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -27,14 +27,16 @@ uml:	checkprograms
 	./testing/utils/make-uml.sh `pwd`
 
 umluserland:
-	(touch ${PANDORA_SRCDIR}/Makefile.inc && source ${PANDORA_SRCDIR}/umlsetup.sh && cd $$POOLSPACE && $(MAKE) $$PANDORA_HOSTS $$REGULARHOSTS ) 
+	(touch ${PANDORA_SRCDIR}/Makefile.inc && source ${PANDORA_SRCDIR}/umlsetup.sh && cd $$POOLSPACE && $(MAKE) $$PANDORA_HOSTS $$REGULARHOSTS )
 
 
-check:	uml Makefile.ver
+checkprograms::
+	@for d in $(SUBDIRS); do (cd $$d && $(MAKE) DESTDIR=${DESTDIR} checkprograms || exit 1); done
+
+check::	uml Makefile.ver checkprograms
 ifneq ($(strip(${REGRESSRESULTS})),)
 	mkdir -p ${REGRESSRESULTS}
 endif
-	@for d in $(SUBDIRS); do (cd $$d && $(MAKE) DESTDIR=${DESTDIR} checkprograms || exit 1); done
 	@for d in $(SUBDIRS); \
 	do \
 		echo ===================================; \
@@ -46,4 +48,9 @@ ifneq ($(strip(${REGRESSRESULTS})),)
 	-perl testing/utils/regress-summarize-results.pl ${REGRESSRESULTS}
 endif
 
+unitcheck:: Makefile.ver checkprograms
+	@for d in $(SUBDIRS); \
+	do \
+		(cd $$d && $(MAKE) DESTDIR=${DESTDIR} unitcheck || exit 1);\
+	done
 
