@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     };
 
     class rpl_debug *deb;
-    class pcap_network_interface *iface;
+    class pcap_network_interface *iface = NULL;
     dag_network *dag;
     bool initted = false;
     memset(icmp_body, 0, sizeof(icmp_body));
