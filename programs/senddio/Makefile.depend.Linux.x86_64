@@ -9,7 +9,6 @@ senddio.o: senddio.cpp pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/iface.h \
  ../../include/dag.h \
  ../../include/node.h \
  ../../include/fakeiface.h \
