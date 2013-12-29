@@ -228,7 +228,11 @@ int main(int argc, char *argv[])
                 getpid(), pidfilename, strerror(errno));
     }
 
-    dag->addselfprefix(iface);
+    if(dag == NULL) {
+        fprintf(stderr, "must specify a DAG to manage\n");
+        usage();
+    }
+
     dag->set_debug(deb);
     dag->schedule_dio(IMMEDIATELY);
 
