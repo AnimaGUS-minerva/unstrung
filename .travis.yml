@@ -1,4 +1,9 @@
+language: c++
+compiler:
+  - gcc
+  - g++
+
 before_install:
-  - "echo"
+  - "sudo apt-get install libpcap-dev"
 
 script: "make unitcheck"
