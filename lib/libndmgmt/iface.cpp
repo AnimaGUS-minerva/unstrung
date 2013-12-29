@@ -68,7 +68,7 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
     alive = false;
     nd_socket = -1;
     set_debug(deb);
-    
+
     this->set_if_name(if_name);
     debug = NULL;
 }
@@ -242,12 +242,38 @@ void network_interface::setup_allrouters_membership(void)
 	return;
 }
 
+void network_interface::setup_allrpl_membership(void)
+{
+	struct ipv6_mreq mreq;
+
+	memset(&mreq, 0, sizeof(mreq));
+	mreq.ipv6mr_interface = this->get_if_index();
+
+	/* all-rpl-nodes: ff02::1a */
+	mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);
+	mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x1a);
+
+        if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
+        {
+            /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
+            if (errno != EADDRINUSE)
+            {
+                printf("can't join ipv6-all-rpl-nodes on %s", this->if_name);
+                alive = false;
+                return;
+            }
+        }
+
+	return;
+}
+
 void network_interface::check_allrouters_membership(void)
 {
 	#define ALL_ROUTERS_MCAST "ff020000000000000000000000000002"
+	#define ALL_RPL_MCAST     "ff02000000000000000000000000001a"
 
 	FILE *fp;
-	unsigned int if_idx, allrouters_ok=0;
+	unsigned int if_idx, allrouters_ok=0, allrpl_ok=0;
 	char addr[32+1];
 	int ret=0;
 
@@ -263,6 +289,8 @@ void network_interface::check_allrouters_membership(void)
                 if (this->if_index == if_idx) {
                     if (strncmp(addr, ALL_ROUTERS_MCAST, sizeof(addr)) == 0)
                         allrouters_ok = 1;
+                    if (strncmp(addr, ALL_RPL_MCAST, sizeof(addr)) == 0)
+                        allrpl_ok = 1;
                 }
             }
 	}
@@ -272,6 +300,11 @@ void network_interface::check_allrouters_membership(void)
 	if (!allrouters_ok) {
             printf("resetting ipv6-allrouters membership on %s\n", this->if_name);
             setup_allrouters_membership();
+	}
+
+	if (!allrpl_ok) {
+            printf("resetting ipv6-rpl membership on %s\n", this->if_name);
+            setup_allrpl_membership();
 	}
 
 	return;
@@ -697,7 +730,7 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
                                       const unsigned char *icmp_body,
                                       const unsigned int icmp_len)
 {
-    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+    uint8_t all_rpl_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
     struct sockaddr_in6 addr;
     struct in6_pktinfo *pkt_info;
     struct msghdr mhdr;
@@ -707,19 +740,19 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
 
     int err;
 
-#if 0
+#if 1
     if(setup() == false) {
         fprintf(this->verbose_file, "failed to setup socket!");
         return;
     }
     check_allrouters_membership();
 
-    printf("sending RA on %u\n", nd_socket);
+    printf("sending RA on %u\n", this->nd_socket);
 #endif
 
     if (dest == NULL)
     {
-        dest = (struct in6_addr *)all_hosts_addr;  /* XXX WRONG WRONG WRONG */
+        dest = (struct in6_addr *)all_rpl_addr;  /* fixed to official ff02::1a */
         update_multicast_time();
     }
 
@@ -756,7 +789,7 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
     mhdr.msg_control = (void *) cmsg;
     mhdr.msg_controllen = sizeof(chdr);
 
-    err = sendmsg(nd_socket, &mhdr, 0);
+    err = sendmsg(this->nd_socket, &mhdr, 0);
 
     if (err < 0) {
         char sbuf[INET6_ADDRSTRLEN], dbuf[INET6_ADDRSTRLEN];
@@ -783,7 +816,7 @@ int network_interface::if_count(void)
 }
 
 /* this runs the next event, even if it is not time yet */
-void network_interface::force_next_event(void) { 
+void network_interface::force_next_event(void) {
     rpl_event *re = things_to_do.next_event();
 
     struct timeval now;
@@ -799,7 +832,7 @@ void network_interface::force_next_event(void) {
 }
 
 /* empty all events */
-void network_interface::clear_events(void) { 
+void network_interface::clear_events(void) {
     rpl_event *re;
     while((re = things_to_do.next_event()) != NULL) {
 	delete re;
@@ -882,7 +915,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         /* now poll for input */
         debug->verbose2("sleeping with %d file descriptors, for %d ms\n",
 			pollnum, timeout);
-#if 0	
+#if 0
 	if(debug->flag) {
 	    things_to_do.printevents(debug->file, "loop");
 	}
@@ -915,7 +948,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 	    dag_network::print_all_dagstats(debug->file, "usr2 ");
 	    signal_usr2 = false;
 	}
-	    
+
     }
 }
 
