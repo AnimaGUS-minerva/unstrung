@@ -77,6 +77,7 @@ static void hexdump(const unsigned char *base, unsigned int offset, int len)
         line[posonthisline+61]=(isprint(bb[1]) ? bb[1] : '.');
         line[posonthisline+62]=(isprint(bb[2]) ? bb[2] : '.');
         line[posonthisline+63]=(isprint(bb[3]) ? bb[3] : '.');
+        line[posonthisline+64]='\0';
         left -= outcount;
         out  += outcount;
         i    += 3;
