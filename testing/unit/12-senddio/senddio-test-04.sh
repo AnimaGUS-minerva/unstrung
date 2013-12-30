@@ -3,9 +3,9 @@
 SENDDIO=${SENDDIO-./senddio}
 set -e
 
-#Usage: senddio [--verbose] 
+#Usage: senddio [--verbose]
 #               [--prefix prefix]     -p      2001:db8:0001::/48
-#               [-d datafile] 
+#               [-d datafile]
 #               [--prefixlifetime]    -P       12
 #               [--fake]              -T      YES
 #               [--iface net]         -i
@@ -23,11 +23,11 @@ set -e
 
 (
 ${SENDDIO} --fake -i wlan0 -v -D thisismynicedag1 -p 2001:db8:0001::/48 -G -I 42 --version 1 -S 10 -R 2 -s  -P 12
-) | tee ../OUTPUTS/senddio-test-04.raw | diff - senddio-test-04.out
+) | tee ../OUTPUTS/senddio-test-04.raw | diff -w -B - senddio-test-04.out
 
 (
 ${SENDDIO} --fake -i wlan0 -v \
     --dagid thisismynicedag1 --prefix 2001:db8:0001::/48 --prefixlifetime 12 \
    --instance 42 \
-    --grounded --storing --version 1 --sequence 10 --rank 2 
-) | tee ../OUTPUTS/senddio-test-04.raw | diff - senddio-test-04.out
+    --grounded --storing --version 1 --sequence 10 --rank 2
+) | tee ../OUTPUTS/senddio-test-04.raw | diff -w -B - senddio-test-04.out

@@ -29,6 +29,5 @@ ${SENDDIO} --pcapout $out --fake -i wlan0 -v \
     --instance 42 \
     --grounded --storing --version 1 --sequence 10 --rank 2
 ) | tee ../OUTPUTS/senddio-test-03.raw | diff -B -w - senddio-test-03.out
-hexdump -C ../OUTPUTS/senddio-test-03.raw senddio-test-03.out
 
 tcpdump -t -n -r $out -v -X | tee ../OUTPUTS/senddio-test-03-pcap.raw | diff -B -w - senddio-test-03-pcap.txt

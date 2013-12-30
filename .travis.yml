@@ -11,4 +11,6 @@ install:
   - "sudo apt-get install gcc-multilib g++-multilib tcpdump"
   - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev libpcap0.8-dev:i386"
 
-script: "make programs && make unitcheck"
+script:
+  - "make programs"
+  - "make unitcheck"
