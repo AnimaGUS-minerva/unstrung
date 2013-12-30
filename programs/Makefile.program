@@ -1,3 +1,4 @@
+# -*- makefile -*-
 
 include ${PANDORA_SRCDIR}/Makefile.ver
 include ${PANDORA_SRCDIR}/Makefile.inc
@@ -26,30 +27,7 @@ CFLAGS+= -Wstrict-prototypes
 #CFLAGS+= -Wwrite-strings
 CFLAGS+= -Wbad-function-cast
 
-ifeq ($(USE_SAREF_KERNEL),true)
-CFLAGS+=-DSAREF_SUPPORTED
-endif
-
-ifeq ($(USE_KLIPS),true)
-CFLAGS+= -DKLIPS
-endif
-
-ifeq ($(USE_NAT_TRAVERSAL),true)
-NAT_DEFS=-DNAT_TRAVERSAL
-endif
-CFLAGS+= ${NAT_DEFS}
-
 LIBS?=${PROGLIBS} ${OSWLOGLIB} ${OPENSWANLIB} ${CRYPTOLIBS}
-
-ifeq ($(USE_NAT_TRAVERSAL),true)
-CFLAGS+= -DNAT_TRAVERSAL
-endif
-
-CFLAGS+=-DKERNEL_ALG -DIKE_ALG
-CFLAGS+=-DFINALCONFDIR=\"${FINALCONFDIR}\"
-CFLAGS+=-DFINALCONFDDIR=\"${FINALCONFDDIR}\"
-CFLAGS+=-DFINALCONFFILE=\"${FINALCONFFILE}\"
-CFLAGS+=-DFINALVARDIR=\"${FINALVARDIR}\"
 
 CFLAGS+= ${WERROR}
 
@@ -151,6 +129,7 @@ ${PROGRAM}: $(OBJS) ${LIBS}
 
 # cancel direct version
 %: %.c
+
 
 %.o: ${srcdir}%.c
 	${CC} -c ${CFLAGS} $<
