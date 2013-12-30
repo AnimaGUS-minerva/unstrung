@@ -3,7 +3,6 @@ found[1]: wlan0 type=ether (active new) faked
   adding ifindex: 1
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
 found[1]: wlan0 address=fe80::1000:ff:fe64:6423
-  new RPL node: 2001:db8::abcd:2
 add a prefix to the dn
   peer '2001:db8::abcd:2' announces prefix: 2001:db8::abcd:1005/128
   adding prefix: 2001:db8::abcd:1005/128 to iface: wlan0
