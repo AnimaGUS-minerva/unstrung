@@ -8,8 +8,8 @@ SENDDAO=${SENDDAO-../../../programs/senddao/senddao}
 mkdir -p OUTPUTS
 
 (
-${SENDDAO} --fake -v -d ../INPUTS/just-comments.txt 
+${SENDDAO} --fake -v -d ../INPUTS/just-comments.txt
 # with no file.
-${SENDDAO} -v 
-) 2> OUTPUTS/senddao-test-01.err | tee OUTPUTS/senddao-test-01.raw | diff - senddao-test-01.out
-diff OUTPUTS/senddao-test-01.err senddao-test-01.err
+${SENDDAO} -v
+) 2> OUTPUTS/senddao-test-01.err | tee OUTPUTS/senddao-test-01.raw | diff -B -w - senddao-test-01.out
+diff -B -w OUTPUTS/senddao-test-01.err senddao-test-01.err
