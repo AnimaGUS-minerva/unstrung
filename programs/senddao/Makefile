@@ -7,6 +7,6 @@ PROGRAM=senddao
 PROGRAMDIR=/sbin
 OBJS=senddao.o
 LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE}
-LIBS+=${LIBPCAP}
+LDFLAGS+=${LIBPCAP}
 
 include ${PANDORA_SRCDIR}/programs/Makefile.program

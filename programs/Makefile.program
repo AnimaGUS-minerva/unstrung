@@ -147,10 +147,7 @@ LOADLIBS=${OBJS}
 LDLIBS=${LIBS} ${USERLINK} ${LIBS} ${EXTRALIBS} ${LIBS}
 
 ${PROGRAM}: $(OBJS) ${LIBS}
-	$(CXX) $(CXXFLAGS) -o $@ ${OBJS} $(LDFLAGS) $(LDLIBS) $(USERLINK)
-
-# cancel direct version
-%: %.c
+	$(CXX) $(CXXFLAGS) -o $@ ${OBJS} $(LDFLAGS) $(LDLIBS)
 
 # cancel direct version
 %: %.c

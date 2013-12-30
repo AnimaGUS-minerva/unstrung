@@ -22,11 +22,10 @@ LIBNDMGMT=${PANDORA_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${PANDORA_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${PANDORA_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${PANDORA_OBJDIR}/lib/libfakeiface/libfakeiface.a
-LIBPCAP=/usr/local/ia32/lib/libpcap.a
-#LIBPCAP=-L/usr/local/ia32/lib -lpcap
-#LIBPCAP=-lpcap
+#LIBPCAP=/usr/local/ia32/lib/libpcap.a
+LIBPCAP=-L/usr/local/ia32/lib -lpcap
 # needed by libpcap
-EXTRALIBS=-lusb-1.0
+EXTRALIBS=${LIBPCAP} -lusb-1.0
 
 NEEDCHECK?=check
 
