@@ -122,7 +122,7 @@ endif
 LOADLIBS=${OBJS}
 
 # ${LIBS} is repeated due to possible circular dependancies among libraries
-LDLIBS=${LIBS} ${USERLINK} ${LIBS} ${EXTRALIBS} ${LIBS}
+LDLIBS=${LIBS} ${USERLINK} ${LIBS} ${EXTRALIBS}
 
 ${PROGRAM}: $(OBJS) ${LIBS}
 	$(CXX) $(CXXFLAGS) -o $@ ${OBJS} $(LDFLAGS) $(LDLIBS)
