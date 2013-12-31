@@ -60,6 +60,13 @@ network_interface *iface_factory::newnetwork_interface(const char *name, rpl_deb
 int network_interface::nisystem(const char *cmd)
 {
     ::system(cmd);
+
+}
+
+/* used by addprefix() to change system parameters */
+int network_interface::ni_route_show(void)
+{
+    nisystem("ip -6 addr show");
 }
 
 /* this is wrong, use netlink to set the address later on. */
@@ -89,10 +96,26 @@ bool network_interface::addprefix(prefix_node &prefix)
 
         debug->log("  invoking %s\n", buf);
         nisystem(buf);
-        nisystem("ip -6 addr show");
+        ni_route_show();
     }
 
     return true;
+}
+
+/* XXX do this with netlink too  */
+bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
+{
+    char buf[1024];
+    char pbuf[SUBNETTOT_BUF];
+
+    subnettot(&prefix, 0, pbuf, sizeof(pbuf));
+
+    snprintf(buf, 1024,
+             "ip -6 route add blackhole %s dev lo", pbuf);
+
+    debug->log("  invoking %s\n", buf);
+    nisystem(buf);
+    ni_route_show();
 }
 
 /* XXX do this with netlink too  */
@@ -113,7 +136,7 @@ bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
-    nisystem("ip -6 route show");
+    ni_route_show();
 
     return true;
 }
@@ -254,6 +277,10 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
             }
             break;
         }
+
+    case ARPHRD_LOOPBACK:
+        loopback_interface = ni;
+        return 0;
 
     default:
         deb->log("   ignoring address type: %d\n", ifi->ifi_type);

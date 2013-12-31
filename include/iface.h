@@ -56,6 +56,7 @@ public:
     }
 
     virtual int nisystem(const char *cmd);
+    virtual int ni_route_show(void);
     virtual void receive_packet(struct in6_addr ip6_src,
                                 struct in6_addr ip6_dst,
                                 time_t          now,
@@ -96,6 +97,7 @@ public:
     };
     bool addprefix(prefix_node &prefix);
     bool add_route_to_node(ip_subnet &prefix, rpl_node *peer);
+    bool add_null_route_to_prefix(const ip_subnet &prefix);
 
     /* eui string functions */
     char *eui48_str(char *str, int strlen);
@@ -217,6 +219,8 @@ private:
     static bool                     open_netlink(void);
 
 };
+
+extern class network_interface *loopback_interface;
 
 #define ND_OPT_RPL_PRIVATE_DAO 200
 #define ND_OPT_RPL_PRIVATE_DIO 201

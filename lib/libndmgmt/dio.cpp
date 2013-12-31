@@ -84,7 +84,8 @@ void dag_network::set_prefix(const ip_subnet prefix) {
     mPrefix = prefix;
     subnettot(&prefix, 0, mPrefix_str, sizeof(mPrefix_str));
 
-    // addprefix()
+    /* now add this prefix as a blackhole route on lo */
+    loopback_interface->add_null_route_to_prefix(prefix);
 }
 
 void network_interface::send_dio(dag_network *dag)

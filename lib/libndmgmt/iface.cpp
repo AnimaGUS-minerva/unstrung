@@ -50,6 +50,8 @@ bool                  network_interface::terminating_soon = false;
 struct timeval        network_interface::fake_time;
 class rpl_event_queue network_interface::things_to_do;
 
+class network_interface *loopback_interface = NULL;
+
 network_interface::network_interface()
 {
     nd_socket = -1;
