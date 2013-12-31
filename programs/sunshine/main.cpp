@@ -18,11 +18,13 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <sysexits.h>
+#include <time.h>
 #include <sys/types.h>
 #include <signal.h>
 
 #include "iface.h"
 #include "dag.h"
+#include "unstrung.h"
 
 char *progname;
 static struct option const longopts[] =
@@ -105,10 +107,17 @@ int main(int argc, char *argv[])
     bool devices_scanned = false;
 
     network_interface *iface = NULL;
-    rpl_debug *deb = new rpl_debug(false, NULL);
+    rpl_debug *deb = new rpl_debug(false, stderr);
 
     dag_network::init_stats();
     dag_network *dag = NULL;
+
+    tzset();
+    time_t now = time(NULL);
+    char *today = ctime(&now);
+    deb->info("PANDORA unstrung version %u.%u (%s) starting at %s",
+              PANDORA_VERSION_MAJOR, PANDORA_VERSION_MINOR,
+              BUILDNUMBER, today);
 
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
 	switch(c) {
@@ -220,12 +229,13 @@ int main(int argc, char *argv[])
     }
 
     FILE *pidfile = fopen(pidfilename, "w");
+    int   mypid = getpid();
     if(pidfile) {
-        fprintf(pidfile, "%u\n", getpid());
+        fprintf(pidfile, "%u\n", mypid);
         fclose(pidfile);
     } else {
         fprintf(stderr, "Can not write pid=%u to %s: %s\n",
-                getpid(), pidfilename, strerror(errno));
+                mypid, pidfilename, strerror(errno));
     }
 
     if(dag == NULL) {

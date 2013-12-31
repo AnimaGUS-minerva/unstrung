@@ -18,6 +18,7 @@ srcdir?=${PANDORA_SRCDIR}/programs/sunshine/
 PROGRAM=sunshine
 OBJS=main.o sendnd.o
 LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK}
+CXXFLAGS+=-DBUILDNUMBER=\"${BUILDNUMBER}\"
 
 include ${PANDORA_SRCDIR}/programs/Makefile.program
 

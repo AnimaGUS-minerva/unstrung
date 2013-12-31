@@ -25,6 +25,7 @@ extern "C" {
 
 void rpl_debug::logv_more(const char *fmt, va_list vargs)
 {
+    if(file == NULL) return;
     vfprintf(file, fmt, vargs);
 #if 0
     int len = strlen(fmt);
@@ -36,20 +37,19 @@ void rpl_debug::logv_more(const char *fmt, va_list vargs)
 
 void rpl_debug::logv(const char *fmt, va_list vargs)
 {
-    if(flag) {
-        if(want_time_log) {
-            struct timeval tv1;
-            gettimeofday(&tv1, NULL);
+    if(file == NULL) return;
+    if(want_time_log) {
+        struct timeval tv1;
+        gettimeofday(&tv1, NULL);
 
-            struct tm tm1;
-            localtime_r(&tv1.tv_sec, &tm1);
+        struct tm tm1;
+        localtime_r(&tv1.tv_sec, &tm1);
 
-            char tbuf[64];
-            strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
-            fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
-        }
-        logv_more(fmt, vargs);
+        char tbuf[64];
+        strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
+        fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
     }
+    logv_more(fmt, vargs);
 }
 
 void rpl_debug::log(const char *fmt, ...)
