@@ -57,7 +57,9 @@ void rpl_debug::log(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv(fmt, vargs);
+    if(flag) {
+        logv(fmt, vargs);
+    }
 }
 
 void rpl_debug::info(const char *fmt, ...)
@@ -97,7 +99,9 @@ void rpl_debug::verbose_more(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv_more(fmt, vargs);
+    if(flag) {
+        logv_more(fmt, vargs);
+    }
 }
 
 void rpl_debug::verbose(const char *fmt, ...)
@@ -105,7 +109,9 @@ void rpl_debug::verbose(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv(fmt, vargs);
+    if(flag) {
+        logv(fmt, vargs);
+    }
 }
 
 /*
