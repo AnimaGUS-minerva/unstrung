@@ -78,7 +78,7 @@ bool network_interface::addprefix(prefix_node &prefix)
         subnettot(&newipv6, 0, sbuf, sizeof(sbuf));
 
         // this would be better, but results in unreachable routes.
-        // viaif = "lo";
+        viaif = "lo";
         snprintf(buf, 1024,
                  "ip -6 addr del %s dev %s", sbuf, viaif);
         debug->log("  invoking %s\n", buf);

@@ -1,8 +1,8 @@
-UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
+PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
 
 all: check
 
-include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
 TESTNAME=builddao-01
@@ -19,3 +19,7 @@ programs::
 
 clean::
 	@rm -rf ${TESTNAME} *.o
+
+update:
+	cp ../OUTPUTS/15-dao-out.txt dao-out.txt
+	cp ../OUTPUTS/15-dao.txt dao.txt
