@@ -210,8 +210,11 @@ int main(int argc, char *argv[])
     }
 
     if(!iface) {
-	fprintf(stderr, "must pick one interface to run on\n");
-	usage();
+	deb->info("running on all interfaces\n");
+        if(!devices_scanned) {
+            network_interface::scan_devices(deb, true);
+            devices_scanned=true;
+        }
     }
 
     if(dag==NULL) {
