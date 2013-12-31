@@ -187,7 +187,7 @@ bool network_interface::setup()
     }
 #endif
 
-#if 0
+#if 1
     /*
      * setup ICMP filter
      */
@@ -206,7 +206,8 @@ bool network_interface::setup()
     }
 #endif
 
-    setup_allrouters_membership();
+    //setup_allrouters_membership();
+    setup_allrpl_membership();
     struct ipv6_mreq mreq;
 
     /* make sure that there is an rpl_node entry for ourselves */
@@ -436,7 +437,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
                                        const  time_t   now,
 				       const u_char *bytes, const int len)
 {
-    const struct nd_opt_hdr *nd_options;
+    const struct nd_opt_hdr *nd_options = NULL;
     char src_addrbuf[INET6_ADDRSTRLEN];
     char dst_addrbuf[INET6_ADDRSTRLEN];
 
@@ -540,7 +541,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
 #if 1
     /* now decode the option packets */
-    while((const u_char *)nd_options < bytes_end && nd_options->nd_opt_type!=0) {
+    while(nd_options != NULL && (const u_char *)nd_options < bytes_end && nd_options->nd_opt_type!=0) {
 	/*
 	 * option lengths are in units of 64-bits, the minimum size for
 	 * an IPv6 extension
@@ -669,6 +670,9 @@ void network_interface::receive(const time_t now)
     if((len = recvmsg(this->nd_socket, &mhdr, 0)) >= 0) {
         struct cmsghdr *cmsg;
 
+        memset(&dst, 0, sizeof(dst));
+        hoplimit = -1;
+
         for (cmsg = CMSG_FIRSTHDR(&mhdr); cmsg != NULL; cmsg = CMSG_NXTHDR(&mhdr, cmsg))
 	{
             if (cmsg->cmsg_level != IPPROTO_IPV6)
@@ -709,7 +713,9 @@ void network_interface::receive(const time_t now)
             }
 	}
 
-        dst = pkt_info->ipi6_addr;
+        if(pkt_info) {
+            dst = pkt_info->ipi6_addr;
+        }
         src = src_sock.sin6_addr;
 
         if(debug->verbose_test()) {
@@ -719,9 +725,9 @@ void network_interface::receive(const time_t now)
             inet_ntop(AF_INET6, &src, src_addrbuf, INET6_ADDRSTRLEN);
             inet_ntop(AF_INET6, &dst, dst_addrbuf, INET6_ADDRSTRLEN);
 
-            debug->verbose(" %s: received packet from %s -> %s[%u]\n",
+            debug->verbose(" %s: received packet from %s -> %s[%u] hoplimit=%d\n",
                            if_name,
-                           src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex);
+                           src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex, hoplimit);
         }
 
         this->receive_packet(src, dst, now, b, len);
