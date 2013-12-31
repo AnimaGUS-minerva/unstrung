@@ -111,7 +111,7 @@ bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
     subnettot(&prefix, 0, pbuf, sizeof(pbuf));
 
     snprintf(buf, 1024,
-             "ip -6 route add blackhole %s dev lo", pbuf);
+             "ip -6 route add unreachable %s dev lo", pbuf);
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
