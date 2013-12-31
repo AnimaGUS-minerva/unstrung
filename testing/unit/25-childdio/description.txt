@@ -1,0 +1,2 @@
+This test case determines how a parent that hears it's child's DIOs
+reacts, or does not react.
