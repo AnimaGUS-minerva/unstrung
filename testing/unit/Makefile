@@ -26,8 +26,7 @@ SUBDIRS+=02-recvdio
 SUBDIRS+=03-dioopt
 SUBDIRS+=04-dag 05-dag 06-dag
 SUBDIRS+=07-dagset
-# NEEDS investigation
-#SUBDIRS+=08-event
+SUBDIRS+=08-event
 # needs print_linkinfo
 #SUBDIRS+=09-netlink
 # fix this, ticket #2939
