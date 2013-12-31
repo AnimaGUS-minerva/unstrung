@@ -310,7 +310,7 @@ void pcap_network_interface::skip_linux_pcap_headers(const struct pcap_pkthdr *h
         this->filter_and_receive_icmp6(h->ts.tv_sec, bytes, len);
 }
 
-void pcap_network_interface::scan_devices(rpl_debug *deb)
+void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
 {
         /* fix up the factory */
         iface_maker = &pcap_factory;
@@ -327,7 +327,10 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 unsigned int     ifmtu_value;
         } fake1;
 
+        struct network_interface_init nii;
 
+        nii.debug = deb;
+        nii.setup = setup;
 
         memset(&who, 0, sizeof(who));
         int myindex;
@@ -370,7 +373,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
                 struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
 
                 nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
         }
 
         {
@@ -404,7 +407,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb)
 
                 struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
                 nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)deb);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
         }
 }
 

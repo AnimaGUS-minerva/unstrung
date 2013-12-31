@@ -42,7 +42,7 @@ public:
 	void increment_packet(void)   { packet_count++; };
 	unsigned int packet_num(void) { return packet_count; };
 
-        static void scan_devices(rpl_debug *deb);
+        static void scan_devices(rpl_debug *deb, bool setup);
         void set_if_index(int index) {
                 if_index = index;
                 add_to_list();

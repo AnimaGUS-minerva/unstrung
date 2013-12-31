@@ -146,9 +146,9 @@ int main(int argc, char *argv[])
         case 'i':
             if(!initted) {
                 if(fakesend) {
-                    pcap_network_interface::scan_devices(deb);
+                    pcap_network_interface::scan_devices(deb, false);
                 } else {
-                    network_interface::scan_devices(deb);
+                    network_interface::scan_devices(deb, false);
                 }
                 initted = true;
             }

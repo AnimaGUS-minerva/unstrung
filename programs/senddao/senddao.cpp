@@ -130,9 +130,9 @@ int main(int argc, char *argv[])
             if(!initted) {
                 if(fakesend) {
                     fprintf(stderr, "Using faked interfaces\n");
-                    pcap_network_interface::scan_devices(deb);
+                    pcap_network_interface::scan_devices(deb, false);
                 } else {
-                    network_interface::scan_devices(deb);
+                    network_interface::scan_devices(deb, false);
                 }
                 initted = true;
             }

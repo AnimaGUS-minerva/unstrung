@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 
         case 'i':
             if(!devices_scanned) {
-                network_interface::scan_devices(deb);
+                network_interface::scan_devices(deb, false);
                 devices_scanned = true;
             }
             iface = network_interface::find_by_name(optarg);

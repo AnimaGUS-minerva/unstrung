@@ -26,6 +26,12 @@ enum network_interface_exceptions {
     TOOSHORT = 1,
 };
 
+/* used in network_interface::gather_linkinfo() */
+struct network_interface_init {
+    rpl_debug *debug;
+    bool       setup;
+};
+
 class network_interface {
 
 public:
@@ -98,7 +104,7 @@ public:
     /* find a dag network associated with the interface */
     dag_network       *find_or_make_dag_by_dagid(const char *name);
 
-    static void scan_devices(rpl_debug *deb);
+    static void scan_devices(rpl_debug *deb, bool setup);
     static void main_loop(FILE *verbose, rpl_debug *debug);
     static network_interface *find_by_ifindex(int ifindex);
     static network_interface *find_by_name(const char *name);

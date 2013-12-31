@@ -136,7 +136,8 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
 int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
-    rpl_debug *deb = (rpl_debug *)arg;
+    struct network_interface_init *nii = (struct network_interface_init *)arg;
+    rpl_debug *deb = nii->debug;
     struct ifaddrmsg *iai = (struct ifaddrmsg *)NLMSG_DATA(n);
     struct rtattr * tb[IFA_MAX+1], *addrattr;
     int len = n->nlmsg_len;
@@ -198,7 +199,8 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
-    rpl_debug *deb = (rpl_debug *)arg;
+    struct network_interface_init *nii = (struct network_interface_init *)arg;
+    rpl_debug *deb = nii->debug;
     struct ifinfomsg *ifi = (struct ifinfomsg *)NLMSG_DATA(n);
     FILE *fp = stdout;
     struct rtattr * tb[IFLA_MAX+1];
@@ -296,17 +298,21 @@ bool network_interface::open_netlink()
 }
 
 
-void network_interface::scan_devices(rpl_debug *deb)
+void network_interface::scan_devices(rpl_debug *deb, bool setup)
 {
 	struct nlmsg_list *linfo = NULL;
 	struct nlmsg_list *ainfo = NULL;
 	struct nlmsg_list *l, *n;
 	char *filter_dev = NULL;
 	int no_link = 0;
+        struct network_interface_init nii;
 
         if(!open_netlink()) return;
 
         remove_marks();
+
+        nii.debug = deb;
+        nii.setup = setup;
 
         /* get list of interfaces */
 	if (rtnl_wilddump_request(netlink_handle, AF_PACKET, RTM_GETLINK) < 0) {
@@ -315,7 +321,7 @@ void network_interface::scan_devices(rpl_debug *deb)
 	}
 
 	if (rtnl_dump_filter(netlink_handle, gather_linkinfo,
-                             (void *)deb, NULL, NULL) < 0) {
+                             (void *)&nii, NULL, NULL) < 0) {
 		fprintf(stderr, "Dump terminated\n");
 		exit(1);
 	}
@@ -327,7 +333,7 @@ void network_interface::scan_devices(rpl_debug *deb)
 	}
 
 	if (rtnl_dump_filter(netlink_handle, gather_linkinfo,
-                             (void *)deb, NULL, NULL) < 0) {
+                             (void *)&nii, NULL, NULL) < 0) {
 		fprintf(stderr, "Dump terminated\n");
 		exit(1);
 	}
