@@ -1,6 +1,5 @@
 auto lo
 iface lo inet loopback
-iface lo inet6 loopback
 
 auto eth0
 auto eth1
