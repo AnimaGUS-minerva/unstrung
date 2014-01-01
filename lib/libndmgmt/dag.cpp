@@ -314,6 +314,19 @@ void dag_network::addselfprefix(network_interface *iface)
     pre.markself(this, ll_prefix);
 }
 
+static int addselfprefix_each(network_interface *iface, void *arg)
+{
+    dag_network *that = (dag_network *)arg;
+    that->addselfprefix(iface);
+    return 1;
+}
+
+void dag_network::add_all_interfaces(void)
+{
+    network_interface::foreach_if(addselfprefix_each, this);
+}
+
+
 void dag_network::potentially_lower_rank(rpl_node &peer,
                                          network_interface *iface,
                                          const struct nd_rpl_dio *dio,

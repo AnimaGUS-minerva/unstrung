@@ -154,6 +154,8 @@ int main(int argc, char *argv[])
 	    }
 	    check_dag(dag);
             dag->set_prefix(prefix);
+            dag->set_dagrank(1);
+            dag->add_all_interfaces();
         }
         break;
 

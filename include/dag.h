@@ -161,6 +161,7 @@ public:
 	    mInterval_msec = msec;
 	};
 	void set_prefix(const ip_subnet prefix);
+        void add_all_interfaces(void);
 	rpl_node    *my_dag_node(void);
 	dag_network *my_dag_net(void);
 
