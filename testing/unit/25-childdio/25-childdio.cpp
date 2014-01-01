@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
         /* now finish setting things up with netlink */
-        pcap_network_interface::scan_devices(deb);
+        pcap_network_interface::scan_devices(deb, false);
 
         iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dioE-eth1d.pcap", "/dev/null", deb);
         iface->set_debug(deb);
@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
                             AF_INET6, &prefix);
         dn->set_prefix(prefix);
 	dn->set_active();
-        dn->set_grounded();
-        dn->set_rank(1);
+        dn->set_grounded(true);
+        dn->set_dagrank(1);
 
         printf("Processing input file\n");
         iface->process_pcap();
