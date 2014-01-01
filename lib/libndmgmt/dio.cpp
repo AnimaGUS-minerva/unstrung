@@ -153,7 +153,6 @@ int dag_network::build_dio(unsigned char *buff,
 			   unsigned int buff_len,
 			   ip_subnet prefix)
 {
-    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;
     struct in6_addr *dest = NULL;
     struct icmp6_hdr  *icmp6;

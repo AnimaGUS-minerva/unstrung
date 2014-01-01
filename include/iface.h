@@ -22,6 +22,9 @@ extern "C" {
 #include "debug.h"
 #include "dag.h"
 
+extern const uint8_t all_hosts_addr[];
+extern const uint8_t all_rpl_addr[];
+
 enum network_interface_exceptions {
     TOOSHORT = 1,
 };

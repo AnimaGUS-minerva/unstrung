@@ -108,7 +108,6 @@ int dag_network::build_target_opt(ip_subnet prefix)
 int dag_network::build_dao(unsigned char *buff,
 			   unsigned int buff_len)
 {
-    uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
     struct sockaddr_in6 addr;
     struct in6_addr *dest = NULL;
     struct icmp6_hdr  *icmp6;

@@ -52,6 +52,10 @@ class rpl_event_queue network_interface::things_to_do;
 
 class network_interface *loopback_interface = NULL;
 
+const uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x01};
+const uint8_t all_rpl_addr[]   = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
+
+
 network_interface::network_interface()
 {
     nd_socket = -1;
@@ -231,8 +235,7 @@ void network_interface::setup_allrouters_membership(void)
 	mreq.ipv6mr_interface = this->get_if_index();
 
 	/* ipv6-allrouters: ff02::2 */
-	mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);
-	mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x2);
+        memcpy(&mreq.ipv6mr_multiaddr.s6_addr[0], all_hosts_addr, sizeof(mreq.ipv6mr_multiaddr));
 
         if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
         {
@@ -256,8 +259,7 @@ void network_interface::setup_allrpl_membership(void)
 	mreq.ipv6mr_interface = this->get_if_index();
 
 	/* all-rpl-nodes: ff02::1a */
-	mreq.ipv6mr_multiaddr.s6_addr32[0] = htonl(0xFF020000);
-	mreq.ipv6mr_multiaddr.s6_addr32[3] = htonl(0x1a);
+        memcpy(&mreq.ipv6mr_multiaddr.s6_addr[0], all_rpl_addr, sizeof(mreq.ipv6mr_multiaddr));
 
         if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
         {
