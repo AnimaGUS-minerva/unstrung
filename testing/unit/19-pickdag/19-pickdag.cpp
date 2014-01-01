@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	d1->set_interval(50);
 
         /* now finish setting things up with netlink */
-        pcap_network_interface::scan_devices(deb);
+        pcap_network_interface::scan_devices(deb, false);
 
 	/* this has a DAGID: T1 */
         iface = pcap_network_interface::setup_infile_outfile("wlan0",

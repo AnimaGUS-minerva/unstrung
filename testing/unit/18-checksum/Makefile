@@ -11,7 +11,7 @@ programs::
 
 check::	18-checksum
 	@mkdir -p ../OUTPUTS
-	@echo SELFPREFIX13:
+	@echo 18CHECKSUM:
 	./18-checksum
 	@echo SUCCEED
 

@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
 {
 	int i;
         rpl_debug *deb = new rpl_debug(true, stderr);
-        
-        pcap_network_interface::scan_devices(deb);
+
+        pcap_network_interface::scan_devices(deb, true);
 
 	struct timeval n;
 	n.tv_sec = 1024*1024*1024;
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 		char b1[256];
 		char *infile = argv[i];
 		char *b;
-		
+
 		deb->info("PROCESSING %s\n", infile);
 
 		b = basename(infile);

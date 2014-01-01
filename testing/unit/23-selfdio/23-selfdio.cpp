@@ -12,6 +12,9 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
+        /* now finish setting things up with netlink */
+        pcap_network_interface::scan_devices(deb, false);
+
         dag_network *dag = new dag_network("ripple");
         dag->set_debug(deb);
         dag->set_active();
@@ -25,9 +28,6 @@ int main(int argc, char *argv[])
         dag->set_instanceid(1);
         dag->set_dagrank(1);
         dag->set_sequence(1);
-
-        /* now finish setting things up with netlink */
-        pcap_network_interface::scan_devices(deb);
 
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 

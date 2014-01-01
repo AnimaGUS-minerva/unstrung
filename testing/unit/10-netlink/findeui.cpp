@@ -20,13 +20,15 @@ extern "C" {
 /*
  * this program needs to dump the list of interfaces via netlink,
  * printing the MAC address of each interface that it sees.
+ *
+ * It should run, but the output is going to change by system.
  */
 
 
 int main(int argc, char *argv[])
 {
     rpl_debug *deb = new rpl_debug(true, stdout);
-    network_interface::scan_devices(deb);
+    network_interface::scan_devices(deb, false);
 
     exit(0);
 }

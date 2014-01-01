@@ -38,7 +38,7 @@ extern "C" {
  */
 static void t1(rpl_debug *deb)
 {
-    pcap_network_interface::scan_devices(deb);
+    pcap_network_interface::scan_devices(deb, false);
 
     pcap_network_interface *my_if = (pcap_network_interface *)network_interface::find_by_name("wlan0");
 

@@ -15,3 +15,7 @@ check::	23-selfdio
 
 clean::
 	@rm -rf 23-selfdio *.o
+
+update::
+	cp ../OUTPUTS/23-selfdio-out.raw 23-selfdio-out.txt
+

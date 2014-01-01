@@ -325,7 +325,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
                 unsigned char    ifnamespace[256];
                 struct rtattr    ifmtu;
                 unsigned int     ifmtu_value;
-        } fake1;
+        } fake1, fake2;
 
         struct network_interface_init nii;
 
@@ -409,6 +409,74 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
                 nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
                 gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
         }
+
+        /* now make a loopback interface */
+        {
+                struct nlmsghdr *nlh = &fake2.nlh;
+                struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
+                struct rtattr    *rtname = IFLA_RTA(ifi);
+                int    len      = 0;
+                nlh->nlmsg_type  = RTM_NEWLINK;
+                nlh->nlmsg_flags = 0;  /* not sure what to set here */
+                nlh->nlmsg_seq   = ++seq;
+                nlh->nlmsg_pid   = getpid();
+
+                ifi->ifi_index   = myindex = ++ifindex;
+                ifi->ifi_type    = ARPHRD_LOOPBACK;
+                ifi->ifi_flags   = IFF_BROADCAST;
+
+                rtname->rta_type = IFLA_IFNAME;
+                char *ifname = (char *)RTA_DATA(rtname);
+                ifname[0]='\0';
+                strncat(ifname, "lo", sizeof(fake2.ifnamespace));
+                rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
+
+                struct rtattr *rtmtu = RTA_NEXT(rtname, len);
+                rtmtu->rta_type = IFLA_MTU;
+                unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
+                *mtu            = 1500;
+                rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
+
+                struct rtattr *rtlast = RTA_NEXT(rtmtu, len);
+
+                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake2, (void*)&nii);
+        }
+
+        {
+                /* now send up the IPv6 address */
+                struct nlmsghdr *nlh = &fake2.nlh;
+                struct ifaddrmsg *iai= (struct ifaddrmsg *)NLMSG_DATA(nlh);
+                struct rtattr    *rtaddr6 = IFA_RTA(iai);
+                int    len      = 0;
+                nlh->nlmsg_type  = RTM_NEWADDR;
+                nlh->nlmsg_flags = 0;  /* not sure what to set here */
+                nlh->nlmsg_seq   = ++seq;
+                nlh->nlmsg_pid   = getpid();
+
+                iai->ifa_family  = AF_INET6;
+                iai->ifa_prefixlen = 64;
+                iai->ifa_flags   = IFA_F_PERMANENT;
+                iai->ifa_scope   = 0;
+                iai->ifa_index   = myindex;
+
+                rtaddr6->rta_type= IFA_LOCAL;
+                unsigned char *addr6 = (unsigned char *)RTA_DATA(rtaddr6);
+                addr6[0] = 0x00;                addr6[1] = 0x00;
+                addr6[2] = 0x00;                addr6[3] = 0x00;
+                addr6[4] = 0x00;                addr6[5] = 0x00;
+                addr6[6] = 0x00;                addr6[7] = 0x00;
+                addr6[8] = 0x00;                addr6[9] = 0x00;
+                addr6[10]= 0x00;                addr6[11]= 0x00;
+                addr6[12]= 0x00;                addr6[13]= 0x00;
+                addr6[14]= 0x00;                addr6[15]= 0x01;
+                rtaddr6->rta_len = RTA_LENGTH(16);
+
+                struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
+                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake2, (void*)&nii);
+        }
+
 }
 
 /* used by addprefix() to change system parameters */

@@ -16,3 +16,7 @@ check::	24-daoreply
 
 clean::
 	@rm -rf 24-daoreply *.o
+
+update:
+	cp  ../OUTPUTS/24-daoreply-out.raw   24-daoreply-out.txt
+	cp  ../OUTPUTS/24-node-E-capture.txt 24-node-E-capture.txt

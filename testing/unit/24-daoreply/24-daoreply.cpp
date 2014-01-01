@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         dag->set_interval(5000);
 
         /* now finish setting things up with netlink */
-        pcap_network_interface::scan_devices(deb);
+        pcap_network_interface::scan_devices(deb, false);
 
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6602", &iface_src2);
 
