@@ -19,7 +19,7 @@
  *
  */
 
-extern char *progname;
+extern char *program_name;
 extern jmp_buf getMeOut;
 
 #define ETH_ALEN 6

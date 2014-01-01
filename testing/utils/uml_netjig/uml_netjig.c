@@ -88,7 +88,6 @@
 #include "port.h"
 #include "netjig.h"
 
-char *progname;
 jmp_buf getMeOut;
 
 void *xmalloc1(size_t size, char *file, int linenum)
@@ -149,12 +148,12 @@ void netjig1_init(struct netjig_state *ns)
 	nh_pub->nh_allarp = ns->arpreply;
 	nh_priv->nh_allarp= ns->arpreply;
 
-	fprintf(stderr, "%s: will exit on empty: %s\n", progname,
+	fprintf(stderr, "%s: will exit on empty: %s\n", program_name,
 		ns->exitonempty ? "yes" : "no ");
 
 	if(ns->playpublicfile) {
 		fprintf(stderr, "%s: will play %s to public interface\n",
-			progname, ns->playpublicfile);
+			program_name, ns->playpublicfile);
 
 		nh_pub->nh_inputFile = ns->playpublicfile;
 		nh_pub->nh_input = pcap_open_offline(ns->playpublicfile,
@@ -168,7 +167,7 @@ void netjig1_init(struct netjig_state *ns)
 
 	if(ns->playprivatefile) {
 		fprintf(stderr, "%s: will play %s to private interface\n",
-		       progname, ns->playprivatefile);
+		       program_name, ns->playprivatefile);
 
 		nh_priv->nh_inputFile = ns->playprivatefile;
 		nh_priv->nh_input = pcap_open_offline(ns->playprivatefile,
@@ -184,7 +183,7 @@ void netjig1_init(struct netjig_state *ns)
 		pcap_t *pt;
 
 		fprintf(stderr, "%s: will record to %s from public interface\n",
-			progname, ns->recordpublicfile);
+			program_name, ns->recordpublicfile);
 		nh_pub->nh_outputFile = ns->recordpublicfile;
 
 		pt = pcap_open_dead(DLT_EN10MB, 1536);
@@ -200,7 +199,7 @@ void netjig1_init(struct netjig_state *ns)
 		pcap_t *pt;
 
 		fprintf(stderr, "%s: will record to %s from private interface\n",
-			progname, ns->recordprivatefile);
+			program_name, ns->recordprivatefile);
 		nh_priv->nh_outputFile = ns->recordprivatefile;
 
 		pt = pcap_open_dead(DLT_EN10MB, 1536);
@@ -225,12 +224,24 @@ void cleanup_njstate(struct netjig_state *ns)
   }
 }
 
+#ifdef NETDISSECT
+static void
+netjig_default_print(netdissect_options *ndo, const u_char *bp, u_int length)
+{
+  hex_and_ascii_print("\n\t", bp, length); /* pass on lf and identation string */
+}
+#endif
+
+/* needed by libnetdissect */
+int32_t thiszone;		/* seconds offset from gmt to local time */
+char *program_name = "uml_netjig";
 
 void init_netdissect()
 {
 #ifdef NETDISSECT
+  thiszone = gmt2local(0);
   memset(&gndo, 0, sizeof(gndo));
-  gndo.ndo_default_print = default_print;
+  gndo.ndo_default_print = netjig_default_print;
 
 /*  gndo.ndo_default_output= stderr; */
 
@@ -281,9 +292,9 @@ int main(int argc, char **argv)
 
   ns.packetrate = 500;    /* by default, send at a rate of packet/500ms */
 
-  progname = argv[0];
-  if(strrchr(progname, '/')) {
-	  progname=strrchr(progname, '/')+1;
+  program_name = argv[0];
+  if(strrchr(program_name, '/')) {
+	  program_name=strrchr(program_name, '/')+1;
   }
 
   while((opt = getopt_long(argc, argv, "adehp:P:r:R:s:tu:v",
@@ -406,7 +417,7 @@ int main(int argc, char **argv)
   l_nfds= 0;
 
 //  printf("%s attached to unix sockets \n\t'%s,%s'\n and \n\t'%s,%s'\n",
-//	 progname, ns.public.ctl_socket_name, ns.public.data_socket_name,
+//	 program_name, ns.public.ctl_socket_name, ns.public.data_socket_name,
 //	 ns.private.ctl_socket_name, ns.private.data_socket_name);
 
 

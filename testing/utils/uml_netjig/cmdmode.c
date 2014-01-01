@@ -291,7 +291,7 @@ int setarp(struct netjig_state *ns, int argc, char **argv)
 
 	if(ns->debug) {
 	  fprintf(stderr, "%s: switch '%s' setting arp reply to %d\n",
-		  progname, nh->nh_name, arpon);
+		  program_name, nh->nh_name, arpon);
 	}
 
 	nh->nh_allarp = arpon;
@@ -360,7 +360,7 @@ int recordfile(struct netjig_state *ns, int argc, char **argv)
 
 	if(ns->debug) {
 	  fprintf(stderr, "%s: will record %s from '%s' network\n",
-		  progname, recordfilename, nh->nh_name);
+		  program_name, recordfilename, nh->nh_name);
 	}
 
 	pt = pcap_open_dead(DLT_EN10MB, 1536);
@@ -459,7 +459,7 @@ int playfile(struct netjig_state *ns, int argc, char **argv)
 
 	if(ns->debug) {
 	  fprintf(stderr, "%s: will play %s to '%s' network\n",
-		  progname, playfilename, nh->nh_name);
+		  program_name, playfilename, nh->nh_name);
 	}
 
 	nh->nh_inputFile = strdup(playfilename);

@@ -30,12 +30,12 @@ OPTIONS=-DARP_PROCESS -DTUNTAP
 #
 # cvs -d :pserver:tcpdump@cvs.tcpdump.org:/tcpdump/master checkout -rmcr_dissect -dnetdissect_tcpdump
 #
-#NETDISSECTH=-DNETDISSECT -I/home/mcr/src/tcpdump
-#NETDISSECTLIB=-L/home/mcr/src/linux/i386/tcpdump -lnetdissect
+NETDISSECTH=-DNETDISSECT -I/corp/projects/Misc/tcpdump/tcpdump
+NETDISSECTLIB=-L/corp/projects/Misc/tcpdump/tcpdump -lnetdissect
 
 # to decode ESP packets (with netdissect), you need crypto, which you can
 # get from ssl.
-#OPENSSL=-L/usr/local/ssl/lib -lcrypto
+OPENSSL=-L/usr/local/ssl/lib -lcrypto
 
 # To read/write files, you need to have libpcap (-devel if on RH) installed.
 PCAPH=-I/usr/include/pcap

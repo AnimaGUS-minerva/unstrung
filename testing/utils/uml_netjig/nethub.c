@@ -291,7 +291,7 @@ void bind_sockets_v0(struct nethub *nh)
 		 nh->ctl_socket_name, nh->data_socket_name);
     fprintf(stderr, "\tor rerun with different, unused filenames for "
 	    "sockets:\n");
-    fprintf(stderr, "\t\t%s -unix <control> <data>\n", progname);
+    fprintf(stderr, "\t\t%s -unix <control> <data>\n", program_name);
     fprintf(stderr, "\t\tand run the UMLs with "
 	    "'eth0=daemon,,unix,<control>,<data>\n");
     exit(1);
@@ -299,7 +299,7 @@ void bind_sockets_v0(struct nethub *nh)
   else {
     fprintf(stderr, "You should rerun with different, unused filenames for "
 	    "sockets:\n");
-    fprintf(stderr, "\t%s -unix <control> <data>\n", progname);
+    fprintf(stderr, "\t%s -unix <control> <data>\n", program_name);
     fprintf(stderr, "\tand run the UMLs with "
 	    "'eth0=daemon,,unix,<control>,<data>'\n");
     exit(1);

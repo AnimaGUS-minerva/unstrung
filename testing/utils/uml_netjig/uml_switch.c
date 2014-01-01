@@ -30,7 +30,8 @@
 static char *ctl_socket = "/tmp/uml.ctl";
 static char *data_socket = NULL;
 
-char *progname;
+int32_t thiszone = 0;		/* seconds offset from gmt to local time */
+char *program_name = "uml_switch";
 
 static struct nethub *global_nh = NULL;
 static struct netjig_state *global_ns=NULL;
@@ -69,7 +70,7 @@ static void Usage(void)
   fprintf(stderr, "Usage : %s [ -unix control-socket ] [ -hub ]\n"
 	  "or : %s -compat-v0 [ -unix control-socket data-socket ] [ -hub ]\n"
 	  "or : %s -name switch [ -hub ]\n",
-	  progname, progname, progname);
+	  program_name, program_name, program_name);
   exit(1);
 }
 
@@ -119,7 +120,7 @@ int main(int argc, char **argv)
   memset(global_ns, 0, sizeof(*global_ns));
   TAILQ_INIT(&global_ns->switches);
 
-  progname = argv[0];
+  program_name = argv[0];
   argv++;
   argc--;
   while(argc > 0){
@@ -153,7 +154,7 @@ int main(int argc, char **argv)
 #endif
     }
     else if(!strcmp(argv[0], "-hub")){
-      printf("%s will be a hub instead of a switch\n", progname);
+      printf("%s will be a hub instead of a switch\n", program_name);
       hub = 1;
       argc--;
       argv++;
@@ -192,12 +193,12 @@ int main(int argc, char **argv)
 
   if(compat_v0)
     printf("%s attached to unix sockets '%s' and '%s'\n",
- 	   progname,
+ 	   program_name,
 	   global_nh->ctl_socket_name,
 	   (global_nh->data_socket_name ?
 	    global_nh->data_socket_name : "-abstract-named-"));
   else printf("%s attached to unix socket '%s'\n",
-	      progname,
+	      program_name,
 	      global_nh->ctl_socket_name);
 
   if(isatty(0)) add_fd(global_ns, 0);
