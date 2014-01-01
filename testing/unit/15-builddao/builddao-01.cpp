@@ -55,30 +55,30 @@ static void t1(rpl_debug *deb)
 
     unsigned char buf[2048];
     ip_subnet out;
+    /* this is who *I* am, this is what will be announced in the DAO */
     ttosubnet("2001:db8::abcd:0002/128",0, AF_INET6, &out);
 
     /* make a new dn */
     class dag_network *dn1 = new dag_network(dag1name);
     dn1->set_debug(deb);
     dn1->set_active();
+    dn1->addselfprefix(my_if);
 
-    /* add a host to this network */
-    rpl_node n1("2001:db8::abcd:0002", dn1, deb);
-    assert(n1.validP());
+    struct in6_addr announced;
+    int result = inet_pton(AF_INET6, "2001:db8:abcd::", &announced);
+    assert(result==1);
 
-    struct in6_addr via1;
-    inet_pton(AF_INET6, "2001:db8::abcd:1005", &via1);
+    /* who announced this prefix, this is where the DAO will go. */
+    rpl_node announced_from("fe80::216:3eff:fe22:4455", dn1, deb);
+    assert(announced_from.validP());
 
-    /* add a prefix to the network */
-    prefix_node pvia1(deb, via1, 128);
+    /* set the prefix for this network */
+    prefix_node pvia1(deb, announced, 64);
     deb->verbose("add a prefix to the dn\n");
-    dn1->addprefix(n1, my_if, pvia1.get_prefix());
+    dn1->addprefix(announced_from, my_if, pvia1.get_prefix());
 
-    deb->verbose("build DAO\n");
-    int len = dn1->build_dao(buf, 2048);
-    assert(len == 56);
-
-    my_if->send_raw_icmp(NULL, buf, len);
+    /* build a DAO, send it. */
+    my_if->send_dao(announced_from, *dn1);
 }
 
 int main(int argc, char *argv[])
