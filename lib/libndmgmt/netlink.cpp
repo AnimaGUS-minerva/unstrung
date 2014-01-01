@@ -280,6 +280,7 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
 
     case ARPHRD_LOOPBACK:
         loopback_interface = ni;
+        ni->loopback = true;
         return 0;
 
     default:
