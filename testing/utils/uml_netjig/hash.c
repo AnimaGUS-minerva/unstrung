@@ -39,7 +39,7 @@ static struct hash_entry *find_entry(struct nethub *nh,
   for(e = nh->h[k]; e; e = e->next){
     if(!memcmp(&e->dst, dst, ETH_ALEN)) return(e);
   }
-  return(NULL);  
+  return(NULL);
 }
 
 void *find_in_hash(struct nethub *nh,
@@ -131,7 +131,7 @@ static void print_hash_entry(struct nethub *nh,
 {
   struct printer *p = arg;
 
-  fprintf(stderr, "Hash: %d Addr: %02x:%02x:%02x:%02x:%02x:%02x to port: %s  " 
+  fprintf(stderr, "Hash: %d Addr: %02x:%02x:%02x:%02x:%02x:%02x to port: %s  "
 	  "age %ld secs\n", calc_hash(e->dst),
 	  e->dst[0], e->dst[1], e->dst[2], e->dst[3], e->dst[4], e->dst[5],
 	  (*p->port_id)(e->port), (int) p->now - e->last_seen);
@@ -161,7 +161,7 @@ void hash_periodic(struct nethub *nh)
   time_t t = time(NULL);
   for_all_hash(nh, &gc, &t);
 }
-  
+
 void hash_init(struct nethub *nh)
 {
   /* nothing right now */

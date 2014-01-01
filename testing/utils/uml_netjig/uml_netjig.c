@@ -2,12 +2,12 @@
  * @(#) jig to exercise a UML/FreeSWAN kernel with two interfaces
  *
  * Copyright (C) 2001 Michael Richardson  <mcr@freeswan.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -19,13 +19,13 @@
  *
  */
 
-/* 
+/*
  * This program has been seriously hacked since.
- * 
+ *
  *
  * This file contains a program to exercise a FreeSWAN kernel that is
  * built in a User-Mode-Linux form. It creates four sets of Unix
- * domain sockets: two control sockets and two data sockets. 
+ * domain sockets: two control sockets and two data sockets.
  *
  * These sockets make up the connection points for the "daemon" method
  * of networking provided by UML.
@@ -43,7 +43,7 @@
  * things.
  *
  * The environment variables UML_{public,private}_{CTL,DATA} are set to
- * the names of the respective sockets. 
+ * the names of the respective sockets.
  *
  * If the --arp option is given, the program will respond to all ARP
  * requests that it sees, providing a suitable response.
@@ -130,7 +130,7 @@ static void Usage(void)
   exit(1);
 }
 
-void netjig1_init(struct netjig_state *ns) 
+void netjig1_init(struct netjig_state *ns)
 {
 	struct nethub *nh_priv, *nh_pub;
 	char errbuf[256];
@@ -155,7 +155,7 @@ void netjig1_init(struct netjig_state *ns)
 	if(ns->playpublicfile) {
 		fprintf(stderr, "%s: will play %s to public interface\n",
 			progname, ns->playpublicfile);
-		
+
 		nh_pub->nh_inputFile = ns->playpublicfile;
 		nh_pub->nh_input = pcap_open_offline(ns->playpublicfile,
 						     errbuf);
@@ -164,12 +164,12 @@ void netjig1_init(struct netjig_state *ns)
 			exit(1);
 		}
 		nh_pub->nh_rate = 1;
-	}	  
+	}
 
 	if(ns->playprivatefile) {
 		fprintf(stderr, "%s: will play %s to private interface\n",
 		       progname, ns->playprivatefile);
-		
+
 		nh_priv->nh_inputFile = ns->playprivatefile;
 		nh_priv->nh_input = pcap_open_offline(ns->playprivatefile,
 						      errbuf);
@@ -183,7 +183,7 @@ void netjig1_init(struct netjig_state *ns)
 	if(ns->recordpublicfile) {
 		pcap_t *pt;
 
-		fprintf(stderr, "%s: will record to %s from public interface\n", 
+		fprintf(stderr, "%s: will record to %s from public interface\n",
 			progname, ns->recordpublicfile);
 		nh_pub->nh_outputFile = ns->recordpublicfile;
 
@@ -198,7 +198,7 @@ void netjig1_init(struct netjig_state *ns)
 
 	if(ns->recordprivatefile) {
 		pcap_t *pt;
-		
+
 		fprintf(stderr, "%s: will record to %s from private interface\n",
 			progname, ns->recordprivatefile);
 		nh_priv->nh_outputFile = ns->recordprivatefile;
@@ -226,9 +226,9 @@ void cleanup_njstate(struct netjig_state *ns)
 }
 
 
-void init_netdissect() 
+void init_netdissect()
 {
-#ifdef NETDISSECT	  
+#ifdef NETDISSECT
   memset(&gndo, 0, sizeof(gndo));
   gndo.ndo_default_print = default_print;
 
@@ -312,7 +312,7 @@ int main(int argc, char **argv)
     case 's':
 	    ns.startup = optarg;
 	    break;
-	    
+
     case 't':
 	    tcpdump_print = 1;
 	    break;
@@ -332,7 +332,7 @@ int main(int argc, char **argv)
     case 'R':
       ns.recordprivatefile= optarg;
       break;
-      
+
     case 'v':
       ns.verbose++;
       break;
@@ -365,7 +365,7 @@ int main(int argc, char **argv)
 		  onh2=nh->nh_link.tqe_next;
 		  cleanup_nh(nh);
 	  }
-	  
+
 	  cleanup_njstate(&ns);
 
 	  exit(1);
@@ -458,9 +458,9 @@ int main(int argc, char **argv)
 	    l_fd_array = realloc(l_fd_array, l_fd_array_size*sizeof(int));
     }
     memcpy(l_fd_array, ns.fd_array, l_fd_array_size * sizeof(int));
-    
+
     n = poll(l_fds, l_nfds, timeout);
-    
+
     if(ns.debug > 1) {
 	    fprintf(stderr, " -> %d left %d\n", n, timeout);
     }
@@ -492,16 +492,16 @@ int main(int argc, char **argv)
 			     * detection algorithm, see Allen Van Gelder:
 			     * _Efficient Loop Detection in Prolog using
 			     * the Tortoise-and-Hare Technique.
-			     * JLP 4(1): 23-31 (1987) 
+			     * JLP 4(1): 23-31 (1987)
 			     */
 			    if(onh2toggle) {
 				    onh2=onh;
 			    }
 			    onh2toggle=!onh2toggle;
-			    
+
 			    /* advance the pointer once */
 			    onh = onh->nh_link.tqe_next;
-			    
+
 			    assert(onh!=onh2);  /*oh shit, is there a loop? */
 		    }
 	    }
@@ -510,13 +510,13 @@ int main(int argc, char **argv)
 	     * then it is because we have wrapped around and found nothing.
 	     */
 	    nh=onh;
-	    
+
 	    if(nh && nh->nh_input) {
 		    struct pcap_pkthdr ph;
 		    const u_char *packet;
 
 		    memset(&ph, 0, sizeof(ph));
-	
+
 		    packet = pcap_next(nh->nh_input, &ph);
 		    if(packet == NULL) {
 			    if(ns.forcetick) {
@@ -582,7 +582,7 @@ int main(int argc, char **argv)
 			    else if(ns.cmdproto) {
 				    cmdread(&ns, buf, readlen);
 			    }
-			    
+
 			    /* note that we have processed one descriptor */
 			    l_fds[l_fd_array[0]].revents=0;
 			    n--;
@@ -590,9 +590,9 @@ int main(int argc, char **argv)
 			    /* exit! */
 			    ns.done=1;
 		    }
-			    
+
 	    }
-	    
+
 	    /* then process control socket connections */
 	    for(nh=ns.switches.tqh_first;
 		nh;
@@ -613,14 +613,14 @@ int main(int argc, char **argv)
 		nh=nh->nh_link.tqe_next) {
 
 		    if(nh->data_fd < l_fd_array_size &&
-		       l_fd_array[nh->data_fd]!=-1 && 
+		       l_fd_array[nh->data_fd]!=-1 &&
 		       l_fds[l_fd_array[nh->data_fd]].revents & POLLIN) {
 			    handle_sock_data(&ns, nh);
 			    n--;
 			    l_fds[l_fd_array[nh->data_fd]].revents=0;
 #ifdef TUNTAP
 		    } else if(nh->tap_fd < l_fd_array_size &&
-		       l_fd_array[nh->tap_fd]!=-1 && 
+		       l_fd_array[nh->tap_fd]!=-1 &&
 		       l_fds[l_fd_array[nh->tap_fd]].revents & POLLIN) {
 			    handle_tap_data(&ns, nh);
 			    n--;
@@ -628,7 +628,7 @@ int main(int argc, char **argv)
 #endif
 		    }
 	    }
-	    
+
 	    /* finally, check out the sockets that are just listen(2)
 	     * for new connections.
 	     */
@@ -652,9 +652,9 @@ int main(int argc, char **argv)
 	  TAILQ_REMOVE(&ns.switches,onh,nh_link);
 	  cleanup_nh(onh);
   }
-  
+
   cleanup_njstate(&ns);
-  
+
   return 0;
 }
 

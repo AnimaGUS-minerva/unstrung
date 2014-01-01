@@ -32,9 +32,9 @@ extern void handle_data(struct netjig_state *ns,
 			struct nethub *nh,
 			struct packet *packet, int len,
 			int   fd,
-			void *data, int (*matcher)(int port_fd, int data_fd, 
+			void *data, int (*matcher)(int port_fd, int data_fd,
 						   void *port_data,
-						   int port_data_len, 
+						   int port_data_len,
 						   void *data));
 
 void insert_data(struct netjig_state *ns,
@@ -54,7 +54,7 @@ extern void setup_port(struct netjig_state *ns,
 		       struct nethub       *nh,
 		       struct port         *port,
 		       int fd,
-		       void (*sender)(int fd, void *packet, int len, 
+		       void (*sender)(int fd, void *packet, int len,
 				      void *data),
 		       void *data, int data_len);
 

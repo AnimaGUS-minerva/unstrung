@@ -150,7 +150,7 @@ int main(int argc, char **argv)
 #else
       fprintf(stderr, "-tap isn't supported since TUNTAP isn't enabled\n");
       Usage();
-#endif      
+#endif
     }
     else if(!strcmp(argv[0], "-hub")){
       printf("%s will be a hub instead of a switch\n", progname);
@@ -185,12 +185,12 @@ int main(int argc, char **argv)
 			  data_socket,
 			  compat_v0);
   global_nh->nh_hub = hub;
-  
+
   if(signal(SIGINT, sig_handler) < 0)
     perror("Setting handler for SIGINT");
   hash_timer_init();
 
-  if(compat_v0) 
+  if(compat_v0)
     printf("%s attached to unix sockets '%s' and '%s'\n",
  	   progname,
 	   global_nh->ctl_socket_name,
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
 	    l_fd_array = realloc(l_fd_array, l_fd_array_size*sizeof(int));
     }
     memcpy(l_fd_array, global_ns->fd_array, l_fd_array_size * sizeof(int));
-    
+
     n = poll(l_fds, l_nfds, -1);
     if(n < 0){
       if(errno == EINTR) continue;

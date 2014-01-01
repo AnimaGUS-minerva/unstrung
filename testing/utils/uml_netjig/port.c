@@ -3,12 +3,12 @@
  *
  * Copyright (C) 2001 Jeff Dike Jeff Dike <jdike@karaya.com>
  * Copyright (C) 2001 Michael Richardson  <mcr@freeswan.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -84,7 +84,7 @@ static void update_src(struct netjig_state *ns,
   struct port *last;
 
   /* We don't like broadcast source addresses */
-  if(IS_BROADCAST(p->header.src)) return;  
+  if(IS_BROADCAST(p->header.src)) return;
 
   last = find_in_hash(nh, p->header.src);
 
@@ -119,7 +119,7 @@ static void update_src(struct netjig_state *ns,
 static void send_dst(struct netjig_state *ns,
 		     struct nethub       *nh,
 		     struct port *srcport,
-		     struct packet *packet, int len, 
+		     struct packet *packet, int len,
 		     int hub)
 {
   struct port *target, *p;
@@ -131,12 +131,12 @@ static void send_dst(struct netjig_state *ns,
 	fprintf(stderr,
 		"hub %s unknown Addr: %02x:%02x:%02x:%02x:%02x:%02x from port %d\n",
 		nh->nh_name,
-		packet->header.src[0], packet->header.src[1], 
-		packet->header.src[2], packet->header.src[3], 
+		packet->header.src[0], packet->header.src[1],
+		packet->header.src[2], packet->header.src[3],
 		packet->header.src[4], packet->header.src[5],
 		(srcport == NULL) ? -1 : srcport->control);
       }
-    } 
+    }
 
     /* no cache or broadcast/multicast == all ports */
     for(p = nh->nh_ports.tqh_first;
@@ -166,9 +166,9 @@ void handle_data(struct netjig_state *ns,
 		 struct nethub *nh,
 		 struct packet *packet, int len,
 		 int   fd,
-		 void *data, int (*matcher)(int port_fd, int data_fd, 
+		 void *data, int (*matcher)(int port_fd, int data_fd,
 					    void *port_data,
-					    int port_data_len, 
+					    int port_data_len,
 					    void *data))
 {
   struct pcap_pkthdr ph;
@@ -180,7 +180,7 @@ void handle_data(struct netjig_state *ns,
 	      p = p->link.tqe_next){
 		  if((*matcher)(p->control, fd, p->data, p->data_len, data)) break;
 	  }
-  
+
 	  /* if we have an incoming port (we will unless the packet is inserted) */
 	  if(p != NULL) update_src(ns, nh, p, packet);
   }
@@ -210,7 +210,7 @@ void handle_data(struct netjig_state *ns,
   if(nh->nh_defaultgate.s_addr!=0 || nh->nh_allarp) {
     if(packet->header.proto == htons(ETHERTYPE_ARP)) {
       struct arphdr *ahdr;
-      
+
       ahdr = (struct arphdr *)&packet->data;
       if(ahdr->ar_hrd == htons(ARPHRD_ETHER) &&
 	 ahdr->ar_pro == htons(ETHERTYPE_IP) &&
@@ -224,7 +224,7 @@ void handle_data(struct netjig_state *ns,
 
 	if(nh->nh_allarp == 1 || *tip == nh->nh_defaultgate.s_addr) {
 	  /* AHA! reply to ARP request */
-	  
+
 	  /* we mutate this packet in place */
 	  /* change this to a reply */
 	  ahdr->ar_op = htons(ARPOP_REPLY);
@@ -252,7 +252,7 @@ void handle_data(struct netjig_state *ns,
 	    struct pcap_pkthdr ph;
 
 	    memset(&ph, 0, sizeof(ph));
-	    
+
 	    ph.caplen = len;
 	    ph.len    = len;
 
@@ -265,10 +265,10 @@ void handle_data(struct netjig_state *ns,
     }
   }
 #endif
-  send_dst(ns, nh, p, packet, len, nh->nh_hub);  
+  send_dst(ns, nh, p, packet, len, nh->nh_hub);
 }
 
-static int match_tap(int port_fd, int data_fd, void *port_data, 
+static int match_tap(int port_fd, int data_fd, void *port_data,
 		     int port_data_len, void *data)
 {
   return(port_fd == data_fd);
@@ -313,13 +313,13 @@ static void send_sock(int fd, void *packet, int len, void *data)
 {
   struct sock_data *mine = data;
   int err;
-  
+
   err = sendto(mine->fd, packet, len, 0, (struct sockaddr *) &mine->sock,
 	       sizeof(mine->sock));
   if(err != len) perror("send_sock");
 }
 
-static int match_sock(int port_fd, int data_fd, void *port_data, 
+static int match_sock(int port_fd, int data_fd, void *port_data,
 		      int port_data_len, void *data)
 {
   struct sock_data *mine = data;
@@ -339,7 +339,7 @@ void handle_sock_data(struct netjig_state *ns,
   unsigned int socklen = sizeof(data.sock);
 
   len = recvfrom(nh->data_fd,
-		 &packet, sizeof(packet), 0, 
+		 &packet, sizeof(packet), 0,
 		 (struct sockaddr *) &data.sock, &socklen);
 
   if(len < 0){
@@ -366,7 +366,7 @@ int setup_sock_port(struct netjig_state *ns,
   }
   data->fd   = nh->data_fd;
   data->sock = *name;
-  
+
   port->sender = send_sock;
   port->data   = data;
   port->data_len=sizeof(*data);
@@ -391,7 +391,7 @@ int setup_sock_tap(struct netjig_state *ns,
     return(-1);
   }
   data->fd   = nh->data_fd;
-  
+
   np->sender = tap_sender;
   np->data   = data;
   np->data_len=sizeof(*data);
@@ -411,7 +411,7 @@ void new_port_v0(struct netjig_state *ns,
   case REQ_NEW_CONTROL:
 	  setup_sock_port(ns, nh, p, &req->u.new_control.name);
 	  break;
-    
+
   default:
 	  fprintf(stderr, "v0 bad request type : %08x\n", req->type);
 	  close_descriptor(ns, nh, nh->data_fd);
@@ -421,7 +421,7 @@ void new_port_v0(struct netjig_state *ns,
 void new_port_v1_v3(struct netjig_state *ns,
 		    struct nethub *nh,
 		    struct port   *port,
-		    enum request_type type, 
+		    enum request_type type,
 		    struct sockaddr_un *sock)
 {
   int n, err;
@@ -456,7 +456,7 @@ void new_port_v2(struct netjig_state *ns,
  */
 void handle_new_port(struct netjig_state *ns,
 		     struct nethub *nh,
-		     struct port   *p) 
+		     struct port   *p)
 {
   union request req;
   int len;
@@ -485,15 +485,15 @@ void handle_new_port(struct netjig_state *ns,
     case 2:
       new_port_v2(ns, nh, p, &req.v2);
       break;
-      
+
     case 3:
       new_port_v1_v3(ns, nh, p, req.v3.type, &req.v3.sock);
       break;
-      
+
     case 1:
       new_port_v1_v3(ns, nh, p, req.v1.type, &req.v1.u.new_control.name);
       break;
-      
+
     default:
       fprintf(stderr, "Request for a version %d port, which this "
 	      "uml_switch doesn't support\n", req.v2.version);
@@ -568,7 +568,7 @@ void accept_connection(struct netjig_state *ns,
     return;
   }
 #endif
-  
+
   new_port = alloc_port(ns, nh);
   new_port->control = new;
   add_fd(ns, new);
@@ -583,7 +583,7 @@ void handle_port(struct netjig_state *ns,
 {
   struct port *p;
   struct port *next_port;
-  
+
   for(p = nh->nh_ports.tqh_first;
       p != NULL;
       p = next_port)
@@ -605,4 +605,4 @@ void handle_port(struct netjig_state *ns,
 	}
       }
     }
-}  
+}

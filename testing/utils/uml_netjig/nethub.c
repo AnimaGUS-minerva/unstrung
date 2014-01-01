@@ -2,12 +2,12 @@
  * @(#) jig to exercise a UML/FreeSWAN kernel with two interfaces
  *
  * Copyright (C) 2001 Michael Richardson  <mcr@freeswan.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
@@ -92,7 +92,7 @@ void cleanup_nh(struct nethub *nh)
     close(nh->data_fd);
     nh->data_fd = -1;
   }
-    
+
   if(nh->socket_dir != NULL && rmdir(nh->socket_dir) < 0) {
     fprintf(stderr, "Couldn't remove socket dir '%s' : %s\n",
 	    nh->socket_dir, strerror(errno));
@@ -210,7 +210,7 @@ int still_used(struct sockaddr_un *sun)
   if(connect(test_fd, (struct sockaddr *) sun, sizeof(*sun)) < 0){
     if(errno == ECONNREFUSED){
       if(unlink(sun->sun_path) < 0){
-	fprintf(stderr, "Failed to removed unused socket '%s': ", 
+	fprintf(stderr, "Failed to removed unused socket '%s': ",
 		sun->sun_path);
 	perror("");
       }
@@ -231,7 +231,7 @@ int bind_socket(int fd, const char *name, struct sockaddr_un *sock_out)
 
   sun.sun_family = AF_UNIX;
   strcpy(sun.sun_path, name);
-  
+
   if(bind(fd, (struct sockaddr *) &sun, sizeof(sun)) < 0){
     if((errno == EADDRINUSE) && still_used(&sun)) return(EADDRINUSE);
     else if(bind(fd, (struct sockaddr *) &sun, sizeof(sun)) < 0){
@@ -283,9 +283,9 @@ void bind_sockets_v0(struct nethub *nh)
 	    "be removed\n", nh->data_socket_name);
   if(try_remove_ctl || try_remove_data){
     fprintf(stderr, "You can either\n");
-    if(try_remove_ctl && !try_remove_data) 
+    if(try_remove_ctl && !try_remove_data)
       fprintf(stderr, "\tremove '%s'\n", nh->ctl_socket_name);
-    else if(!try_remove_ctl && try_remove_data) 
+    else if(!try_remove_ctl && try_remove_data)
       fprintf(stderr, "\tremove '%s'\n", nh->data_socket_name);
     else fprintf(stderr, "\tremove '%s' and '%s'\n",
 		 nh->ctl_socket_name, nh->data_socket_name);
@@ -337,7 +337,7 @@ void bind_sockets(struct nethub *nh)
     return;
   }
   else if(err == EADDRINUSE) used = 1;
-  
+
   if(used){
     fprintf(stderr, "The control socket '%s' has another server "
 	    "attached to it\n", nh->ctl_socket_name);
@@ -437,9 +437,9 @@ struct nethub *init_nethub(struct netjig_state *ns,
 
 	/* setup ARP stuff */
 	nh->nh_allarp = 0;
-	
+
 	nh->nh_defaultgate.s_addr = 0;
-	
+
 	nh->nh_defaultether[0]=0x10;
 	nh->nh_defaultether[1]=0x00;
 	nh->nh_defaultether[2]=0x00;
@@ -451,7 +451,7 @@ struct nethub *init_nethub(struct netjig_state *ns,
 	  /* cons up the names, and stick them in the environment */
 	  env = xmalloc(sizeof("UML_")+2*strlen(switchname)+sizeof("CTL=")+
 			strlen(ns->socketbasedir)+sizeof("/ctl")+4);
-	  
+
 	  sprintf(env, "UML_%s_CTL=%s/%s/ctl", switchname,
 		  ns->socketbasedir, switchname);
 	  putenv(env);
@@ -466,7 +466,7 @@ struct nethub *init_nethub(struct netjig_state *ns,
 	if(data_socket == NULL) {
 	  env = xmalloc(sizeof("UML_")+2*strlen(switchname)+sizeof("DATA=")+
 			strlen(ns->socketbasedir)+sizeof("/data")+4);
-	  
+
 	  sprintf(env, "UML_%s_DATA=%s/%s/data", switchname,
 		  ns->socketbasedir, switchname);
 	  putenv(env);
@@ -477,7 +477,7 @@ struct nethub *init_nethub(struct netjig_state *ns,
 	  nh->data_socket_name_env = NULL;
 	  nh->data_socket_name = strdup(data_socket);
 	}
-	  
+
 
 	/* now make the directory, if we need it */
  	if(used_base_dir ) {
@@ -508,14 +508,14 @@ struct nethub *init_nethub(struct netjig_state *ns,
 			fprintf(pidfile, "%d", getpid());
 			fclose(pidfile);
 		}
-	} 
+	}
 
 	if((nh->ctl_listen_fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0){
 		perror("socket");
 		exit(1);
 	}
 	if(setsockopt(nh->ctl_listen_fd,
-		      SOL_SOCKET, SO_REUSEADDR, (char *) &one, 
+		      SOL_SOCKET, SO_REUSEADDR, (char *) &one,
 		      sizeof(one)) < 0){
 		perror("setsockopt");
 		exit(1);
@@ -525,7 +525,7 @@ struct nethub *init_nethub(struct netjig_state *ns,
 		perror("Setting O_NONBLOCK on connection fd");
 		exit(1);
 	}
-	
+
 	if((nh->data_fd = socket(PF_UNIX, SOCK_DGRAM, 0)) < 0){
 		perror("socket");
 		exit(1);
@@ -545,7 +545,7 @@ struct nethub *init_nethub(struct netjig_state *ns,
 		perror("listen");
 		exit(1);
 	}
-	 
+
 
 	add_fd(ns, nh->ctl_listen_fd);
 	add_fd(ns, nh->data_fd);
@@ -588,7 +588,7 @@ void create_socket_dir(struct netjig_state *ns)
 
 		snprintf(tmpbuf, sizeof(tmpbuf)-4, "%s/umlXXXXXX", tmpdir_env);
 		fd_file = mkstemp(tmpbuf);
-		
+
 		if(fd_file == -1) {
 			fprintf(stderr, "failed to make tmpdir (last=%s)\n", tmpbuf);
 			exit(1);
