@@ -1,3 +1,4 @@
+# -*- makefile -*-
 # Pandora master makefile
 #
 # Copyright (C) 2009 Michael Richardson <mcr@sandelman.ca>
@@ -55,3 +56,6 @@ unitcheck:: Makefile.ver
 		(cd $$d && $(MAKE) DESTDIR=${DESTDIR} unitcheck || exit 1);\
 	done
 
+TAGS::
+	@rm -f TAGS
+	@echo >TAGS

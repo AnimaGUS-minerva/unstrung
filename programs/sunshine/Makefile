@@ -16,7 +16,8 @@ PANDORA_SRCDIR?=$(shell cd ../..; pwd)
 srcdir?=${PANDORA_SRCDIR}/programs/sunshine/
 
 PROGRAM=sunshine
-OBJS=main.o sendnd.o
+OBJS=${SRCS:.c=.o}
+SRCS=main.cpp sendnd.cpp
 LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK}
 CXXFLAGS+=-DBUILDNUMBER=\"${BUILDNUMBER}\"
 

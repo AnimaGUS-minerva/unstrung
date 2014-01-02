@@ -29,7 +29,7 @@ EXTRALIBS=${LIBPCAP} -lusb-1.0
 
 NEEDCHECK?=check
 
-clean ${NEEDCHECK} programs checkprograms::
+TAGS clean ${NEEDCHECK} programs checkprograms::
 	@for d in $(SUBDIRS) ; \
 	do \
 		$(MAKE) -C $$d PANDORA_SRCDIR=${PANDORA_SRCDIR} $@ || exit 1; \
@@ -37,4 +37,7 @@ clean ${NEEDCHECK} programs checkprograms::
 
 env:
 	@env | sed -e "s/'/'\\\\''/g" -e "s/\([^=]*\)=\(.*\)/\1='\2'/"
+
+TAGS::
+	@if [ -n "${CXXSRCS}${SRCS}" ]; then etags --append -o ${PANDORA_SRCDIR}/TAGS ${CXXSRCS} ${SRCS}; fi
 

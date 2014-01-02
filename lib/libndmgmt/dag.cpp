@@ -368,7 +368,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     mBestRank     = rank;
 
     /* XXX
-     * this is actually quite a big deal (SEE ID), setting my RANK.
+     * this is actually quite a big deal (SEE rfc6550), setting my RANK.
      * just fake it for now by adding 1.
      */
     mMyRank       = rank + 1;   // XXX

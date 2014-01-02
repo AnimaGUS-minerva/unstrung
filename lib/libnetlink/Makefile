@@ -28,8 +28,8 @@ ONEFILE=
 CFLAGS+=${WERROR}
 
 SRCS = utils.c rt_names.c ll_types.c ll_proto.c ll_addr.c inet_proto.c
-SRCS+= ll_map.o libnetlink.o 
-SRCS+= 
+SRCS+= ll_map.c libnetlink.c
+SRCS+=
 CXXSRCS=
 
 #enable to get lots more debugging about semantics.
@@ -37,7 +37,7 @@ CXXSRCS=
 CXXFLAGS+=-g ${CROSSFLAGS}
 CFLAGS+=-g ${CROSSFLAGS}
 
-OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o} 
+OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o}
 
 include ${srcdir}../Makefile.library
 
