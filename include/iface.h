@@ -17,6 +17,7 @@ extern "C" {
 }
 
 #define HWADDR_MAX 16
+#include "unstrung.h"
 #include "prefix.h"
 #include "event.h"
 #include "debug.h"
@@ -98,7 +99,7 @@ public:
         last_multicast_sec = tv.tv_sec;
         last_multicast_usec = tv.tv_usec;
     };
-    bool addprefix(prefix_node &prefix);
+    bool addprefix(dag_network *dn, prefix_node &prefix);
     bool add_route_to_node(ip_subnet &prefix, rpl_node *peer);
     bool add_null_route_to_prefix(const ip_subnet &prefix);
 

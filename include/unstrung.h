@@ -4,6 +4,8 @@
 #define PANDORA_VERSION_MAJOR 1
 #define PANDORA_VERSION_MINOR 0
 
+#define _U_ __attribute__((unused))
+
 #endif /* UNSTRING_H */
 
 /*

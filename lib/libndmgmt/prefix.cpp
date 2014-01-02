@@ -74,7 +74,7 @@ const char *prefix_node::node_name() {
     }
 };
 
-void prefix_node::configureip(network_interface *iface)
+void prefix_node::configureip(network_interface *iface, dag_network *dn)
 {
     if(!valid) {
         this->verbose_log("  peer '%s' announced invalid prefix\n",
@@ -83,12 +83,23 @@ void prefix_node::configureip(network_interface *iface)
     }
 
     this->verbose_log("  peer '%s' announces prefix: %s\n",
-                      announced_from->node_name(), node_name());
+                      announced_from->node_name(), dn->prefix_name());
     if(!installed) {
+        struct in6_addr link = iface->link_local();
+
+        /* set upper 64-bits to prefix announced */
+        memcpy(&link.s6_addr[0],
+               &dn->get_prefix().addr.u.v6.sin6_addr.s6_addr[0], 8);
+
+        this->set_prefix(link, 128);
+
+
         this->verbose_log("  adding prefix: %s to iface: %s\n",
                           node_name(),
                           iface->get_if_name());
-        if(iface->addprefix(*this)) {
+
+
+        if(iface->addprefix(dn, *this)) {
             installed = true;
         }
     }

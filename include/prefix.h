@@ -30,7 +30,7 @@ public:
 
         const char *node_name();
         const ip_subnet &prefix_number() { return mPrefix; };
-        void configureip(network_interface *iface);
+        void configureip(network_interface *iface, dag_network *dn);
         void set_announcer(rpl_node *announcer) {
             announced_from = announcer;
         };

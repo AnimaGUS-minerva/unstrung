@@ -119,6 +119,34 @@ dag_network::~dag_network()
         this->remove_from_list();
 }
 
+void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
+{
+    memset(&mPrefix, 0, sizeof(mPrefix));
+    mPrefix.addr.u.v6.sin6_family = AF_INET6;
+    mPrefix.addr.u.v6.sin6_flowinfo = 0;		/* unused */
+    mPrefix.addr.u.v6.sin6_port = 0;
+    memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
+    mPrefix.maskbits  = prefixlen;
+    mPrefixName[0]='\0';
+
+    /* now add this prefix as a blackhole route on lo */
+    loopback_interface->add_null_route_to_prefix(mPrefix);
+}
+
+void dag_network::set_prefix(const ip_subnet prefix)
+{
+    mPrefix = prefix;
+    mPrefixName[0]='\0';
+}
+
+const char *dag_network::prefix_name() {
+    if(mPrefixName[0] == '\0') {
+        subnettot(&mPrefix, 0, mPrefixName, sizeof(mPrefixName));
+    }
+    return mPrefixName;
+};
+
+
 void dag_network::remove_from_list(void)
 {
         class dag_network **p_dn = &dag_network::all_dag;
@@ -284,12 +312,11 @@ void dag_network::addprefix(rpl_node peer,
 {
     prefix_node &pre = this->dag_children[prefix];
 
+    this->set_prefix(prefix);
     if(!pre.is_installed()) {
         pre.set_debug(this->debug);
         pre.set_announcer(&peer);
-        pre.set_dn(this);
-        pre.set_prefix(prefix);
-        pre.configureip(iface);
+        pre.configureip(iface, this);
         maybe_send_dao();
     }
 }
@@ -410,9 +437,18 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
  */
 void dag_network::send_dao(void)
 {
-    debug->verbose("SENDING dao for %s to: %s on if=%s\n",
-                   mDagName, dag_parent->node_name(),
-                   dag_parentif ? dag_parentif->get_if_name():"unknown");
+    int cnt = 0;
+    prefix_map_iterator pi = dag_children.begin();
+    while(pi != dag_children.end()) {
+	prefix_node &pm = pi->second;
+
+        debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
+                       cnt, pm.node_name(),
+                       mDagName, dag_parent->node_name(),
+                       dag_parentif ? dag_parentif->get_if_name():"unknown");
+        pi++;
+        cnt++;
+    }
 
     if(dag_parent == NULL || dag_parentif ==NULL) return;
 

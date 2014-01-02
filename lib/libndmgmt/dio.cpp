@@ -80,20 +80,12 @@ rpl_node *dag_network::my_dag_node(void) {
 }
 #endif
 
-void dag_network::set_prefix(const ip_subnet prefix) {
-    mPrefix = prefix;
-    subnettot(&prefix, 0, mPrefix_str, sizeof(mPrefix_str));
-
-    /* now add this prefix as a blackhole route on lo */
-    loopback_interface->add_null_route_to_prefix(prefix);
-}
-
 void network_interface::send_dio(dag_network *dag)
 {
     unsigned char icmp_body[2048];
 
     debug->log("sending DIO on if: %s for prefix: %s\n",
-               this->if_name, dag->mPrefix_str);
+               this->if_name, dag->prefix_name());
     memset(icmp_body, 0, sizeof(icmp_body));
 
     int icmp_len = dag->build_dio(icmp_body, sizeof(icmp_body),

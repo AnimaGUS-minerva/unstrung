@@ -70,29 +70,22 @@ int network_interface::ni_route_show(void)
 }
 
 /* this is wrong, use netlink to set the address later on. */
-bool network_interface::addprefix(prefix_node &prefix)
+bool network_interface::addprefix(dag_network *dn _U_,  prefix_node &prefix)
 {
     char buf[1024];
     ip_subnet newipv6;
     const char *viaif = if_name;
 
     if(prefix.prefix_valid()) {
-        newipv6 = prefix.get_prefix();
-        newipv6.maskbits = 128;
-        memcpy(&newipv6.addr.u.v6.sin6_addr.s6_addr[8], eui64, 8);
-
-        char sbuf[SUBNETTOT_BUF];
-        subnettot(&newipv6, 0, sbuf, sizeof(sbuf));
-
         // this would be better, but results in unreachable routes.
         viaif = "lo";
         snprintf(buf, 1024,
-                 "ip -6 addr del %s dev %s", sbuf, viaif);
+                 "ip -6 addr del %s dev %s", prefix.node_name(), viaif);
         debug->log("  invoking %s\n", buf);
         nisystem(buf);
 
         snprintf(buf, 1024,
-                 "ip -6 addr add %s dev %s", sbuf, viaif);
+                 "ip -6 addr add %s dev %s", prefix.node_name(), viaif);
 
         debug->log("  invoking %s\n", buf);
         nisystem(buf);

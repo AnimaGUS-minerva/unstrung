@@ -54,6 +54,10 @@ public:
         unsigned int               mBestRank;   /* my best parent */
         bool dag_rank_infinite(void) { return (mBestRank >= RANK_INFINITE); };
 
+        void set_prefix(const struct in6_addr v6, const int prefixlen);
+        void set_prefix(const ip_subnet prefix);
+        const char *prefix_name(void);
+        const ip_subnet get_prefix(void) { return mPrefix; };
 
         /* STUPID ME: NEED TO USE A LIST TYPE */
         void add_to_list(void) {
@@ -160,7 +164,6 @@ public:
 	void set_interval(const int msec) {
 	    mInterval_msec = msec;
 	};
-	void set_prefix(const ip_subnet prefix);
         void add_all_interfaces(void);
 	rpl_node    *my_dag_node(void);
 	dag_network *my_dag_net(void);
@@ -201,7 +204,7 @@ public:
 
 	/* should be private */
 	ip_subnet               mPrefix;
-	char                    mPrefix_str[SUBNETTOT_BUF];
+	char                    mPrefixName[SUBNETTOT_BUF];
 
 private:
         dag_network(void);
