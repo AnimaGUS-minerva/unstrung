@@ -186,7 +186,8 @@ extern void close_descriptor(struct netjig_state *ns,
 
 #ifdef NETDISSECT
 #include "netdissect.h"
-extern struct netdissect_options gndo;
+extern netdissect_options *gndo;
+extern struct netdissect_options netjig_gndo;
 #endif
 
 extern void hexdump_block(const u_char *cp, u_int length);

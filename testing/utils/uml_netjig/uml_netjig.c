@@ -230,6 +230,58 @@ netjig_default_print(netdissect_options *ndo, const u_char *bp, u_int length)
 {
   hex_and_ascii_print("\n\t", bp, length); /* pass on lf and identation string */
 }
+#define _U_ __attribute__((unused))
+
+static int netjig_ndo_printf(netdissect_options *ndo _U_,
+                             const char *fmt, ...)
+{
+
+  va_list args;
+  int ret;
+
+  va_start(args, fmt);
+  ret=vfprintf(stderr, fmt, args);
+  va_end(args);
+
+  return ret;
+}
+
+static void
+ndo_error(netdissect_options *ndo _U_, const char *fmt, ...)
+{
+	va_list ap;
+
+	(void)fprintf(stderr, "%s: ", program_name);
+	va_start(ap, fmt);
+	(void)vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	if (*fmt) {
+		fmt += strlen(fmt);
+		if (fmt[-1] != '\n') {
+			(void)fputc('\r', stderr);
+			(void)fputc('\n', stderr);
+                }
+	}
+	exit(1);
+	/* NOTREACHED */
+}
+
+/* VARARGS */
+static void
+ndo_warning(netdissect_options *ndo _U_, const char *fmt, ...)
+{
+	va_list ap;
+
+	(void)fprintf(stderr, "%s: WARNING: ", program_name);
+	va_start(ap, fmt);
+	(void)vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	if (*fmt) {
+		fmt += strlen(fmt);
+		if (fmt[-1] != '\n')
+			(void)fputc('\n', stderr);
+	}
+}
 #endif
 
 /* needed by libnetdissect */
@@ -240,16 +292,21 @@ void init_netdissect()
 {
 #ifdef NETDISSECT
   thiszone = gmt2local(0);
-  memset(&gndo, 0, sizeof(gndo));
-  gndo.ndo_default_print = netjig_default_print;
+  memset(&netjig_gndo, 0, sizeof(gndo));
+  gndo = &netjig_gndo;
+  netjig_gndo.ndo_default_print = netjig_default_print;
+  netjig_gndo.ndo_printf=netjig_ndo_printf;
+  netjig_gndo.ndo_error=ndo_error;
+  netjig_gndo.ndo_warning=ndo_warning;
+
 
 /*  gndo.ndo_default_output= stderr; */
 
   /* dump ethernet headers */
-  gndo.ndo_eflag = 1;
+  netjig_gndo.ndo_eflag = 1;
 
   /* avoid DNS lookups */
-  gndo.ndo_nflag = 0;
+  netjig_gndo.ndo_nflag = 1;
 #endif
 }
 

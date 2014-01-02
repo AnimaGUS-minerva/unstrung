@@ -48,7 +48,8 @@
 #ifdef NETDISSECT
 #include "netdissect.h"
 
-struct netdissect_options gndo;
+struct netdissect_options netjig_gndo;
+struct netdissect_options *gndo;
 #endif
 int tcpdump_print = 0;
 

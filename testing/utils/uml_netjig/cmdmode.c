@@ -668,7 +668,7 @@ int cmdread(struct netjig_state *ns,
 	     char  *buf,
 	     int    len)
 {
-        char *nl, *cmdline;
+        char *nl;
 	int   cmdlen;
 
 	/*

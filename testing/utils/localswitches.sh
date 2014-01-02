@@ -4,8 +4,12 @@
 
 BUILDTOP=${MYBOX-/c2/freeswan/freeswan-1.92}
 export BUILDTOP
-OPENSWANSRCDIR=$BUILDTOP 
+OPENSWANSRCDIR=$BUILDTOP
 export OPENSWANSRCDIR
+export NETJIGDUMP=true
+
+# enable this so that you can attach gdb.
+#export NETJIGTESTDEBUG="netjig"
 
 . $BUILDTOP/umlsetup.sh
 export POOLSPACE

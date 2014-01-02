@@ -55,14 +55,23 @@ foreach net $managednets {
 
 puts "\r\nExit the netjig when you are done\r\n"
 
+system "stty onlcr echo icrnl opost"
+
 set timeout -1
 interact {
-    -reset
-    -echo
     -i $netjig1
-    "\r" { send_user "\r\n"
-           exp_send "\n"
+    "exit"  {
+        send_user "QUITING"
+        send "quit\n"
     }
+    "*\n" {
+        send_user "\r\nENTER\r\n"
+        send "${interact_out(1,string)}\n"
+    }
+    $      {send_user "The date is [exec date]."}
+
+    -o "\n" { send_user "\r\n" }
+       "\r" { send_user "\r\n" }
 }
 
 foreach host $argv {

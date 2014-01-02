@@ -93,7 +93,7 @@ static void update_src(struct netjig_state *ns,
 
     if(ns->verbose) {
       fprintf(stderr,
-	      " Addr: %02x:%02x:%02x:%02x:%02x:%02x "
+	      "\r Addr: %02x:%02x:%02x:%02x:%02x:%02x "
 	      " New port %d",
 	      p->header.src[0], p->header.src[1], p->header.src[2],
 	      p->header.src[3], p->header.src[4], p->header.src[5],
@@ -107,7 +107,7 @@ static void update_src(struct netjig_state *ns,
       delete_hash(nh, p->header.src);
     }
     if(ns->verbose) {
-      fprintf(stderr, "\n");
+      fprintf(stderr, "\r\n");
     }
 
     memcpy(port->most_recent_ethernet, p->header.src, ETH_ALEN);
@@ -188,6 +188,8 @@ void handle_data(struct netjig_state *ns,
   memset(&ph, 0, sizeof(ph));
   ph.caplen = len;
   ph.len    = len;
+  netjig_gndo.ndo_snapend = packet + ph.caplen;
+  netjig_gndo.ndo_nflag = 1;
 
   if(nh->nh_outputFile) {
     pcap_dump((u_char *)nh->nh_output, &ph, (u_char *)packet);
@@ -196,8 +198,8 @@ void handle_data(struct netjig_state *ns,
 #ifdef NETDISSECT
   /* now dump it to tcpdump dissector if one was configured */
   if(tcpdump_print) {
-	  fprintf(stderr, "%8s:", nh->nh_name);
-	  ether_if_print((u_char *)&gndo, &ph, (u_char *)packet);
+	  fprintf(stderr, "\n\r%8s:", nh->nh_name);
+	  ether_if_print(&netjig_gndo, &ph, (u_char *)packet);
   }
 #else
   if(tcpdump_print) {
@@ -257,7 +259,7 @@ void handle_data(struct netjig_state *ns,
 	    ph.len    = len;
 
 	    fprintf(stderr, "%8s:", nh->nh_name);
-	    ether_if_print((u_char *)&gndo, &ph, (u_char *)&packet);
+	    ether_if_print(&netjig_gndo, &ph, (u_char *)&packet);
 	  }
 #endif
 	}
@@ -478,7 +480,7 @@ void handle_new_port(struct netjig_state *ns,
   if(req.v1.magic == SWITCH_MAGIC) {
     if(ns->verbose) {
       fprintf(stderr,
-	      "switch %s: new connection using daemon v.%d on port %d\n",
+	      "switch %s: new connection using daemon v.%d on port %d\r\n",
 	      nh->nh_name, req.v2.version, p->control);
     }
     switch(req.v2.version) {
@@ -522,7 +524,7 @@ static void service_port(struct netjig_state *ns,
   }
   else if(n == 0) {
     if(ns->verbose) {
-      fprintf(stderr, "Disconnect on switch (%s) from %d addr: %02x:%02x:%02x:%02x:%02x:%02x\n",
+      fprintf(stderr, "\rDisconnect on switch (%s) from %d addr: %02x:%02x:%02x:%02x:%02x:%02x\r\n",
 	      nh->nh_name,
 	      port->control,
 	      port->most_recent_ethernet[0], port->most_recent_ethernet[1],
