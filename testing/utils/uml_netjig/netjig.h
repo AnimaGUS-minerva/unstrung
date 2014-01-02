@@ -40,19 +40,6 @@ extern void finish_waitplay(struct netjig_state *ns);
 extern int cmdread(struct netjig_state *ns, char  *buf, int    len);
 
 /*
- * $Log: netjig.h,v $
- * Revision 1.3  2002/07/17 03:59:46  mcr
- * 	debugged uml_switch - added "-name" option.
- *
- * Revision 1.2  2002/07/14 02:48:48  mcr
- * 	first version of merged uml_switch/uml_netjig that compiles.
- *
- * Revision 1.1  2002/06/16 23:51:16  mcr
- * 	revised uml_netjig - cmd mode has vastly improved, and it
- * 	now can run a single UML in cmd mode.
- * 	man page still missing.
- *
- *
  * Local variables:
  * c-file-style: "linux"
  * c-basic-offset: 8
