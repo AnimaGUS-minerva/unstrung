@@ -421,7 +421,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     mGrounded     = RPL_DIO_GROUNDED(dio->rpl_mopprf);
     mInstanceid   = dio->rpl_instanceid;
     mVersion      = dio->rpl_version;
-    mMode         = RPL_DIO_PRF(dio->rpl_mopprf);
+    mMode         = RPL_DIO_MOP(dio->rpl_mopprf);
 
     dag_parentif = iface;
     dag_parent   = &peer;
