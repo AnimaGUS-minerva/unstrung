@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet(prefixstr, strlen(prefixstr),
                             AF_INET6, &prefix);
         dn->set_prefix(prefix);
+        dn->addselfprefix(iface);
 	dn->set_active();
 	dn->set_debug(deb);
 

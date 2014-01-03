@@ -20,4 +20,5 @@ clean::
 
 update::
 	cp ../OUTPUTS/19-pickdag-output.raw 19-pickdag-output.txt
+	cp ../OUTPUTS/19-pickdag-pcap.raw   19-pickdag-pcap.txt
 
