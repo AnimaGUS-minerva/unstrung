@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
         iface->set_if_addr(iface_src2);
         iface->watching = true;
 
-        dag->addselfprefix(iface);
         dag->set_debug(deb);
 
         printf("Processing input file %s on if=[%u]: %s state: %s %s\n",

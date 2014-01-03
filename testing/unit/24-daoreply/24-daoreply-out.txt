@@ -5,16 +5,12 @@ found[1]: wlan0 address=fe80::1000:ff:fe64:6423
 found[2]: lo type=loopback (active new) faked
   adding ifindex: 2
 found[2]: lo address=::1
-  new RPL node: fe80::1000:ff:fe64:6602
 Processing input file ../INPUTS/dio-A-ripple.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
  processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
-  invoking ip -6 route add unreachable 2001:db8:1::/48 dev lo
-    would invoke cmd: ip -6 route add unreachable 2001:db8:1::/48 dev lo
-    would invoke cmd: ip -6 addr show
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
   adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 to iface: wlan0
   invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo

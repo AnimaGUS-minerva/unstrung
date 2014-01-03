@@ -34,6 +34,12 @@ public:
         void set_announcer(rpl_node *announcer) {
             announced_from = announcer;
         };
+        rpl_node *get_announcer(void) { return announced_from; };
+        void update_announcer(rpl_node *announcer) {
+            if(announced_from == NULL) {
+                announced_from = announcer;
+            }
+        };
         void set_dn(dag_network *dn) {
             mDN = dn;
         };

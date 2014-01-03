@@ -200,6 +200,9 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 
         inet_ntop(AF_INET6, addr, b1, sizeof(b1));
 
+        ni->node = new rpl_node(ni->if_addr);
+        ni->node->debug = deb;
+
         /* log it for human */
         deb->log("found[%d]: %s address=%s\n",
                  ni->if_index, ni->if_name, b1);

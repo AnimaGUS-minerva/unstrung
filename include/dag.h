@@ -35,7 +35,10 @@ public:
                 return memcmp(mDagid, n_dagid, DAGID_LEN);
         };
 
-	void set_debug(rpl_debug *deb) { debug = deb; };
+	void set_debug(rpl_debug *deb) {
+            debug = deb;
+            dag_me.set_debug(deb);
+        };
 	void set_active()   { mActive = true; };
 	void set_inactive() { mActive = false;};
 
@@ -162,9 +165,7 @@ public:
 	void set_version(const unsigned int version) {
 	    mVersion = version;
 	};
-	void set_grounded(const bool grounded) {
-	    mGrounded = grounded;
-	};
+	void set_grounded(const bool grounded);
 	void set_interval(const int msec) {
 	    mInterval_msec = msec;
 	};
@@ -199,6 +200,7 @@ public:
 
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
+        prefix_node        dag_me;           /* my identity in this dag (/128) */
 
 	int build_prefix_dioopt(ip_subnet prefix);
         int build_target_opt(struct in6_addr addr, int maskbits);
@@ -253,7 +255,7 @@ private:
 
         static const char *packet_stat_names[PS_MAX+1];
 
-        node_map           dag_members;
+        node_map           dag_members;      /* list of dag members, by link-layer address */
         rpl_node          *dag_parent;       /* current parent (shared_ptr) */
         network_interface *dag_parentif;     /* how to get to parent, shared_ptr */
 

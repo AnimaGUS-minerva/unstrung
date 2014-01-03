@@ -99,6 +99,7 @@ void dag_network::init_dag(void)
 
     init_dag_name();
     this->add_to_list();
+    dag_me.set_debug(debug);
 }
 
 dag_network::dag_network(dagid_t n_dagid)
@@ -129,8 +130,22 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     mPrefix.maskbits  = prefixlen;
     mPrefixName[0]='\0';
 
-    /* now add this prefix as a blackhole route on lo */
-    loopback_interface->add_null_route_to_prefix(mPrefix);
+    dag_me.set_prefix(mPrefix);
+}
+
+void dag_network::set_grounded(bool grounded)
+{
+    if(grounded) {
+        this->mGrounded = true;
+
+        /* now add this prefix as a blackhole route on lo */
+        loopback_interface->add_null_route_to_prefix(mPrefix);
+    } else {
+        this->mGrounded = false;
+
+        /* now add this prefix as a blackhole route on lo */
+        /* loopback_interface->delete_null_route_to_prefix(mPrefix); */
+    }
 }
 
 void dag_network::set_prefix(const ip_subnet prefix)
@@ -336,10 +351,20 @@ void dag_network::add_prefix(rpl_node advertising_peer,
         pre.set_debug(this->debug);
         pre.set_announcer(&advertising_peer);
         pre.configureip(iface, this);
+
         maybe_send_dio();
     }
 }
 
+/*
+ * This pretends that we got a DIO on the relevant interface, and
+ * does all of the appropriate configuration.
+ * It should be used on ROOT nodes.
+ *
+ * There is another case where a DAO is going to be emitted out
+ * an interface different than where the DIO received was, and that
+ * case is not yet dealt with here.
+ */
 void dag_network::addselfprefix(network_interface *iface)
 {
     ip_subnet               ll_prefix;
@@ -347,6 +372,10 @@ void dag_network::addselfprefix(network_interface *iface)
     rpl_node *me = find_or_make_member(iface->if_addr);
     me->makevalid(iface->if_addr, this, this->debug);
     me->markself(iface->get_if_index());
+
+    /* update the prefix_node presenting ourselves in this dag */
+    dag_me.update_announcer(iface->host_node());
+    dag_me.configureip(iface, this);
 
 #if 0
     err_t blah = initsubnet(&me->node_address(), 128, '0', &ll_prefix);

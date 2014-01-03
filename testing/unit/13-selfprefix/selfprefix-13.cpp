@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
                             AF_INET6, &prefix);
         dn->set_prefix(prefix);
 	dn->set_active();
+        dn->set_grounded(true);
 
         printf("Processing input file\n");
         iface->process_pcap();

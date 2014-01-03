@@ -36,7 +36,7 @@ public:
             name[0]='\0';
             strncat(name, nodename, sizeof(name));
         };
-        const char *node_name();
+        const char *node_name(void);
         struct in6_addr& node_number() { return nodeip.u.v6.sin6_addr; };
         ip_address &node_address() { return nodeip; };
         void  makevalid(const struct in6_addr v6,

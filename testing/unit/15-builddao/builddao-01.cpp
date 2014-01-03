@@ -62,7 +62,6 @@ static void t1(rpl_debug *deb)
     class dag_network *dn1 = new dag_network(dag1name);
     dn1->set_debug(deb);
     dn1->set_active();
-    dn1->addselfprefix(my_if);
 
     struct in6_addr announced;
     int result = inet_pton(AF_INET6, "2001:db8:abcd::", &announced);
