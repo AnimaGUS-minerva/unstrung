@@ -63,7 +63,7 @@ struct nd_rpl_dio {
 #define RPL_DIO_MOP_SHIFT   3
 #define RPL_DIO_MOP_MASK    (7 << RPL_DIO_MOP_SHIFT)
 #define RPL_DIO_PRF_SHIFT   0
-#define RPL_DIO_PRF_MASK    (7 << RPL_DIO_MOP_SHIFT)
+#define RPL_DIO_PRF_MASK    (7 << RPL_DIO_PRF_SHIFT)
 #define RPL_DIO_GROUNDED(X) ((X)&RPL_DIO_GROUND_FLAG)
 #define RPL_DIO_MOP(X)      (enum RPL_DIO_MOP)(((X)&RPL_DIO_MOP_MASK) >> RPL_DIO_MOP_SHIFT)
 #define RPL_DIO_PRF(X)      (((X)&RPL_DIO_PRF_MASK) >> RPL_DIO_PRF_SHIFT)
