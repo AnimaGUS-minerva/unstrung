@@ -128,6 +128,9 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
     mPrefix.maskbits  = prefixlen;
     mPrefixName[0]='\0';
+
+    /* now add this prefix as a blackhole route on lo */
+    loopback_interface->add_null_route_to_prefix(mPrefix);
 }
 
 void dag_network::set_prefix(const ip_subnet prefix)
@@ -334,9 +337,6 @@ void dag_network::add_prefix(rpl_node advertising_peer,
         pre.set_announcer(&advertising_peer);
         pre.configureip(iface, this);
         maybe_send_dio();
-
-        /* now add this prefix as a blackhole route on lo */
-        loopback_interface->add_null_route_to_prefix(prefix);
     }
 }
 
