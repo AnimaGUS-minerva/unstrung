@@ -39,5 +39,4 @@ sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
-SENDING[1] dao about fe80::1000:ff:fe64:6602/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
 sending DAO on if: wlan0(faked)

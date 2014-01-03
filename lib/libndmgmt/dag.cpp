@@ -348,6 +348,7 @@ void dag_network::addselfprefix(network_interface *iface)
     me->makevalid(iface->if_addr, this, this->debug);
     me->markself(iface->get_if_index());
 
+#if 0
     err_t blah = initsubnet(&me->node_address(), 128, '0', &ll_prefix);
     if(blah) {
         debug->verbose("initsubnet says: %s\n", blah);
@@ -358,6 +359,8 @@ void dag_network::addselfprefix(network_interface *iface)
     prefix_node &pre = this->dag_children[ll_prefix];
 
     pre.markself(this, ll_prefix);
+    pre.linklocal = true;
+#endif
 }
 
 static int addselfprefix_each(network_interface *iface, void *arg)
