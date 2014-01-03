@@ -46,7 +46,7 @@ static void t1(rpl_debug *deb)
 		fprintf(stderr, "can not create pcap_open_deads\n");
 		exit(1);
 	}
-		
+
 	pcap_dumper_t *out = pcap_dump_open(pout, "t1.pcap");
         pcap_network_interface *iface = new pcap_network_interface(out);
 
@@ -72,7 +72,7 @@ static void t1(rpl_debug *deb)
         const char *example="2001:db8:0001::/48";
         ttosubnet(example, strlen(example), AF_INET6, &prefix);
 
-        dn->addprefix(n1, iface, prefix);
+        dn->add_prefix(n1, iface, prefix);
 
         assert(dn->prefixcount() >= 1);
 }
@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
 	int i;
 
         rpl_debug *deb = new rpl_debug(false, stdout);
+        pcap_network_interface::scan_devices(deb, false);
 
         struct in6_addr dummy_src1;
         inet_pton(AF_INET6, "2001:db8::abcd:00a1", &dummy_src1);
