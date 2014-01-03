@@ -112,20 +112,22 @@ bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
 }
 
 /* XXX do this with netlink too  */
-bool network_interface::add_route_to_node(ip_subnet &prefix, rpl_node *peer)
+bool network_interface::add_route_to_node(const ip_subnet &prefix, rpl_node *peer, const ip_address &src)
 {
     char buf[1024];
 
     char pbuf[SUBNETTOT_BUF], tbuf[SUBNETTOT_BUF];
+    char sbuf[SUBNETTOT_BUF];
 
     prefix_node &n = ipv6_prefix_list[prefix];
     n.set_prefix(prefix);
 
     subnettot(&n.prefix_number(), 0, pbuf, sizeof(pbuf));
     addrtot(&peer->node_address(),  0, tbuf, sizeof(tbuf));
+    addrtot(&src,                 0, sbuf, sizeof(sbuf));
 
     snprintf(buf, 1024,
-             "ip -6 route add %s via %s dev %s", pbuf, tbuf, if_name);
+             "ip -6 route add %s via %s dev %s src %s", pbuf, tbuf, if_name, sbuf);
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);

@@ -768,7 +768,7 @@ void dag_network::receive_dao(network_interface *iface,
 
         debug->verbose("received DAO about network %s, target %s\n", addrfound, peer->node_name());
 
-	iface->add_route_to_node(prefix, peer);
+	iface->add_route_to_node(prefix, peer, dag_me.prefix_number().addr);
     }
 
     /* increment stat of number of packets processed */

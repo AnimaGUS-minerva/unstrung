@@ -100,7 +100,7 @@ public:
         last_multicast_usec = tv.tv_usec;
     };
     bool addprefix(dag_network *dn, prefix_node &prefix);
-    bool add_route_to_node(ip_subnet &prefix, rpl_node *peer);
+    bool add_route_to_node(const ip_subnet &prefix, rpl_node *peer, const ip_address &srcip);
     bool add_null_route_to_prefix(const ip_subnet &prefix);
 
     /* eui string functions */
@@ -214,7 +214,9 @@ private:
     unsigned char           eui48[6];
     unsigned char           eui64[8];
     struct in6_addr         ipv6_link_addr;
-    prefix_map              ipv6_prefix_list;  /* always /128 networks */
+    prefix_map              ipv6_prefix_list;  /* for keeping track of what we put into
+                                                  the kernel with netlink.
+                                                  Always /128 networks */
 
 
     /* this is global to all the interfaces */
