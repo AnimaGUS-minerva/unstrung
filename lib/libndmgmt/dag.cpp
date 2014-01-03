@@ -128,15 +128,11 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
     mPrefix.maskbits  = prefixlen;
     mPrefixName[0]='\0';
-
-    /* now add this prefix as a blackhole route on lo */
-    loopback_interface->add_null_route_to_prefix(mPrefix);
 }
 
 void dag_network::set_prefix(const ip_subnet prefix)
 {
-    mPrefix = prefix;
-    mPrefixName[0]='\0';
+    this->set_prefix(prefix.addr.u.v6.sin6_addr, prefix.maskbits);
 }
 
 const char *dag_network::prefix_name() {
@@ -306,18 +302,41 @@ void dag_network::maybe_send_dao(void)
     mTimeToSendDao=true;
 }
 
-void dag_network::addprefix(rpl_node peer,
-                            network_interface *iface,
-                            ip_subnet prefix)
+/* here we mark that a DIO is needed soon */
+void dag_network::maybe_send_dio(void)
+{
+    mTimeToSendDio=true;
+}
+
+void dag_network::add_childnode(rpl_node announcing_peer,
+                                  network_interface *iface,
+                                  ip_subnet prefix)
 {
     prefix_node &pre = this->dag_children[prefix];
 
-    this->set_prefix(prefix);
     if(!pre.is_installed()) {
         pre.set_debug(this->debug);
-        pre.set_announcer(&peer);
-        pre.configureip(iface, this);
+        pre.set_announcer(&announcing_peer);
         maybe_send_dao();
+    }
+}
+
+void dag_network::add_prefix(rpl_node advertising_peer,
+                             network_interface *iface,
+                             ip_subnet prefix)
+{
+    prefix_node &pre = this->dag_children[prefix];
+
+    if(!pre.is_installed()) {
+        this->set_prefix(prefix);
+        pre.set_prefix(prefix);
+        pre.set_debug(this->debug);
+        pre.set_announcer(&advertising_peer);
+        pre.configureip(iface, this);
+        maybe_send_dio();
+
+        /* now add this prefix as a blackhole route on lo */
+        loopback_interface->add_null_route_to_prefix(prefix);
     }
 }
 
@@ -424,7 +443,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
         memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes);
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
-        addprefix(peer, iface, prefix);
+        add_prefix(peer, iface, prefix);
     }
 
     /* now schedule sending out packets */
@@ -729,6 +748,7 @@ void dag_network::receive_dao(network_interface *iface,
  * Local Variables:
  * c-basic-offset:4
  * c-style: whitesmith
+ * compile-command: "make programs"
  * End:
  */
 

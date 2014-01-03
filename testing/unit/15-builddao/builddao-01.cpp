@@ -75,7 +75,7 @@ static void t1(rpl_debug *deb)
     /* set the prefix for this network */
     prefix_node pvia1(deb, announced, 64);
     deb->verbose("add a prefix to the dn\n");
-    dn1->addprefix(announced_from, my_if, pvia1.get_prefix());
+    dn1->add_prefix(announced_from, my_if, pvia1.get_prefix());
 
     /* build a DAO, send it. */
     my_if->send_dao(announced_from, *dn1);
@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
  * Local Variables:
  * c-basic-offset:4
  * c-style: whitesmith
+ * compile-command: "make check"
  * End:
  */
 

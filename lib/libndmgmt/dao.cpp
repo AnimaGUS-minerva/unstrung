@@ -87,22 +87,27 @@ void network_interface::receive_dao(struct in6_addr from,
     }
 }
 
-// XXX
-int dag_network::build_target_opt(ip_subnet prefix)
+int dag_network::build_target_opt(struct in6_addr addr, int maskbits)
 {
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dao_target *daotg = (struct rpl_dao_target *)optbuff;
 
     daotg->rpl_dao_flags     = 0x00;
-    daotg->rpl_dao_prefixlen = prefix.maskbits;
-    for(int i=0; i < (prefix.maskbits+7)/8; i++) {
-        daotg->rpl_dao_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
+    daotg->rpl_dao_prefixlen = maskbits;
+    for(int i=0; i < (maskbits+7)/8; i++) {
+        daotg->rpl_dao_prefix[i]=addr.s6_addr[i];
     }
 
-    this->optlen = ((prefix.maskbits+7)/8 + 1 + 4 + 4);
+    this->optlen = ((maskbits+7)/8 + 1 + 4 + 4);
 
     return this->optlen;
 }
+
+int dag_network::build_target_opt(ip_subnet prefix)
+{
+    return build_target_opt(prefix.addr.u.v6.sin6_addr, prefix.maskbits);
+}
+
 
 
 int dag_network::build_dao(unsigned char *buff,

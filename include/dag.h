@@ -76,14 +76,18 @@ public:
                          const time_t    now,
                          const struct nd_rpl_dao *dao,
                          unsigned char *data, int data_len);
-        void addprefix(rpl_node peer,
-                       network_interface *iface,
-                       ip_subnet prefix);
+        void add_childnode(rpl_node peer,
+                           network_interface *iface,
+                           ip_subnet prefix);
+        void add_prefix(rpl_node peer,
+                           network_interface *iface,
+                           ip_subnet prefix);
 	void addselfprefix(network_interface *iface);
         unsigned int prefixcount(void) {
             return dag_children.size();
         };
 	void maybe_send_dao(void);
+	void maybe_send_dio(void);
         void potentially_lower_rank(rpl_node &peer,
                                     network_interface *iface,
                                     const struct nd_rpl_dio *dio, int dio_len);
@@ -194,9 +198,10 @@ public:
 
 
 	/* public for now, need better inteface */
-        prefix_map         dag_children;     /* list of addresses downstream */
+        prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
 
 	int build_prefix_dioopt(ip_subnet prefix);
+        int build_target_opt(struct in6_addr addr, int maskbits);
 	int build_target_opt(ip_subnet prefix);
 
 	int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
@@ -251,6 +256,9 @@ private:
         node_map           dag_members;
         rpl_node          *dag_parent;       /* current parent (shared_ptr) */
         network_interface *dag_parentif;     /* how to get to parent, shared_ptr */
+
+	/* flag that it is time to send DIO */
+	bool               mTimeToSendDio;
 
 	/* flag that it is time to send DAO */
 	bool               mTimeToSendDao;

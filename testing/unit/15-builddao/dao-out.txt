@@ -10,11 +10,14 @@ found[2]: lo address=::1
   new RPL node: fe80::216:3eff:fe22:4455
 add a prefix to the dn
   peer 'fe80::216:3eff:fe22:4455' announces prefix: 2001:db8:abcd::/64
-  adding prefix: 2001:db8:abcd::/64 to iface: wlan0
+  adding prefix: 2001:db8:abcd:0:216:3eff:fe11:3424/128 to iface: wlan0
   invoking ip -6 addr del 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr del 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
   invoking ip -6 addr add 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 addr show
+  invoking ip -6 route add unreachable 2001:db8:abcd::/64 dev lo
+    would invoke cmd: ip -6 route add unreachable 2001:db8:abcd::/64 dev lo
     would invoke cmd: ip -6 addr show
 sending DAO on if: wlan0(faked)
 builddao-01 tests finished
