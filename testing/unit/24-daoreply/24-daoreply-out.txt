@@ -12,8 +12,11 @@ packet 1 is being processed
  processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
+  invoking ip -6 route add unreachable 2001:db8:1::/48 dev lo
+    would invoke cmd: ip -6 route add unreachable 2001:db8:1::/48 dev lo
+    would invoke cmd: ip -6 addr show
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
-  adding prefix: 2001:db8:1::/48 to iface: wlan0
+  adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 to iface: wlan0
   invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
@@ -30,10 +33,11 @@ packet 2 is being processed
   But it is the same parent as before: ignored
 invoked doit(send_dio) on rpl_event (if_name=none)
 iface lo sending dio about dag: ripple
-sending DIO on if: lo for prefix: 
+sending DIO on if: lo for prefix: 2001:db8:1::/48
 iface wlan0 sending dio about dag: ripple
-sending DIO on if: wlan0 for prefix: 
+sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
-SENDING dao for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+SENDING[1] dao about fe80::1000:ff:fe64:6602/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
 sending DAO on if: wlan0(faked)
