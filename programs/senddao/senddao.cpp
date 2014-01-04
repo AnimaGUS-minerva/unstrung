@@ -214,19 +214,19 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(prefixvalue) {
-        ip_subnet prefix;
+    if(daoack) {
+        icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body));
+    } else if(prefixvalue) {
+            ip_subnet prefix;
 
-        err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
-                            AF_INET6, &prefix);
+            err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
+                                AF_INET6, &prefix);
 
-	dn->set_prefix(prefix);
-
-        if(daoack) {
-            icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body));
-        } else {
+            dn->set_prefix(prefix);
             icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));
-        }
+    } else {
+        fprintf(stderr, "either a prefix is needed to send a DAO, or --daoack\n");
+        usage();
     }
 
     if(icmp_len == 0) {

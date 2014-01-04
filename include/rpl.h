@@ -1,9 +1,16 @@
 #ifndef _RPL_H_
 
+/*
+ * NOTE: the contents of this file are an interpretation of RFC6550.
+ *       no copyright is asserted on this file, as it transcribes
+ *       a public specification.
+ * It comes from https://github.com/mcr/unstrung/blob/master/include/rpl.h
+ */
+
 #define PACKED __attribute__((packed))
 
 /*
- * DIO: Updated to RPL-19 on 2011-07-25, section 6. (page 30)
+ * DIO: Updated to RFC6550, as published in 2012: section 6. (page 30)
  */
 
 #define ND_RPL_MESSAGE 155  /* 0x9B */
