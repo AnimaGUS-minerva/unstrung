@@ -118,7 +118,7 @@ struct nd_rpl_dao {
     u_int8_t  rpl_flags;      /* bit 7=K, 6=D */
     u_int8_t  rpl_resv;
     u_int8_t  rpl_daoseq;     /* a sequence number, to be echoed in ACK */
-    /* u_int8_t  rpl_dagid[DAGID_LEN];*/  /* present when D set. */
+    /*u_int8_t  rpl_dagid[0];   /* [DAGID_LEN] present when D set. */
 } PACKED;
 
 /* indicates if this DAO is to be acK'ed */
@@ -145,7 +145,7 @@ struct nd_rpl_daoack {
     u_int8_t  rpl_flags;      /* bit 7=D */
     u_int8_t  rpl_daoseq;
     u_int8_t  rpl_status;
-    /* u_int8_t  rpl_dagid[DAGID_LEN];*/  /* present when D set. */
+    u_int8_t  rpl_dagid[0];   /* [DAGID_LEN] present when D set. */
 } PACKED;
 /* indicates if the DAGID is present */
 #define RPL_DAOACK_D_SHIFT   7
