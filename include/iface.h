@@ -72,9 +72,13 @@ public:
     void receive_dio(struct in6_addr from,
                      time_t          now,
                      const u_char *dio_bytes, const int dio_len);
+    void receive_daoack(struct in6_addr from,
+                        const  time_t now,
+                        const u_char *dat, const int daoack_len);
 
     void send_dio(dag_network *dag);
     void send_dao(rpl_node &parent, dag_network &dag);
+    void send_daoack(rpl_node &child, dag_network &dag);
     static void send_dio_all(dag_network *dag);
     static void send_dao_all(dag_network *dag);
 

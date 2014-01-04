@@ -771,9 +771,24 @@ void dag_network::receive_dao(network_interface *iface,
 	iface->add_route_to_node(prefix, peer, dag_me.prefix_number().addr);
     }
 
+    /* now send a DAO-ACK back this the node, if asked to. */
+    if(RPL_DAO_K(dao->rpl_flags)) {
+
+    }
+
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_PROCESSED]++;
 }
+
+void dag_network::receive_daoack(network_interface *iface,
+                                 struct in6_addr from,
+                                 const time_t    now,
+                                 const struct nd_rpl_daoack *daoack,
+                                 unsigned char *data, int dao_len)
+{
+    /* XXX */
+}
+
 
 
 /*

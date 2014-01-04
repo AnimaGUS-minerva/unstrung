@@ -27,7 +27,7 @@ MANDIR=$(MANTREE)/man3
 
 ONEFILE=iface.cpp
 CXXSRCS=iface.cpp dio.cpp dag.cpp node.cpp prefix.cpp netlink.cpp
-CXXSRCS+=event.cpp debug.cpp dao.cpp rplmsg.cpp
+CXXSRCS+=event.cpp debug.cpp dao.cpp rplmsg.cpp daoack.cpp
 SRCS=counter_names.c
 
 #enable to get lots more debugging about semantics.

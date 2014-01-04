@@ -79,6 +79,13 @@ public:
                          const time_t    now,
                          const struct nd_rpl_dao *dao,
                          unsigned char *data, int data_len);
+
+        void receive_daoack(network_interface *iface,
+                         struct in6_addr from,
+                         const time_t    now,
+                         const struct nd_rpl_daoack *daoack,
+                         unsigned char *data, int data_len);
+
         void add_childnode(rpl_node peer,
                            network_interface *iface,
                            ip_subnet prefix);
@@ -208,6 +215,7 @@ public:
 
 	int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 	int  build_dao(unsigned char *buff, unsigned int buff_len);
+	int  build_daoack(unsigned char *buff, unsigned int buff_len);
 
 	/* should be private */
 	ip_subnet               mPrefix;

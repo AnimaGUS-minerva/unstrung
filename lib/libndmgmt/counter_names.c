@@ -32,6 +32,8 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_DAG_CREATED_FOR_WATCHING]="DAG created due to watch",
     [PS_SAME_PARENT_IGNORED]    = "packet with same parent ignored",
     [PS_SAME_SEQUENCE_IGNORED]  = "packet with same sequence ignored",
+    [PS_DAOACK_PACKET_IGNORED]  = "DAOACK with unknown DAGID",
+    [PS_DAOACK_NO_DAGID_IGNORED]= "DAOACK with missing DAGID",
     [PS_MAX]                    = "max reason"
 };
 

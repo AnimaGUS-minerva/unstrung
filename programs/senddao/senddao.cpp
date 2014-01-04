@@ -35,6 +35,7 @@ static void usage(void)
         fprintf(stderr, "Usage: senddao [--prefix prefix] [--sequence #]\n");
         fprintf(stderr, "               [--instance #] [--ack-request] \n");
         fprintf(stderr, "               [--dagid hexstring]\n");
+        fprintf(stderr, "               [--daoack]\n");
         fprintf(stderr, "               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]\n");
 
         exit(2);
@@ -91,6 +92,7 @@ int main(int argc, char *argv[])
         {"sequence", 1, NULL, 'S'},
         {"instance", 1, NULL, 'I'},
         {"dagid",    1, NULL, 'G'},
+        {"daoack",   0, NULL, 'K'},
         {"ack-request",0,NULL,'A'},
         {"iface",    1, NULL, 'i'},
         {"outpcap",  1, NULL, 'O'},
@@ -103,9 +105,10 @@ int main(int argc, char *argv[])
     class pcap_network_interface *piface = NULL;
     bool initted = false;
     bool ackreq  = false;
+    bool daoack  = false;
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    while((c=getopt_long(argc, argv, "AD:G:I:O:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
+    while((c=getopt_long(argc, argv, "AD:G:I:KO:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
         switch(c) {
         case 'A':
             ackreq=true;  /* XXX todo */
@@ -175,6 +178,10 @@ int main(int argc, char *argv[])
             dn = iface->find_or_make_dag_by_dagid(optarg);
             break;
 
+        case 'K':
+            daoack = true;
+            break;
+
         case 'R':
 	    check_dag(dn);
             dn->set_dagrank(atoi(optarg));
@@ -214,7 +221,12 @@ int main(int argc, char *argv[])
                             AF_INET6, &prefix);
 
 	dn->set_prefix(prefix);
-        icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));
+
+        if(daoack) {
+            icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body));
+        } else {
+            icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));
+        }
     }
 
     if(icmp_len == 0) {

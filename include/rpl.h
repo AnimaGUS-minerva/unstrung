@@ -132,6 +132,21 @@ struct rpl_dao_target {
     u_int8_t rpl_dao_prefix[0];        /* variables number of bytes */
 } PACKED;
 
+/* section 6.5.1, Destination Advertisement Object Acknowledgement (DAO-ACK) */
+struct nd_rpl_daoack {
+    u_int8_t  rpl_instanceid;
+    u_int8_t  rpl_flags;      /* bit 7=D */
+    u_int8_t  rpl_daoseq;
+    u_int8_t  rpl_status;
+    /* u_int8_t  rpl_dagid[DAGID_LEN];*/  /* present when D set. */
+} PACKED;
+/* indicates if the DAGID is present */
+#define RPL_DAOACK_D_SHIFT   7
+#define RPL_DAOACK_D_MASK    (1 << RPL_DAOACK_D_SHIFT)
+#define RPL_DAOACK_D(X)      (((X)&RPL_DAOACK_D_MASK) >> RPL_DAOACK_D_SHIFT)
+
+
+
 #define _RPL_H_
 #endif /* _RPL_H_ */
 
