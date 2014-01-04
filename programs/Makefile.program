@@ -153,9 +153,9 @@ ${SCRIPT}: ${srcdir}%.in ${PANDORA_SRCDIR}/Makefile.inc ${PANDORA_SRCDIR}/Makefi
 distclean: clean
 
 vars:
-        @echo PROGRAM=${PROGRAM}
-        @echo PWD=`pwd`
-        @echo srcdir=${srcdir}
+	@echo PROGRAM=${PROGRAM}
+	@echo PWD=`pwd`
+	@echo srcdir=${srcdir}
 
 cleanall::
 ifneq ($(strip $(PROGRAM)),)
