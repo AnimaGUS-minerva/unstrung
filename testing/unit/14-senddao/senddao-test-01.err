@@ -1,12 +1,10 @@
-length of generated packet is 0, none sent
-No prefix value set
+either a prefix is needed to send a DAO, or --daoack
 Usage: senddao [--prefix prefix] [--sequence #]
                [--instance #] [--ack-request] 
                [--dagid hexstring]
                [--daoack]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
-length of generated packet is 0, none sent
-No prefix value set
+either a prefix is needed to send a DAO, or --daoack
 Usage: senddao [--prefix prefix] [--sequence #]
                [--instance #] [--ack-request] 
                [--dagid hexstring]
