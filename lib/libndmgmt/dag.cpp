@@ -786,6 +786,7 @@ void dag_network::receive_dao(network_interface *iface,
 
     /* look for the suboptions, process them */
     rpl_dao decoded_dao(data, dao_payload_len);
+    unsigned int addrcount = 0;
 
     struct rpl_dao_target *rpltarget;
     while((rpltarget = decoded_dao.rpltarget()) != NULL) {
@@ -798,6 +799,8 @@ void dag_network::receive_dao(network_interface *iface,
         memcpy(v6bytes, rpltarget->rpl_dao_prefix, prefixbytes);
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
+        addrcount++;
+
         subnettot(&prefix, 0, addrfound, sizeof(addrfound));
 
         debug->verbose("received DAO about network %s, target %s\n", addrfound,
@@ -808,8 +811,10 @@ void dag_network::receive_dao(network_interface *iface,
                                  dag_me->prefix_number().addr);
     }
 
-    /* now send a DAO-ACK back this the node, if asked to. */
+    /* now send a DAO-ACK back this the node, using the interface it arrived on, if asked to. */
     if(RPL_DAO_K(dao->rpl_flags)) {
+        debug->verbose("sending DAOACK about %u networks, to %s\n",
+                       addrcount, peer->node_name());
         iface->send_daoack(*peer, *this);
     }
 

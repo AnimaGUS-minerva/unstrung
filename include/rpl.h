@@ -118,7 +118,7 @@ struct nd_rpl_dao {
     u_int8_t  rpl_flags;      /* bit 7=K, 6=D */
     u_int8_t  rpl_resv;
     u_int8_t  rpl_daoseq;     /* a sequence number, to be echoed in ACK */
-    /*u_int8_t  rpl_dagid[0];   /* [DAGID_LEN] present when D set. */
+    u_int8_t  rpl_dagid[0];   /* [DAGID_LEN] present when D set. */
 } PACKED;
 
 /* indicates if this DAO is to be acK'ed */
