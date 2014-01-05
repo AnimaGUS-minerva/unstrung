@@ -195,4 +195,12 @@ int main(int argc, char *argv[])
 	exit(0);
 }
 
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * compile-command: "make check"
+ * End:
+ */
+
 
