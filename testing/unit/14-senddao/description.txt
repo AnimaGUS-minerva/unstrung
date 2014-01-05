@@ -1,0 +1,3 @@
+1) This exercisese the senddao program.
+2) It uses the senddao program to create a number of different kinds of DAO
+   packets, exercising the DAO generation routines.

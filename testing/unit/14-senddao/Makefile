@@ -26,3 +26,4 @@ update:
 	cp ../OUTPUTS/senddao-test-02-pcap.txt senddao-test-02-pcap.txt
 	cp OUTPUTS/senddao-test-03.raw         senddao-test-03.out
 	cp ../OUTPUTS/senddao-test-04.raw      senddao-test-04.out
+	cp ../OUTPUTS/senddao-test-04-pcap.txt senddao-test-04-pcap.txt
