@@ -24,14 +24,7 @@ int main(int argc, char *argv[])
         iface->set_debug(deb);
         iface->set_if_index(1);
         iface->set_if_addr(iface_src2);
-
-        iface2 = (pcap_network_interface *)network_interface::find_by_name("wlan0");
-        if(!iface2) {
-                printf("Did not find if: wlan0\n");
-                exit(10);
-        }
         printf("iface1[%d]: %s\n", iface->get_if_index(), iface->get_if_name());
-        printf("iface2[%d]: %s\n", iface2->get_if_index(), iface2->get_if_name());
 
         const char *prefixstr = "2001:db8:1::/48";
         ip_subnet prefix;

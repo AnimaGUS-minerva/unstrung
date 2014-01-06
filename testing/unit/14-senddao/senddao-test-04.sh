@@ -3,8 +3,8 @@
 SENDDAO=${SENDDAO-../../../programs/senddao/senddao}
 PCAP04=../OUTPUTS/senddao-test-04out.pcap
 
-${SENDDAO} --fake --outpcap ${PCAP04} -i wlan0 -v --dagid thisismydicedag2 --sequence 11 --instance 43 --prefix fdfd:abcd:ef01::/48 2>&1 |
+${SENDDAO} -v -v --fake --outpcap ${PCAP04} -i wlan0 -v --dagid T1 --sequence 1 --instance 2 --prefix 2001:db8::/38 --dest fe80::1200:00ff:fe64:6423 --target 2001:db8::abcd:2/128  2>&1 |
   tee ../OUTPUTS/senddao-test-04.raw | diff -B -w - senddao-test-04.out
 
-tcpdump -t -n -r ${PCAP04} -v -v | tee ../OUTPUTS/senddao-test-04-pcap.txt | diff - senddao-test-04-pcap.txt
+tcpdump -t -n -r ${PCAP04} -v -v -v | tee ../OUTPUTS/senddao-test-04-pcap.txt | diff - senddao-test-04-pcap.txt
 

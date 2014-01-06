@@ -329,13 +329,21 @@ void dag_network::add_childnode(rpl_node announcing_peer,
                                   ip_subnet prefix)
 {
     prefix_node &pre = this->dag_children[prefix];
+    char b1[256];
+    subnettot(&prefix, 0, b1, 256);
 
     if(!pre.is_installed()) {
         dao_needed = true;
         pre.set_debug(this->debug);
+        pre.set_prefix(prefix);
         pre.set_announcer(&announcing_peer);
         maybe_send_dao();
     }
+#if 0
+    debug->verbose("added child node %s/%s from %s\n",
+                   b1, pre.node_name(),
+                   announcing_peer.node_name());
+#endif
 }
 
 void dag_network::add_prefix(rpl_node advertising_peer,
@@ -367,6 +375,8 @@ void dag_network::add_prefix(rpl_node advertising_peer,
  * There is another case where a DAO is going to be emitted out
  * an interface different than where the DIO received was, and that
  * case is not yet dealt with here.
+ *
+ * This is also used by senddao to initialize self.
  */
 void dag_network::addselfprefix(network_interface *iface)
 {
