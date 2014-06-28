@@ -5,4 +5,5 @@ Must specify pcap outfile (-O)
 Usage: senddao [--prefix prefix] [--sequence #]
                [--instance #] [--ack-request] 
                [--dagid hexstring]
+               [--daoack]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
