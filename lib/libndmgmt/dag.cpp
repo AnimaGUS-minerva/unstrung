@@ -142,7 +142,8 @@ void dag_network::set_grounded(bool grounded)
         this->mGrounded = true;
 
         /* now add this prefix as a blackhole route on lo */
-        loopback_interface->add_null_route_to_prefix(mPrefix);
+        if(loopback_interface)
+            loopback_interface->add_null_route_to_prefix(mPrefix);
     } else {
         this->mGrounded = false;
 
