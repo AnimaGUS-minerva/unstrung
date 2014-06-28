@@ -5,14 +5,14 @@ all: check
 include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
-dag-02: dag-02.cpp ${INC}/iface.h ${INC}/dag.h ${LIBS}
-	${CXX} ${CXXFLAGS} -o dag-02 dag-02.cpp ${LDFLAGS}
+dag-05: dag-05.cpp ${INC}/iface.h ${INC}/dag.h ${LIBS}
+	${CXX} ${CXXFLAGS} -o dag-05 dag-05.cpp ${LDFLAGS}
 
-check::	dag-02
-	./dag-02
+check::	dag-05
+	./dag-05
 
-checkprograms:: dag-02
+checkprograms:: dag-05
 programs::
 
 clean::
-	@rm -rf dag-02 *.o
+	@rm -rf dag-05 *.o

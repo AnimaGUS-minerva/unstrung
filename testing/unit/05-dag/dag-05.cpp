@@ -119,7 +119,7 @@ static void t3(network_interface *iface)
 
 /*
  * in this test case, the system should create a new node in the dag_member.
- * 
+ *
  */
 static void t4(network_interface *iface)
 {
@@ -144,7 +144,7 @@ static void t4(network_interface *iface)
         assert(dn->member_count() == 1);
         assert(dn->contains_member(a1));
 }
-        
+
 
 int main(int argc, char *argv[])
 {
@@ -162,33 +162,33 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "can not create pcap_open_deads\n");
 		exit(1);
 	}
-		
+
 	pcap_dumper_t *out = pcap_dump_open(pout, "../OUTPUTS/05-dag-t1.pcap");
         pcap_network_interface *iface = new pcap_network_interface(out);
 
         rpl_debug *deb = new rpl_debug(false, stdout);
         iface->set_debug(deb);
         iface->set_if_addr(iface_src2);
-	
+
         dagid_t d;
         memset(d, 0, DAGID_LEN);
         d[0]='T';
         d[1]='1';
-        
+
         dn = new dag_network(d);
         dn->set_debug(deb);
 	dn->set_active();
 
-        printf("dag-02 t1\n");        t1(iface);
-        printf("dag-02 t2\n");        t2(iface);
+        printf("dag-05 t1\n");        t1(iface);
+        printf("dag-05 t2\n");        t2(iface);
         delete dn;
 
         dn = new dag_network(d);
-        printf("dag-02 t3\n");        t3(iface);
+        printf("dag-05 t3\n");        t3(iface);
         delete dn;
 
         dn = new dag_network(d);
-        printf("dag-02 t4\n");        t4(iface);
+        printf("dag-05 t4\n");        t4(iface);
         delete dn;
 
 	exit(0);
