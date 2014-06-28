@@ -27,7 +27,7 @@ static void t1(void)
         d[0]='T';
         d[1]='1';
 
-        class dag_network dn(d);
+        class dag_network dn(d, debug);
 
         assert(dn.mDagid[0]=='T');
         assert(dn.mDagid[1]=='1');
@@ -42,7 +42,7 @@ static void t2(void)
         d[1]='2';
 
         /* make a new dn */
-        class dag_network *dn1 = new dag_network(d);
+        class dag_network *dn1 = new dag_network(d, debug);
         class dag_network *dn2 = dag_network::find_by_dagid(d);
 
         assert(dn1 == dn2);
@@ -57,7 +57,7 @@ static void t3(void)
         d[1]='3';
 
         /* make a new dn */
-        class dag_network *dn1 = new dag_network(d);
+        class dag_network *dn1 = new dag_network(d, debug);
 
         /* now look for a phony dag network */
         d[0]='N';
@@ -74,7 +74,7 @@ static void t4(void)
         d[1]='4';
 
         /* make a new dn */
-        class dag_network *dn1 = new dag_network(d);
+        class dag_network *dn1 = new dag_network(d, debug);
 
         dn1->remove_from_list();
 

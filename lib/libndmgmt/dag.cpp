@@ -94,6 +94,7 @@ void dag_network::init_dag(void)
     mSequence = INVALID_SEQUENCE;
     mInstanceid = 1;
     mVersion  = 1;
+    debug     = NULL;
     memset(mStats,     0, sizeof(mStats));
     memset(old_mStats, 0, sizeof(old_mStats));
 
@@ -102,17 +103,19 @@ void dag_network::init_dag(void)
     dag_me.set_debug(debug);
 }
 
-dag_network::dag_network(dagid_t n_dagid)
+dag_network::dag_network(dagid_t n_dagid, rpl_debug *deb)
 {
     set_dagid(n_dagid);
     init_dag();
+    set_debug(deb);
 }
 
 
-dag_network::dag_network(const char *s_dagid)
+dag_network::dag_network(const char *s_dagid, rpl_debug *deb)
 {
     set_dagid(s_dagid);
     init_dag();
+    set_debug(deb);
 }
 
 dag_network::~dag_network()
@@ -185,12 +188,11 @@ class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
         class dag_network *dn = find_by_dagid(n_dagid);
 
         if(dn==NULL) {
-                dn = new dag_network(n_dagid);
-		if(watching) {
-		    globalStats[PS_DAG_CREATED_FOR_WATCHING]++;
-		}
-		dn->set_inactive();             /* in active by default */
-                dn->set_debug(debug);
+            dn = new dag_network(n_dagid, debug);
+            if(watching) {
+                globalStats[PS_DAG_CREATED_FOR_WATCHING]++;
+            }
+            dn->set_inactive();             /* in active by default */
         }
         return dn;
 }

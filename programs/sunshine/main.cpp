@@ -182,8 +182,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'G':
-	    dag = new dag_network(optarg);
-	    dag->set_debug(deb);
+	    dag = new dag_network(optarg, deb);
 	    dag->set_active();
             dag->set_interval(5000);
             break;

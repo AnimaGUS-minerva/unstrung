@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 	int i;
 
         rpl_debug *deb = new rpl_debug(true, stdout);
-        class dag_network *dn1 = new dag_network("07-dagset");
+        class dag_network *dn1 = new dag_network("07-dagset", deb);
 
         printf("dagset-01 t1\n");     t1(deb, dn1);
         printf("dagset-01 t2\n");     t2(deb, dn1);

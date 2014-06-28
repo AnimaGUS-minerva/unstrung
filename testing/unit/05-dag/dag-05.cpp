@@ -175,19 +175,18 @@ int main(int argc, char *argv[])
         d[0]='T';
         d[1]='1';
 
-        dn = new dag_network(d);
-        dn->set_debug(deb);
+        dn = new dag_network(d, deb);
 	dn->set_active();
 
         printf("dag-05 t1\n");        t1(iface);
         printf("dag-05 t2\n");        t2(iface);
         delete dn;
 
-        dn = new dag_network(d);
+        dn = new dag_network(d, deb);
         printf("dag-05 t3\n");        t3(iface);
         delete dn;
 
-        dn = new dag_network(d);
+        dn = new dag_network(d, deb);
         printf("dag-05 t4\n");        t4(iface);
         delete dn;
 

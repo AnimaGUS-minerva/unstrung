@@ -95,8 +95,7 @@ int main(int argc, char *argv[])
         d[0]='T';
         d[1]='3';
 
-        dn = new dag_network(d);
-        dn->set_debug(deb);
+        dn = new dag_network(d, deb);
 
         printf("dag-03 t1\n");        t1(deb);
         delete dn;

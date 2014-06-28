@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'D':
-	    dag = new dag_network(optarg);
+	    dag = new dag_network(optarg, deb);
             break;
 
         case 'R':

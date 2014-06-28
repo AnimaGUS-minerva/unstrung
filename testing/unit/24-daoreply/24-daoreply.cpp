@@ -12,8 +12,7 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
-        dag_network *dag = new dag_network("ripple");
-        dag->set_debug(deb);
+        dag_network *dag = new dag_network("ripple", deb);
         dag->set_active();
         dag->set_interval(5000);
 

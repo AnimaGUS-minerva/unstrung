@@ -59,8 +59,7 @@ static void t1(rpl_debug *deb)
     ttosubnet("2001:db8::abcd:0002/128",0, AF_INET6, &out);
 
     /* make a new dn */
-    class dag_network *dn1 = new dag_network(dag1name);
-    dn1->set_debug(deb);
+    class dag_network *dn1 = new dag_network(dag1name, deb);
     dn1->set_active();
 
     struct in6_addr announced;
