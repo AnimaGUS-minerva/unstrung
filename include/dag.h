@@ -71,20 +71,23 @@ public:
 
         void receive_dio(network_interface *iface,
                          struct in6_addr from,
+                         struct in6_addr ip6_to,
                          const time_t    now,
                          const struct nd_rpl_dio *dio, int dio_len);
 
         void receive_dao(network_interface *iface,
                          struct in6_addr from,
+                         struct in6_addr ip6_to,
                          const time_t    now,
                          const struct nd_rpl_dao *dao,
                          unsigned char *data, int data_len);
 
         void receive_daoack(network_interface *iface,
-                         struct in6_addr from,
-                         const time_t    now,
-                         const struct nd_rpl_daoack *daoack,
-                         unsigned char *data, int data_len);
+                            struct in6_addr from,
+                            struct in6_addr ip6_to,
+                            const time_t    now,
+                            const struct nd_rpl_daoack *daoack,
+                            unsigned char *data, int data_len);
 
         void add_childnode(rpl_node peer,
                            network_interface *iface,
@@ -247,13 +250,16 @@ private:
 
         rpl_node *update_node(network_interface *iface,
 			      struct in6_addr from,
+			      struct in6_addr ip6_to,
 			      const time_t now);
 
         rpl_node *update_child(network_interface *iface,
 			       struct in6_addr from,
+                               struct in6_addr ip6_to,
 			       const time_t now);
         rpl_node *update_parent(network_interface *iface,
                                 struct in6_addr from,
+                                struct in6_addr ip6_to,
                                 const time_t now);
         rpl_node *update_route(network_interface *iface,
 			       ip_subnet &prefix,

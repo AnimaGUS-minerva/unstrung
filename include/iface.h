@@ -65,14 +65,18 @@ public:
                                 struct in6_addr ip6_dst,
                                 time_t          now,
                                 const u_char *bytes, const int len);
-
+    void log_received_packet(struct in6_addr src,
+                             struct in6_addr dst);
     void receive_dao(struct in6_addr from,
+                     struct in6_addr ip6_to,
                      time_t          now,
                      const u_char *dao_bytes, const int dao_len);
     void receive_dio(struct in6_addr from,
+                     struct in6_addr ip6_to,
                      time_t          now,
                      const u_char *dio_bytes, const int dio_len);
     void receive_daoack(struct in6_addr from,
+                        struct in6_addr ip6_to,
                         const  time_t now,
                         const u_char *dat, const int daoack_len);
 
@@ -150,6 +154,9 @@ public:
     bool                    loopbackP() { return loopback; };
 
 protected:
+    bool                    logged;
+    unsigned int            ifindex;
+    unsigned int            hoplimit;
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
 

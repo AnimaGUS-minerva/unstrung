@@ -35,6 +35,7 @@ extern "C" {
 #include "dio.h"
 
 void network_interface::receive_dio(struct in6_addr from,
+                                    struct in6_addr ip6_to,
                                     const  time_t now,
                                     const u_char *dat, const int dio_len)
 {
@@ -57,7 +58,7 @@ void network_interface::receive_dio(struct in6_addr from,
 
     if(dn) {
 	/* and process it */
-	dn->receive_dio(this, from, now, dio, dio_len);
+	dn->receive_dio(this, from, ip6_to, now, dio, dio_len);
     } else {
 	dag_network::globalStats[PS_DIO_PACKET_IGNORED]++;
     }

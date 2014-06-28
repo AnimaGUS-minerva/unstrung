@@ -35,6 +35,7 @@ extern "C" {
 #include "dao.h"
 
 void network_interface::receive_dao(struct in6_addr from,
+                                    struct in6_addr ip6_to,
                                     const  time_t now,
                                     const u_char *dat, const int dao_len)
 {
@@ -81,7 +82,7 @@ void network_interface::receive_dao(struct in6_addr from,
 
     if(dn) {
 	/* and process it */
-	dn->receive_dao(this, from, now, dao, dat2, dat_len);
+	dn->receive_dao(this, from, ip6_to, now, dao, dat2, dat_len);
     } else {
 	dag_network::globalStats[PS_DAO_PACKET_IGNORED]++;
     }

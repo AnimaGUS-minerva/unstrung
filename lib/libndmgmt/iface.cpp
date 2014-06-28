@@ -444,6 +444,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     const struct nd_opt_hdr *nd_options = NULL;
     char src_addrbuf[INET6_ADDRSTRLEN];
     char dst_addrbuf[INET6_ADDRSTRLEN];
+    logged = false;
 
     /* should collect this all into a "class packet", or "class transaction" */
     if(this->debug->verbose_test()) {
@@ -462,16 +463,17 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     case ND_RPL_MESSAGE:
         switch(icmp6->icmp6_code) {
         case ND_RPL_DAG_IO:
-            this->receive_dio(ip6_src, now,
+            this->receive_dio(ip6_src, ip6_dst, now,
                               icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
             break;
 
         case ND_RPL_DAO:
-            this->receive_dao(ip6_src, now,
+            this->receive_dao(ip6_src, ip6_dst, now,
                               icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
             break;
 
         default:
+            this->log_received_packet(ip6_src, ip6_dst);
             debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);
             break;
         }
@@ -481,6 +483,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     {
 	struct nd_router_solicit *nrs = (struct nd_router_solicit *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nrs[1];
+        this->log_received_packet(ip6_src, ip6_dst);
 	debug->warn("Got router solicitation from %s with %u bytes of options\n",
 		    src_addrbuf,
 		    bytes_end - (u_char *)nd_options);
@@ -492,6 +495,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	struct nd_router_advert *nra = (struct nd_router_advert *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nra[1];
 	if(debug->verbose_test()) {
+            this->log_received_packet(ip6_src, ip6_dst);
 	    debug->verbose("Got router advertisement from %s \n"
                            "\t(hoplimit: %u, flags=%s%s%s, lifetime=%ums, reachable=%u, retransmit=%u)\n"
                            "\twith %u bytes of options\n",
@@ -513,6 +517,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	struct nd_neighbor_solicit *nns = (struct nd_neighbor_solicit *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nns[1];
 	if(debug->verbose_test()) {
+            this->log_received_packet(ip6_src, ip6_dst);
+
 	    char target_addrbuf[INET6_ADDRSTRLEN];
 	    inet_ntop(AF_INET6, &nns->nd_ns_target, target_addrbuf, INET6_ADDRSTRLEN);
 	    debug->verbose("Got neighbour solicitation from %s, looking for %s, has %u bytes of options\n",
@@ -528,6 +534,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	struct nd_neighbor_advert *nna = (struct nd_neighbor_advert *)bytes;
 	nd_options = (const struct nd_opt_hdr *)&nna[1];
 	if(debug->verbose_test()) {
+            this->log_received_packet(ip6_src, ip6_dst);
+
 	    char target_addrbuf[INET6_ADDRSTRLEN];
 	    inet_ntop(AF_INET6, &nna->nd_na_target, target_addrbuf, INET6_ADDRSTRLEN);
             debug->verbose("Got neighbor advertisement from %s (flags=%s%s%s), advertising: %s, has %u bytes of options\n",
@@ -541,6 +549,9 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	}
     }
     break;
+    default:
+        this->log_received_packet(ip6_src, ip6_dst); logged=true;
+        return;
     }
 
 #if 1
@@ -647,7 +658,6 @@ void network_interface::receive(const time_t now)
     int len, n;
     struct msghdr mhdr;
     struct iovec iov;
-    int hoplimit = 0;
     struct in6_pktinfo *pkt_info;
 
     if( ! control_msg_hdr )
@@ -718,26 +728,34 @@ void network_interface::receive(const time_t now)
 	}
 
         if(pkt_info) {
-            dst = pkt_info->ipi6_addr;
+            dst     = pkt_info->ipi6_addr;
+            ifindex = pkt_info->ipi6_ifindex;
         }
         src = src_sock.sin6_addr;
-
-        if(debug->verbose_test()) {
-            char src_addrbuf[INET6_ADDRSTRLEN];
-            char dst_addrbuf[INET6_ADDRSTRLEN];
-
-            inet_ntop(AF_INET6, &src, src_addrbuf, INET6_ADDRSTRLEN);
-            inet_ntop(AF_INET6, &dst, dst_addrbuf, INET6_ADDRSTRLEN);
-
-            debug->verbose(" %s: received packet from %s -> %s[%u] hoplimit=%d\n",
-                           if_name,
-                           src_addrbuf, dst_addrbuf, pkt_info->ipi6_ifindex, hoplimit);
-        }
 
         this->receive_packet(src, dst, now, b, len);
     }
 
 }
+
+void network_interface::log_received_packet(struct in6_addr src,
+                                            struct in6_addr dst)
+{
+    if(!logged) {
+        char src_addrbuf[INET6_ADDRSTRLEN];
+        char dst_addrbuf[INET6_ADDRSTRLEN];
+
+        inet_ntop(AF_INET6, &src, src_addrbuf, INET6_ADDRSTRLEN);
+        inet_ntop(AF_INET6, &dst, dst_addrbuf, INET6_ADDRSTRLEN);
+
+        debug->verbose(" %s: received packet from %s -> %s[%u] hoplimit=%d\n",
+                       if_name,
+                       src_addrbuf, dst_addrbuf,
+                       ifindex, hoplimit);
+        logged = true;
+    }
+}
+
 
 void network_interface::send_raw_icmp(struct in6_addr *dest,
                                       const unsigned char *icmp_body,

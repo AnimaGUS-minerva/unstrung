@@ -572,21 +572,27 @@ rpl_node *dag_network::update_route(network_interface *iface,
 
 
 rpl_node *dag_network::update_parent(network_interface *iface,
-				    struct in6_addr from, const time_t now)
+                                     struct in6_addr from,
+                                     struct in6_addr ip6_to,
+                                     const time_t now)
 {
     /* no difference for parent or child for now */
-    return update_node(iface, from, now);
+    return update_node(iface, from, ip6_to, now);
 }
 
 rpl_node *dag_network::update_child(network_interface *iface,
-				    struct in6_addr from, const time_t now)
+				    struct in6_addr from,
+                                    struct in6_addr ip6_to,
+                                    const time_t now)
 {
     /* no difference for parent or child for now */
-    return update_node(iface, from, now);
+    return update_node(iface, from, ip6_to, now);
 }
 
 rpl_node *dag_network::update_node(network_interface *iface,
-                                     struct in6_addr from, const time_t now)
+                                   struct in6_addr from,
+                                   struct in6_addr ip6_to,
+                                   const time_t now)
 {
     rpl_node &peer = this->dag_members[from];
 
@@ -595,6 +601,7 @@ rpl_node *dag_network::update_node(network_interface *iface,
         peer.markself(iface->get_if_index());
 
         this->mStats[PS_SELF_PACKET_RECEIVED]++;
+        iface->log_received_packet(from, ip6_to);
         debug->debug(RPL_DEBUG_NETINPUT, "  received self packet (%u/%u)\n",
 		       this->mStats[PS_SELF_PACKET_RECEIVED],
 		       this->mStats[PS_PACKET_RECEIVED]);
@@ -627,6 +634,7 @@ void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio)
  */
 void dag_network::receive_dio(network_interface *iface,
                               struct in6_addr from,
+                              struct in6_addr ip6_to,
                               const time_t    now,
                               const struct nd_rpl_dio *dio, int dio_len)
 {
@@ -649,7 +657,7 @@ void dag_network::receive_dio(network_interface *iface,
 
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
-    if((peer = this->update_parent(iface, from, now)) == NULL) {
+    if((peer = this->update_parent(iface, from, ip6_to, now)) == NULL) {
         return;
     }
 
@@ -725,6 +733,7 @@ void dag_network::set_dagid(dagid_t dag)
  */
 void dag_network::receive_dao(network_interface *iface,
                               struct in6_addr from,
+                              struct in6_addr ip6_to,
                               const time_t    now,
                               const struct nd_rpl_dao *dao,
                               unsigned char *data, int dao_len)
@@ -743,7 +752,7 @@ void dag_network::receive_dao(network_interface *iface,
 
     /* find the node entry from this source IP, and update seen time */
     /* this will create the node if it does not already exist! */
-    if((peer = this->update_child(iface, from, now)) == NULL) {
+    if((peer = this->update_child(iface, from, ip6_to, now)) == NULL) {
         return;
     }
 
@@ -784,6 +793,7 @@ void dag_network::receive_dao(network_interface *iface,
 
 void dag_network::receive_daoack(network_interface *iface,
                                  struct in6_addr from,
+                                 struct in6_addr ip6_to,
                                  const time_t    now,
                                  const struct nd_rpl_daoack *daoack,
                                  unsigned char *data, int dao_len)

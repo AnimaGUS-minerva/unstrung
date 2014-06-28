@@ -34,6 +34,7 @@ extern "C" {
 #include "dag.h"
 
 void network_interface::receive_daoack(struct in6_addr from,
+                                       struct in6_addr ip6_to,
                                        const  time_t now,
                                        const u_char *dat, const int daoack_len)
 {
@@ -72,7 +73,7 @@ void network_interface::receive_daoack(struct in6_addr from,
 
     if(dn) {
 	/* and process it */
-	dn->receive_daoack(this, from, now, daoack, dat2, dat_len);
+	dn->receive_daoack(this, from, ip6_to, now, daoack, dat2, dat_len);
     } else {
 	dag_network::globalStats[PS_DAOACK_PACKET_IGNORED]++;
     }

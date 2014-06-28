@@ -27,6 +27,7 @@ extern "C" {
 #include "dag.h"
 
 struct in6_addr dummy_src1;
+struct in6_addr dummy_dst1;
 struct in6_addr iface_src2;
 time_t now;
 
@@ -50,43 +51,43 @@ static void t2(network_interface *iface)
         d1.rpl_dagid[0]='1';
 
         d1.rpl_dtsn = 1;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_SEQ_OLD] == 0);
 
         d1.rpl_dtsn = 4;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 0);
 
         d1.rpl_dtsn = 3;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 1);
 
         d1.rpl_dtsn = 240;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 4);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_dtsn = 130;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 130);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_dtsn = 243;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 243);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_dtsn = 1;
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_SEQ_OLD] == 2);
 
         d1.rpl_dtsn = 1;
         unsigned int processed_count = dn->mStats[PS_PACKET_PROCESSED];
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->last_seq() == 1);
         assert(dn->mStats[PS_PACKET_PROCESSED] == processed_count+1);
 }
@@ -113,7 +114,7 @@ static void t3(network_interface *iface)
 
         unsigned int lower_rank_count = dn->mStats[PS_LOWER_RANK_CONSIDERED];
 
-        dn->receive_dio(iface, dummy_src1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, dummy_src1, dummy_dst1, now, &d1, sizeof(d1));
         assert(dn->mStats[PS_LOWER_RANK_CONSIDERED] == lower_rank_count+1);
 }
 
@@ -139,7 +140,7 @@ static void t4(network_interface *iface)
         d1.rpl_instanceid = 1;
         d1.rpl_dagrank = 1;
 
-        dn->receive_dio(iface, a1, now, &d1, sizeof(d1));
+        dn->receive_dio(iface, a1, dummy_dst1, now, &d1, sizeof(d1));
 
         assert(dn->member_count() == 1);
         assert(dn->contains_member(a1));
@@ -152,6 +153,7 @@ int main(int argc, char *argv[])
 
         inet_pton(AF_INET6, "2001:db8::abcd:00a2", &iface_src2);
         inet_pton(AF_INET6, "2001:db8::abcd:00a1", &dummy_src1);
+        inet_pton(AF_INET6, "ff02::1a", &dummy_dst1);
 
         time_t now;
         time(&now);
