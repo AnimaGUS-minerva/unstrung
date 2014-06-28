@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 
 
         rpl_debug *deb = new rpl_debug(true, stderr);
+        deb->set_debug_flag(RPL_DEBUG_NETINPUT);
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
         /* now finish setting things up with netlink */

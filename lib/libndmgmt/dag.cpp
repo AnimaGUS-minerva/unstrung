@@ -595,7 +595,7 @@ rpl_node *dag_network::update_node(network_interface *iface,
         peer.markself(iface->get_if_index());
 
         this->mStats[PS_SELF_PACKET_RECEIVED]++;
-        debug->verbose("  received self packet (%u/%u)\n",
+        debug->debug(RPL_DEBUG_NETINPUT, "  received self packet (%u/%u)\n",
 		       this->mStats[PS_SELF_PACKET_RECEIVED],
 		       this->mStats[PS_PACKET_RECEIVED]);
         return NULL;

@@ -114,6 +114,16 @@ void rpl_debug::verbose(const char *fmt, ...)
     }
 }
 
+void rpl_debug::debug(unsigned int level, const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+
+    if(level & this->debug_flags) {
+        logv(fmt, vargs);
+    }
+}
+
 /*
  * Local Variables:
  * c-basic-offset:4
