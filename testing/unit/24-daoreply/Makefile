@@ -12,7 +12,7 @@ programs::
 check::	24-daoreply
 	@mkdir -p ../OUTPUTS
 	./24-daoreply 2>&1 | tee ../OUTPUTS/24-daoreply-out.raw | diff -B - 24-daoreply-out.txt
-	tcpdump -t -v -n -r ../OUTPUTS/24-node-E-out.pcap | tee ../OUTPUTS/24-node-E-capture.txt | diff -B - 24-node-E-capture.txt
+	tcpdump.4.6.0 -t -v -n -r ../OUTPUTS/24-node-E-out.pcap | tee ../OUTPUTS/24-node-E-capture.txt | diff -B - 24-node-E-capture.txt
 
 clean::
 	@rm -rf 24-daoreply *.o
