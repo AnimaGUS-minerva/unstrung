@@ -1,14 +1,21 @@
+counter_names.o: counter_names.c \
+ ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/counter_names.h
 dag.o: dag.cpp ../../include/pathnames.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/dio.h \
  ../../include/rplmsg.h \
@@ -19,14 +26,30 @@ dao.o: dao.cpp ../../include/pathnames.h \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/dao.h \
  ../../include/rplmsg.h
+daoack.o: daoack.cpp ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/unstrung.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/counter_names.h \
+ ../../include/dag.h
 debug.o: debug.cpp ../../include/debug.h
 dio.o: dio.cpp ../../include/pathnames.h \
  ../../include/oswlibs.h \
@@ -34,11 +57,13 @@ dio.o: dio.cpp ../../include/pathnames.h \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/dio.h \
  ../../include/rplmsg.h
@@ -47,11 +72,13 @@ event.o: event.cpp ../../include/pathnames.h \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/event.h
 iface.o: iface.cpp ../../include/pathnames.h \
  ../../include/rpl.h \
@@ -59,11 +86,13 @@ iface.o: iface.cpp ../../include/pathnames.h \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/dag.h
 neighbour.o: neighbour.cpp
 netlink.o: netlink.cpp \
@@ -78,11 +107,13 @@ netlink.o: netlink.cpp \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/prefix.h
 node.o: node.cpp ../../include/node.h \
  ../../include/pathnames.h \
@@ -97,9 +128,11 @@ prefix.o: prefix.cpp ../../include/oswlibs.h \
  ../../include/oswlibs.h \
  ../../include/debug.h \
  ../../include/prefix.h \
+ ../../include/counter_names.h \
  ../../include/node.h \
  ../../include/prefix.h \
  ../../include/iface.h \
+ ../../include/unstrung.h \
  ../../include/event.h \
  ../../include/dag.h
 rplmsg.o: rplmsg.cpp ../../include/pathnames.h \
@@ -108,11 +141,13 @@ rplmsg.o: rplmsg.cpp ../../include/pathnames.h \
  ../../include/iface.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
+ ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/rplmsg.h \
  ../../include/dio.h \
