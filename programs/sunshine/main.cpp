@@ -119,6 +119,9 @@ int main(int argc, char *argv[])
               PANDORA_VERSION_MAJOR, PANDORA_VERSION_MINOR,
               BUILDNUMBER, today);
 
+    network_interface::scan_devices(deb, true);
+    devices_scanned=true;
+
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
 	switch(c) {
 	default:
@@ -193,10 +196,6 @@ int main(int argc, char *argv[])
             break;
 
         case 'i':
-            if(!devices_scanned) {
-                network_interface::scan_devices(deb, false);
-                devices_scanned = true;
-            }
             iface = network_interface::find_by_name(optarg);
             if(!iface) {
                 deb->log("Can not find interface %s\n", optarg);
@@ -213,10 +212,6 @@ int main(int argc, char *argv[])
 
     if(!iface) {
 	deb->info("running on all interfaces\n");
-        if(!devices_scanned) {
-            network_interface::scan_devices(deb, true);
-            devices_scanned=true;
-        }
     }
 
     if(dag==NULL) {
