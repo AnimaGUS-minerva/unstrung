@@ -19,7 +19,8 @@ PROGRAM=sunshine
 OBJS=${SRCS:.c=.o}
 SRCS=main.cpp sendnd.cpp
 LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK}
-CXXFLAGS+=-DBUILDNUMBER=\"${BUILDNUMBER}\"
+CXXFLAGS+=-g -DBUILDNUMBER=\"${BUILDNUMBER}\"
+LDFLAGS=-g
 
 include ${PANDORA_SRCDIR}/programs/Makefile.program
 
