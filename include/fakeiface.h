@@ -1,11 +1,17 @@
 /*
  * This code was originally written by Michael Richardson <mcr@sandelman.ca>
- * as part of the Unstrung project (http://unstrung.sandelman.ca/), and was originally
- * released under the GPL.
+ * as part of the Unstrung project (http://unstrung.sandelman.ca/), and was
+ * originally released under the GPL.
  *
- * The original author (me) thinks that this code is generally useful to others who want
- * to use pcap files as sources of testing data, and the rights to this file are hereby
- * (2010-07-01) placed into the *public domain*, along with the implementation file pcap_iface.cpp
+ * The original author (me) thinks that this code is generally useful to
+ * others who want to use pcap files as sources of testing data, and the
+ * rights to this file are hereby (2010-07-01) placed into the *public domain*
+ * (for whatever that means),  along with the implementation file pcap_iface.cpp
+ *
+ * Put your own BSD, MIT, GPL, or all-rights-reserved license on this
+ * file as you wish.  You'll need to hack things to make it fit your
+ * testing environment, of course.
+ *
  */
 
 #ifndef _UNSTRUNG_FAKEIFACE_H_
