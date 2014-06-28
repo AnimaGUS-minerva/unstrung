@@ -26,7 +26,7 @@ static void t1(void)
         memset(d, 0, DAGID_LEN);
         d[0]='T';
         d[1]='1';
-        
+
         class dag_network dn(d);
 
         assert(dn.mDagid[0]=='T');
@@ -40,7 +40,7 @@ static void t2(void)
         memset(d, 0, DAGID_LEN);
         d[0]='T';
         d[1]='2';
-        
+
         /* make a new dn */
         class dag_network *dn1 = new dag_network(d);
         class dag_network *dn2 = dag_network::find_by_dagid(d);
@@ -55,7 +55,7 @@ static void t3(void)
         memset(d, 0, DAGID_LEN);
         d[0]='T';
         d[1]='3';
-        
+
         /* make a new dn */
         class dag_network *dn1 = new dag_network(d);
 
@@ -72,7 +72,7 @@ static void t4(void)
         memset(d, 0, DAGID_LEN);
         d[0]='T';
         d[1]='4';
-        
+
         /* make a new dn */
         class dag_network *dn1 = new dag_network(d);
 
@@ -96,7 +96,7 @@ static void t5(void)
         memset(d, 0, DAGID_LEN);
         d[0]='T';
         d[1]='5';
-        
+
         /* verify that we can not find it */
         class dag_network *dn2 = dag_network::find_or_make_by_dagid(d, debug, false);
         assert(dn2 != NULL);
