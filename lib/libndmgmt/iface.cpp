@@ -459,6 +459,10 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
     /* XXX should maybe check the checksum? */
 
+    if(debug->flag_set(RPL_DEBUG_NETINPUT)) {
+        this->log_received_packet(ip6_src, ip6_dst);
+    }
+
     switch(icmp6->icmp6_type) {
     case ND_RPL_MESSAGE:
         switch(icmp6->icmp6_code) {

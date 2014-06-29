@@ -39,6 +39,7 @@ public:
         void clear_debug_flag(enum debug_level dl) {
           debug_flags &= dl ^ 0xfffffff;
         };
+        bool flag_set(unsigned int level) { return(level & this->debug_flags); };
 #define verbose_file debug->file
 
         void log(const char *fmt, ...);

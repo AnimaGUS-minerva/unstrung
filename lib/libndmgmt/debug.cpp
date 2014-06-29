@@ -119,7 +119,7 @@ void rpl_debug::debug(unsigned int level, const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    if(level & this->debug_flags) {
+    if(flag_set(level)) {
         logv(fmt, vargs);
     }
 }
