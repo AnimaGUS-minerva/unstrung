@@ -230,7 +230,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         ni->node->debug = deb;
 
         /* log it for human */
-        deb->log("found[%d]: %s address=%s\n",
+        deb->info("found[%d]: %s address=%s\n",
                  ni->if_index, ni->if_name, b1);
         break;
 
@@ -271,7 +271,7 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     }
 
     /* log it for human */
-    deb->log("found[%d]: %s type=%s (%s %s)%s\n",
+    deb->info("found[%d]: %s type=%s (%s %s)%s\n",
              ni->if_index, ni->get_if_name(),
              ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
              ni->alive   ? "active" : "inactive",

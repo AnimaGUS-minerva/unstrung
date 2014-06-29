@@ -1,6 +1,8 @@
 Using faked interfaces
-  found interface wlan0[1]
-  found interface lo[2]
+found[1]: wlan0 type=ether (active new) faked
+found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+found[2]: lo type=loopback (active new) faked
+found[2]: lo address=::1
 Sending ICMP of length: 24
 0000: 9b 02 00 00  2b c0 00 0b  74 68 69 73  69 73 6d 79    ....+...thisismy
 0010: 64 69 63 65  64 61 67 32                              dicedag2

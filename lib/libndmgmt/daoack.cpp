@@ -39,7 +39,7 @@ void network_interface::receive_daoack(struct in6_addr from,
                                        const u_char *dat, const int daoack_len)
 {
     unsigned int dat_len = daoack_len;
-    debug->verbose("  processing daoack(%u)\n",daoack_len);
+    debug->info("  processing daoack(%u)\n",daoack_len);
 
     struct nd_rpl_daoack *daoack = (struct nd_rpl_daoack *)dat;
     unsigned char *dat2 = (unsigned char *)(daoack+1);
@@ -57,7 +57,7 @@ void network_interface::receive_daoack(struct in6_addr from,
 	dat_len -= DAGID_LEN;
     }
 
-    debug->info(" [instance:%u,daoseq:%u,dagid:%s]\n",
+    debug->info_more(" [instance:%u,daoseq:%u,dagid:%s]\n",
                 daoack->rpl_instanceid,
                 daoack->rpl_daoseq,
                 dagid_str[0] ? dagid_str : "<elided>");

@@ -40,7 +40,7 @@ void network_interface::receive_dao(struct in6_addr from,
                                     const u_char *dat, const int dao_len)
 {
     unsigned int dat_len = dao_len;
-    debug->verbose("  processing dao(%u)\n",dao_len);
+    debug->info("  processing dao(%u)\n",dao_len);
 
     struct nd_rpl_dao *dao = (struct nd_rpl_dao *)dat;
     unsigned char *dat2 = (unsigned char *)(dao+1);
@@ -58,7 +58,7 @@ void network_interface::receive_dao(struct in6_addr from,
 	dat_len -= DAGID_LEN;
     }
 
-    debug->info(" [instance:%u,daoseq:%u,%sdagid:%s]\n",
+    debug->info_more(" [instance:%u,daoseq:%u,%sdagid:%s]\n",
                 dao->rpl_instanceid,
                 dao->rpl_daoseq,
                 RPL_DAO_K(dao->rpl_flags) ? "dao-ack," : "",

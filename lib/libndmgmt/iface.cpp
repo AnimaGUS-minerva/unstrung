@@ -242,7 +242,8 @@ void network_interface::setup_allrouters_membership(void)
             /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
             if (errno != EADDRINUSE)
             {
-                printf("can't join ipv6-allrouters on %s", this->if_name);
+                debug->error("can not join ipv6-allrouters on %s: %s\n",
+                             this->if_name, strerror(errno));
                 alive = false;
                 return;
             }
@@ -266,7 +267,8 @@ void network_interface::setup_allrpl_membership(void)
             /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
             if (errno != EADDRINUSE)
             {
-                debug->warn("can not join ipv6-all-rpl-nodes on %s", this->if_name);
+                debug->warn("can not join ipv6-all-rpl-nodes on %s: %s\n",
+                            this->if_name, strerror(errno));
                 alive = false;
                 return;
             }
@@ -335,8 +337,6 @@ class network_interface *network_interface::all_if = NULL;
 void network_interface::add_to_list(void)
 {
     if(on_list) return;
-
-    debug->info("  found interface %s[%d]\n", get_if_name(), get_if_index());
 
     this->next = network_interface::all_if;
     network_interface::all_if = this;
@@ -732,7 +732,6 @@ void network_interface::receive(const time_t now)
                     ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex)
                 {
                     pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
-                    debug->info("  ifindex %u", pkt_info->ipi6_ifindex);
                 }
                 else
                 {
