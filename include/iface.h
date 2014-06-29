@@ -111,7 +111,8 @@ public:
     bool add_route_to_node(const ip_subnet &prefix, rpl_node *peer, const ip_address &srcip);
     bool add_null_route_to_prefix(const ip_subnet &prefix);
     bool add_parent_route_to_prefix(const ip_subnet &prefix,
-                                  /*const*/ rpl_node &parent);
+                                    const ip_address &src,
+                                    /*const*/ rpl_node &parent);
 
     /* eui string functions */
     char *eui48_str(char *str, int strlen);

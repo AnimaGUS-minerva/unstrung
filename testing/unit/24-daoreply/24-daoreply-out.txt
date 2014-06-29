@@ -42,8 +42,8 @@ Processing input file ../INPUTS/daoack-A-ripple.pcap on if=[1]: wlan0 state: act
 packet 3 is being processed
   processing daoack(20)
  [instance:1,daoseq:1,dagid:ripple0x00 ]
-  invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0
-    would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0
+  invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
 packet 4 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[0] hoplimit=0

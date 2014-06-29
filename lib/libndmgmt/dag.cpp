@@ -827,7 +827,10 @@ void dag_network::commit_parent(void)
         dag_parentif = dag_bestparentif;
         dag_parent   = dag_bestparent;
 
-        dag_parentif->add_parent_route_to_prefix(mPrefix, *dag_parent);
+        prefix_node &srcip = this->dag_children[mPrefix];
+        dag_parentif->add_parent_route_to_prefix(mPrefix,
+                                                 srcip.prefix_number().addr,
+                                                 *dag_parent);
 
     } else {
         debug->verbose("  already associated with this parent\n");
