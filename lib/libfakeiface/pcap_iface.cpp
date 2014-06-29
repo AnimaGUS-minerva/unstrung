@@ -487,9 +487,9 @@ int pcap_network_interface::nisystem(const char *cmd)
 
 int pcap_network_interface::process_infile(const char *ifname,
                                            const char *infile,
-                                           const char *outfile)
+                                           const char *outfile,
+                                           rpl_debug *deb)
 {
-        rpl_debug *deb = new rpl_debug(true, stdout);
         pcap_network_interface *ndproc =
             setup_infile_outfile(ifname, infile, outfile, deb);
 

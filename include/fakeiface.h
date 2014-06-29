@@ -70,7 +70,8 @@ public:
         static int process_infile(
                 const char *ifname,
                 const char *infile,
-                const char *outfile);
+                const char *outfile,
+                rpl_debug *deb);
 
         int process_pcap(void);
         void set_link_encap(int link) {

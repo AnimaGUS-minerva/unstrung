@@ -7,7 +7,8 @@
 int main(int argc, char *argv[])
 {
 	int i;
-        rpl_debug *deb = new rpl_debug(true, stderr);
+        rpl_debug *deb = new rpl_debug(true, stdout);
+        deb->set_debug_flag(RPL_DEBUG_NETINPUT);
 
         pcap_network_interface::scan_devices(deb, true);
 
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
 
 		b = basename(infile);
 		snprintf(b1, 256, "../OUTPUTS/recv-01-%s", b);
-                pcap_network_interface::process_infile("wlan0", infile, b1);
+                pcap_network_interface::process_infile("wlan0", infile, b1, deb);
 	}
 	exit(0);
 }
