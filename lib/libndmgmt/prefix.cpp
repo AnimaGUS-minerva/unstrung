@@ -94,7 +94,7 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         this->set_prefix(link, 128);
 
 
-        this->verbose_log("  adding prefix: %s to iface: %s\n",
+        this->verbose_log("  adding prefix: %s learnt from iface: %s\n",
                           node_name(),
                           iface->get_if_name());
 
