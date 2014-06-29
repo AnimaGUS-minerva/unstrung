@@ -482,7 +482,10 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     }
 
     /* now schedule sending out packets */
-    schedule_dio();
+    if(dag_parent) {
+        /* can only send DIOs once we are sure about our parent! */
+        schedule_dio();
+    }
     schedule_dao();
 }
 
@@ -833,6 +836,8 @@ void dag_network::commit_parent(void)
                                                  srcip.prefix_number().addr,
                                                  *dag_parent);
 
+        /* now send a DIO */
+        schedule_dio(1);
     } else {
         debug->verbose("  already associated with this parent\n");
     }
