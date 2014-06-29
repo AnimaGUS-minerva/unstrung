@@ -830,7 +830,7 @@ void dag_network::commit_parent(void)
         dag_parentif->add_parent_route_to_prefix(mPrefix, *dag_parent);
 
     } else {
-        debug->verbose("  already associated with this parent");
+        debug->verbose("  already associated with this parent\n");
     }
 }
 

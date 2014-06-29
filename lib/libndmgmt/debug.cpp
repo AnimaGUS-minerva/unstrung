@@ -27,12 +27,6 @@ void rpl_debug::logv_more(const char *fmt, va_list vargs)
 {
     if(file == NULL) return;
     vfprintf(file, fmt, vargs);
-#if 0
-    int len = strlen(fmt);
-    if(len > 1 && fmt[len-1]!='\n') {
-        fputc('\n', file);
-    }
-#endif
 }
 
 void rpl_debug::logv(const char *fmt, va_list vargs)
@@ -50,6 +44,10 @@ void rpl_debug::logv(const char *fmt, va_list vargs)
         fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
     }
     logv_more(fmt, vargs);
+    int len = strlen(fmt);
+    if(len > 1 && fmt[len-1]!='\n') {
+        fputc('\n', file);
+    }
 }
 
 void rpl_debug::log(const char *fmt, ...)

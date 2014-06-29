@@ -580,8 +580,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 				  optlen)) return;
 
 	if(debug->verbose_test()) {
-            debug->verbose("    option %u[%u]",
-                           nd_options->nd_opt_type, optlen);
+            debug->verbose_more("    option %u[%u]",
+                                nd_options->nd_opt_type, optlen);
 	}
 	switch(nd_options->nd_opt_type) {
 	case ND_OPT_SOURCE_LINKADDR:
@@ -602,7 +602,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 	    if(debug->verbose_test()) {
 		char prefix_addrbuf[INET6_ADDRSTRLEN];
 		inet_ntop(AF_INET6, &nopi->nd_opt_pi_prefix, prefix_addrbuf, INET6_ADDRSTRLEN);
-                debug->verbose(" prefix %s/%u (valid=%us, preferred=%us) flags=%s%s%s\n",
+                debug->verbose_more(" prefix %s/%u (valid=%us, preferred=%us) flags=%s%s%s\n",
 			prefix_addrbuf, nopi->nd_opt_pi_prefix_len,
 			nopi->nd_opt_pi_valid_time,
 			nopi->nd_opt_pi_preferred_time,
@@ -640,8 +640,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     }
     /* Dead code? */
 #endif
-
-
+    /* terminate the debug line */
+    debug->verbose("");
 }
 
 int network_interface::packet_too_short(const char *thing,
