@@ -7,4 +7,4 @@ found[2]: lo type=loopback (active new) faked
 found[2]: lo address=::1
 PROCESSING ../INPUTS/senddio-2.pcap
 packet 1 is being processed
- wlan0: received packet from fe80::1022:ff:fe64:6423 -> ff02::1[0] hoplimit=0
+ wlan0: received packet from fe80::1022:ff:fe64:6423 -> ff02::1[1] hoplimit=0

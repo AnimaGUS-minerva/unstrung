@@ -158,7 +158,6 @@ public:
 
 protected:
     bool                    logged;
-    unsigned int            ifindex;
     unsigned int            hoplimit;
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);

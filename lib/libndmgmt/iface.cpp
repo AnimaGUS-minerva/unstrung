@@ -147,7 +147,7 @@ bool network_interface::setup()
 
     if (nd_socket < 0)
     {
-        fprintf(this->verbose_file, "can't create socket(AF_INET6): %s", strerror(errno));
+        debug->error("can't create socket(AF_INET6): %s", strerror(errno));
 	return false;
     }
 
@@ -155,7 +155,7 @@ bool network_interface::setup()
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_RECVPKTINFO, &val, sizeof(val));
     if (err < 0)
     {
-        fprintf(this->verbose_file, "setsockopt(IPV6_RECVPKTINFO): %s", strerror(errno));
+        debug->error("setsockopt(IPV6_RECVPKTINFO): %s", strerror(errno));
         return false;
     }
 
@@ -163,7 +163,7 @@ bool network_interface::setup()
     err = setsockopt(nd_socket, IPPROTO_RAW, IPV6_CHECKSUM, &val, sizeof(val));
     if (err < 0)
     {
-        fprintf(this->verbose_file, "setsockopt(IPV6_CHECKSUM): %s", strerror(errno));
+        debug->error("setsockopt(IPV6_CHECKSUM): %s", strerror(errno));
         return false;
     }
 
@@ -171,7 +171,7 @@ bool network_interface::setup()
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_UNICAST_HOPS, &val, sizeof(val));
     if (err < 0)
     {
-        fprintf(this->verbose_file, "setsockopt(IPV6_UNICAST_HOPS): %s", strerror(errno));
+        debug->error("setsockopt(IPV6_UNICAST_HOPS): %s", strerror(errno));
         return false;
     }
 
@@ -179,7 +179,7 @@ bool network_interface::setup()
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &val, sizeof(val));
     if (err < 0)
     {
-        fprintf(this->verbose_file, "setsockopt(IPV6_MULTICAST_HOPS): %s", strerror(errno));
+        debug->error("setsockopt(IPV6_MULTICAST_HOPS): %s", strerror(errno));
         return false;
     }
 
@@ -188,7 +188,7 @@ bool network_interface::setup()
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &val, sizeof(val));
     if (err < 0)
     {
-        fprintf(this->verbose_file, "setsockopt(IPV6_RECVHOPLIMIT): %s", strerror(errno));
+        debug->error("setsockopt(IPV6_RECVHOPLIMIT): %s", strerror(errno));
         return false;
     }
 #endif
@@ -207,7 +207,7 @@ bool network_interface::setup()
                      sizeof(filter));
     if (err < 0)
     {
-        fprintf(this->verbose_file, "setsockopt(ICMPV6_FILTER): %s", strerror(errno));
+        debug->error("setsockopt(ICMPV6_FILTER): %s", strerror(errno));
         return false;
     }
 #endif
@@ -266,7 +266,7 @@ void network_interface::setup_allrpl_membership(void)
             /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
             if (errno != EADDRINUSE)
             {
-                printf("can't join ipv6-all-rpl-nodes on %s", this->if_name);
+                debug->warn("can not join ipv6-all-rpl-nodes on %s", this->if_name);
                 alive = false;
                 return;
             }
@@ -284,6 +284,7 @@ void network_interface::check_allrouters_membership(void)
 	unsigned int if_idx, allrouters_ok=0, allrpl_ok=0;
 	char addr[32+1];
 	int ret=0;
+        int lineno=0;
 
 	if ((fp = fopen(PATH_PROC_NET_IGMP6, "r")) == NULL)
 	{
@@ -293,6 +294,11 @@ void network_interface::check_allrouters_membership(void)
 	}
 
 	while ( (ret=fscanf(fp, "%u %*s %32[0-9A-Fa-f] %*x %*x %*x\n", &if_idx, addr)) != EOF) {
+            lineno++;
+#if 0
+            printf("processing line %u with ret=%u\n",
+                   lineno, ret);
+#endif
             if (ret == 2) {
                 if (this->if_index == if_idx) {
                     if (strncmp(addr, ALL_ROUTERS_MCAST, sizeof(addr)) == 0)
@@ -401,7 +407,7 @@ int network_interface::get_if_index(void)
 
     if ((fp = fopen(PATH_PROC_NET_IF_INET6, "r")) == NULL)
     {
-        fprintf(this->verbose_file, "can't open %s: %s", PATH_PROC_NET_IF_INET6,
+        debug->error("can't open %s: %s", PATH_PROC_NET_IF_INET6,
                 strerror(errno));
         return -1;
     }
@@ -430,7 +436,7 @@ int network_interface::get_if_index(void)
         }
     }
 
-    fprintf(this->verbose_file, "no linklocal address configured for %s",
+    debug->error("no linklocal address configured for %s",
             this->if_name);
     fclose(fp);
     return -1;
@@ -665,6 +671,7 @@ void network_interface::receive(const time_t now)
     struct sockaddr_in6 src_sock;
     struct in6_addr src, dst;
     int len, n;
+    int recv_ifindex;
     struct msghdr mhdr;
     struct iovec iov;
     struct in6_pktinfo *pkt_info;
@@ -674,7 +681,7 @@ void network_interface::receive(const time_t now)
         control_msg_hdrlen = CMSG_SPACE(sizeof(struct in6_pktinfo)) +
             CMSG_SPACE(sizeof(int));
         if ((control_msg_hdr = (unsigned char *)malloc(control_msg_hdrlen)) == NULL) {
-            fprintf(this->verbose_file, "recv_rs_ra: malloc: %s", strerror(errno));
+            debug->error("recv_rs_ra: malloc: %s", strerror(errno));
             return;
         }
     }
@@ -725,6 +732,7 @@ void network_interface::receive(const time_t now)
                     ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex)
                 {
                     pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
+                    debug->info("  ifindex %u", pkt_info->ipi6_ifindex);
                 }
                 else
                 {
@@ -736,13 +744,24 @@ void network_interface::receive(const time_t now)
             }
 	}
 
+        recv_ifindex = if_index;    /* default value */
         if(pkt_info) {
             dst     = pkt_info->ipi6_addr;
-            ifindex = pkt_info->ipi6_ifindex;
+            recv_ifindex = pkt_info->ipi6_ifindex;
         }
         src = src_sock.sin6_addr;
 
-        this->receive_packet(src, dst, now, b, len);
+        /*
+         * multicast sockets will receive one per interface; the ifindex
+         * is the accurate view of where it was received, so we have to
+         * switch interfaces if this->ifindex !+ ifindex
+         */
+        network_interface *iface = this;
+        if(recv_ifindex != if_index) {
+            iface = find_by_ifindex(recv_ifindex);
+        }
+
+        iface->receive_packet(src, dst, now, b, len);
     }
 
 }
@@ -760,7 +779,7 @@ void network_interface::log_received_packet(struct in6_addr src,
         debug->verbose(" %s: received packet from %s -> %s[%u] hoplimit=%d\n",
                        if_name,
                        src_addrbuf, dst_addrbuf,
-                       ifindex, hoplimit);
+                       if_index, hoplimit);
         logged = true;
     }
 }
@@ -782,12 +801,10 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
 
 #if 1
     if(setup() == false) {
-        fprintf(this->verbose_file, "failed to setup socket!");
+        debug->error("failed to setup socket!");
         return;
     }
     check_allrouters_membership();
-
-    printf("sending RA on %u\n", this->nd_socket);
 #endif
 
     if (dest == NULL)
@@ -837,9 +854,9 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
 	inet_ntop(AF_INET6, &pkt_info->ipi6_addr, sbuf, INET6_ADDRSTRLEN);
 	inet_ntop(AF_INET6, &addr.sin6_addr, dbuf, INET6_ADDRSTRLEN);
 
-        printf("send_raw_dio/sendmsg[%s->%s] (on if: %d): %s\n",
-               sbuf, dbuf,
-               pkt_info->ipi6_ifindex, strerror(errno));
+        debug->info("send_raw_dio/sendmsg[%s->%s] (on if: %d): %s\n",
+                    sbuf, dbuf,
+                    pkt_info->ipi6_ifindex, strerror(errno));
     }
 }
 
