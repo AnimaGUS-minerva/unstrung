@@ -132,8 +132,6 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
     mPrefix.maskbits  = prefixlen;
     mPrefixName[0]='\0';
-
-    dag_me.set_prefix(mPrefix);
 }
 
 void dag_network::set_grounded(bool grounded)
@@ -346,7 +344,7 @@ void dag_network::add_prefix(rpl_node advertising_peer,
                              network_interface *iface,
                              ip_subnet prefix)
 {
-    prefix_node &pre = this->dag_children[prefix];
+    prefix_node &pre = this->dag_prefixes[prefix];
 
     if(!pre.is_installed()) {
         this->set_prefix(prefix);
@@ -379,20 +377,6 @@ void dag_network::addselfprefix(network_interface *iface)
     /* update the prefix_node presenting ourselves in this dag */
     dag_me.update_announcer(iface->host_node());
     dag_me.configureip(iface, this);
-
-#if 0
-    err_t blah = initsubnet(&me->node_address(), 128, '0', &ll_prefix);
-    if(blah) {
-        debug->verbose("initsubnet says: %s\n", blah);
-    }
-    ll_prefix.maskbits = 128;
-
-    /* insert self into dag */
-    prefix_node &pre = this->dag_children[ll_prefix];
-
-    pre.markself(this, ll_prefix);
-    pre.linklocal = true;
-#endif
 }
 
 static int addselfprefix_each(network_interface *iface, void *arg)
@@ -498,6 +482,17 @@ void dag_network::send_dao(void)
     int cnt = 0;
     prefix_map_iterator pi = dag_children.begin();
     while(pi != dag_children.end()) {
+	prefix_node &pm = pi->second;
+
+        debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
+                       cnt, pm.node_name(),
+                       mDagName, dag_bestparent->node_name(),
+                       dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
+        pi++;
+        cnt++;
+    }
+    pi = dag_prefixes.begin();
+    while(pi != dag_prefixes.end()) {
 	prefix_node &pm = pi->second;
 
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
@@ -787,9 +782,11 @@ void dag_network::receive_dao(network_interface *iface,
 
         subnettot(&prefix, 0, addrfound, sizeof(addrfound));
 
-        debug->verbose("received DAO about network %s, target %s\n", addrfound, peer->node_name());
+        debug->verbose("received DAO about network %s, target %s\n", addrfound,
+                       peer->node_name());
 
-	iface->add_route_to_node(prefix, peer, dag_me.prefix_number().addr);
+	iface->add_route_to_node(prefix, peer,
+                                 dag_me.prefix_number().addr);
     }
 
     /* now send a DAO-ACK back this the node, if asked to. */
@@ -831,7 +828,7 @@ void dag_network::commit_parent(void)
         dag_parentif = dag_bestparentif;
         dag_parent   = dag_bestparent;
 
-        prefix_node &srcip = this->dag_children[mPrefix];
+        prefix_node &srcip = this->dag_prefixes[mPrefix];
         dag_parentif->add_parent_route_to_prefix(mPrefix,
                                                  srcip.prefix_number().addr,
                                                  *dag_parent);

@@ -76,12 +76,6 @@ const char *prefix_node::node_name() {
 
 void prefix_node::configureip(network_interface *iface, dag_network *dn)
 {
-    if(!valid) {
-        this->verbose_log("  peer '%s' announced invalid prefix\n",
-                          announced_from->node_name());
-        return;
-    }
-
     this->verbose_log("  peer '%s' announces prefix: %s\n",
                       announced_from->node_name(), dn->prefix_name());
     if(!installed) {

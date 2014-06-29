@@ -93,6 +93,7 @@ int dag_network::build_target_opt(struct in6_addr addr, int maskbits)
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dao_target *daotg = (struct rpl_dao_target *)optbuff;
 
+    if(maskbits > 128) maskbits = 128;    // for sanity.
     daotg->rpl_dao_flags     = 0x00;
     daotg->rpl_dao_prefixlen = maskbits;
     for(int i=0; i < (maskbits+7)/8; i++) {
@@ -145,8 +146,26 @@ int dag_network::build_dao(unsigned char *buff,
         nextopt = dagid + 16;
     }
 
+    /* iterate through both maps; in theory, we can send multiple DAO? ZZZ */
     prefix_map_iterator pi = dag_children.begin();
-    while(pi != dag_children.end()) {
+    prefix_map_iterator endpi1 = dag_children.end();
+    while(pi != endpi1) {
+	prefix_node &pm = pi->second;
+
+	/* add RPL_TARGET  */
+	build_target_opt(pm.get_prefix());
+
+	int nextoptlen;
+	len = ((caddr_t)nextopt - (caddr_t)buff);
+	nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
+	nextopt += nextoptlen;
+
+	/* advance to next prefix */
+	pi++;
+    }
+    pi = dag_prefixes.begin();
+    prefix_map_iterator endpi2 = dag_prefixes.end();
+    while(pi != endpi2) {
 	prefix_node &pm = pi->second;
 
 	/* add RPL_TARGET  */

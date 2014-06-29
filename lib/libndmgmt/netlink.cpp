@@ -136,7 +136,9 @@ bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
 }
 
 /* XXX do this with netlink too  */
-bool network_interface::add_route_to_node(const ip_subnet &prefix, rpl_node *peer, const ip_address &src)
+bool network_interface::add_route_to_node(const ip_subnet &prefix,
+                                          rpl_node *peer,
+                                          const ip_address &src)
 {
     char buf[1024];
 

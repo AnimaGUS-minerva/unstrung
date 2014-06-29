@@ -97,7 +97,7 @@ public:
                            ip_subnet prefix);
 	void addselfprefix(network_interface *iface);
         unsigned int prefixcount(void) {
-            return dag_children.size();
+            return dag_prefixes.size();
         };
 	void maybe_send_dao(void);
 	void maybe_send_dio(void);
@@ -210,6 +210,7 @@ public:
 
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
+        prefix_map         dag_prefixes;     /* list of addresses, by prefix in this dag */
         prefix_node        dag_me;           /* my identity in this dag (/128) */
 
 	int build_prefix_dioopt(ip_subnet prefix);
