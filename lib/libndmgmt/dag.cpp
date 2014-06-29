@@ -100,7 +100,7 @@ void dag_network::init_dag(void)
 
     init_dag_name();
     this->add_to_list();
-    dag_me.set_debug(debug);
+    dag_me = NULL;
 }
 
 dag_network::dag_network(dagid_t n_dagid, rpl_debug *deb)
@@ -352,6 +352,9 @@ void dag_network::add_prefix(rpl_node advertising_peer,
         pre.set_debug(this->debug);
         pre.set_announcer(&advertising_peer);
         pre.configureip(iface, this);
+        if(dag_me == NULL) {
+            dag_me = &pre;
+        }
 
         maybe_send_dio();
     }
@@ -368,15 +371,21 @@ void dag_network::add_prefix(rpl_node advertising_peer,
  */
 void dag_network::addselfprefix(network_interface *iface)
 {
-    ip_subnet               ll_prefix;
-
     rpl_node *me = find_or_make_member(iface->if_addr);
     me->makevalid(iface->if_addr, this, this->debug);
     me->markself(iface->get_if_index());
 
-    /* update the prefix_node presenting ourselves in this dag */
-    dag_me.update_announcer(iface->host_node());
-    dag_me.configureip(iface, this);
+    prefix_node &pre = this->dag_prefixes[mPrefix];
+
+    if(!pre.is_installed()) {
+        pre.set_prefix(mPrefix);
+        pre.set_debug(this->debug);
+        pre.set_announcer(me);
+        pre.configureip(iface, this);
+        if(dag_me == NULL) {
+            dag_me = &pre;
+        }
+    }
 }
 
 static int addselfprefix_each(network_interface *iface, void *arg)
@@ -785,8 +794,9 @@ void dag_network::receive_dao(network_interface *iface,
         debug->verbose("received DAO about network %s, target %s\n", addrfound,
                        peer->node_name());
 
+        assert(dag_me != NULL);
 	iface->add_route_to_node(prefix, peer,
-                                 dag_me.prefix_number().addr);
+                                 dag_me->prefix_number().addr);
     }
 
     /* now send a DAO-ACK back this the node, if asked to. */

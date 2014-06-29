@@ -37,7 +37,9 @@ public:
 
 	void set_debug(rpl_debug *deb) {
             debug = deb;
-            dag_me.set_debug(deb);
+            if(dag_me) {
+                dag_me->set_debug(deb);
+            }
         };
 	void set_active()   { mActive = true; };
 	void set_inactive() { mActive = false;};
@@ -211,7 +213,7 @@ public:
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
         prefix_map         dag_prefixes;     /* list of addresses, by prefix in this dag */
-        prefix_node        dag_me;           /* my identity in this dag (/128) */
+        prefix_node       *dag_me;           /* my identity in this dag (/128) */
 
 	int build_prefix_dioopt(ip_subnet prefix);
         int build_target_opt(struct in6_addr addr, int maskbits);
