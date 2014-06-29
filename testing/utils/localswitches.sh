@@ -14,7 +14,7 @@ export NETJIGDUMP=true
 . $BUILDTOP/umlsetup.sh
 export POOLSPACE
 
-SWITCHES='UML_ground_CTL UML_n1_CTL UML_n2_CTL'
+SWITCHES='UML_ground_CTL UML_n1_CTL UML_n2_CTL UML_n3_CTL'
 for sw in $SWITCHES
 do
   unset $!sw

@@ -5,8 +5,8 @@ set theprompt {([a-zA-Z0-9]*):.*# }
 
 global managednets
 set managednets {ground n1 n2}
-if {[info exists env(XNET_LISTS)]} {
-    set managednets $env(XNET_LISTS)
+if {[info exists env(UNTI_NETS)]} {
+    set managednets $env(UNTI_NETS)
 }
 
 
