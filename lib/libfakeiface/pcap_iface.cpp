@@ -35,6 +35,8 @@ extern "C" {
 #include <netlink/utils.h>
 #include <netlink/ll_map.h>
 
+unsigned wlan1_is_down = 0;
+
 class pcap_iface_factory : public iface_factory {
 public:
     virtual network_interface *newnetwork_interface(const char *name,
@@ -477,6 +479,49 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
                 gather_linkinfo(&who, (struct nlmsghdr *)&fake2, (void*)&nii);
         }
 
+
+        /* this is interface wlan1, and it's not up, has no IP addresses */
+        if(wlan1_is_down)
+        {
+                struct nlmsghdr *nlh = &fake1.nlh;
+                struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
+                struct rtattr    *rtname = IFLA_RTA(ifi);
+                int    len      = 0;
+                nlh->nlmsg_type  = RTM_NEWLINK;
+                nlh->nlmsg_flags = 0;  /* not sure what to set here */
+                nlh->nlmsg_seq   = ++seq;
+                nlh->nlmsg_pid   = getpid();
+
+                ifi->ifi_index   = myindex = ++ifindex;
+                ifi->ifi_type    = ARPHRD_ETHER;
+                //ifi->ifi_family  = PF_ETHER;
+                ifi->ifi_flags   = IFF_BROADCAST;
+
+                rtname->rta_type = IFLA_IFNAME;
+                char *ifname = (char *)RTA_DATA(rtname);
+                ifname[0]='\0';
+                strncat(ifname, "wlan1", sizeof(fake1.ifnamespace));
+                rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
+
+                struct rtattr *rtmtu = RTA_NEXT(rtname, len);
+                rtmtu->rta_type = IFLA_MTU;
+                unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
+                *mtu            = 1500;
+                rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
+
+                struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
+                rtaddr->rta_type= IFLA_ADDRESS;
+                unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
+                hwaddr[0]=0x00;        hwaddr[1]=0x16;
+                hwaddr[2]=0xf0;        hwaddr[3]=0x0d;
+                hwaddr[4]=0xba;        hwaddr[5]=0xbe;
+                rtaddr->rta_len = RTA_LENGTH(6);
+
+                struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
+
+                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
+                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
+        }
 }
 
 /* used by addprefix() to change system parameters */
