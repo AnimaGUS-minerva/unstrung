@@ -1,0 +1,11 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+auto eth1
+
+iface eth0 inet6 manual
+        up modprobe ipv6; ifconfig eth0 up
+
+iface eth1 inet6 manual
+        up modprobe ipv6; ifconfig eth1 up
