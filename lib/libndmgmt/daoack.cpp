@@ -94,7 +94,7 @@ int dag_network::build_daoack(unsigned char *buff,
 
     icmp6 = (struct icmp6_hdr *)buff;
     icmp6->icmp6_type = ND_RPL_MESSAGE;
-    icmp6->icmp6_code = ND_RPL_DAO;
+    icmp6->icmp6_code = ND_RPL_DAO_ACK;
     icmp6->icmp6_cksum = 0;
 
     daoack = (struct nd_rpl_daoack *)icmp6->icmp6_data8;
@@ -131,7 +131,7 @@ void network_interface::send_daoack(rpl_node &child, dag_network &dag)
 	       this->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = dag.build_dao(icmp_body, sizeof(icmp_body));
+    unsigned int icmp_len = dag.build_daoack(icmp_body, sizeof(icmp_body));
 
     struct in6_addr dest = child.node_number();
     send_raw_icmp(&dest, icmp_body, icmp_len);
@@ -141,5 +141,6 @@ void network_interface::send_daoack(rpl_node &child, dag_network &dag)
  * Local Variables:
  * c-basic-offset:4
  * c-style: whitesmith
+ * compile-command: "make programs"
  * End:
  */
