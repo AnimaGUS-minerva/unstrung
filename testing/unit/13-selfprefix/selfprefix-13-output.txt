@@ -7,7 +7,7 @@ found[2]: lo type=loopback (active new) faked
 found[2]: lo address=::1
   invoking ip -6 route add unreachable 2001:db8:1::/48 dev lo
     would invoke cmd: ip -6 route add unreachable 2001:db8:1::/48 dev lo
-    would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 route show
 packet 1 is being processed
  wlan0: received packet from :: -> ff02::1:ff64:6423[0] hoplimit=0
 Got neighbour solicitation from ::, looking for 2001:db8:1:0:1200:ff:fe64:6423, has 0 bytes of options

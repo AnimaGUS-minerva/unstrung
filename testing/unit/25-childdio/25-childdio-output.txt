@@ -7,7 +7,7 @@ found[2]: lo type=loopback (active new) faked
 found[2]: lo address=::1
   invoking ip -6 route add unreachable 2001:db8:1::/48 dev lo
     would invoke cmd: ip -6 route add unreachable 2001:db8:1::/48 dev lo
-    would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 route show
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe66:6602
  processing dio(36)  [seq:0,instance:1,rank:65535,version:1,non-storing,dagid:FUNFUNFUN0x00 ]

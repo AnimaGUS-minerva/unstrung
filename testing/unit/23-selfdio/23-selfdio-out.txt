@@ -12,7 +12,7 @@ found[2]: lo address=::1
     would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 route show
 Scheduling dio in 2 ms
 inserting event #1 at 1073741824/3024
 Processing input file

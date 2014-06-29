@@ -14,7 +14,7 @@ iface2[1]: wlan0
     would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 route show
 Processing input file
 packet 1 is being processed
   processing dao(52)
@@ -23,4 +23,4 @@ packet 1 is being processed
 received DAO about network 2001:db8::abcd:2/128, target fe80::216:3eff:fe11:3424
   invoking ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
-    would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 route show

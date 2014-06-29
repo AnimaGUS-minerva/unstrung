@@ -14,6 +14,6 @@ add a prefix to the dn
     would invoke cmd: ip -6 addr del 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
   invoking ip -6 addr add 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:abcd:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr show
+    would invoke cmd: ip -6 route show
 sending DAO on if: wlan0(faked)
 builddao-01 tests finished

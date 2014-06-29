@@ -66,7 +66,7 @@ int network_interface::nisystem(const char *cmd)
 /* used by addprefix() to change system parameters */
 int network_interface::ni_route_show(void)
 {
-    nisystem("ip -6 addr show");
+    nisystem("ip -6 route show");
 }
 
 /* this is wrong, use netlink to set the address later on. */
