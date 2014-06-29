@@ -1,2 +1,6 @@
 This test case determines how a parent that hears it's child's DIOs
-reacts, or does not react.
+reacts when the rank is:
+       65535    - infinity      => do nothing.
+       >self    - good, ignore.
+
+

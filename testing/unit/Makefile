@@ -44,6 +44,7 @@ SUBDIRS+=21-node
 SUBDIRS+=22-queues
 SUBDIRS+=23-selfdio
 SUBDIRS+=24-daoreply
+SUBDIRS+=25-childdio
 
 
 
