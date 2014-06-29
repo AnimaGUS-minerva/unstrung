@@ -799,7 +799,12 @@ void dag_network::receive_daoack(network_interface *iface,
                                  const struct nd_rpl_daoack *daoack,
                                  unsigned char *data, int dao_len)
 {
-    /* XXX */
+    /* validate the DAOACK came from the correct parent */
+    if(!dag_parent->is_equal(from)) {
+        debug->warn("received DAOACK from non-potential parent");
+        this->mStats[PS_DAOACK_WRONG_PARENT]++;
+        return;
+    }
 }
 
 
