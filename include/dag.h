@@ -266,6 +266,7 @@ private:
 			       const time_t now);
         void seq_update(unsigned int seq);
 	void init_dag_name(void);
+        void commit_parent(void);
 
         static const char *packet_stat_names[PS_MAX+1];
 

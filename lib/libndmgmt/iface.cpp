@@ -476,6 +476,11 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
                               icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
             break;
 
+        case ND_RPL_DAO_ACK:
+            this->receive_daoack(ip6_src, ip6_dst, now,
+                                 icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
+            break;
+
         default:
             this->log_received_packet(ip6_src, ip6_dst);
             debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);

@@ -508,6 +508,10 @@ void dag_network::send_dao(void)
 
     /* need to tell our parent about how to reach us */
     dag_parentif->send_dao(*dag_parent, *this);
+
+    if(0) {
+        commit_parent();
+    }
 }
 
 /*
@@ -804,6 +808,27 @@ void dag_network::receive_daoack(network_interface *iface,
         debug->warn("received DAOACK from non-potential parent");
         this->mStats[PS_DAOACK_WRONG_PARENT]++;
         return;
+    }
+    /* having got the message back, and validated it.. commit to this parent */
+    commit_parent();
+}
+
+void dag_network::commit_parent(void)
+{
+    /*
+     * when we commit to a parent, then we send all traffic to the prefix
+     * that this parent announced towards the parent.
+     */
+
+    if(dag_bestparentif != dag_parentif ||
+       dag_bestparent   != dag_parent) {
+        /* potentially, there could have been multiple DESTINATION OPTIONS */
+        dag_parentif->add_parent_route_to_prefix(mPrefix, *dag_parent);
+
+        dag_parentif = dag_bestparentif;
+        dag_parent   = dag_bestparent;
+    } else {
+        debug->verbose("  already associated with this parent");
     }
 }
 
