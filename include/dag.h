@@ -271,8 +271,10 @@ private:
         static const char *packet_stat_names[PS_MAX+1];
 
         node_map           dag_members;      /* list of dag members, by link-layer address */
-        rpl_node          *dag_parent;       /* current parent (shared_ptr) */
+        rpl_node          *dag_parent;       /* current parent (shared_ptr XXX) */
         network_interface *dag_parentif;     /* how to get to parent, shared_ptr */
+        rpl_node          *dag_bestparent;
+        network_interface *dag_bestparentif;
 
 	/* flag that it is time to send DIO */
 	bool               mTimeToSendDio;

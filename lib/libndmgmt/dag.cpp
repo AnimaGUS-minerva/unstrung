@@ -430,7 +430,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     debug->verbose("  Yes, '%s' has best rank %u\n",
                    peer.node_name(), rank);
 
-    if(dag_parent == &peer) {
+    if(dag_bestparent == &peer || dag_parent == &peer) {
 	debug->verbose("  But it is the same parent as before: ignored\n");
         this->mStats[PS_SAME_PARENT_IGNORED]++;
 	return;
@@ -458,8 +458,8 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     mVersion      = dio->rpl_version;
     mMode         = RPL_DIO_MOP(dio->rpl_mopprf);
 
-    dag_parentif = iface;
-    dag_parent   = &peer;
+    dag_bestparentif = iface;
+    dag_bestparent   = &peer;
 
     /* now see if we have already an address on this new network */
     /*
@@ -487,7 +487,8 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
 }
 
 /*
- * send out outgoing DAO
+ * send out outgoing DAO: this also causes us to potentially commit to a parent.
+ * (XXX: hard code to wait for DAOACK)
  */
 void dag_network::send_dao(void)
 {
@@ -498,16 +499,16 @@ void dag_network::send_dao(void)
 
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
                        cnt, pm.node_name(),
-                       mDagName, dag_parent->node_name(),
-                       dag_parentif ? dag_parentif->get_if_name():"unknown");
+                       mDagName, dag_bestparent->node_name(),
+                       dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
         pi++;
         cnt++;
     }
 
-    if(dag_parent == NULL || dag_parentif ==NULL) return;
+    if(dag_bestparent == NULL || dag_bestparentif ==NULL) return;
 
     /* need to tell our parent about how to reach us */
-    dag_parentif->send_dao(*dag_parent, *this);
+    dag_bestparentif->send_dao(*dag_bestparent, *this);
 
     if(0) {
         commit_parent();
@@ -804,7 +805,7 @@ void dag_network::receive_daoack(network_interface *iface,
                                  unsigned char *data, int dao_len)
 {
     /* validate the DAOACK came from the correct parent */
-    if(!dag_parent->is_equal(from)) {
+    if(!dag_bestparent->is_equal(from)) {
         debug->warn("received DAOACK from non-potential parent");
         this->mStats[PS_DAOACK_WRONG_PARENT]++;
         return;
@@ -823,10 +824,11 @@ void dag_network::commit_parent(void)
     if(dag_bestparentif != dag_parentif ||
        dag_bestparent   != dag_parent) {
         /* potentially, there could have been multiple DESTINATION OPTIONS */
-        dag_parentif->add_parent_route_to_prefix(mPrefix, *dag_parent);
-
         dag_parentif = dag_bestparentif;
         dag_parent   = dag_bestparent;
+
+        dag_parentif->add_parent_route_to_prefix(mPrefix, *dag_parent);
+
     } else {
         debug->verbose("  already associated with this parent");
     }
