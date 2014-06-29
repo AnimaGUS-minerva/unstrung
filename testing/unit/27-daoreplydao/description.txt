@@ -1,0 +1,8 @@
+This test case validates a node intermediate in the mesh will
+reply accurately to a DAO from a lower node, putting appropriate
+route entries, and then sending up a DAO to the parent.
+QUESTION: do we wait for the DAOACK from the parent before sending
+our DAOACKs?
+
+
+
