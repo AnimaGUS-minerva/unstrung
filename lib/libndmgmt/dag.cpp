@@ -790,7 +790,7 @@ void dag_network::receive_dao(network_interface *iface,
 
     /* now send a DAO-ACK back this the node, if asked to. */
     if(RPL_DAO_K(dao->rpl_flags)) {
-
+        iface->send_daoack(*peer, *this);
     }
 
     /* increment stat of number of packets processed */
