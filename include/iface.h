@@ -43,7 +43,6 @@ public:
 
     int announce_network();
     network_interface();
-    network_interface(int fd);
     network_interface(const char *if_name, rpl_debug *deb);
 
     // setup the object, open sockets, etc.
