@@ -544,18 +544,21 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
 	}
 
         int pcap_link = pcap_datalink(ppol);
-	pcap_t *pout = pcap_open_dead(pcap_link, 65535);
-	if(!pout) {
-	    debug->error("can not create pcap_open_deads\n");
+        pcap_dumper_t *out = NULL;
+        if(outfile) {
+            pcap_t *pout = pcap_open_dead(pcap_link, 65535);
+            if(!pout) {
+                debug->error("can not create pcap_open_deads\n");
 		exit(1);
-	}
+            }
 
-	pcap_dumper_t *out = pcap_dump_open(pout, outfile);
+            out = pcap_dump_open(pout, outfile);
 
-	if(!out) {
-	    debug->error("can not open output %s\n", outfile);
-	    exit(1);
-	}
+            if(!out) {
+                debug->error("can not open output %s\n", outfile);
+                exit(1);
+            }
+        }
 
         ndproc = (pcap_network_interface *)find_by_name(ifname);
         ndproc->set_link_encap(pcap_link);
