@@ -9,10 +9,12 @@ PROCESSING ../INPUTS/plainnd.pcap
 packet 1 is being processed
  wlan0: received packet from :: -> ff02::1:ff66:6602[0] hoplimit=0
 Got neighbour solicitation from ::, looking for fe80::1000:ff:fe66:6602, has 0 bytes of options
+
 packet 2 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:6602 -> ff02::2[0] hoplimit=0
 Got router solicitation from fe80::1000:ff:fe66:6602 with 8 bytes of options
     option 1[8] source-linkaddr 
+
 packet 3 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
 Got router advertisement from fe80::1000:ff:fe64:6423 
@@ -20,9 +22,11 @@ Got router advertisement from fe80::1000:ff:fe64:6423
 	with 40 bytes of options
     option 3[32] prefix 2001:db8::/64 (valid=9250560s, preferred=2151287040s) flags=onlink auto 
     option 1[8] source-linkaddr 
+
 packet 4 is being processed
  wlan0: received packet from :: -> ff02::1:ff66:6602[0] hoplimit=0
 Got neighbour solicitation from ::, looking for 2001:db8::1000:ff:fe66:6602, has 0 bytes of options
+
 packet 5 is not ICMPv6, but=proto:0
 packet 6 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
@@ -31,6 +35,7 @@ Got router advertisement from fe80::1000:ff:fe64:6423
 	with 40 bytes of options
     option 3[32] prefix 2001:db8::/64 (valid=9250560s, preferred=2151287040s) flags=onlink auto 
     option 1[8] source-linkaddr 
+
 packet 7 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
 Got router advertisement from fe80::1000:ff:fe64:6423 
@@ -38,6 +43,7 @@ Got router advertisement from fe80::1000:ff:fe64:6423
 	with 40 bytes of options
     option 3[32] prefix 2001:db8::/64 (valid=9250560s, preferred=2151287040s) flags=onlink auto 
     option 1[8] source-linkaddr 
+
 packet 8 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
 Got router advertisement from fe80::1000:ff:fe64:6423 
@@ -45,6 +51,7 @@ Got router advertisement from fe80::1000:ff:fe64:6423
 	with 40 bytes of options
     option 3[32] prefix 2001:db8::/64 (valid=9250560s, preferred=2151287040s) flags=onlink auto 
     option 1[8] source-linkaddr 
+
 packet 9 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
 Got router advertisement from fe80::1000:ff:fe64:6423 
@@ -52,6 +59,7 @@ Got router advertisement from fe80::1000:ff:fe64:6423
 	with 40 bytes of options
     option 3[32] prefix 2001:db8::/64 (valid=9250560s, preferred=2151287040s) flags=onlink auto 
     option 1[8] source-linkaddr 
+
 packet 10 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
 Got router advertisement from fe80::1000:ff:fe64:6423 

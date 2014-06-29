@@ -667,7 +667,8 @@ void dag_network::receive_dio(network_interface *iface,
         return;
     }
 
-    debug->info(" processing dio(%u) ",dio_len);  /* \n will be below */
+    iface->log_received_packet(from, ip6_to);
+    debug->info(" processing dio(%u) ",dio_len);
     dump_dio(debug, dio);
 
 

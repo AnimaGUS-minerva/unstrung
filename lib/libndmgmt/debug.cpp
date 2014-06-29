@@ -23,14 +23,26 @@ extern "C" {
 
 #include "debug.h"
 
+bool needslf=false;
+
 void rpl_debug::logv_more(const char *fmt, va_list vargs)
 {
     if(file == NULL) return;
     vfprintf(file, fmt, vargs);
+    int len = strlen(fmt);
+    if(len > 1 && fmt[len-1]=='\n') {
+        needslf=false;
+    } else {
+        needslf=true;
+    }
 }
 
 void rpl_debug::logv(const char *fmt, va_list vargs)
 {
+    if(needslf) {
+        /* terminate previous line */
+        fputc('\n', file);
+    }
     if(file == NULL) return;
     if(want_time_log) {
         struct timeval tv1;
@@ -44,10 +56,6 @@ void rpl_debug::logv(const char *fmt, va_list vargs)
         fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
     }
     logv_more(fmt, vargs);
-    int len = strlen(fmt);
-    if(len > 1 && fmt[len-1]!='\n') {
-        fputc('\n', file);
-    }
 }
 
 void rpl_debug::log(const char *fmt, ...)

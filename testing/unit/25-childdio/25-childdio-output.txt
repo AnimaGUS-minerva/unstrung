@@ -10,8 +10,8 @@ found[2]: lo address=::1
     would invoke cmd: ip -6 route show
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe66:6602
- processing dio(36) 
- [seq:0,instance:1,rank:65535,version:1,non-storing,dagid:FUNFUNFUN0x00 ]
+ wlan0: received packet from fe80::1000:ff:fe66:6602 -> ff02::1a[0] hoplimit=0
+ processing dio(36)  [seq:0,instance:1,rank:65535,version:1,non-storing,dagid:FUNFUNFUN0x00 ]
   does peer 'fe80::1000:ff:fe66:6602' have better rank? (65535 < 1)
 iface1[1]: wlan0
 iface2[1]: wlan0

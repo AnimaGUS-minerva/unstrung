@@ -8,8 +8,8 @@ found[2]: lo address=::1
 Processing input file ../INPUTS/dio-A-ripple.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
- processing dio(44) 
- [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
+ wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
+ processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
@@ -24,8 +24,8 @@ inserting event #1 at 1073741829/2024
 Scheduling dao in 5002 ms
 inserting event #2 at 1073741829/3024
 packet 2 is being processed
- processing dio(44) 
- [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
+ wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[0] hoplimit=0
+ processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 1)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
   But it is the same parent as before: ignored
@@ -48,10 +48,12 @@ packet 3 is being processed
 packet 4 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[0] hoplimit=0
 Got neighbor advertisement from fe80::1000:ff:fe64:6423 (flags=solicited ), advertising: fe80::1000:ff:fe64:6423, has 0 bytes of options
+
 packet 5 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[0] hoplimit=0
 Got neighbour solicitation from fe80::1000:ff:fe64:6423, looking for fe80::1000:ff:fe66:6602, has 8 bytes of options
     option 1[8] source-linkaddr 
+
 packet 6 is being processed
   processing daoack(20)
  [instance:1,daoseq:1,dagid:ripple0x00 ]
