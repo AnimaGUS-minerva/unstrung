@@ -134,7 +134,7 @@ int dag_network::build_dao(unsigned char *buff,
 
     dao->rpl_instanceid = mInstanceid;
     dao->rpl_flags = 0;
-    dao->rpl_flags |= RPL_DAO_D_MASK;
+    dao->rpl_flags |= RPL_DAO_D_MASK|RPL_DAO_K_MASK;
 
     dao->rpl_daoseq     = mSequence;
 
@@ -191,5 +191,6 @@ void network_interface::send_dao(rpl_node &parent, dag_network &dag)
  * Local Variables:
  * c-basic-offset:4
  * c-style: whitesmith
+ * compile-command: "make programs"
  * End:
  */
