@@ -21,8 +21,8 @@ int main(int argc, char *argv[])
 
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6602", &iface_src2);
 
-        const char *pcapin = "../INPUTS/dio-A-ripple.pcap";
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin, "../OUTPUTS/24-node-E-out.pcap", deb);
+        const char *pcapin1 = "../INPUTS/dio-A-ripple.pcap";
+        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin1, "../OUTPUTS/24-node-E-out.pcap", deb);
 
 	struct timeval n;
 	n.tv_sec = 1024*1024*1024;
@@ -37,16 +37,27 @@ int main(int argc, char *argv[])
         dag->set_debug(deb);
 
         printf("Processing input file %s on if=[%u]: %s state: %s %s\n",
-               pcapin,
+               pcapin1,
                iface->get_if_index(), iface->get_if_name(),
                iface->is_active() ? "active" : "inactive",
                iface->faked() ? " faked" : "");
         iface->process_pcap();
 
-        /* mark system as going on */
-        network_interface::terminating();
-
         /* now drain off any created events */
+        network_interface::terminating();
+        while(network_interface::force_next_event());
+
+        const char *pcapin2 = "../INPUTS/daoack-A-ripple.pcap";
+        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin2, NULL, deb);
+        printf("Processing input file %s on if=[%u]: %s state: %s %s\n",
+               pcapin2,
+               iface->get_if_index(), iface->get_if_name(),
+               iface->is_active() ? "active" : "inactive",
+               iface->faked() ? " faked" : "");
+        iface->process_pcap();
+
+        /* again, drain off any events */
+        network_interface::terminating();
         while(network_interface::force_next_event());
 
 	exit(0);
