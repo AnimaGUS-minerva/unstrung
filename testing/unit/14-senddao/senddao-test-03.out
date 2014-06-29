@@ -1,6 +1,6 @@
 Using faked interfaces
-  adding ifindex: 1
-  adding ifindex: 2
+  found interface wlan0[1]
+  found interface lo[2]
 Must specify pcap outfile (-O)
 Usage: senddao [--prefix prefix] [--sequence #]
                [--instance #] [--ack-request] 
