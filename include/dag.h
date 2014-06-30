@@ -102,7 +102,7 @@ public:
             return dag_prefixes.size();
         };
 	void maybe_send_dao(void);
-	void maybe_send_dio(void);
+	void maybe_schedule_dio(void);
         void potentially_lower_rank(rpl_node &peer,
                                     network_interface *iface,
                                     const struct nd_rpl_dio *dio, int dio_len);
@@ -213,6 +213,7 @@ public:
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
         prefix_map         dag_prefixes;     /* list of addresses, by prefix in this dag */
+        bool               dao_needed;
         prefix_node       *dag_me;           /* my identity in this dag (/128) */
 
 	int build_prefix_dioopt(ip_subnet prefix);
@@ -276,8 +277,9 @@ private:
         node_map           dag_members;      /* list of dag members, by link-layer address */
         rpl_node          *dag_parent;       /* current parent (shared_ptr XXX) */
         network_interface *dag_parentif;     /* how to get to parent, shared_ptr */
-        rpl_node          *dag_bestparent;
-        network_interface *dag_bestparentif;
+        rpl_node          *dag_lastparent;   /* previous parent */
+        rpl_node          *dag_bestparent;   /* running best parent */
+        network_interface *dag_bestparentif; /* interface for best parent */
 
 	/* flag that it is time to send DIO */
 	bool               mTimeToSendDio;

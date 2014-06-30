@@ -17,7 +17,7 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
-Scheduling dao in 52 ms
+Scheduling dao in 2 ms
 inserting event #1 at 1073741824/53024
 Events created for file 1
 event list (1 events)
@@ -27,17 +27,17 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-re-inserting event #1 repeat: 0/52
+re-inserting event #1 repeat: 0/2
 event list (1 events)
-0: event#1(T1) at (2004-January-10 01:37:05 PM)<1073741825:53024>, type: send_dao
+0: event#1(T1) at (2004-January-10 01:37:05 PM)<1073741825:3024>, type: send_dao
 Forcing event2 created for file 1
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-re-inserting event #1 repeat: 0/52
+re-inserting event #1 repeat: 0/2
 event list (1 events)
-0: event#1(T1) at (2004-January-10 01:37:06 PM)<1073741826:53024>, type: send_dao
+0: event#1(T1) at (2004-January-10 01:37:06 PM)<1073741826:3024>, type: send_dao
 
 Processing input file 2
 packet 2 is being processed

@@ -318,13 +318,10 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
 /* here we mark that a DAO is needed soon */
 void dag_network::maybe_send_dao(void)
 {
-    mTimeToSendDao=true;
-}
-
-/* here we mark that a DIO is needed soon */
-void dag_network::maybe_send_dio(void)
-{
-    mTimeToSendDio=true;
+    if(dao_needed) {
+        schedule_dao();
+        dao_needed = false;
+    }
 }
 
 void dag_network::add_childnode(rpl_node announcing_peer,
@@ -334,6 +331,7 @@ void dag_network::add_childnode(rpl_node announcing_peer,
     prefix_node &pre = this->dag_children[prefix];
 
     if(!pre.is_installed()) {
+        dao_needed = true;
         pre.set_debug(this->debug);
         pre.set_announcer(&announcing_peer);
         maybe_send_dao();
@@ -347,6 +345,7 @@ void dag_network::add_prefix(rpl_node advertising_peer,
     prefix_node &pre = this->dag_prefixes[prefix];
 
     if(!pre.is_installed()) {
+        dao_needed = true;
         this->set_prefix(prefix);
         pre.set_prefix(prefix);
         pre.set_debug(this->debug);
@@ -356,7 +355,7 @@ void dag_network::add_prefix(rpl_node advertising_peer,
             dag_me = &pre;
         }
 
-        maybe_send_dio();
+        maybe_schedule_dio();
     }
 }
 
@@ -378,6 +377,7 @@ void dag_network::addselfprefix(network_interface *iface)
     prefix_node &pre = this->dag_prefixes[mPrefix];
 
     if(!pre.is_installed()) {
+        dao_needed = true;
         pre.set_prefix(mPrefix);
         pre.set_debug(this->debug);
         pre.set_announcer(me);
@@ -477,9 +477,9 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     /* now schedule sending out packets */
     if(dag_parent) {
         /* can only send DIOs once we are sure about our parent! */
-        schedule_dio();
+        maybe_schedule_dio();
     }
-    schedule_dao();
+    maybe_send_dao();
 }
 
 /*
@@ -523,9 +523,18 @@ void dag_network::send_dao(void)
 }
 
 /*
- * this routine needs to send out a DIO sooner than
- * we would otherwise.
+ * this routine determines the need for sending out
+ * a DIO sooner than we would otherwise.
  */
+void dag_network::maybe_schedule_dio(void)
+{
+    /* the list of things that could change needs to be tracked */
+    if(dag_lastparent != dag_parent) {
+        schedule_dio(mInterval_msec);
+        dag_lastparent = dag_parent;
+    }
+}
+
 void dag_network::schedule_dio(void)
 {
     schedule_dio(mInterval_msec);
@@ -558,10 +567,10 @@ void dag_network::schedule_dio(unsigned int msec)
  */
 void dag_network::schedule_dao(void)
 {
-    debug->verbose("Scheduling dao in %u ms\n", mInterval_msec+2);
+    debug->verbose("Scheduling dao in %u ms\n", 2);
 
     if(!mSendDaoEvent) {
-	mSendDaoEvent = new rpl_event(0, mInterval_msec+2, rpl_event::rpl_send_dao,
+	mSendDaoEvent = new rpl_event(0, 2, rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
     }
 
@@ -835,6 +844,8 @@ void dag_network::commit_parent(void)
     if(dag_bestparentif != dag_parentif ||
        dag_bestparent   != dag_parent) {
         /* potentially, there could have been multiple DESTINATION OPTIONS */
+
+        dag_lastparent=dag_parent;
         dag_parentif = dag_bestparentif;
         dag_parent   = dag_bestparent;
 
@@ -844,7 +855,7 @@ void dag_network::commit_parent(void)
                                                  *dag_parent);
 
         /* now send a DIO */
-        schedule_dio(1);
+        maybe_schedule_dio();
     } else {
         debug->verbose("  already associated with this parent\n");
     }

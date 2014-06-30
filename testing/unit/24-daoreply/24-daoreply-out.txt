@@ -17,7 +17,7 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
-Scheduling dao in 5002 ms
+Scheduling dao in 2 ms
 inserting event #1 at 1073741829/3024
 packet 2 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
@@ -35,8 +35,8 @@ packet 3 is being processed
   invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
-Scheduling dio in 2 ms
-inserting event #2 at 1073741824/3024
+Scheduling dio in 5001 ms
+inserting event #2 at 1073741829/2024
 packet 4 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[1] hoplimit=0
 Got neighbor advertisement from fe80::1000:ff:fe64:6423 (flags=solicited ), advertising: fe80::1000:ff:fe64:6423, has 0 bytes of options
