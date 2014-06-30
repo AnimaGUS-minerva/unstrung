@@ -17,8 +17,8 @@ ${TESTNAME}: ${TESTNAME}.cpp ${LIBNDMGMT} ${INCLUDES}
 	${CXX} ${CXXFLAGS} -o ${TESTNAME} ${TESTNAME}.cpp ${LDFLAGS}
 
 check::	${TESTNAME}
-	./${TESTNAME} | tee ../OUTPUTS/${OUTPUT}-out.txt | diff - ${OUTPUT}-out.txt
-	@tcpdump -t -n -r ../OUTPUTS/27-${OUTPUT1}.pcap | tee ../OUTPUTS/${OUTPUT1}.txt | diff - ${OUTPUT1}.txt
+	./${TESTNAME} | tee ../OUTPUTS/${OUTPUT}-out.txt | diff -B -w - ${OUTPUT}-out.txt
+	@tcpdump -t -n -r ../OUTPUTS/27-${OUTPUT1}.pcap | tee ../OUTPUTS/${OUTPUT1}.txt | diff -B -w - ${OUTPUT1}.txt
 
 checkprograms:: ${TESTNAME}
 programs::
