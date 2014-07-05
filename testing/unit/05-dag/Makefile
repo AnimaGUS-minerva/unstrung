@@ -11,7 +11,7 @@ dag-05: dag-05.cpp ${INC}/iface.h ${INC}/dag.h ${LIBS}
 check::	dag-05
 	./dag-05
 
-unitcheck checkprograms:: dag-02
+unitcheck checkprograms:: dag-05
 programs::
 
 clean::
