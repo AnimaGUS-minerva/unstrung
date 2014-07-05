@@ -3,7 +3,7 @@
 default:: programs
 
 # stuff.
-INC=${PANDORA_SRCDIR}/include
+INC=${PANDORA_SRCDIR}/include -I${PANDORA_SRCDIR}/../tcpdump-4.6.0
 CROSSFLAGS=-m32
 CFLAGS+=-I${INC}
 CXXFLAGS+=-I${INC}
