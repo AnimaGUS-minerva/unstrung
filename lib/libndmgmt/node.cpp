@@ -19,6 +19,8 @@ extern "C" {
 };
 
 #include "node.h"
+#include "iface.h"
+#include "dag.h"
 
 rpl_node::rpl_node(const char *ipv6) {
     valid = false;
@@ -34,7 +36,7 @@ void rpl_node::set_addr(const char *ipv6) {
 }
 
 rpl_node::rpl_node(const char *ipv6,
-                   const dag_network *dn, rpl_debug *deb) {
+                   dag_network *dn, rpl_debug *deb) {
     set_addr(ipv6);
     set_dag(dn, deb);
 }
@@ -51,7 +53,7 @@ rpl_node::rpl_node(const struct in6_addr v6) {
     self  = false;
 }
 rpl_node::rpl_node(const struct in6_addr v6,
-                   const dag_network *dn, rpl_debug *deb) {
+                   dag_network *dn, rpl_debug *deb) {
     set_addr(v6);
     set_dag(dn, deb);
 }
@@ -78,7 +80,7 @@ const char *rpl_node::node_name() {
     }
 };
 
-void rpl_node::set_dag(const dag_network *dn,
+void rpl_node::set_dag(dag_network *dn,
                        rpl_debug *deb)
 {
     if(dn)  mDN = dn;
@@ -99,7 +101,7 @@ void rpl_node::couldBeValid(void)
 }
 
 void rpl_node::makevalid(const struct in6_addr v6,
-                         const dag_network *dn,
+                         dag_network *dn,
                          rpl_debug *deb)
 {
     if(!valid) {
@@ -108,6 +110,20 @@ void rpl_node::makevalid(const struct in6_addr v6,
         mDN    = dn;
         this->debug  = deb;
         couldBeValid();
+    }
+}
+
+
+void rpl_node::add_route_via_node(ip_subnet &prefix, network_interface *iface)
+{
+    // dao_needed = true;
+
+    if(!routed) {
+        assert(mDN->dag_me != NULL);
+        iface->add_route_to_node(prefix, this,
+                                 mDN->dag_me->prefix_number().addr);
+        routed = true;
+        mDN->set_dao_needed();
     }
 }
 

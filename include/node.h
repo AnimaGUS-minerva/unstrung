@@ -14,6 +14,7 @@ extern "C" {
 #include "debug.h"
 
 class dag_network;
+class network_interface;
 class rpl_less;
 class rpl_node {
         friend class rpl_less;
@@ -21,10 +22,10 @@ public:
         rpl_node() { valid = false; name[0]='\0'; self = false; };
         rpl_node(const char *ipv6);
         rpl_node(const char *ipv6,
-                 const dag_network *dn, rpl_debug *deb);
+                 dag_network *dn, rpl_debug *deb);
         rpl_node(const struct in6_addr v6);
         rpl_node(const struct in6_addr v6,
-                 const dag_network *dn, rpl_debug *deb);
+                 dag_network *dn, rpl_debug *deb);
         bool validP() { return valid; };
 
         void   set_last_seen(time_t clock) { lastseen = clock; };
@@ -40,8 +41,8 @@ public:
         struct in6_addr& node_number() { return nodeip.u.v6.sin6_addr; };
         ip_address &node_address() { return nodeip; };
         void  makevalid(const struct in6_addr v6,
-                        const dag_network *dn, rpl_debug *deb);
-        void  set_dag(const dag_network *dn, rpl_debug *deb);
+                        dag_network *dn, rpl_debug *deb);
+        void  set_dag(dag_network *dn, rpl_debug *deb);
         rpl_debug *debug;
         void  markself(int index) {
             this->self = true;
@@ -53,16 +54,19 @@ public:
             return (memcmp(nodeip.u.v6.sin6_addr.s6_addr, v6.s6_addr, 16)==0);
         };
 
+        void add_route_via_node(ip_subnet &prefix, network_interface *iface);
+
 protected:
 	ip_address nodeip;
 
 private:
         bool       valid;
+        bool       routed;
         bool       self;
         int        ifindex;
         time_t     lastseen;
         char       name[INET6_ADDRSTRLEN+10];
-        const dag_network *mDN;          /* should be shared_ptr */
+        dag_network *mDN;          /* should be shared_ptr */
         void       couldBeValid(void);
         void       calc_name(void);
 };

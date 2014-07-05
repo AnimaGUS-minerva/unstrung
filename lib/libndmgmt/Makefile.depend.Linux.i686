@@ -118,7 +118,16 @@ netlink.o: netlink.cpp \
 node.o: node.cpp ../../include/node.h \
  ../../include/pathnames.h \
  ../../include/oswlibs.h \
- ../../include/debug.h
+ ../../include/debug.h \
+ ../../include/iface.h \
+ ../../include/rpl.h \
+ ../../include/unstrung.h \
+ ../../include/prefix.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/counter_names.h \
+ ../../include/dag.h
 peers.o: peers.cpp
 prefix.o: prefix.cpp ../../include/oswlibs.h \
  ../../include/dag.h \

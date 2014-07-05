@@ -214,6 +214,7 @@ public:
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
         prefix_map         dag_prefixes;     /* list of addresses, by prefix in this dag */
         bool               dao_needed;
+        void               set_dao_needed() { dao_needed = true; };
         prefix_node       *dag_me;           /* my identity in this dag (/128) */
 
 	int build_prefix_dioopt(ip_subnet prefix);

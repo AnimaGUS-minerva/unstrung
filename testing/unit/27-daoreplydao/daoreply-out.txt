@@ -44,7 +44,7 @@ Got neighbor advertisement from fe80::1000:ff:fe64:6423 (flags=solicited ), adve
 packet 5 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[1] hoplimit=0
 Got neighbour solicitation from fe80::1000:ff:fe64:6423, looking for fe80::1000:ff:fe66:6602, has 8 bytes of options
-    option 1[8] source-linkaddr 
+    option 1[8] source-linkaddr
 
 packet 6 is being processed
   processing daoack(20) [instance:1,daoseq:1,dagid:ripple0x00 ]
@@ -66,8 +66,11 @@ sending DAOACK on if: wlan0(faked)
 packet 8 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:4a01 -> fe80::1000:ff:fe66:6601[1] hoplimit=0
 Got neighbour solicitation from fe80::1000:ff:fe66:4a01, looking for fe80::1000:ff:fe66:6601, has 8 bytes of options
-    option 1[8] source-linkaddr 
+    option 1[8] source-linkaddr
 
 packet 9 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:4a01 -> fe80::1000:ff:fe66:6601[1] hoplimit=0
 Got neighbor advertisement from fe80::1000:ff:fe66:4a01 (flags=solicited ), advertising: fe80::1000:ff:fe66:4a01, has 0 bytes of options
+SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+SENDING[0] dao about 2001:db8:1:0:1200:ff:fe66:4a01/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+sending DAO on if: wlan0(faked)

@@ -611,6 +611,7 @@ rpl_node *dag_network::update_child(network_interface *iface,
     return update_node(iface, from, ip6_to, now);
 }
 
+/* called when */
 rpl_node *dag_network::update_node(network_interface *iface,
                                    struct in6_addr from,
                                    struct in6_addr ip6_to,
@@ -800,12 +801,14 @@ void dag_network::receive_dao(network_interface *iface,
 
         subnettot(&prefix, 0, addrfound, sizeof(addrfound));
 
+
+        /* need to look at dag_members, and see if the child node already
+         * exists, and add if not
+         */
         debug->verbose("received DAO about network %s, target %s\n", addrfound,
                        peer->node_name());
 
-        assert(dag_me != NULL);
-	iface->add_route_to_node(prefix, peer,
-                                 dag_me->prefix_number().addr);
+        peer->add_route_via_node(prefix, iface);
     }
 
     /* now send a DAO-ACK back this the node, if asked to. */
