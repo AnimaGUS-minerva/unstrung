@@ -1,0 +1,4 @@
+This exercises the senddao program in order to generate an appropriate DAOACK
+message.  These messages travel from parent to child to acknowledge/accept
+the child node as a child of the parent.
+

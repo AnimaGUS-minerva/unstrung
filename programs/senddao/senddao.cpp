@@ -32,10 +32,11 @@ extern "C" {
 
 static void usage(void)
 {
-        fprintf(stderr, "Usage: senddao [--prefix prefix] [--sequence #]\n");
-        fprintf(stderr, "               [--instance #] [--ack-request] \n");
+        fprintf(stderr, "Usage: senddao [--sequence #] [--instance #] [--ack-request] \n");
         fprintf(stderr, "               [--dagid hexstring]\n");
         fprintf(stderr, "               [--daoack]\n");
+        fprintf(stderr, "               [--dest target] [--prefix prefix]\n");
+        fprintf(stderr, "               [--target prefix...]\n");
         fprintf(stderr, "               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]\n");
 
         exit(2);
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
     FILE *datafile;
     char *outfile     = NULL;
     char *prefixvalue = NULL;
+    char *targetaddr  = NULL;
     unsigned char icmp_body[2048];
     unsigned int  icmp_len = 0;
     unsigned int verbose=0;
@@ -89,10 +91,13 @@ int main(int argc, char *argv[])
         {"fake",     0, NULL, 'T'},
         {"testing",  0, NULL, 'T'},
         {"prefix",   1, NULL, 'p'},
+        {"target",   1, NULL, 'a'},
         {"sequence", 1, NULL, 'S'},
         {"instance", 1, NULL, 'I'},
         {"dagid",    1, NULL, 'G'},
         {"daoack",   0, NULL, 'K'},
+        {"datafile", 1, NULL, 'd'},
+        {"dest",     1, NULL, 't'},
         {"ack-request",0,NULL,'A'},
         {"iface",    1, NULL, 'i'},
         {"outpcap",  1, NULL, 'O'},
@@ -103,12 +108,14 @@ int main(int argc, char *argv[])
     class network_interface *iface = NULL;
     class dag_network       *dn = NULL;
     class pcap_network_interface *piface = NULL;
+    struct in6_addr target, *dest = NULL;
+    rpl_node *destnode = NULL;
     bool initted = false;
     bool ackreq  = false;
     bool daoack  = false;
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    while((c=getopt_long(argc, argv, "AD:G:I:KO:R:S:Td:i:h?p:v", longoptions, NULL))!=EOF){
+    while((c=getopt_long(argc, argv, "AD:G:I:KO:R:S:Ta:d:i:h?p:t:v", longoptions, NULL))!=EOF){
         switch(c) {
         case 'A':
             ackreq=true;  /* XXX todo */
@@ -197,8 +204,42 @@ int main(int argc, char *argv[])
             dn->set_instanceid(atoi(optarg));
             break;
 
+        case 'a':
+            {
+                char *targetvalue = optarg;
+                ip_subnet targetaddr;
+                err_t e = ttosubnet(targetvalue, strlen(targetvalue),
+                                    AF_INET6, &targetaddr);
+                check_dag(dn);
+                if(!dest) {
+                    fprintf(stderr, "destination must be set before target addresses\n");
+                    usage();
+                }
+                dn->add_childnode(*destnode, iface, targetaddr);
+            }
+            break;
+
         case 'p':
             prefixvalue = optarg;
+            {
+                ip_subnet prefix;
+                err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
+                                    AF_INET6, &prefix);
+                if(e!=NULL) {
+                    fprintf(stderr, "Invalid prefix: %s\n",prefixvalue);
+                }
+                check_dag(dn);
+                dn->set_prefix(prefix);
+            }
+            break;
+
+        case 't':
+            if(inet_pton(AF_INET6, optarg, &target)!=1) {
+                fprintf(stderr, "Invalid ipv6 address: %s\n", optarg);
+                usage();
+            }
+            dest = &target;
+            destnode = new rpl_node(target, dn, deb);
             break;
 
         case 'v':
@@ -214,19 +255,16 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(prefixvalue) {
-        ip_subnet prefix;
-
-        err_t e = ttosubnet(prefixvalue, strlen(prefixvalue),
-                            AF_INET6, &prefix);
-
-	dn->set_prefix(prefix);
-
-        if(daoack) {
-            icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body));
-        } else {
-            icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));
-        }
+    if(datafilename!=NULL && icmp_len > 0) {
+        /* nothing for now */
+    } else if(daoack) {
+        icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body));
+    } else if(prefixvalue) {
+        fprintf(stderr, "building DAO\n");
+        icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));
+    } else {
+        fprintf(stderr, "either a prefix is needed to send a DAO, or --daoack\n");
+        usage();
     }
 
     if(icmp_len == 0) {
@@ -247,9 +285,9 @@ int main(int argc, char *argv[])
 
     if(iface != NULL && icmp_len > 0) {
         if(piface != NULL) {
-            piface->send_raw_icmp(NULL,icmp_body, icmp_len);
+            piface->send_raw_icmp(dest, icmp_body, icmp_len);
         } else {
-            iface->send_raw_icmp(NULL,icmp_body, icmp_len);
+            iface->send_raw_icmp(dest, icmp_body, icmp_len);
         }
     }
 

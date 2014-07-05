@@ -329,13 +329,21 @@ void dag_network::add_childnode(rpl_node announcing_peer,
                                   ip_subnet prefix)
 {
     prefix_node &pre = this->dag_children[prefix];
+    char b1[256];
+    subnettot(&prefix, 0, b1, 256);
 
     if(!pre.is_installed()) {
         dao_needed = true;
         pre.set_debug(this->debug);
+        pre.set_prefix(prefix);
         pre.set_announcer(&announcing_peer);
         maybe_send_dao();
     }
+#if 0
+    debug->verbose("added child node %s/%s from %s\n",
+                   b1, pre.node_name(),
+                   announcing_peer.node_name());
+#endif
 }
 
 void dag_network::add_prefix(rpl_node advertising_peer,
@@ -367,6 +375,8 @@ void dag_network::add_prefix(rpl_node advertising_peer,
  * There is another case where a DAO is going to be emitted out
  * an interface different than where the DIO received was, and that
  * case is not yet dealt with here.
+ *
+ * This is also used by senddao to initialize self.
  */
 void dag_network::addselfprefix(network_interface *iface)
 {
@@ -787,6 +797,7 @@ void dag_network::receive_dao(network_interface *iface,
 
     /* look for the suboptions, process them */
     rpl_dao decoded_dao(data, dao_payload_len);
+    unsigned int addrcount = 0;
 
     struct rpl_dao_target *rpltarget;
     while((rpltarget = decoded_dao.rpltarget()) != NULL) {
@@ -798,6 +809,8 @@ void dag_network::receive_dao(network_interface *iface,
         memset(v6bytes, 0, 16);
         memcpy(v6bytes, rpltarget->rpl_dao_prefix, prefixbytes);
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
+
+        addrcount++;
 
         subnettot(&prefix, 0, addrfound, sizeof(addrfound));
 
@@ -811,8 +824,10 @@ void dag_network::receive_dao(network_interface *iface,
         peer->add_route_via_node(prefix, iface);
     }
 
-    /* now send a DAO-ACK back this the node, if asked to. */
+    /* now send a DAO-ACK back this the node, using the interface it arrived on, if asked to. */
     if(RPL_DAO_K(dao->rpl_flags)) {
+        debug->verbose("sending DAOACK about %u networks, to %s\n",
+                       addrcount, peer->node_name());
         iface->send_daoack(*peer, *this);
     }
 

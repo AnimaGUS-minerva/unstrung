@@ -4,8 +4,8 @@ compiler:
   - g++
 
 before_install:
-  - "echo sudo dpkg --add-architecture i386"
-  - "echo sudo apt-get update"
+  - "sudo dpkg --add-architecture i386"
+  - "sudo apt-get update"
 
 install:
   - "sudo apt-get install gcc-multilib g++-multilib tcpdump"

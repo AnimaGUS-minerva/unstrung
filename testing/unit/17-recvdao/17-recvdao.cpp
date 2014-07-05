@@ -17,18 +17,14 @@ int main(int argc, char *argv[])
         /* now finish setting things up with netlink */
         pcap_network_interface::scan_devices(deb, false);
 
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dao2.pcap", "/dev/null", deb);
+        iface = pcap_network_interface::setup_infile_outfile("wlan0",
+                                                             "../INPUTS/dao2.pcap",
+                                                             "../OUTPUTS/17-node-A-out.pcap",
+                                                             deb);
         iface->set_debug(deb);
         iface->set_if_index(1);
         iface->set_if_addr(iface_src2);
-
-        iface2 = (pcap_network_interface *)network_interface::find_by_name("wlan0");
-        if(!iface2) {
-                printf("Did not find if: wlan0\n");
-                exit(10);
-        }
         printf("iface1[%d]: %s\n", iface->get_if_index(), iface->get_if_name());
-        printf("iface2[%d]: %s\n", iface2->get_if_index(), iface2->get_if_name());
 
         const char *prefixstr = "2001:db8:1::/48";
         ip_subnet prefix;

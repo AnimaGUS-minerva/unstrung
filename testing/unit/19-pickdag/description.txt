@@ -1,6 +1,6 @@
-This test case receives two DAO messages: one for a DAGID that
+This test case receives two DIO messages: one for a DAGID that
      is interesting, and another for a DAGID that is not interesting.
-     
+
 The interesting DAGID will result in a DIO being scheduled, as well
     as a DAO being scheduled.
 
