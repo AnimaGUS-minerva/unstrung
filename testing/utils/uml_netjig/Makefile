@@ -30,8 +30,8 @@ OPTIONS=-DARP_PROCESS -DTUNTAP
 #
 # cvs -d :pserver:tcpdump@cvs.tcpdump.org:/tcpdump/master checkout -rmcr_dissect -dnetdissect_tcpdump
 #
-NETDISSECTH=-DNETDISSECT -I/corp/projects/Misc/tcpdump/tcpdump
-NETDISSECTLIB=-L/corp/projects/Misc/tcpdump/tcpdump -lnetdissect
+NETDISSECTH=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
+NETDISSECTLIB=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0 -lnetdissect
 
 # to decode ESP packets (with netdissect), you need crypto, which you can
 # get from ssl.

@@ -228,7 +228,7 @@ void cleanup_njstate(struct netjig_state *ns)
 static void
 netjig_default_print(netdissect_options *ndo, const u_char *bp, u_int length)
 {
-  hex_and_ascii_print("\n\t", bp, length); /* pass on lf and identation string */
+  hex_and_ascii_print(ndo, "\n\t", bp, length); /* pass on lf and identation string */
 }
 #define _U_ __attribute__((unused))
 

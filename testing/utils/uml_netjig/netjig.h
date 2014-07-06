@@ -19,12 +19,18 @@
  *
  */
 
+#ifndef NETJIG_H
+#define NETJIG_H
+
+
 extern char *program_name;
 extern jmp_buf getMeOut;
 
 #define ETH_ALEN 6
 
+#ifndef MAX
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
+#endif
 
 /* prototypes */
 extern void sig_handler(int sig);
@@ -38,6 +44,8 @@ extern void *xmalloc1(size_t size, char *file, int linenum);
 
 extern void finish_waitplay(struct netjig_state *ns);
 extern int cmdread(struct netjig_state *ns, char  *buf, int    len);
+
+#endif /* NETJIG_H */
 
 /*
  * Local variables:
