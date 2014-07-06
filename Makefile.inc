@@ -5,6 +5,7 @@ default:: programs
 # stuff.
 INC=${PANDORA_SRCDIR}/include -I${PANDORA_SRCDIR}/../tcpdump-4.6.0
 CROSSFLAGS=-m32
+HOSTFLAGS=-m32
 CFLAGS+=-I${INC}
 CXXFLAGS+=-I${INC}
 OSDEP=$(shell uname -s).$(shell arch)

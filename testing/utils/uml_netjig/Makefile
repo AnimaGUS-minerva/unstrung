@@ -43,7 +43,7 @@ PCAPLIB=-lpcap
 #PCAPH=-I/home/mcr/src/libpcap
 #PCAPLIB=-L/home/mcr/src/linux/i386/libpcap -lpcap
 
-CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
+CFLAGS = ${HOSTFLAGS} -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
 LIBS = ${NETDISSECTLIB} ${PCAPLIB} ${OPENSSL}
 
 
