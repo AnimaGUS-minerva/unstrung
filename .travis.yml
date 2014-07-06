@@ -1,17 +1,17 @@
 language: c++
 compiler:
-  - gcc
   - g++
 
 before_install:
   - "sudo apt-get update"
-  - "sudo apt-get remove libusb-1.0-0-dev"
+  - "sudo apt-get remove oracle-java7-installer oracle-java8-installer"
 
 install:
   - "sudo apt-get install gcc-multilib g++-multilib pkg-config"
-  - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev flex bison libusb-1.0.0-dev libssl-dev:i386"
-  - "(cd .. && curl http://www.tcpdump.org/beta/libpcap-1.6.0-rc1.tar.gz | tar xzf - && cd libpcap-1.6.0 && .CFLAGS=-m32 LDFLAGS=-m32 ./configure --target=i386-unknown-linux-gnu && make && sudo make install )"
+  - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev flex bison libssl-dev:i386"
+  - "(cd .. && curl http://www.tcpdump.org/beta/libpcap-1.6.0-rc1.tar.gz | tar xzf - && cd libpcap-1.6.0 && CFLAGS=-m32 LDFLAGS=-m32 ./configure --target=i386-unknown-linux-gnu && make && sudo make install )"
   - "(cd .. && curl http://www.tcpdump.org/beta/tcpdump-4.6.0-rc1.tar.gz | tar xzf - && cd tcpdump-4.6.0 && CFLAGS=-m32 LDFLAGS=-m32 ./configure --target=i386-unknown-linux-gnu && make && sudo make install )"
+  - "sudo ln -f -s /usr/local/lib/libpcap.so.1 /usr/lib/i386-linux-gnu"
 
 script:
   - "make programs"

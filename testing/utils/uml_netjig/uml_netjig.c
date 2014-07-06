@@ -80,6 +80,7 @@
 #include <sys/queue.h>
 
 #ifdef NETDISSECT
+#include "tcpdump-stdinc.h"
 #include "netdissect.h"
 #endif
 

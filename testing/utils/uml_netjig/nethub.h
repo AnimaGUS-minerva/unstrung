@@ -185,6 +185,7 @@ extern void close_descriptor(struct netjig_state *ns,
 #define xmalloc(X) xmalloc1((X), __FILE__, __LINE__)
 
 #ifdef NETDISSECT
+#include "tcpdump-stdinc.h"
 #include "netdissect.h"
 extern netdissect_options *gndo;
 extern struct netdissect_options netjig_gndo;

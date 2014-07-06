@@ -46,6 +46,7 @@
 #include "hash.h"
 
 #ifdef NETDISSECT
+#include "tcpdump-stdinc.h"
 #include "netdissect.h"
 
 struct netdissect_options netjig_gndo;
