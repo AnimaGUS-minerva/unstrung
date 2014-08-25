@@ -55,6 +55,9 @@ public:
         bool upd_seq(unsigned int seq);
         u_int8_t last_seq() { return(mLastSeq & 0xff); };
 
+        /* might depend if mGrounded too */
+        bool root_node(void) { return mMyRank == 1; };
+
         unsigned int               mMyRank;     /* my rank */
         unsigned int               mBestRank;   /* my best parent */
         bool dag_rank_infinite(void) { return (mBestRank >= RANK_INFINITE); };
@@ -293,7 +296,6 @@ private:
 	enum RPL_DIO_MOP        mMode;
 	unsigned short          mSequence;
 	unsigned int            mInstanceid;
-	unsigned int            mDagrank;
 	unsigned int            mLifetime;      /* dag lifetime */
 	unsigned int            mVersion;
 	unsigned int            mDio_lifetime;  /* dio lifetime */

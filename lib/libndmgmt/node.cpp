@@ -118,13 +118,9 @@ void rpl_node::add_route_via_node(ip_subnet &prefix, network_interface *iface)
 {
     // dao_needed = true;
 
-    if(!routed) {
-        assert(mDN->dag_me != NULL);
-        iface->add_route_to_node(prefix, this,
-                                 mDN->dag_me->prefix_number().addr);
-        routed = true;
-        mDN->set_dao_needed();
-    }
+    assert(mDN->dag_me != NULL);
+    iface->add_route_to_node(prefix, this,
+                             mDN->dag_me->prefix_number().addr);
 }
 
 

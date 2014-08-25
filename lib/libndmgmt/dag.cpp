@@ -319,12 +319,14 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
 void dag_network::maybe_send_dao(void)
 {
     if(dao_needed) {
-        schedule_dao();
+        if(!root_node()) {
+            schedule_dao();
+        }
         dao_needed = false;
     }
 }
 
-void dag_network::add_childnode(rpl_node            *announcing_peer,
+void dag_network::add_childnode(rpl_node          *announcing_peer,
                                 network_interface *iface,
                                 ip_subnet prefix)
 {
@@ -337,7 +339,10 @@ void dag_network::add_childnode(rpl_node            *announcing_peer,
         pre.set_debug(this->debug);
         pre.set_prefix(prefix);
         pre.set_announcer(announcing_peer);
-        maybe_send_dao();
+
+        announcing_peer->add_route_via_node(prefix, iface);
+        set_dao_needed();
+        pre.set_installed(true);
     }
 #if 0
     debug->verbose("added child node %s/%s from %s\n",
@@ -820,12 +825,12 @@ void dag_network::receive_dao(network_interface *iface,
         /* need to look at dag_members, and see if the child node already
          * exists, and add if not
          */
-        debug->verbose("received DAO about network %s, target %s (added)\n", addrfound,
-                       peer->node_name());
+        debug->verbose("received DAO about network %s, target %s (added)\n",
+                       addrfound, peer->node_name());
 
-        peer->add_route_via_node(prefix, iface);
         add_childnode(peer, iface, prefix);
     }
+    maybe_send_dao();
 
     /* now send a DAO-ACK back this the node, using the interface it arrived on, if asked to. */
     if(RPL_DAO_K(dao->rpl_flags)) {

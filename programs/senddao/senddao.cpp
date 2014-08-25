@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "destination must be set before target addresses\n");
                     usage();
                 }
-                dn->add_childnode(*destnode, iface, targetaddr);
+                dn->add_childnode(destnode, iface, targetaddr);
             }
             break;
 

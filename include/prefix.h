@@ -62,6 +62,9 @@ public:
         bool is_installed() {
             return installed;
         };
+        bool set_installed(bool installed) {
+            installed = true;
+        };
 
 protected:
         ip_subnet    mPrefix;

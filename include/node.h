@@ -61,7 +61,6 @@ protected:
 
 private:
         bool       valid;
-        bool       routed;
         bool       self;
         int        ifindex;
         time_t     lastseen;
