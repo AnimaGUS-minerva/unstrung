@@ -82,6 +82,7 @@
 #ifdef NETDISSECT
 #include "tcpdump-stdinc.h"
 #include "netdissect.h"
+#include "gmt2local.h"
 #endif
 
 #include "nethub.h"
@@ -296,12 +297,11 @@ void init_netdissect()
   memset(&netjig_gndo, 0, sizeof(gndo));
   gndo = &netjig_gndo;
   netjig_gndo.ndo_default_print = netjig_default_print;
-  netjig_gndo.ndo_printf=netjig_ndo_printf;
-  netjig_gndo.ndo_error=ndo_error;
-  netjig_gndo.ndo_warning=ndo_warning;
-
-
-/*  gndo.ndo_default_output= stderr; */
+  netjig_gndo.ndo_printf        = netjig_ndo_printf;
+  netjig_gndo.ndo_info          = NULL;
+  netjig_gndo.ndo_error         = ndo_error;
+  netjig_gndo.ndo_warning       = ndo_warning;
+  netjig_gndo.ndo_program_name  = "uml_netjig";
 
   /* dump ethernet headers */
   netjig_gndo.ndo_eflag = 1;

@@ -186,6 +186,7 @@ extern void close_descriptor(struct netjig_state *ns,
 
 #ifdef NETDISSECT
 #include "tcpdump-stdinc.h"
+#include "config.h"            /* how to get the one from tcpdump? */
 #include "netdissect.h"
 extern netdissect_options *gndo;
 extern struct netdissect_options netjig_gndo;

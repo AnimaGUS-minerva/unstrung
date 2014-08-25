@@ -188,7 +188,8 @@ void handle_data(struct netjig_state *ns,
   memset(&ph, 0, sizeof(ph));
   ph.caplen = len;
   ph.len    = len;
-  netjig_gndo.ndo_snapend = packet + ph.caplen;
+  netjig_gndo.ndo_packetp = packet->data;
+  netjig_gndo.ndo_snapend = packet->data + ph.caplen;
   netjig_gndo.ndo_nflag = 1;
 
   if(nh->nh_outputFile) {

@@ -14,6 +14,7 @@
 # RCSID $Id: Makefile,v 1.22 2004/04/03 19:44:52 ken Exp $
 
 UNSTRUNG_SRCDIR=../../..
+PANDORA_SRCDIR=${UNSTRUNG_SRCDIR}
 OBJS = nethub.o cmdmode.o port.o hash.o tuntap.o
 OBJS+=getopt_long.o
 
@@ -31,6 +32,7 @@ OPTIONS=-DARP_PROCESS -DTUNTAP
 # cvs -d :pserver:tcpdump@cvs.tcpdump.org:/tcpdump/master checkout -rmcr_dissect -dnetdissect_tcpdump
 #
 NETDISSECTH=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
+NETDISSECTH+=-D__ATTRIBUTE___NORETURN_OK_FOR_FUNCTION_POINTERS -D__ATTRIBUTE___FORMAT_OK_FOR_FUNCTION_POINTERS
 NETDISSECTLIB=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0 -lnetdissect
 
 # to decode ESP packets (with netdissect), you need crypto, which you can
@@ -43,7 +45,7 @@ PCAPLIB=-lpcap
 #PCAPH=-I/home/mcr/src/libpcap
 #PCAPLIB=-L/home/mcr/src/linux/i386/libpcap -lpcap
 
-CFLAGS = ${HOSTFLAGS} -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
+CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
 LIBS = ${NETDISSECTLIB} ${PCAPLIB} ${OPENSSL}
 
 
