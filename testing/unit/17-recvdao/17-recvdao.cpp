@@ -21,6 +21,11 @@ int main(int argc, char *argv[])
                                                              "../INPUTS/dao2.pcap",
                                                              "../OUTPUTS/17-node-A-out.pcap",
                                                              deb);
+	struct timeval n;
+	n.tv_sec = 1024*1024*1024;
+	n.tv_usec = 1024;
+	iface->set_fake_time(n);
+
         iface->set_debug(deb);
         iface->set_if_index(1);
         iface->set_if_addr(iface_src2);
