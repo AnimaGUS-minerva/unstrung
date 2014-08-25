@@ -324,9 +324,9 @@ void dag_network::maybe_send_dao(void)
     }
 }
 
-void dag_network::add_childnode(rpl_node announcing_peer,
-                                  network_interface *iface,
-                                  ip_subnet prefix)
+void dag_network::add_childnode(rpl_node            *announcing_peer,
+                                network_interface *iface,
+                                ip_subnet prefix)
 {
     prefix_node &pre = this->dag_children[prefix];
     char b1[256];
@@ -336,13 +336,13 @@ void dag_network::add_childnode(rpl_node announcing_peer,
         dao_needed = true;
         pre.set_debug(this->debug);
         pre.set_prefix(prefix);
-        pre.set_announcer(&announcing_peer);
+        pre.set_announcer(announcing_peer);
         maybe_send_dao();
     }
 #if 0
     debug->verbose("added child node %s/%s from %s\n",
                    b1, pre.node_name(),
-                   announcing_peer.node_name());
+                   announcing_peer->node_name());
 #endif
 }
 
@@ -494,7 +494,7 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
 
 /*
  * send out outgoing DAO: this also causes us to potentially commit to a parent.
- * (XXX: hard code to wait for DAOACK)
+ * (XXX: hard coded to wait for DAOACK)
  */
 void dag_network::send_dao(void)
 {
@@ -540,7 +540,7 @@ void dag_network::maybe_schedule_dio(void)
 {
     /* the list of things that could change needs to be tracked */
     if(dag_lastparent != dag_parent) {
-        schedule_dio(mInterval_msec);
+        schedule_dio(1);             /* send it almost immediately */
         dag_lastparent = dag_parent;
     }
 }
@@ -572,20 +572,22 @@ void dag_network::schedule_dio(unsigned int msec)
 }
 
 /*
- * this routine needs to send out a DAO sooner than
- * we would otherwise.
+ * this routine sets up to send a DAO on a regular basis,
+ * the first one goes out much sooner than normal (almost immediately).
+ *
  */
 void dag_network::schedule_dao(void)
 {
     debug->verbose("Scheduling dao in %u ms\n", 2);
 
     if(!mSendDaoEvent) {
-	mSendDaoEvent = new rpl_event(0, 2, rpl_event::rpl_send_dao,
+	mSendDaoEvent = new rpl_event(0, mInterval_msec,
+                                      rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
     }
 
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
-    mSendDaoEvent->reset_alarm(0, mInterval_msec+2);
+    mSendDaoEvent->reset_alarm(0, 2);
 
     mSendDaoEvent->mDag = this;
     mSendDaoEvent->requeue();
@@ -818,10 +820,11 @@ void dag_network::receive_dao(network_interface *iface,
         /* need to look at dag_members, and see if the child node already
          * exists, and add if not
          */
-        debug->verbose("received DAO about network %s, target %s\n", addrfound,
+        debug->verbose("received DAO about network %s, target %s (added)\n", addrfound,
                        peer->node_name());
 
         peer->add_route_via_node(prefix, iface);
+        add_childnode(peer, iface, prefix);
     }
 
     /* now send a DAO-ACK back this the node, using the interface it arrived on, if asked to. */

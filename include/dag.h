@@ -91,7 +91,7 @@ public:
                             const struct nd_rpl_daoack *daoack,
                             unsigned char *data, int data_len);
 
-        void add_childnode(rpl_node peer,
+        void add_childnode(rpl_node *peer,
                            network_interface *iface,
                            ip_subnet prefix);
         void add_prefix(rpl_node peer,
