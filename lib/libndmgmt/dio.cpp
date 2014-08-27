@@ -129,13 +129,14 @@ int dag_network::build_prefix_dioopt(ip_subnet prefix)
     struct rpl_dio_destprefix *diodp = (struct rpl_dio_destprefix *)optbuff;
 
     diodp->rpl_dio_prf  = 0x00;
-    diodp->rpl_dio_prefixlifetime = htonl(this->mDio_lifetime);
+    diodp->rpl_dio_valid_lifetime = htonl(this->mDio_lifetime);
+    diodp->rpl_dio_preferred_lifetime = htonl(this->mDio_lifetime);
     diodp->rpl_dio_prefixlen = prefix.maskbits;
     for(int i=0; i < (prefix.maskbits+7)/8; i++) {
         diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
     }
 
-    this->optlen = ((prefix.maskbits+7)/8 + 1 + 4 + 4);
+    this->optlen = 30;
 
     return this->optlen;
 }
