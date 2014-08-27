@@ -78,7 +78,6 @@ bool network_interface::addprefix(dag_network *dn _U_,  prefix_node &prefix)
 
     if(prefix.prefix_valid()) {
         // this would be better, but results in unreachable routes.
-        viaif = "lo";
         snprintf(buf, 1024,
                  "ip -6 addr del %s dev %s", prefix.node_name(), viaif);
         debug->log("  invoking %s\n", buf);
