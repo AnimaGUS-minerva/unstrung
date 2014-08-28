@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
     bool devices_scanned = false;
 
     network_interface *iface = NULL;
-    rpl_debug *deb = new rpl_debug(false, stderr);
+    rpl_debug *deb = new rpl_debug(true, stderr);
 
     dag_network::init_stats();
     dag_network *dag = NULL;
@@ -159,7 +159,12 @@ int main(int argc, char *argv[])
             dag->set_prefix(prefix);
             dag->set_grounded(true);
             dag->set_dagrank(1);
+            if (!iface){
             dag->add_all_interfaces();
+            }else
+            {
+            	dag->addselfprefix(iface);
+            }
         }
         break;
 

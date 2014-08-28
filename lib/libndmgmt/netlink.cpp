@@ -78,7 +78,7 @@ bool network_interface::addprefix(dag_network *dn _U_,  prefix_node &prefix)
 
     if(prefix.prefix_valid()) {
         // this would be better, but results in unreachable routes.
-        viaif = "lo";
+    	viaif = "lo";
         snprintf(buf, 1024,
                  "ip -6 addr del %s dev %s", prefix.node_name(), viaif);
         debug->log("  invoking %s\n", buf);
@@ -301,6 +301,16 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
             }
             break;
         }
+    case ARPHRD_IEEE802154:
+        addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
+        if(addr) {
+            addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
+            ni->eui64set=true;
+            memcpy(ni->eui64, addr, addrlen);
+            ni->eui64[0]=ni->eui64[0] | 0x02;
+            ni->generate_linkaddr();
+            break;
+        }
 
     case ARPHRD_LOOPBACK:
         loopback_interface = ni;
@@ -316,11 +326,13 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
         ni->if_maxmtu =  *(int*)RTA_DATA(tb[IFLA_MTU]);
     }
 
-    /* must be a new mac address */
-    memcpy(ni->eui48, addr, addrlen);
+    if (!ni->eui64set){
+    	/* must be a new mac address */
+    	memcpy(ni->eui48, addr, addrlen);
 
-    /* now build eui64 from eui48 */
-    ni->generate_eui64();
+    	/* now build eui64 from eui48 */
+    	ni->generate_eui64();
+    }
 
     SPRINT_BUF(b2);
     deb->log("   adding as new interface %s/%s\n",
