@@ -21,7 +21,7 @@ include ${PANDORA_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=peck senddio sunshine senddao
+SUBDIRS=sunshine
 
 unitcheck:
 	@true

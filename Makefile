@@ -13,7 +13,6 @@
 # for more details.
 #
 
-
 PANDORA_SRCDIR?=$(shell pwd)
 export PANDORA_SRCDIR
 

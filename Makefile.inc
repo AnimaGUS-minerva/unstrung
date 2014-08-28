@@ -1,12 +1,14 @@
 # -*- makefile -*-
 
 default:: programs
-
+CC=/mnt/poky/yocto-build/han9250/debug/tmp/sysroots/x86_64-linux/usr/bin/microblazeel-v8.50-bs-cmp-re-mh-div-oe-linux/microblazeel-oe-linux-gcc
+CXX=/mnt/poky/yocto-build/han9250/debug/tmp/sysroots/x86_64-linux/usr/bin/microblazeel-v8.50-bs-cmp-re-mh-div-oe-linux/microblazeel-oe-linux-g++
+LD=/mnt/poky/yocto-build/han9250/debug/tmp/sysroots/x86_64-linux/usr/bin/microblazeel-v8.50-bs-cmp-re-mh-div-oe-linux/microblazeel-oe-linux-ld
 # stuff.
 INC=${PANDORA_SRCDIR}/include
 #-I${PANDORA_SRCDIR}/../tcpdump-4.6.0
-CROSSFLAGS=-m32
-HOSTFLAGS=-m32
+CROSSFLAGS=
+HOSTFLAGS=
 CFLAGS+=-I${INC}
 CXXFLAGS+=-I${INC}
 OSDEP=$(shell uname -s).$(shell arch)
@@ -25,9 +27,9 @@ LIBOSW=${PANDORA_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${PANDORA_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${PANDORA_OBJDIR}/lib/libfakeiface/libfakeiface.a
 #LIBPCAP=/usr/local/ia32/lib/libpcap.a
-LIBPCAP=-L/usr/local/ia32/lib -lpcap
+#LIBPCAP=-L/usr/local/ia32/lib -lpcap
 # needed by libpcap
-EXTRALIBS=${LIBPCAP} -L/sandel/lib/i386-linux-gnu -lusb-1.0
+#EXTRALIBS=${LIBPCAP} -L/sandel/lib/i386-linux-gnu -lusb-1.0
 
 NEEDCHECK?=check
 
