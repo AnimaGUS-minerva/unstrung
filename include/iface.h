@@ -222,6 +222,7 @@ private:
 
     /* interface to netlink */
     void                    generate_eui64();
+    void                    generate_linkaddr();
     bool                    eui64set;
     unsigned char           eui48[6];
     unsigned char           eui64[8];

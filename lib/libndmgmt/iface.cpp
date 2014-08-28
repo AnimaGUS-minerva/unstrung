@@ -80,6 +80,14 @@ void network_interface::set_if_name(const char *if_name)
     strncat(this->if_name, if_name, sizeof(this->if_name));
 }
 
+void network_interface::generate_linkaddr(void)
+{
+    memset(ipv6_link_addr.s6_addr, 0, 16);
+    ipv6_link_addr.s6_addr[0]=0xfe;
+    ipv6_link_addr.s6_addr[1]=0x80;
+    memcpy(ipv6_link_addr.s6_addr+8, eui64, 8);
+}
+
 void network_interface::generate_eui64(void)
 {
     if(eui64[0]!=0) return;
@@ -102,10 +110,7 @@ void network_interface::generate_eui64(void)
     eui64[6]=eui48[4];
     eui64[7]=eui48[5];
 
-    memset(ipv6_link_addr.s6_addr, 0, 16);
-    ipv6_link_addr.s6_addr[0]=0xfe;
-    ipv6_link_addr.s6_addr[1]=0x80;
-    memcpy(ipv6_link_addr.s6_addr+8, eui64, 8);
+    generate_linkaddr();
 }
 
 char *network_interface::eui64_str(char *str, int strlen)
