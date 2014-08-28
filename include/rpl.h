@@ -108,7 +108,9 @@ struct rpl_dio_destprefix {
     u_int8_t rpl_dio_len;
     u_int8_t rpl_dio_prefixlen;        /* in bits */
     u_int8_t rpl_dio_prf;              /* flags, including Route Preference */
-    u_int32_t rpl_dio_prefixlifetime;  /* in seconds */
+    u_int32_t rpl_dio_valid_lifetime; /* in seconds */
+    u_int32_t rpl_dio_preferred_lifetime; /* in seconds */
+    u_int32_t reserved2; /* in seconds */
     u_int8_t rpl_dio_prefix[0];        /* variables number of bytes */
 } PACKED;
 
