@@ -85,8 +85,7 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         memcpy(&link.s6_addr[0],
                &dn->get_prefix().addr.u.v6.sin6_addr.s6_addr[0], 8);
 
-        this->set_prefix(link, 128);
-
+        this->set_prefix(link, dn->get_prefix().maskbits);
 
         this->verbose_log("  adding prefix: %s learnt from iface: %s\n",
                           node_name(),
