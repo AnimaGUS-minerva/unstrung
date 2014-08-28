@@ -159,7 +159,12 @@ int main(int argc, char *argv[])
             dag->set_prefix(prefix);
             dag->set_grounded(true);
             dag->set_dagrank(1);
-            dag->add_all_interfaces();
+            if (!iface){
+            	dag->add_all_interfaces();
+            }else
+            {
+            	dag->addselfprefix(iface);
+            }
         }
         break;
 
