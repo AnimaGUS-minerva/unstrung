@@ -9,9 +9,12 @@ before_install:
 install:
   - "sudo apt-get install gcc-multilib g++-multilib pkg-config"
   - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev flex bison libssl-dev:i386"
-  - "(cd .. && curl http://www.tcpdump.org/beta/libpcap-1.6.0-rc1.tar.gz | tar xzf - && cd libpcap-1.6.0 && CFLAGS=-m32 LDFLAGS=-m32 ./configure --target=i386-unknown-linux-gnu && make && sudo make install )"
-  - "(cd .. && curl http://www.tcpdump.org/beta/tcpdump-4.6.0-rc1.tar.gz | tar xzf - && cd tcpdump-4.6.0 && CFLAGS=-m32 LDFLAGS=-m32 ./configure --target=i386-unknown-linux-gnu && make && sudo make install )"
-  - "sudo ln -f -s /usr/local/lib/libpcap.so.1 /usr/lib/i386-linux-gnu"
+  - "(cd .. && curl http://www.tcpdump.org/release/libpcap-1.6.1.tar.gz | tar xzf - )"
+  - "(cd .. && curl http://www.tcpdump.org/release/tcpdump-4.6.1.tar.gz | tar xzf - )"
+  - "(cd .. && mkdir -p libpcap-1.6.1-host && cd libpcap-1.6.1-host && ../libpcap-1.6.1/configure && make && sudo make install )"
+  - "(cd .. && mkdir -p tcpdump-4.6.1-host && cd tcpdump-4.6.1-host && ../tcpdump-4.6.1/configure && make && sudo make install )"
+  - "(cd .. && mkdir -p libpcap-1.6.1-x86 && cd libpcap-1.6.1-x86 && ../libpcap-1.6.1/configure && make)"
+  - "(cd .. && mkdir -p tcpdump-4.6.1-x86 && cd tcpdump-4.6.1-x86 && ../tcpdump-4.6.1/configure --with-libpcap=../libpcap-1.6.1-x86 && make)"
 
 script:
   - "make programs"
