@@ -100,7 +100,7 @@ int dag_network::build_target_opt(struct in6_addr addr, int maskbits)
         daotg->rpl_dao_prefix[i]=addr.s6_addr[i];
     }
 
-    this->optlen = ((maskbits+7)/8 + 1 + 4 + 4);
+    this->optlen = ((maskbits+7)/8 + 4);
 
     return this->optlen;
 }
