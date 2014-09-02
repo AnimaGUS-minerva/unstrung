@@ -33,7 +33,7 @@ OPTIONS=-DARP_PROCESS -DTUNTAP
 #
 NETDISSECTH=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
 NETDISSECTH+=-D__ATTRIBUTE___NORETURN_OK_FOR_FUNCTION_POINTERS -D__ATTRIBUTE___FORMAT_OK_FOR_FUNCTION_POINTERS
-NETDISSECTLIB=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0 -lnetdissect
+NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
 
 # to decode ESP packets (with netdissect), you need crypto, which you can
 # get from ssl.

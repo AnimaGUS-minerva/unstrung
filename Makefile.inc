@@ -1,5 +1,7 @@
 # -*- makefile -*-
 
+-include Makefile.local
+
 default:: programs
 
 # stuff.
@@ -28,6 +30,8 @@ LIBFAKEIFACE=${PANDORA_OBJDIR}/lib/libfakeiface/libfakeiface.a
 LIBPCAP=-L/usr/local/ia32/lib -lpcap
 # needed by libpcap
 EXTRALIBS=${LIBPCAP} -L/sandel/lib/i386-linux-gnu -lusb-1.0
+
+NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
 
 NEEDCHECK?=check
 
