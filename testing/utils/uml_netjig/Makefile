@@ -31,7 +31,7 @@ OPTIONS=-DARP_PROCESS -DTUNTAP
 #
 # cvs -d :pserver:tcpdump@cvs.tcpdump.org:/tcpdump/master checkout -rmcr_dissect -dnetdissect_tcpdump
 #
-NETDISSECTH=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
+NETDISSECTH?=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
 NETDISSECTH+=-D__ATTRIBUTE___NORETURN_OK_FOR_FUNCTION_POINTERS -D__ATTRIBUTE___FORMAT_OK_FOR_FUNCTION_POINTERS
 NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
 

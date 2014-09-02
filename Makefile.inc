@@ -29,9 +29,10 @@ LIBFAKEIFACE=${PANDORA_OBJDIR}/lib/libfakeiface/libfakeiface.a
 #LIBPCAP=/usr/local/ia32/lib/libpcap.a
 LIBPCAP?=-L/usr/local/ia32/lib -lpcap
 # needed by libpcap
-EXTRALIBS=${LIBPCAP} -L/sandel/lib/i386-linux-gnu -lusb-1.0
+EXTRALIBS:=${LIBPCAP} -L/sandel/lib/i386-linux-gnu -lusb-1.0
 
 NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
+NETDISSECTH?=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host
 
 NEEDCHECK?=check
 
