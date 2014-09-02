@@ -59,3 +59,7 @@ unitcheck:: Makefile.ver
 TAGS::
 	@rm -f TAGS
 	@echo >TAGS
+
+vars:
+	@echo LIBPCAP: ${LIBPCAP}
+	@echo NETDISSECTLIB: ${NETDISSECTLIB}

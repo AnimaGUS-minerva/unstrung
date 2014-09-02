@@ -19,6 +19,8 @@ install:
 script:
   - "echo LIBPCAP=$(pwd)/../x86/libpcap-1.6.1 >Makefile.local"
   - "echo NETDISSECTLIB=$(pwd)/../host/tcpdump-1.6.1/libnetdissect.a >>Makefile.local"
+  - "cat Makefile.local"
+  - "make vars "
   - "make programs "
   - "make checkprograms "
   - "make unitcheck"
