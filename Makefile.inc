@@ -1,6 +1,6 @@
 # -*- makefile -*-
 
--include Makefile.local
+-include ${PANDORA_SRCDIR}/Makefile.local
 
 default:: programs
 
