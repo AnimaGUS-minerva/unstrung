@@ -180,6 +180,14 @@ bool network_interface::setup()
         return false;
     }
 
+    val = 0;
+    err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, &val, sizeof(val));
+    if (err < 0)
+    {
+        debug->error("setsockopt(IPV6_MULTICAST_LOOP): %s", strerror(errno));
+        return false;
+    }
+
 #ifdef IPV6_RECVHOPLIMIT
     val = 1;
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &val, sizeof(val));
