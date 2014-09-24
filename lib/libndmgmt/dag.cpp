@@ -793,7 +793,7 @@ void dag_network::receive_dao(network_interface *iface,
                               unsigned char *data, int dao_len)
 {
     /* it has already been checked to be at least sizeof(*dio) */
-    int dao_payload_len = dao_len - sizeof(*dao);
+    //int dao_payload_len = dao_len - sizeof(*dao);
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_RECEIVED]++;
@@ -816,7 +816,7 @@ void dag_network::receive_dao(network_interface *iface,
     }
 
     /* look for the suboptions, process them */
-    rpl_dao decoded_dao(data, dao_payload_len);
+    rpl_dao decoded_dao(data, dao_len);
     unsigned int addrcount = 0;
 
     struct rpl_dao_target *rpltarget;
