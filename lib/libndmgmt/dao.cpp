@@ -137,7 +137,7 @@ int dag_network::build_dao(unsigned char *buff,
     dao->rpl_flags = 0;
     dao->rpl_flags |= RPL_DAO_D_MASK|RPL_DAO_K_MASK;
 
-    dao->rpl_daoseq     = mSequence;
+    dao->rpl_daoseq     = ++mDAOSequence;
 
     /* insert dagid, advance */
     {
