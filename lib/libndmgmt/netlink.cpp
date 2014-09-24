@@ -109,6 +109,10 @@ bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
     addrtot(&parent.node_address(), 0, nhbuf, sizeof(nhbuf));
     addrtot(&src, 0, srcbuf, sizeof(nhbuf));
 
+    snprintf(buf, 1024, "ip -6 route del %s", pbuf);
+    debug->log("  invoking %s\n", buf);
+    nisystem(buf);
+
     snprintf(buf, 1024,
              "ip -6 route add %s via %s dev %s src %s",
              pbuf,  nhbuf,
