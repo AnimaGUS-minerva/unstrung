@@ -97,7 +97,7 @@ void dag_network::init_dag(void)
     debug     = NULL;
     memset(mStats,     0, sizeof(mStats));
     memset(old_mStats, 0, sizeof(old_mStats));
-
+    mMode = RPL_DIO_STORING_MULTICAST;
     init_dag_name();
     this->add_to_list();
     dag_me = NULL;
