@@ -80,7 +80,8 @@ void network_interface::receive_daoack(struct in6_addr from,
 }
 
 int dag_network::build_daoack(unsigned char *buff,
-                              unsigned int buff_len)
+                              unsigned int buff_len,
+                              unsigned short seq_num)
 {
     struct sockaddr_in6 addr;
     struct in6_addr *dest = NULL;
@@ -104,7 +105,7 @@ int dag_network::build_daoack(unsigned char *buff,
     daoack->rpl_flags = 0;
     daoack->rpl_flags |= RPL_DAOACK_D_MASK;
 
-    daoack->rpl_daoseq     = mSequence;
+    daoack->rpl_daoseq     = seq_num;
     daoack->rpl_status     = 0; /* means child accepted */
 
     /* insert dagid, advance */
@@ -122,7 +123,7 @@ int dag_network::build_daoack(unsigned char *buff,
 }
 
 
-void network_interface::send_daoack(rpl_node &child, dag_network &dag)
+void network_interface::send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num)
 {
     unsigned char icmp_body[2048];
 
@@ -131,7 +132,7 @@ void network_interface::send_daoack(rpl_node &child, dag_network &dag)
 	       this->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = dag.build_daoack(icmp_body, sizeof(icmp_body));
+    unsigned int icmp_len = dag.build_daoack(icmp_body, sizeof(icmp_body), seq_num);
 
     struct in6_addr dest = child.node_number();
     send_raw_icmp(&dest, icmp_body, icmp_len);

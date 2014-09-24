@@ -175,7 +175,7 @@ int dag_network::build_dio(unsigned char *buff,
 
     /* XXX need to set PRF */
 
-    dio->rpl_dtsn       = mSequence;
+    dio->rpl_dtsn       = mDTSN++;
     dio->rpl_dagrank    = htons(mMyRank & 0xffff);
     memcpy(dio->rpl_dagid, mDagid, 16);
 

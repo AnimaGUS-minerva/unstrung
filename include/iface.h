@@ -81,7 +81,7 @@ public:
 
     void send_dio(dag_network *dag);
     void send_dao(rpl_node &parent, dag_network &dag);
-    void send_daoack(rpl_node &child, dag_network &dag);
+    void send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num);
     static void send_dio_all(dag_network *dag);
     static void send_dao_all(dag_network *dag);
 
