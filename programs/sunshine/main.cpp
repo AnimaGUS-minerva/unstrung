@@ -201,13 +201,14 @@ int main(int argc, char *argv[])
             break;
 
         case 'i':
-            iface = network_interface::find_by_name(optarg);
+        	iface = network_interface::find_by_name(optarg);
             if(!iface) {
                 deb->log("Can not find interface %s\n", optarg);
             } else {
 		deb->verbose("Setting up interface[%d] %s\n",
 			     iface->get_if_index(),
 			     iface->get_if_name());
+
                 iface->set_debug(deb);
                 iface->setup();
             }
@@ -217,6 +218,7 @@ int main(int argc, char *argv[])
 
     if(!iface) {
 	deb->info("running on all interfaces\n");
+	network_interface::setup_all_if();
     }
 
     if(dag==NULL) {

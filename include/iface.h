@@ -47,6 +47,7 @@ public:
 
     // setup the object, open sockets, etc.
     bool setup(void);
+    static void setup_all_if(void);
 
     int errors(void) {
         return error_cnt;
