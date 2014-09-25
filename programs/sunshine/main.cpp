@@ -201,6 +201,11 @@ int main(int argc, char *argv[])
             break;
 
         case 'i':
+        	check_dag(dag);
+        	if(dag->mPrefixSet){
+        		fprintf(stderr, "interface must preceed prefix parameter\n");
+        		usage();
+        	}
         	iface = network_interface::find_by_name(optarg);
             if(!iface) {
                 deb->log("Can not find interface %s\n", optarg);
