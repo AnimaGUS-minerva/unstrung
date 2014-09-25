@@ -102,6 +102,7 @@ void dag_network::init_dag(void)
     init_dag_name();
     this->add_to_list();
     dag_me = NULL;
+    mPrefixSet = false;
 }
 
 dag_network::dag_network(dagid_t n_dagid, rpl_debug *deb)
@@ -133,6 +134,7 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
     mPrefix.maskbits  = prefixlen;
     mPrefixName[0]='\0';
+    mPrefixSet = true;
 }
 
 void dag_network::set_grounded(bool grounded)
