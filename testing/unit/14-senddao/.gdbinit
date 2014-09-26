@@ -1,2 +1,2 @@
 file ../../../programs/senddao/senddao
-set args --fake --outpcap ../OUTPUTS/senddao-test-04out.pcap -i wlan0 -v --dagid thisismydicedag2 --sequence 11 --instance 43 --prefix fdfd:abcd:ef01::/48
+set args --fake --outpcap ../OUTPUTS/senddao-test-04out.pcap -i wlan0 -v --dagid T1 --sequence 1 --instance 2 --prefix 2001:db8::/38 --myid 2001:db8::abcd:1 --dest fe80::1200:00ff:fe64:6423 --target 2001:db8::abcd:2/128 

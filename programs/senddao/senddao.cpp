@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Michael Richardson <mcr@sandelman.ca>
+ * Copyright (C) 2012-2014 Michael Richardson <mcr@sandelman.ca>
  *
  * SEE FILE COPYING in root of source.
  */
@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
         {"daoack",   0, NULL, 'K'},
         {"datafile", 1, NULL, 'd'},
         {"dest",     1, NULL, 't'},
+        {"myid",     1, NULL, 'M'},
         {"ack-request",0,NULL,'A'},
         {"iface",    1, NULL, 'i'},
         {"outpcap",  1, NULL, 'O'},
@@ -109,6 +110,8 @@ int main(int argc, char *argv[])
     class dag_network       *dn = NULL;
     class pcap_network_interface *piface = NULL;
     struct in6_addr target, *dest = NULL;
+    struct in6_addr myid;
+    prefix_node *dag_me = NULL;
     rpl_node *destnode = NULL;
     bool initted = false;
     bool ackreq  = false;
@@ -215,6 +218,10 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "destination must be set before target addresses\n");
                     usage();
                 }
+                if(dag_me == NULL) {
+                    fprintf(stderr, "myid must be set before target addresses\n");
+                    usage();
+                }
                 dn->add_childnode(destnode, iface, targetaddr);
             }
             break;
@@ -227,6 +234,7 @@ int main(int argc, char *argv[])
                                     AF_INET6, &prefix);
                 if(e!=NULL) {
                     fprintf(stderr, "Invalid prefix: %s\n",prefixvalue);
+                    usage();
                 }
                 check_dag(dn);
                 dn->set_prefix(prefix);
@@ -240,6 +248,16 @@ int main(int argc, char *argv[])
             }
             dest = &target;
             destnode = new rpl_node(target, dn, deb);
+            break;
+
+        case 'M':
+            if(inet_pton(AF_INET6, optarg, &myid)!=1) {
+                fprintf(stderr, "Invalid ipv6 address in --myid: %s\n", optarg);
+                usage();
+            }
+            dag_me = new prefix_node(deb, myid, 128);
+            check_dag(dn);
+            dn->dag_me = dag_me;
             break;
 
         case 'v':
