@@ -50,6 +50,7 @@ public:
             ifindex    = index;
         };
         bool  isself() { return self; };
+        unsigned int get_ifindex() { return ifindex; };
         bool  is_equal(const struct in6_addr v6) {
             if(!valid) return false;
             return (memcmp(nodeip.u.v6.sin6_addr.s6_addr, v6.s6_addr, 16)==0);
