@@ -31,13 +31,15 @@ public:
 	rpl_event_max
     };
 
-    rpl_event() { deleted = false; };
+    rpl_event() {
+        deleted = false;
+        mDag = NULL;
+    };
 
     rpl_event(struct timeval &relative,
               unsigned int sec, unsigned int msec,
               event_types t, const char *reason, rpl_debug *deb) {
         init_event(relative, sec, msec, t, reason, deb);
-        deleted = false;
     };
 
     bool deleted;
@@ -139,6 +141,8 @@ public:
         repeat_sec = sec;
         repeat_msec= msec;
         set_alarm(relative, sec, msec);
+        deleted = false;
+        mDag = NULL;
     };
 
 private:
