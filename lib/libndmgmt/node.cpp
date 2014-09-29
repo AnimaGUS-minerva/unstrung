@@ -37,6 +37,7 @@ void rpl_node::set_addr(const char *ipv6) {
 
 rpl_node::rpl_node(const char *ipv6,
                    dag_network *dn, rpl_debug *deb) {
+    self = false;
     set_addr(ipv6);
     set_dag(dn, deb);
 }
@@ -48,12 +49,13 @@ void rpl_node::set_addr(const struct in6_addr v6) {
 }
 
 rpl_node::rpl_node(const struct in6_addr v6) {
-    set_addr(v6);
     valid = true;
     self  = false;
+    set_addr(v6);
 }
 rpl_node::rpl_node(const struct in6_addr v6,
                    dag_network *dn, rpl_debug *deb) {
+    self = false;
     set_addr(v6);
     set_dag(dn, deb);
 }

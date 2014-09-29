@@ -68,6 +68,7 @@ static void t1(rpl_debug *deb)
 
     /* who announced this prefix, this is where the DAO will go. */
     rpl_node announced_from("fe80::216:3eff:fe22:4455", dn1, deb);
+    assert(!announced_from.isself());
     assert(announced_from.validP());
 
     /* set the prefix for this network */

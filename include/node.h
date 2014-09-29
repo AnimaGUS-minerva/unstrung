@@ -45,9 +45,9 @@ public:
         void  set_dag(dag_network *dn, rpl_debug *deb);
         rpl_debug *debug;
         void  markself(int index) {
-            debug->warn("Marking self with index: %u\n", index);
             this->self = true;
             ifindex    = index;
+            calc_name();
         };
         bool  isself() { return self; };
         unsigned int get_ifindex() { return ifindex; };
