@@ -46,6 +46,14 @@ bool                    rpl_event::faked_time;
 struct timeval          rpl_event::fake_time;
 unsigned int            rpl_event::event_counter = 1;
 
+rpl_event::~rpl_event(void)
+{
+    if(mDag) {
+        mDag->clear_event(this);
+    }
+    deleted = true;
+}
+
 bool rpl_eventless(const class rpl_event *a, const class rpl_event *b)
 {
     int match = b->alarm_time.tv_sec - a->alarm_time.tv_sec;

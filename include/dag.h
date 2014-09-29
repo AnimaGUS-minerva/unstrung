@@ -16,6 +16,7 @@ typedef u_int8_t dagid_t[DAGID_LEN];
 #define INVALID_SEQUENCE    257     /* sequence is 8 bits */
 
 class rpl_dio;
+class rpl_event;
 
 class dag_network {
 public:
@@ -124,6 +125,7 @@ public:
 
 	/* send out a new downstream announcement */
         void schedule_dao(void);
+        void clear_event(rpl_event *thisone);
 
         /* let stats be public */
 	u_int32_t old_mStats[PS_MAX];

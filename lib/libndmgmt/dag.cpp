@@ -576,6 +576,15 @@ void dag_network::schedule_dio(unsigned int msec)
 
 }
 
+void dag_network::clear_event(rpl_event *thisone)
+{
+    if(thisone == NULL ||
+       mSendDaoEvent == thisone) {
+        /* do not use delete... need reference counts XXX */
+        mSendDaoEvent = NULL;
+    }
+}
+
 /*
  * this routine sets up to send a DAO on a regular basis,
  * the first one goes out much sooner than normal (almost immediately).
@@ -583,6 +592,7 @@ void dag_network::schedule_dio(unsigned int msec)
  */
 void dag_network::schedule_dao(void)
 {
+    if(network_interface::terminating_soon) return;
     debug->verbose("Scheduling dao in %u ms\n", 2);
 
     if(!mSendDaoEvent) {

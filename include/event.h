@@ -31,13 +31,17 @@ public:
 	rpl_event_max
     };
 
-    rpl_event() { };
+    rpl_event() { deleted = false; };
 
     rpl_event(struct timeval &relative,
               unsigned int sec, unsigned int msec,
               event_types t, const char *reason, rpl_debug *deb) {
         init_event(relative, sec, msec, t, reason, deb);
+        deleted = false;
     };
+
+    bool deleted;
+    ~rpl_event();
 
     static bool                    faked_time;
     static struct timeval          fake_time;
