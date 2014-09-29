@@ -62,4 +62,5 @@ TAGS::
 
 vars:
 	@echo LIBPCAP: ${LIBPCAP}
+	@echo TCPDUMP: ${TCPDUMP}
 	@echo NETDISSECTLIB: ${NETDISSECTLIB}
