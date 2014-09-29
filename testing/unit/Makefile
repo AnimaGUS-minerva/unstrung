@@ -21,6 +21,9 @@ include ${PANDORA_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
+# make loop add error codes, but doesn't work yet.
+#ACCUMULATE_ERRORS=true
+
 SUBDIRS=01-osw
 SUBDIRS+=02-recvdio
 SUBDIRS+=03-dioopt

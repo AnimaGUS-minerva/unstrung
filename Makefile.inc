@@ -39,10 +39,10 @@ NETDISSECTH?=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host
 NEEDCHECK?=check
 
 TAGS clean ${NEEDCHECK} programs checkprograms::
-	@for d in $(SUBDIRS) ; \
+	@err=0; for d in $(SUBDIRS) ; \
 	do \
-		$(MAKE) -C $$d PANDORA_SRCDIR=${PANDORA_SRCDIR} $@ || exit 1; \
-	done;
+		if $(MAKE) -C $$d PANDORA_SRCDIR=${PANDORA_SRCDIR} $@; then true; else err=$$(($$err + 1)); fi; \
+	done; exit $$err
 
 env:
 	@env | sed -e "s/'/'\\\\''/g" -e "s/\([^=]*\)=\(.*\)/\1='\2'/"

@@ -646,6 +646,9 @@ rpl_node *dag_network::update_node(network_interface *iface,
 {
     rpl_node &peer = this->dag_members[from];
 
+    /* set debug early */
+    peer.debug = this->debug;
+
     if(peer.isself() ||
        iface->if_ifaddr(from)) {
         peer.markself(iface->get_if_index());

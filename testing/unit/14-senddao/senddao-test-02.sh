@@ -1,7 +1,6 @@
 #!/bin/sh
 
 set -e
-set -x
 SENDDAO=${SENDDAO-../../../programs/senddao/senddao}
 PCAP02=../OUTPUTS/basic-dao.pcap
 
