@@ -15,7 +15,7 @@ part01: recv-01
 	@mkdir -p ../OUTPUTS
 	@echo TEST01: PLAINND
 	./recv-01 ../INPUTS/plainnd.pcap | tee ../OUTPUTS/recv-01-output.raw | diff -B - recv-01-output.txt
-	tcpdump -t -n -r ../OUTPUTS/recv-01-plainnd.pcap -s 0 | diff -B - recv-01-plainnd-out.txt
+	${TCPDUMP} -t -n -r ../OUTPUTS/recv-01-plainnd.pcap -s 0 | diff -B - recv-01-plainnd-out.txt
 
 part02: recv-01
 	@mkdir -p ../OUTPUTS

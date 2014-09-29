@@ -13,7 +13,7 @@ check::	17-recvdao
 	@mkdir -p ../OUTPUTS
 	@echo SELFPREFIX13:
 	./17-recvdao 2>&1 | tee ../OUTPUTS/17-recvdao-output.raw | diff -B - 17-recvdao-output.txt
-	@tcpdump -t -v -n -r ../OUTPUTS/17-node-A-out.pcap | tee ../OUTPUTS/17-node-A-capture.txt | diff -B - 17-node-A-capture.txt
+	@${TCPDUMP} -t -v -n -r ../OUTPUTS/17-node-A-out.pcap | tee ../OUTPUTS/17-node-A-capture.txt | diff -B - 17-node-A-capture.txt
 
 
 clean::

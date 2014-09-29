@@ -41,12 +41,10 @@ OPENSSL=-L/usr/local/ssl/lib -lcrypto
 
 # To read/write files, you need to have libpcap (-devel if on RH) installed.
 PCAPH=-I/usr/include/pcap
-PCAPLIB=-lpcap
 #PCAPH=-I/home/mcr/src/libpcap
-#PCAPLIB=-L/home/mcr/src/linux/i386/libpcap -lpcap
 
 CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
-LIBS = ${NETDISSECTLIB} ${PCAPLIB} ${OPENSSL}
+LIBS = ${NETDISSECTLIB} ${LIBPCAP_HOST} ${OPENSSL}
 
 
 include $(UNSTRUNG_SRCDIR)/Makefile.inc

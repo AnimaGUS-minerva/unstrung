@@ -17,6 +17,7 @@ srcdir?=${PANDORA_SRCDIR}/programs/peck/
 PROGRAM=peck
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CFLAGS+=-I/sandel/include -g
+CXXFLAGS+=-I/sandel/include -g
 PROGRAMDIR=/sbin
 OBJS=peck.o
 

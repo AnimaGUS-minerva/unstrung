@@ -12,7 +12,7 @@ ${TESTNAME}: ${TESTNAME}.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
 
 check::	${TESTNAME}
 	./${TESTNAME} | tee ../OUTPUTS/15-dao-out.txt | diff - dao-out.txt
-	@tcpdump -t -n -r ../OUTPUTS/15-dao.pcap | tee ../OUTPUTS/15-dao.txt | diff - dao.txt
+	@${TCPDUMP} -t -n -r ../OUTPUTS/15-dao.pcap | tee ../OUTPUTS/15-dao.txt | diff - dao.txt
 
 checkprograms:: ${TESTNAME}
 programs::

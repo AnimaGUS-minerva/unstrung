@@ -13,7 +13,7 @@ ${TESTNAME}: ${TESTNAME}.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
 
 check::	${TESTNAME}
 	./${TESTNAME} | tee ../OUTPUTS/${OUTPUT}-out.txt | diff - ${OUTPUT}-out.txt
-	@tcpdump -t -n -r ../OUTPUTS/26-${OUTPUT}.pcap | tee ../OUTPUTS/${OUTPUT}.txt | diff - ${OUTPUT}.txt
+	@${TCPDUMP} -t -n -r ../OUTPUTS/26-${OUTPUT}.pcap | tee ../OUTPUTS/${OUTPUT}.txt | diff - ${OUTPUT}.txt
 
 checkprograms:: ${TESTNAME}
 programs::

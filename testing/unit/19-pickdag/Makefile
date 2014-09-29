@@ -13,7 +13,7 @@ check::	19-pickdag
 	@mkdir -p ../OUTPUTS
 	@echo PICKDAG19:
 	./19-pickdag 2>&1 | tee ../OUTPUTS/19-pickdag-output.raw | diff -B - 19-pickdag-output.txt
-	@tcpdump -t -n -r ../OUTPUTS/19-pickdag.pcap -v | tee ../OUTPUTS/19-pickdag-pcap.raw | diff -B - 19-pickdag-pcap.txt
+	@${TCPDUMP} -t -n -r ../OUTPUTS/19-pickdag.pcap -v | tee ../OUTPUTS/19-pickdag-pcap.raw | diff -B - 19-pickdag-pcap.txt
 
 clean::
 	@rm -rf 19-pickdag *.o

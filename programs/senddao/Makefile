@@ -1,8 +1,8 @@
 PANDORA_SRCDIR?=$(shell cd ../..; pwd)
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
-CFLAGS+=-I/sandel/include -g
-CXXFLAGS+=-I/sandel/include -g
+CFLAGS+=${LIBPCAPINC} -g
+CXXFLAGS+=${LIBPCAPINC} -g
 PROGRAM=senddao
 PROGRAMDIR=/sbin
 OBJS=senddao.o
