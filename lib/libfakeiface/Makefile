@@ -21,7 +21,7 @@ include ${PANDORA_SRCDIR}/Makefile.inc
 srcdir?=${PANDORA_SRCDIR}/lib/libfakeiface/
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
-CXXFLAGS+=-I/sandel/include -g
+CXXFLAGS+=${LIBPCAPINC} -g
 LIBRARY=fakeiface
 LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
