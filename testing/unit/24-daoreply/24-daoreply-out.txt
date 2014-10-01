@@ -6,8 +6,8 @@ found[2]: lo address=::1
 Processing input file ../INPUTS/dio-A-ripple.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
- processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
+ wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
+ processing dio(60)  [seq:1,instance:1,rank:1,version:1,grounded,non-storing,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
@@ -20,8 +20,8 @@ packet 1 is being processed
 Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024
 packet 2 is being processed
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
- processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
+ wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
+ processing dio(60)  [seq:1,instance:1,rank:1,version:1,grounded,non-storing,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 1)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
   But it is the same parent as before: ignored

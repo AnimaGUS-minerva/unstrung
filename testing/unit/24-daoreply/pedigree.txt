@@ -1,0 +1,19 @@
+Run VM A, and capture packets:
+    tcpdump -i eth1 -s 0 -n -w a1.pcap
+
+then run:
+
+/sbin/sunshine.run --dagid ripple --rank 1 --prefix 2001:db8:0001::/48 -i eth1 --interval 30000 --verbose --timelog
+
+and hit ^C after two packets are sent.
+
+Then:
+        tcpdump -n -r a1.pcap -w ../INPUTS/dio-A-ripple.pcap ip6 dst ff02::1a
+
+The result should be:
+% tcpdump -n -r ../INPUTS/dio-A-ripple.pcap
+reading from file ../INPUTS/dio-A-ripple.pcap, link-type EN10MB (Ethernet)
+19:16:53.721925 IP6 fe80::1000:ff:fe64:6423 > ff02::1a: ICMP6, RPL, (CLR)DODAG Information Object, length 64
+19:17:23.761197 IP6 fe80::1000:ff:fe64:6423 > ff02::1a: ICMP6, RPL, (CLR)DODAG Information Object, length 64
+
+
