@@ -3,7 +3,7 @@ PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
 include ${PANDORA_SRCDIR}/Makefile.inc
 include ../Makefile.testing
 
-24-daoreply: 24-daoreply.cpp ${INC}/iface.h ${LIBS}
+24-daoreply: 24-daoreply.cpp ../24-daoreply/dioA.cpp ../24-daoreply/daoackA.cpp ${INC}/iface.h ${LIBS}
 	${CXX} ${CXXFLAGS} -o 24-daoreply 24-daoreply.cpp ${LDFLAGS} ${LIBS}
 
 checkprograms:: 24-daoreply

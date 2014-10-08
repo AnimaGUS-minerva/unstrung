@@ -7,7 +7,9 @@ dao2.pcap,15-builddao,17-recvdao
 dio-02.pcap
 dioA-eth0.pcap
 dioA-eth1.pcap
-
+dio-E-eth1.pcap,tcpdump on node E from sunshine,23-selfdio,tcpdump -n -r e-eth1.pcap -c 2 -w dio-E-eth1.pcap ip6 dst ff02::1a
+dio-A-ripple1.pcap,first packet from dio-E-eth1.pcap,MAKEFILE
+dioE-eth1d.pcap,first packet from dio-E-eth1
 dioA-eth1b.pcap,tcpdump on node A from sunshine,13-selfprefix
 
 just-comments.txt

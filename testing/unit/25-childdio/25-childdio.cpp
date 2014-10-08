@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
         /* now finish setting things up with netlink */
         pcap_network_interface::scan_devices(deb, false);
 
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dioE-eth1d.pcap", "/dev/null", deb);
+        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-E-eth1d.pcap", "/dev/null", deb);
         iface->set_debug(deb);
         iface->set_if_index(1);
         iface->set_if_addr(iface_src2);

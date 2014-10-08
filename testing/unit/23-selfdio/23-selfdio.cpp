@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-E.pcap", "/dev/null", deb);
+        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-E-eth1.pcap", "/dev/null", deb);
 	struct timeval n;
 	n.tv_sec = 1024*1024*1024;
 	n.tv_usec = 1024;

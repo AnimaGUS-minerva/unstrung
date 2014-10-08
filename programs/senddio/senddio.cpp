@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 
         case 's':
 	    check_dag(dag);
-            dag->set_mode(RPL_DIO_STORING);
+            dag->set_mode(RPL_DIO_STORING_MULTICAST);
             break;
 
         case 'N':

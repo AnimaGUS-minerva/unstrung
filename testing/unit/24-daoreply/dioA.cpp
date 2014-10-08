@@ -18,7 +18,7 @@ void dioA_step(rpl_debug *deb, const char *outpcap)
 
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6602", &iface_src2);
 
-        const char *pcapin1 = "../INPUTS/dio-A-ripple.pcap";
+        const char *pcapin1 = "../INPUTS/dio-A-ripple1.pcap";
         iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin1, outpcap, deb);
 
 	struct timeval n;
