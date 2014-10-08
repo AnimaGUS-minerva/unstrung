@@ -92,8 +92,8 @@ int dag_network::build_target_opt(struct in6_addr addr, int maskbits)
 {
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dao_target *daotg = (struct rpl_dao_target *)optbuff;
-
-    if(maskbits > 128) maskbits = 128;    // for sanity.
+    maskbits = 128; // SV this needs to send the full prefix
+    //if(maskbits > 128) maskbits = 128;    // for sanity.
     daotg->rpl_dao_flags     = 0x00;
     daotg->rpl_dao_prefixlen = maskbits;
     for(int i=0; i < (maskbits+7)/8; i++) {
@@ -137,7 +137,7 @@ int dag_network::build_dao(unsigned char *buff,
     dao->rpl_flags = 0;
     dao->rpl_flags |= RPL_DAO_D_MASK|RPL_DAO_K_MASK;
 
-    dao->rpl_daoseq     = mSequence;
+    dao->rpl_daoseq     = ++mDAOSequence;
 
     /* insert dagid, advance */
     {

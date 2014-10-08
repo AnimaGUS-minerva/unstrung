@@ -129,6 +129,16 @@ char *network_interface::eui48_str(char *str, int strlen)
     return str;
 }
 
+void network_interface::setup_all_if(){
+	network_interface *ni = network_interface::all_if;
+	while(ni!=NULL) {
+		network_interface *next = ni->next;
+		if(!ni->loopbackP()) {
+			ni->setup();
+		}
+	    ni=next;
+	}
+}
 
 bool network_interface::setup()
 {
@@ -177,6 +187,14 @@ bool network_interface::setup()
     if (err < 0)
     {
         debug->error("setsockopt(IPV6_MULTICAST_HOPS): %s", strerror(errno));
+        return false;
+    }
+
+    val = 0;
+    err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, &val, sizeof(val));
+    if (err < 0)
+    {
+        debug->error("setsockopt(IPV6_MULTICAST_LOOP): %s", strerror(errno));
         return false;
     }
 

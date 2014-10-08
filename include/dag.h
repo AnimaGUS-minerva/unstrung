@@ -50,6 +50,7 @@ public:
         /* prime key for the DAG */
         dagid_t                    mDagid;
 	bool                       mActive;
+	bool 						mPrefixSet;
 
         unsigned int               mLastSeq;
         bool seq_too_old(unsigned int seq);
@@ -139,9 +140,9 @@ public:
         /* some decode routines */
         static const char *mop_decode(unsigned int mop) {
             switch(mop) {
-            case RPL_DIO_NONSTORING: return "non-storing";
-            case RPL_DIO_STORING:    return "storing";
-            case RPL_DIO_NONSTORING_MULTICAST: return "non-storing-mcase";
+            case RPL_DIO_NO_DOWNWARD_ROUTES_MAINT: return "no-downward-route-maint";
+            case RPL_DIO_NONSTORING:    return "non-storing";
+            case RPL_DIO_STORING_NO_MULTICAST: return "storing-no-mcase";
             case RPL_DIO_STORING_MULTICAST:    return "storing-mcast";
             case 4:                  return "unknown-mop4";
             case 5:                  return "unknown-mop5";
@@ -171,7 +172,7 @@ public:
 	    mBestRank = dagrank;
 	};
 	void set_sequence(const unsigned int sequence) {
-	    mSequence = sequence;
+		mDTSN = sequence;
 	};
 	void set_instanceid(const unsigned int instanceid) {
 	    mInstanceid = instanceid;
@@ -195,25 +196,16 @@ public:
 	};
 
 	void set_nomulticast() {
-	    if(mMode == RPL_DIO_NONSTORING ||
-	       mMode == RPL_DIO_NONSTORING_MULTICAST) {
-		mMode = RPL_DIO_NONSTORING;
-	    } else if(mMode == RPL_DIO_STORING ||
-		      mMode == RPL_DIO_STORING_MULTICAST) {
-		mMode = RPL_DIO_STORING;
+	    if(mMode == RPL_DIO_STORING_MULTICAST) {
+		mMode = RPL_DIO_STORING_NO_MULTICAST;
 	    }
 	}
 
 	void set_multicast() {
-	    if(mMode == RPL_DIO_NONSTORING ||
-	       mMode == RPL_DIO_NONSTORING_MULTICAST) {
-		mMode = RPL_DIO_NONSTORING_MULTICAST;
-	    } else if(mMode == RPL_DIO_STORING ||
-		      mMode == RPL_DIO_STORING_MULTICAST) {
+	    if(mMode == RPL_DIO_STORING_NO_MULTICAST) {
 		mMode = RPL_DIO_STORING_MULTICAST;
 	    }
 	}
-
 
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
@@ -228,7 +220,7 @@ public:
 
 	int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 	int  build_dao(unsigned char *buff, unsigned int buff_len);
-	int  build_daoack(unsigned char *buff, unsigned int buff_len);
+	int  build_daoack(unsigned char *buff, unsigned int buff_len, unsigned short seq_num);
 
 	/* should be private */
 	ip_subnet               mPrefix;
@@ -296,7 +288,8 @@ private:
 
 	/* RiPpLe statistics */
 	enum RPL_DIO_MOP        mMode;
-	unsigned short          mSequence;
+	unsigned short          mDTSN;
+	unsigned short 			mDAOSequence;
 	unsigned int            mInstanceid;
 	unsigned int            mLifetime;      /* dag lifetime */
 	unsigned int            mVersion;

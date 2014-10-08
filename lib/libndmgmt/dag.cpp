@@ -91,16 +91,18 @@ void dag_network::init_dag(void)
     mLastSeq = 0;
     mMyRank   = UINT_MAX;
     mBestRank = UINT_MAX;
-    mSequence = INVALID_SEQUENCE;
     mInstanceid = 1;
     mVersion  = 1;
     debug     = NULL;
     memset(mStats,     0, sizeof(mStats));
     memset(old_mStats, 0, sizeof(old_mStats));
-
+    mMode = RPL_DIO_STORING_MULTICAST;
+    mDAOSequence = 1;
+    mDTSN = INVALID_SEQUENCE;
     init_dag_name();
     this->add_to_list();
     dag_me = NULL;
+    mPrefixSet = false;
 }
 
 dag_network::dag_network(dagid_t n_dagid, rpl_debug *deb)
@@ -132,6 +134,7 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
     mPrefix.maskbits  = prefixlen;
     mPrefixName[0]='\0';
+    mPrefixSet = true;
 }
 
 void dag_network::set_grounded(bool grounded)
@@ -447,13 +450,13 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
      * this is actually quite a big deal (SEE rfc6550), setting my RANK.
      * just fake it for now by adding 1.
      */
-    if(mSequence != INVALID_SEQUENCE && mSequence >= dio->rpl_dtsn) {
+    if(mDTSN != INVALID_SEQUENCE && mDTSN >= dio->rpl_dtsn) {
 	debug->verbose("  Same sequence number, ignore\n");
         this->mStats[PS_SAME_SEQUENCE_IGNORED]++;
 	return;
     }
 
-    mSequence     = dio->rpl_dtsn;
+    mDTSN     = dio->rpl_dtsn;
     mBestRank     = rank;
 
     /* XXX
@@ -793,7 +796,7 @@ void dag_network::receive_dao(network_interface *iface,
                               unsigned char *data, int dao_len)
 {
     /* it has already been checked to be at least sizeof(*dio) */
-    int dao_payload_len = dao_len - sizeof(*dao);
+    //int dao_payload_len = dao_len - sizeof(*dao);
 
     /* increment stat of number of packets processed */
     this->mStats[PS_PACKET_RECEIVED]++;
@@ -816,7 +819,7 @@ void dag_network::receive_dao(network_interface *iface,
     }
 
     /* look for the suboptions, process them */
-    rpl_dao decoded_dao(data, dao_payload_len);
+    rpl_dao decoded_dao(data, dao_len);
     unsigned int addrcount = 0;
 
     struct rpl_dao_target *rpltarget;
@@ -849,7 +852,7 @@ void dag_network::receive_dao(network_interface *iface,
     if(RPL_DAO_K(dao->rpl_flags)) {
         debug->verbose("sending DAOACK about %u networks, to %s\n",
                        addrcount, peer->node_name());
-        iface->send_daoack(*peer, *this);
+        iface->send_daoack(*peer, *this, dao->rpl_daoseq);
     }
 
     /* increment stat of number of packets processed */
@@ -869,6 +872,13 @@ void dag_network::receive_daoack(network_interface *iface,
         this->mStats[PS_DAOACK_WRONG_PARENT]++;
         return;
     }
+
+    /* check DAOSequence number */
+    if(daoack->rpl_daoseq != mDAOSequence){
+    	debug->warn("received DAOACK with incorrect sequence number");
+    	return;
+    }
+
     /* having got the message back, and validated it.. commit to this parent */
     commit_parent();
 }

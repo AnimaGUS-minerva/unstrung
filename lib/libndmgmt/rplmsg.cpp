@@ -140,7 +140,7 @@ rpl_dio::rpl_dio(rpl_node &peer,
 
 
 rpl_dao::rpl_dao(unsigned char *data, int dao_len) :
-    rpl_msg(data, dao_len - sizeof(struct nd_rpl_dao))
+    rpl_msg(data, dao_len)
 {
 }
 
