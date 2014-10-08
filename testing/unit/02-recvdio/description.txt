@@ -1,0 +1,10 @@
+This test case validates processing of DIO messages from a captured file.
+It should produce a DAO message out again, and configure some routes and the
+like on the virtual interfaces.
+The input file, ../INPUTS/senddio.pcap was created by test case 12.
+
+Much of this test is probably now captured in test case 24, and so this test
+case has been removed from the regular list.
+
+
+

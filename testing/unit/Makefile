@@ -25,7 +25,8 @@ srcdir?=$(shell pwd)
 #ACCUMULATE_ERRORS=true
 
 SUBDIRS=01-osw
-SUBDIRS+=02-recvdio
+# test case 24-daoreply does a better job
+#SUBDIRS+=02-recvdio
 SUBDIRS+=03-dioopt
 SUBDIRS+=04-dag 05-dag 06-dag
 SUBDIRS+=07-dagset
