@@ -873,7 +873,9 @@ void dag_network::receive_daoack(network_interface *iface,
 
     /* check DAOSequence number */
     if(daoack->rpl_daoseq != mDAOSequence){
-    	debug->warn("received DAOACK with incorrect sequence number");
+    	debug->warn("received DAOACK with incorrect sequence number, got %u, expected: %u",
+                    daoack->rpl_daoseq, mDAOSequence);
+        this->mStats[PS_DAOACK_WRONG_SEQNO]++;
     	return;
     }
 
