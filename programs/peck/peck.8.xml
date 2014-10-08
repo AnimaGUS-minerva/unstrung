@@ -6,7 +6,7 @@
 <refmeta>
 <refentrytitle>peck</refentrytitle>
 <manvolnum>8</manvolnum>
-<refmiscinfo class='date'>09 november 2009</refmiscinfo>
+<refmiscinfo class='date'>07 october 2014</refmiscinfo>
 </refmeta>
 <refnamediv id='name'>
 <refname>peck</refname>
@@ -15,31 +15,20 @@
 <!-- body begins here -->
 <refsynopsisdiv id='synopsis'>
 <cmdsynopsis>
-  <command>peck</command>    
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <group choice='opt'><arg choice='plain'>--show </arg><arg choice='plain'>--showonly </arg></group>
-    <arg choice='plain'><replaceable>command</replaceable></arg>
+  <command>peck</command>
 </cmdsynopsis>
 </refsynopsisdiv>
 
 <refsect1 id='examples'><title>EXAMPLES</title>
 <cmdsynopsis>
-  <command>ipsec</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <arg choice='opt'>[ --showonly ] </arg>
-    <arg choice='plain'>{ --start | --stop | --restart }</arg>
-</cmdsynopsis>
-<cmdsynopsis>
-  <command>ipsec</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <arg choice='plain'> --status </arg>
+  <command>peck</command>
 </cmdsynopsis>
 </refsect1>
 
 
 <refsect1 id='description'><title>DESCRIPTION</title>
 <para><emphasis remap='I'>peck</emphasis>
-opens an ICMPv6 socket and dumps any ICMPv6 messages seen.
+opens an ICMPv6 socket and dumps any ICMPv6 RPL messages seen.
 </para>
 </refsect1>
 
@@ -57,8 +46,8 @@ opens an ICMPv6 socket and dumps any ICMPv6 messages seen.
 
 <refsect1 id='history'><title>HISTORY</title>
 <para>Written for the Pandora Unstrung project
-&lt;<ulink url='http://pandora.sandelman.ca'>http://pandora.sandelman.ca</ulink>&gt;
-by Michael Richardson.</para>
+&lt;<ulink url='http://unstrung.sandelman.ca'>http://unstrung.sandelman.ca</ulink>&gt;
+by Michael Richardson around 2009-11-09.</para>
 </refsect1>
 
 <refsect1 id='bugs'><title>BUGS</title>

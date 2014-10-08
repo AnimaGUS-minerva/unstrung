@@ -1,29 +1,44 @@
-.\"     Title: sendra
-.\"    Author:
-.\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/09/2009
-.\"    Manual: 09 november 2009
-.\"    Source: 09 november 2009
+'\" t
+.\"     Title: senddao
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 10/07/2014
+.\"    Manual: [FIXME: manual]
+.\"    Source: [FIXME: source]
+.\"  Language: English
 .\"
-.TH "SENDRA" "8" "11/09/2009" "09 november 2009" "09 november 2009"
+.TH "SENDDAO" "8" "10/07/2014" "[FIXME: source]" "[FIXME: manual]"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
-senddio \- send arbitrary RPL DIO messages
+senddao \- send arbitrary RPL DAO messages
 .SH "SYNOPSIS"
-.HP 8
-\fBsenddio\fR \fIsetup\fR [\-\-show | \-\-showonly] \fIcommand\fR
+.HP \w'\fBsenddao\fR\ 'u
+\fBsenddao\fR
 .SH "EXAMPLES"
-.HP 6
-\fBipsec\fR \fIsetup\fR [[\ \-\-showonly\ ]] {\ \-\-start\ |\ \-\-stop\ |\ \-\-restart\ }
-.HP 6
-\fBipsec\fR \fIsetup\fR \-\-status
+.HP \w'\fBsenddao\fR\ 'u
+\fBsenddao\fR
 .SH "DESCRIPTION"
 .PP
-\fIsenddio\fR
-opens an ICMPv6 socket and sends arbitrary DIO messages onto the network\&.
+\fIsenddao\fR
+opens an ICMPv6 socket and sends arbitrary DAO messages onto the network\&.
 .SH "FILES"
 .PP
 file1
@@ -35,7 +50,7 @@ file1
 All output from the commands
 .SH "HISTORY"
 .PP
-Written for the Pandora Unstrung project <\fIhttp://pandora\&.sandelman\&.ca\fR> by Michael Richardson\&.
+Written for the Pandora Unstrung project <\m[blue]\fBhttp://unstrung\&.sandelman\&.ca\fR\m[]> by Michael Richardson\&.
 .SH "BUGS"
 .PP
 No known bugs\&.

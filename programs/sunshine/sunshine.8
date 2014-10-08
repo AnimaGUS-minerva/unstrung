@@ -1,25 +1,42 @@
+'\" t
 .\"     Title: sunshine
-.\"    Author:
-.\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/10/2009
-.\"    Manual: 09 november 2009
-.\"    Source: 09 november 2009
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 10/07/2014
+.\"    Manual: [FIXME: manual]
+.\"    Source: [FIXME: source]
+.\"  Language: English
 .\"
-.TH "SUNSHINE" "8" "11/10/2009" "09 november 2009" "09 november 2009"
+.TH "SUNSHINE" "8" "10/07/2014" "[FIXME: source]" "[FIXME: manual]"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 sunshine \- light up RPL DAG
 .SH "SYNOPSIS"
-.HP 9
+.HP \w'\fBsunshine\fR\ 'u
 \fBsunshine\fR \fIsetup\fR [\-\-show | \-\-showonly] \fIcommand\fR
 .SH "EXAMPLES"
-.HP 6
-\fBipsec\fR \fIsetup\fR [[\ \-\-showonly\ ]] {\ \-\-start\ |\ \-\-stop\ |\ \-\-restart\ }
-.HP 6
-\fBipsec\fR \fIsetup\fR \-\-status
+.HP \w'\fBsunshine\fR\ 'u
+\fBsunshine\fR \-\-dagid \fIfunfun0\fR \-\-rank \fI1\fR \-\-prefix \fI2001:db8:0001::/48\fR \-\-interface \fIeth1\fR \-\-interval \fI30000\fR \-\-timelog \-\-verbose
+.HP \w'\fBsunshine\fR\ 'u
+\fBsunshine\fR \-\-dagid \fIfunfun0\fR \-\-interface \fIeth0\fR \-\-interval \fI60000\fR \-\-timelog \-\-verbose
 .SH "DESCRIPTION"
 .PP
 \fIsunshine\fR
@@ -35,7 +52,7 @@ file1
 All output from the commands
 .SH "HISTORY"
 .PP
-Written for the Pandora Unstrung project <\fIhttp://pandora\&.sandelman\&.ca\fR> by Michael Richardson\&.
+Written for the Pandora Unstrung project <\m[blue]\fBhttp://unstrung\&.sandelman\&.ca\fR\m[]> by Michael Richardson around 2009\-11\-09
 .SH "BUGS"
 .PP
 No known bugs\&.

@@ -4,7 +4,7 @@
 <!-- lifted from troff+man by doclifter -->
 <refentry>
 <refmeta>
-<refentrytitle>sendra</refentrytitle>
+<refentrytitle>senddio</refentrytitle>
 <manvolnum>8</manvolnum>
 <refmiscinfo class='date'>09 november 2009</refmiscinfo>
 </refmeta>
@@ -16,23 +16,12 @@
 <refsynopsisdiv id='synopsis'>
 <cmdsynopsis>
   <command>senddio</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <group choice='opt'><arg choice='plain'>--show </arg><arg choice='plain'>--showonly </arg></group>
-    <arg choice='plain'><replaceable>command</replaceable></arg>
 </cmdsynopsis>
 </refsynopsisdiv>
 
 <refsect1 id='examples'><title>EXAMPLES</title>
 <cmdsynopsis>
-  <command>ipsec</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <arg choice='opt'>[ --showonly ] </arg>
-    <arg choice='plain'>{ --start | --stop | --restart }</arg>
-</cmdsynopsis>
-<cmdsynopsis>
-  <command>ipsec</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <arg choice='plain'> --status </arg>
+  <command>senddio</command>
 </cmdsynopsis>
 </refsect1>
 
@@ -57,7 +46,7 @@ opens an ICMPv6 socket and sends arbitrary DIO messages onto the network.
 
 <refsect1 id='history'><title>HISTORY</title>
 <para>Written for the Pandora Unstrung project
-&lt;<ulink url='http://pandora.sandelman.ca'>http://pandora.sandelman.ca</ulink>&gt;
+&lt;<ulink url='http://unstrung.sandelman.ca'>http://unstrung.sandelman.ca</ulink>&gt;
 by Michael Richardson.</para>
 </refsect1>
 

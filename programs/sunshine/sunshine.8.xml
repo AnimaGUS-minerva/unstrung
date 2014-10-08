@@ -6,7 +6,7 @@
 <refmeta>
 <refentrytitle>sunshine</refentrytitle>
 <manvolnum>8</manvolnum>
-<refmiscinfo class='date'>09 november 2009</refmiscinfo>
+<refmiscinfo class='date'>07 october 2014</refmiscinfo>
 </refmeta>
 <refnamediv id='name'>
 <refname>sunshine</refname>
@@ -24,15 +24,30 @@
 
 <refsect1 id='examples'><title>EXAMPLES</title>
 <cmdsynopsis>
-  <command>ipsec</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <arg choice='opt'>[ --showonly ] </arg>
-    <arg choice='plain'>{ --start | --stop | --restart }</arg>
+  <command>sunshine</command>
+    <arg choice='plain'> --dagid </arg>
+    <arg choice='plain'><replaceable>funfun0</replaceable></arg>
+    <arg choice='plain'> --rank </arg>
+    <arg choice='plain'><replaceable>1</replaceable></arg>
+    <arg choice='plain'> --prefix </arg>
+    <arg choice='plain'><replaceable>2001:db8:0001::/48</replaceable></arg>
+    <arg choice='plain'> --interface </arg>
+    <arg choice='plain'><replaceable>eth1</replaceable></arg>
+    <arg choice='plain'> --interval </arg>
+    <arg choice='plain'><replaceable>30000</replaceable></arg>
+    <arg choice='plain'> --timelog </arg>
+    <arg choice='plain'> --verbose </arg>
 </cmdsynopsis>
 <cmdsynopsis>
-  <command>ipsec</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <arg choice='plain'> --status </arg>
+  <command>sunshine</command>
+    <arg choice='plain'> --dagid </arg>
+    <arg choice='plain'><replaceable>funfun0</replaceable></arg>
+    <arg choice='plain'> --interface </arg>
+    <arg choice='plain'><replaceable>eth0</replaceable></arg>
+    <arg choice='plain'> --interval </arg>
+    <arg choice='plain'><replaceable>60000</replaceable></arg>
+    <arg choice='plain'> --timelog </arg>
+    <arg choice='plain'> --verbose </arg>
 </cmdsynopsis>
 </refsect1>
 
@@ -58,8 +73,8 @@ as a grounded node in an RPL DAG.
 
 <refsect1 id='history'><title>HISTORY</title>
 <para>Written for the Pandora Unstrung project
-&lt;<ulink url='http://pandora.sandelman.ca'>http://pandora.sandelman.ca</ulink>&gt;
-by Michael Richardson.</para>
+&lt;<ulink url='http://unstrung.sandelman.ca'>http://unstrung.sandelman.ca</ulink>&gt;
+by Michael Richardson around 2009-11-09</para>
 </refsect1>
 
 <refsect1 id='bugs'><title>BUGS</title>
