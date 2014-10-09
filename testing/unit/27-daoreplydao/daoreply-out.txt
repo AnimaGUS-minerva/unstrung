@@ -3,11 +3,11 @@ found[1]: wlan0 type=ether (active new) faked
 found[1]: wlan0 address=fe80::1000:ff:fe64:6423
 found[2]: lo type=loopback (active new) faked
 found[2]: lo address=::1
-Processing input file ../INPUTS/dio-A-ripple.pcap on if=[1]: wlan0 state: active  faked
+Processing input file ../INPUTS/dio-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
- processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
+ wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
+ processing dio(60)  [seq:1,instance:1,rank:1,version:1,grounded,storing-mcast,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
   peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
@@ -17,60 +17,42 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
-Scheduling dao in 5002 ms
-inserting event #1 at 1073741829/3024
-packet 2 is being processed
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
- processing dio(44)  [seq:1,instance:1,rank:1,version:1,non-storing,dagid:ripple0x00 ]
-  does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 1)
-  Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
-  But it is the same parent as before: ignored
+Scheduling dao in 2 ms
+inserting event #1 at 1073741824/3024
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
 sending DAO on if: wlan0(faked)
-Processing input file ../INPUTS/daoack-A-ripple.pcap on if=[1]: wlan0 state: active  faked
-packet 3 is being processed
-  processing daoack(20) [instance:1,daoseq:1,dagid:ripple0x00 ]
+Processing input file ../INPUTS/daoack-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
+packet 2 is being processed
+  processing daoack(20) [instance:1,daoseq:2,dagid:ripple0x00 ]
+  invoking ip -6 route del 2001:db8:1::/48
+    would invoke cmd: ip -6 route del 2001:db8:1::/48
   invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
 Scheduling dio in 2 ms
 inserting event #2 at 1073741824/3024
-packet 4 is being processed
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[1] hoplimit=0
-Got neighbor advertisement from fe80::1000:ff:fe64:6423 (flags=solicited ), advertising: fe80::1000:ff:fe64:6423, has 0 bytes of options
-
-packet 5 is being processed
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> fe80::1000:ff:fe66:6602[1] hoplimit=0
-Got neighbour solicitation from fe80::1000:ff:fe64:6423, looking for fe80::1000:ff:fe66:6602, has 8 bytes of options
-    option 1[8] source-linkaddr
-
-packet 6 is being processed
-  processing daoack(20) [instance:1,daoseq:1,dagid:ripple0x00 ]
-  already associated with this parent
 invoked doit(send_dio) on rpl_event (if_name=none)
 iface lo sending dio about dag: ripple
 sending DIO on if: lo for prefix: 2001:db8:1::/48
 iface wlan0 sending dio about dag: ripple
 sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
 Processing input file ../INPUTS/27-daoJ.pcap on if=[1]: wlan0 state: active  faked
-packet 7 is being processed
+packet 3 is being processed
   processing dao(52) [instance:1,daoseq:1,dao-ack,dagid:ripple0x00 ]
   new RPL node: fe80::1000:ff:fe66:4a01
-received DAO about network 2001:db8:1:0:1200:ff:fe66:4a01/128, target fe80::1000:ff:fe66:4a01
+received DAO about network 2001:db8:1:0:1200:ff:fe66:4a01/128, target fe80::1000:ff:fe66:4a01 (added)
   invoking ip -6 route add 2001:db8:1:0:1200:ff:fe66:4a01/128 via fe80::1000:ff:fe66:4a01 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8:1:0:1200:ff:fe66:4a01/128 via fe80::1000:ff:fe66:4a01 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
+sending DAOACK about 1 networks, to fe80::1000:ff:fe66:4a01
 sending DAOACK on if: wlan0(faked)
-packet 8 is being processed
+packet 4 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:4a01 -> fe80::1000:ff:fe66:6601[1] hoplimit=0
 Got neighbour solicitation from fe80::1000:ff:fe66:4a01, looking for fe80::1000:ff:fe66:6601, has 8 bytes of options
-    option 1[8] source-linkaddr
+    option 1[8] source-linkaddr 
 
-packet 9 is being processed
+packet 5 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:4a01 -> fe80::1000:ff:fe66:6601[1] hoplimit=0
 Got neighbor advertisement from fe80::1000:ff:fe66:4a01 (flags=solicited ), advertising: fe80::1000:ff:fe66:4a01, has 0 bytes of options
-SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
-SENDING[0] dao about 2001:db8:1:0:1200:ff:fe66:4a01/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
-sending DAO on if: wlan0(faked)

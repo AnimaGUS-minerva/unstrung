@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
         deb->want_time_log = false;
 
         dioA_step(deb, NULL);
-        daoackA_step(deb, "../OUTPUTS/27-node-E-dio.pcap");
+        daoackA_step(deb,
+                     "../INPUTS/daoack-A-ripple1.pcap",
+                     "../OUTPUTS/27-node-E-dio.pcap");
 
         const char *pcapin3 = "../INPUTS/27-daoJ.pcap";
         iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin3, "../OUTPUTS/27-daodaoack.pcap", deb);

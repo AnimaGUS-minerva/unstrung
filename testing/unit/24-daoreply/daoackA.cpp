@@ -4,11 +4,11 @@
 
 #include "fakeiface.h"
 
-void daoackA_step(rpl_debug *deb, const char *outpcap)
+void daoackA_step(rpl_debug *deb,
+                  const char *pcapin2, const char *outpcap)
 {
         pcap_network_interface *iface = NULL;
 
-        const char *pcapin2 = "../INPUTS/daoack-A-ripple.pcap";
         iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin2, outpcap, deb);
         printf("Processing input file %s on if=[%u]: %s state: %s %s\n",
                pcapin2,
