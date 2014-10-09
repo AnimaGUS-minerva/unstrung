@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
-        dioA_step(deb, "../OUTPUTS/24-node-E-out.pcap");
-        daoackA_step(deb, "../INPUTS/daoack-A-ripple1.pcap", NULL);
+        dioA_step(deb, "../OUTPUTS/28-node-E-out.pcap");
+        daoackA_step(deb, "../INPUTS/daoack-A-wrongseq-ripple1.pcap", NULL);
 
 	exit(0);
 }

@@ -1,0 +1,4 @@
+This test case is identical to 27-daoreplydao, except that the ACK to the DAO
+has the wrong sequence number.
+This is based upon 24-daoreply,
+

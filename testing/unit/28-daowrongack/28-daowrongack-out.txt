@@ -23,18 +23,7 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
 sending DAO on if: wlan0(faked)
-Processing input file ../INPUTS/daoack-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
+Processing input file ../INPUTS/daoack-A-wrongseq-ripple1.pcap on if=[1]: wlan0 state: active  faked
 packet 2 is being processed
-  processing daoack(20) [instance:1,daoseq:2,dagid:ripple0x00 ]
-  invoking ip -6 route del 2001:db8:1::/48
-    would invoke cmd: ip -6 route del 2001:db8:1::/48
-  invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
-    would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
-    would invoke cmd: ip -6 route show
-Scheduling dio in 2 ms
-inserting event #2 at 1073741824/3024
-invoked doit(send_dio) on rpl_event (if_name=none)
-iface lo sending dio about dag: ripple
-sending DIO on if: lo for prefix: 2001:db8:1::/48
-iface wlan0 sending dio about dag: ripple
-sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
+  processing daoack(20) [instance:1,daoseq:1,dagid:ripple0x00 ]
+received DAOACK with incorrect sequence number, got 1, expected: 2
