@@ -34,7 +34,7 @@ static void usage(void)
 {
         fprintf(stderr, "Usage: senddao [--sequence #] [--instance #] [--ack-request] \n");
         fprintf(stderr, "               [--dagid hexstring]\n");
-        fprintf(stderr, "               [--daoack]\n");
+        fprintf(stderr, "               [--daoack seqnum]\n");
         fprintf(stderr, "               [--dest target] [--prefix prefix]\n");
         fprintf(stderr, "               [--target prefix...]\n");
         fprintf(stderr, "               [-d datafile] [--outpcap file --fake] [--fake] [--iface net]\n");
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
         {"sequence", 1, NULL, 'S'},
         {"instance", 1, NULL, 'I'},
         {"dagid",    1, NULL, 'G'},
-        {"daoack",   0, NULL, 'K'},
+        {"daoack",   1, NULL, 'K'},
         {"datafile", 1, NULL, 'd'},
         {"dest",     1, NULL, 't'},
         {"myid",     1, NULL, 'M'},
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'K':
-            daoack = true;
+            daoack = atoi(optarg);
             break;
 
         case 'R':
@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
     if(datafilename!=NULL && icmp_len > 0) {
         /* nothing for now */
     } else if(daoack) {
-        icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body));
+        icmp_len = dn->build_daoack(icmp_body, sizeof(icmp_body), daoack);
     } else if(prefixvalue) {
         fprintf(stderr, "building DAO\n");
         icmp_len = dn->build_dao(icmp_body, sizeof(icmp_body));

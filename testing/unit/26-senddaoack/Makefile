@@ -14,7 +14,7 @@ clean::
 
 check::
 	@rm -f core.*
-	${SENDDAO} --fake --outpcap ${PCAP01} -i wlan0 -v --daoack --dagid thisismydicedag2 --sequence 11 --instance 43 2>&1 >../OUTPUTS/senddaoack-test-01.raw
+	${SENDDAO} --fake --outpcap ${PCAP01} -i wlan0 -v --daoack 11 --dagid thisismydicedag2 --sequence 11 --instance 43 2>&1 >../OUTPUTS/senddaoack-test-01.raw
 	@diff -B -w ../OUTPUTS/senddaoack-test-01.raw senddaoack-test-01.txt
 	@${TCPDUMP} -t -n -r ${PCAP01} -v -v -v >../OUTPUTS/senddaoack-test-01-pcap.txt
 	@diff ../OUTPUTS/senddaoack-test-01-pcap.txt  senddaoack-test-01-pcap.txt

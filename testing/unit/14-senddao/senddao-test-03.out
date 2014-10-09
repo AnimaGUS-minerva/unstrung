@@ -6,7 +6,7 @@ found[2]: lo address=::1
 Must specify pcap outfile (-O)
 Usage: senddao [--sequence #] [--instance #] [--ack-request] 
                [--dagid hexstring]
-               [--daoack]
+               [--daoack seqnum]
                [--dest target] [--prefix prefix]
                [--target prefix...]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]

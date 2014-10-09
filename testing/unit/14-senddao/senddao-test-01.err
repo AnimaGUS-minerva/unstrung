@@ -1,14 +1,14 @@
 either a prefix is needed to send a DAO, or --daoack
 Usage: senddao [--sequence #] [--instance #] [--ack-request] 
                [--dagid hexstring]
-               [--daoack]
+               [--daoack seqnum]
                [--dest target] [--prefix prefix]
                [--target prefix...]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
 either a prefix is needed to send a DAO, or --daoack
 Usage: senddao [--sequence #] [--instance #] [--ack-request] 
                [--dagid hexstring]
-               [--daoack]
+               [--daoack seqnum]
                [--dest target] [--prefix prefix]
                [--target prefix...]
                [-d datafile] [--outpcap file --fake] [--fake] [--iface net]
