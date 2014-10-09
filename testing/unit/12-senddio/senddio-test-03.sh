@@ -20,6 +20,7 @@ set -e
 #               [--rank #]            -R        2
 #               [--dagid hexstring]   -D        thisismynicedag1
 
+mkdir -p ../OUTPUTS
 out=../OUTPUTS/senddio-test-03.pcap
 rm -f $out
 
