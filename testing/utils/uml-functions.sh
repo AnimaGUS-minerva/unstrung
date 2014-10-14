@@ -1,6 +1,6 @@
-#! /bin/sh 
+#! /bin/sh
 #
-# 
+#
 # $Id: uml-functions.sh,v 1.45 2005/11/21 08:44:57 mcr Exp $
 #
 
@@ -16,7 +16,7 @@ setup_make() {
     # also force i386 build even for x86_64 platforms.
     SUBARCH=${ARCH-`uname -m`}
     case $SUBARCH in
-	x86_64) SUBARCH=i386;; 
+	x86_64) SUBARCH=i386;;
 	i?86) SUBARCH=i386;;
     esac
 
@@ -25,8 +25,8 @@ setup_make() {
     echo "UNTI_SRCDIR=${UNTI_SRCDIR}"
     echo "include ${UNTI_SRCDIR}/Makefile.inc"
     echo "include ${UNTI_SRCDIR}/Makefile.ver"
-    echo 
-    
+    echo
+
     echo "all: "
     echo "$TAB echo Default make called"
     echo "$TAB exit 1"
@@ -47,7 +47,7 @@ setup_make() {
 
     # now describe how to build the initrd.
     echo "initrd.cpio: ${UNTI_SRCDIR}/testing/utils/initrd-`uname -m`.list"
-    echo "$TAB fakeroot ${UNTI_SRCDIR}/testing/utils/buildinitrd ${UNTI_SRCDIR}/testing/utils/initrd-`uname -m`.list ${UNTI_SRCDIR} ${BASICROOT}"
+    echo "$TAB fakeroot ${UNTI_SRCDIR}/testing/utils/buildinitrd ${UNTI_SRCDIR}/testing/utils/initrd-${SUBARCH}.list ${UNTI_SRCDIR} ${BASICROOT}"
 }
 
 # output should directed to a Makefile
@@ -64,7 +64,7 @@ setup_host_make() {
     depends=""
 
     echo "# RULES for host $host"
-    echo 
+    echo
 
     echo "$hostroot: $hostroot/etc/localtime"
     echo "$TAB mkdir -p $host $hostroot"
@@ -99,7 +99,7 @@ setup_host_make() {
     echo "$TAB ln -f $hostroot/bin/true $hostroot/sbin/fsck.hostfs"
 
     # force it to GMT, otherwise (RH7.1) use host's zoneinfo.
-    if [ -f /usr/share/zoneinfo/GMT ] 
+    if [ -f /usr/share/zoneinfo/GMT ]
     then
       echo "$TAB cp /usr/share/zoneinfo/GMT $hostroot/etc/localtime"
     else
@@ -110,7 +110,7 @@ setup_host_make() {
     echo "$TAB (cd ${TESTINGROOT}/baseconfigs/all && find . -type f -print) | (cd $hostroot && xargs rm -f)"
     echo "$TAB (cd ${TESTINGROOT}/baseconfigs/$host && find . -type f -print) | (cd $hostroot && xargs rm -f)"
     # okay, that's all the stock stuff
-    echo 
+    echo
     depends="$depends $hostroot/etc/localtime"
 
     touch makeuml-fsname.$$
@@ -130,7 +130,7 @@ setup_host_make() {
 	       echo
 	       echo -n $hostroot/$file ' ' >>makeuml2.$$
 	esac
-    done	 
+    done
     nicelists=`cat makeuml2.$$`
     depends="$depends $nicelists"
     rm -f makeuml.$$ makeuml2.$$
@@ -150,8 +150,8 @@ setup_host_make() {
 	       echo
 	       echo -n $hostroot/$file ' ' >>makeuml2.$$
 	esac
-    done	 
- 
+    done
+
     nicelists=`cat makeuml2.$$`
     depends="$depends $nicelists"
     fsname=`cat makeuml-fsname.$$`
@@ -178,7 +178,7 @@ setup_host_make() {
     if [ "X$HOSTTYPE" == "Xopenswan" ]
     then
 	# install FreeSWAN if appropriate.
-        
+
 	echo "$hostroot/usr/local/sbin/ipsec : ${UNTI_SRCDIR}/Makefile.inc ${UNTI_SRCDIR}/Makefile.ver"
 	echo "$TAB cd ${UNTI_SRCDIR} && make DESTDIR=$POOLSPACE/$hostroot USE_OBJDIR=true install"
 	echo
@@ -243,7 +243,7 @@ setup_host() {
 
     hostroot=$POOLSPACE/$host/root
     mkdir -p $hostroot
-    # copy (with hard links) 
+    # copy (with hard links)
     (cd ${BASICROOT} && find . -print | cpio -pld $hostroot 2>/dev/null )
 
     # make private copy of /var.
@@ -259,19 +259,19 @@ setup_host() {
     then
       (cd $hostroot/etc/rc.d && ln -fs ../init.d ../rc?.d . )
     fi
-    
+
     # nuke certain other files that get in the way of booting
     rm -f $hostroot/etc/mtab
     rm -f $hostroot/sbin/hwclock
 
     # set up the timezone
-    rm -f $hostroot/etc/localtime 
+    rm -f $hostroot/etc/localtime
 
     # dummy out fsck.
     ln -f $hostroot/bin/true $hostroot/sbin/fsck.hostfs
 
     # force it to GMT, otherwise (RH7.1) use host's zoneinfo.
-    if [ -f /usr/share/zoneinfo/GMT ] 
+    if [ -f /usr/share/zoneinfo/GMT ]
     then
       cp /usr/share/zoneinfo/GMT $hostroot/etc/localtime
     else
@@ -308,13 +308,13 @@ setup_host() {
 }
 
 applypatches() {
-    if [ ! -d arch/um/.PATCHAPPLIED ] 
+    if [ ! -d arch/um/.PATCHAPPLIED ]
     then
 	if [ -n "${UMLPATCH}" ] && [ "$UMLPATCH" != "none" ] && [ "$UMLPATCH" != /dev/null ]
 	then
 	    echo Applying $UMLPATCH
-	
-	    if bzcat $UMLPATCH | patch -p1 
+
+	    if bzcat $UMLPATCH | patch -p1
 	    then
 		:
 	    else
@@ -326,7 +326,7 @@ applypatches() {
 	if [ -n "$UMLPATCH2" ] && [ -f $UMLPATCH2 ]
 	then
 		echo Applying $UMLPATCH2
-		if bzcat $UMLPATCH2 | patch -p1 
+		if bzcat $UMLPATCH2 | patch -p1
 		then
 		    :
 		else
@@ -343,7 +343,7 @@ applypatches() {
 
 	for patch in ${TESTINGROOT}/kernelconfigs/local_${KERNEL_MAJ_VERSION}_*.patch
 	do
-	    if [ -f $patch ] 
+	    if [ -f $patch ]
 	    then
 		echo Applying local patch $patch
 		cat $patch | patch -p1

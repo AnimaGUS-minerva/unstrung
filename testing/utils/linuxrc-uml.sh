@@ -43,8 +43,9 @@ echo "done."
 echo Invoked with Arguments: $*
 
 cd /root
+mkdir /initrd
 mount -n -t proc none /proc
-mount -n --move . /
+pivot_root /root /initrd
 if grep LATE /proc/cmdline; then echo STARTING SHELL2 - exit to continue; /bin/bash; fi
 exec </dev/console >/dev/console 2>&1
 exec /usr/sbin/chroot . /sbin/init $*

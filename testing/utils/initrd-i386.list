@@ -44,3 +44,5 @@
 ./lib/i386-linux-gnu/ld-linux.so.2
 ./lib/i386-linux-gnu/ld-2.13.so
 ./lib/i386-linux-gnu/libsepol.so.1
+./lib/i386-linux-gnu/librt-2.13.so
+./lib/i386-linux-gnu/librt.so.1
