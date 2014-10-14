@@ -58,10 +58,11 @@ void usage()
     exit(EX_USAGE);
 }
 
-bool check_dag(dag_network *dag)
+bool check_dag(unsigned char opt, dag_network *dag)
 {
     if(dag==NULL) {
-	fprintf(stderr, "--dagid must preceed DODAG parameters\n");
+	fprintf(stderr, "while processing '%c'; --dagid must preceed DODAG parameters\n",
+                opt);
 	usage();
     }
     return true;
@@ -155,7 +156,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "invalid prefix string: %s\n", optarg);
 		usage();
 	    }
-	    check_dag(dag);
+	    check_dag(c, dag);
             dag->set_prefix(prefix);
             dag->set_grounded(true);
             dag->set_dagrank(1);
@@ -169,17 +170,17 @@ int main(int argc, char *argv[])
         break;
 
         case 'I':
-	    check_dag(dag);
+	    check_dag(c, dag);
             dag->set_instanceid(atoi(optarg));
             break;
 
         case 'W':
-	    check_dag(dag);
+	    check_dag(c, dag);
             dag->set_interval(atoi(optarg));
             break;
 
         case 'R':
-	    check_dag(dag);
+	    check_dag(c, dag);
 	    {
 		int rank = atoi(optarg);
 		dag->set_dagrank(rank);
@@ -201,7 +202,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'i':
-        	check_dag(dag);
+            check_dag(c, dag);
         	if(dag->mPrefixSet){
         		fprintf(stderr, "interface must preceed prefix parameter\n");
         		usage();
