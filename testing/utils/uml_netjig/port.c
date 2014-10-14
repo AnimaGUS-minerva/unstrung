@@ -93,8 +93,9 @@ static void update_src(struct netjig_state *ns,
 
     if(ns->verbose) {
       fprintf(stderr,
-	      "\r Addr: %02x:%02x:%02x:%02x:%02x:%02x "
-	      " New port %d",
+	      "\n\r switch: %s Addr: %02x:%02x:%02x:%02x:%02x:%02x "
+	      " New port %d ",
+              nh->nh_name,
 	      p->header.src[0], p->header.src[1], p->header.src[2],
 	      p->header.src[3], p->header.src[4], p->header.src[5],
 	      port->control);
@@ -102,7 +103,7 @@ static void update_src(struct netjig_state *ns,
 
     if(last != NULL){
       if(ns->verbose) {
-	fprintf(stderr, "old port %d", last->control);
+	fprintf(stderr, "old port %d ", last->control);
       }
       delete_hash(nh, p->header.src);
     }
