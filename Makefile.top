@@ -64,3 +64,7 @@ vars:
 	@echo LIBPCAP: ${LIBPCAP}
 	@echo TCPDUMP: ${TCPDUMP}
 	@echo NETDISSECTLIB: ${NETDISSECTLIB}
+
+distarchive:
+	git archive --prefix=unstrung-${PANDORA_VERSION}/ -o ../unstrung-${PANDORA_VERSION}.tar.gz HEAD
+
