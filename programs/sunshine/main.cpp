@@ -34,6 +34,7 @@ static struct option const longopts[] =
     { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
     { "instance",  1, NULL, 'I'},
+    { "instanceid",1, NULL, 'I'},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
     { "dagid",     1, NULL, 'G'},
