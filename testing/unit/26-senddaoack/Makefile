@@ -1,9 +1,9 @@
-PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${PANDORA_SRCDIR}/Makefile.inc
-include ../Makefile.testing
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${srcdir}../Makefile.testing
 
-export SENDDAO=${PANDORA_SRCDIR}/programs/senddao/senddao
+export SENDDAO=${UNSTRUNG_SRCDIR}/programs/senddao/senddao
 PCAP01=../OUTPUTS/senddaoack-test-01out.pcap
 
 checkprograms::

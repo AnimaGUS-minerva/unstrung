@@ -1,9 +1,9 @@
-PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
 all: check
 
-include ${PANDORA_SRCDIR}/Makefile.inc
-include ../Makefile.testing
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${srcdir}../Makefile.testing
 
 event-01: event-01.cpp ${INC}/event.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o event-01 event-01.cpp ${LDFLAGS}

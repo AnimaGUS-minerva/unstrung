@@ -13,8 +13,7 @@
 #
 # RCSID $Id: Makefile,v 1.22 2004/04/03 19:44:52 ken Exp $
 
-UNSTRUNG_SRCDIR=../../..
-PANDORA_SRCDIR=${UNSTRUNG_SRCDIR}
+UNSTRUNG_SRCDIR?=../../..
 OBJS = nethub.o cmdmode.o port.o hash.o tuntap.o
 OBJS+=getopt_long.o
 

@@ -8,3 +8,4 @@ testing/functional/*/OUTPUT
 Makefile.ver
 
 TAGS
+Makefile.local
