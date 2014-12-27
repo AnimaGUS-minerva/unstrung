@@ -1,0 +1,14 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 Sandelman Software Works - unstrung.sandelman.ca.
+
+START=50
+
+USE_PROCD=1
+PROG=/sbin/sunshine
+
+start_service() {
+        procd_open_instance
+        procd_set_param command "$PROG" --dagid unstrung --instance 0 --interval 60000
+        procd_close_instance
+}
+
