@@ -1,0 +1,10 @@
+ifeq ($(ARCH),i386)
+NETDISSECTLIB=/corp/projects/pandora/host/tcpdump-4.6.2/libnetdissect.a
+NETDISSECTH=-DNETDISSECT -I/corp/projects/pandora/include -I/corp/projects/pandora/host/tcpdump-4.6.2/ -I/corp/projects/pandora/tcpdump-4.6.2
+LIBPCAP=/corp/projects/pandora/x86/libpcap-1.6.2/libpcap.a
+endif
+
+LIBPCAPINC=-I/corp/projects/pandora/include
+TCPDUMP=/corp/projects/pandora/host/tcpdump-4.6.2/tcpdump
+LIBPCAP_HOST=$(shell /corp/projects/pandora/host/libpcap-1.6.2/pcap-config --libs)
+

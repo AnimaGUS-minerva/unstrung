@@ -7,11 +7,9 @@ default:: programs
 # stuff to set... use -m32 by default because of UML testing, should remove this to elsewhere.
 INC=${UNSTRUNG_SRCDIR}/include
 #-I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
-#CROSSFLAGS?=-m32
-HOSTFLAGS=-m32
 CFLAGS+=-I${INC}
 CXXFLAGS+=-I${INC}
-OSDEP=$(shell uname -s).$(shell arch)
+HOSTFLAGS=-m32
 
 USE_OBJDIR?=false
 XMLTO=xmlto
@@ -28,20 +26,23 @@ endif
 ifeq ($(USE_OBJDIR),true)
 ARCH?=$(shell arch)
 OBJDIR?=OBJ.${ARCH}
+else
+OBJDIR=.
+endif
 OBJDIRTOP?=$(shell mkdir -p ${OBJDIR}; cd ${OBJDIR} && pwd)
 UNSTRUNG_OBJDIR?=${OBJDIRTOP}
 export OBJDIRTOP
-else
-UNSTRUNG_OBJDIR?=.
+OSDEP=$(shell uname -s).${ARCH}
+
+ifeq ($(ARCH),i386)
+CROSSFLAGS?=-m32
 endif
 
 LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${UNSTRUNG_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
-#LIBPCAP=/usr/local/ia32/lib/libpcap.a
-LIBPCAP?=-L/usr/local/ia32/lib -lpcap
-LIBPCAPINC?=-I/sandel/include
+LIBPCAP?=-lpcap
 TCPDUMP?=tcpdump
 
 ifeq ($(EMBEDDED),)
