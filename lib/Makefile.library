@@ -1,14 +1,5 @@
 MANSRCDIR=${UNSTRUNG_SRCDIR}/lib/libopenswan
 
-LEX=flex
-RANLIB?=ranlib
-
-ifeq ($(USE_YACC),true)
-BISON=yacc -b parser
-else
-BISON=bison
-endif
-
 OSDEP?=$(shell uname -s | tr 'A-Z' 'a-z')
 
 WCASTQUAL?=-Wcast-qual
@@ -19,12 +10,8 @@ INCLUDES+=-I${UNSTRUNG_SRCDIR}/include
 CFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 CXXFLAGS+=${PORTINCLUDE} ${INCLUDES} ${CROSSFLAGS}
 
-
 CFLAGS+=-DDEBUG
 CFLAGS+= $(USERCOMPILE)
-ifneq ($(BUILDENV),darwin)
-CFLAGS+= -Wall
-endif
 #CFLAGS+= -Wconversion
 #CFLAGS+= -Wmissing-prototypes
 CFLAGS+= -Wpointer-arith
@@ -36,10 +23,6 @@ CFLAGS+= -Wstrict-prototypes
 #CFLAGS+= -Wwrite-strings
 CFLAGS+= -Wbad-function-cast
 CFLAGS+= ${CROSSFLAGS}
-
-ifeq ($(USE_NAT_TRAVERSAL),true)
-CFLAGS+= -DNAT_TRAVERSAL
-endif
 
 ARFLAGS=crvs
 MANS=
