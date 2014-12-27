@@ -11,7 +11,8 @@ BUILDTOP=$(cd ..; pwd)
 echo LIBPCAP=${BUILDTOP}/x86/libpcap-1.6.2/libpcap.a >Makefile.local
 echo LIBPCAP_HOST=${BUILDTOP}/host/libpcap-1.6.2/libpcap.a >>Makefile.local
 echo LIBPCAPINC=-I${BUILDTOP}/include                >>Makefile.local
+echo ARCH=i386  			             >>Makefile.local
 echo TCPDUMP=${BUILDTOP}/host/tcpdump-4.6.2/tcpdump  >>Makefile.local
 echo NETDISSECTLIB=${BUILDTOP}/host/tcpdump-4.6.2/libnetdissect.a >>Makefile.local
 echo NETDISSECTH=-DNETDISSECT -I${BUILDTOP}/include -I${BUILDTOP}/host/tcpdump-4.6.2/ -I${BUILDTOP}/tcpdump-4.6.2 >>Makefile.local
-echo export LIBPCAP LIBPCAP_HOST LIBPCAPINC TCPDUMP NETDISSECTLIB NETDISSECTH >>Makefile.local
+echo export ARCH LIBPCAP LIBPCAP_HOST LIBPCAPINC TCPDUMP NETDISSECTLIB NETDISSECTH >>Makefile.local
