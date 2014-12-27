@@ -1,7 +1,7 @@
-PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${PANDORA_SRCDIR}/Makefile.inc
-include ../Makefile.testing
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${srcdir}../Makefile.testing
 
 selfprefix-13: selfprefix-13.cpp ${INC}/iface.h ${LIBS}
 	${CXX} ${CXXFLAGS} -o selfprefix-13 selfprefix-13.cpp ${LDFLAGS}

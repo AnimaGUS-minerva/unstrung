@@ -11,14 +11,15 @@
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
 
-PANDORA_SRCDIR?=$(shell cd ../..; pwd)
-srcdir?=${PANDORA_SRCDIR}/programs/peck/
+UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
+srcdir?=${UNSTRUNG_SRCDIR}/programs/peck/
 
 PROGRAM=peck
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CFLAGS+=-I/sandel/include -g
 CXXFLAGS+=-I/sandel/include -g
 PROGRAMDIR=/sbin
+ONEFILE=peck.c
 OBJS=peck.o
 
-include ${PANDORA_SRCDIR}/programs/Makefile.program
+include ${UNSTRUNG_SRCDIR}/programs/Makefile.program

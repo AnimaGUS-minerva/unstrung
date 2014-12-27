@@ -13,12 +13,12 @@
 #
 
 
-PANDORA_SRCDIR?=$(shell cd ../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 
-include ${PANDORA_SRCDIR}/Makefile.ver
-include ${PANDORA_SRCDIR}/Makefile.inc
+include ${UNSTRUNG_SRCDIR}/Makefile.ver
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
-srcdir?=${PANDORA_SRCDIR}/lib/libfakeiface/
+srcdir?=${UNSTRUNG_SRCDIR}/lib/libfakeiface/
 
 # local install of pcap.h, or make sure you have libpcap-dev installed.
 CXXFLAGS+=${LIBPCAPINC} -g

@@ -12,17 +12,18 @@
 # for more details.
 
 
-PANDORA_SRCDIR?=$(shell cd ../..; pwd)
-srcdir?=${PANDORA_SRCDIR}/programs/sunshine/
+UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
+srcdir?=${UNSTRUNG_SRCDIR}/programs/sunshine/
 
 PROGRAM=sunshine
-OBJS=${SRCS:.c=.o}
 SRCS=main.cpp sendnd.cpp
+ONEFILE=main.cpp
+OBJS=${SRCS:.cpp=.o}
 LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK}
 CFLAGS+=${LIBPCAPINC}
 CXXFLAGS+=${LIBPCAPINC}
 CXXFLAGS+=-g -DBUILDNUMBER=\"${BUILDNUMBER}\"
 LDFLAGS=-g
 
-include ${PANDORA_SRCDIR}/programs/Makefile.program
+include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
 

@@ -1,9 +1,9 @@
-PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
 all: check
 
-include ${PANDORA_SRCDIR}/Makefile.inc
-include ../Makefile.testing
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${srcdir}../Makefile.testing
 
 22-queues: 22-queues.cpp ${INC}/iface.h ${INC}/dag.h ${LIBNDMGMT}
 	${CXX} ${CXXFLAGS} -o 22-queues 22-queues.cpp ${LDFLAGS}

@@ -14,10 +14,10 @@
 #
 
 
-PANDORA_SRCDIR?=$(shell cd ..; pwd)
-export PANDORA_SRCDIR
+UNSTRUNG_SRCDIR?=$(shell cd ..; pwd)
+export UNSTRUNG_SRCDIR
 
-include ${PANDORA_SRCDIR}/Makefile.inc
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 

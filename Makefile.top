@@ -16,6 +16,8 @@
 # RCSID $Id: Makefile.top,v 1.4 2005/07/18 03:46:13 mcr Exp $
 
 NEEDCHECK:=
+MAKEFILETOP:=true
+SUBDIRS=lib programs testing
 
 clean::
 	-echo cleaning
@@ -64,7 +66,11 @@ vars:
 	@echo LIBPCAP: ${LIBPCAP}
 	@echo TCPDUMP: ${TCPDUMP}
 	@echo NETDISSECTLIB: ${NETDISSECTLIB}
+	@echo USE_OBJDIR: ${USE_OBJDIR}
+	@echo OBJDIR: ${OBJDIR}
 
 distarchive:
 	git archive --prefix=unstrung-${PANDORA_VERSION}/ -o ../unstrung-${PANDORA_VERSION}.tar.gz HEAD
 
+# export USE_ variables
+export USE_OBJDIR

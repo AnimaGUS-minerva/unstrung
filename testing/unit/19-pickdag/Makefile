@@ -1,7 +1,7 @@
-PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${PANDORA_SRCDIR}/Makefile.inc
-include ../Makefile.testing
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${srcdir}../Makefile.testing
 
 19-pickdag: 19-pickdag.cpp ${INC}/iface.h ${LIBS}
 	${CXX} ${CXXFLAGS} -o 19-pickdag 19-pickdag.cpp ${LDFLAGS}

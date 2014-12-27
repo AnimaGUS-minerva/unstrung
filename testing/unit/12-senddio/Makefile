@@ -1,10 +1,10 @@
-PANDORA_SRCDIR?=$(shell cd ../../..; pwd)
+UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 
-include ${PANDORA_SRCDIR}/Makefile.inc
-include ../Makefile.testing
-INC=${PANDORA_SRCDIR}/include
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
+include ${srcdir}../Makefile.testing
+INC=${UNSTRUNG_SRCDIR}/include
 
-export SENDDIO=${PANDORA_SRCDIR}/programs/senddio/senddio
+export SENDDIO=${UNSTRUNG_SRCDIR}/programs/senddio/senddio
 
 checkprograms::
 programs::
