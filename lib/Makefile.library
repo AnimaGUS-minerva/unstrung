@@ -1,5 +1,6 @@
 MANSRCDIR=${UNSTRUNG_SRCDIR}/lib/libopenswan
 
+RANLIB?=ranlib
 OSDEP?=$(shell uname -s | tr 'A-Z' 'a-z')
 
 WCASTQUAL?=-Wcast-qual
