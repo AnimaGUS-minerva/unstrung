@@ -28,6 +28,7 @@ srcdir?=$(shell pwd)
 
 SUBDIRS=lib programs testing
 
+include ${PANDORA_SRCDIR}/Makefile.ver
 include ${PANDORA_SRCDIR}/Makefile.top
 include ${PANDORA_SRCDIR}/Makefile.inc
 

@@ -65,6 +65,9 @@ vars:
 	@echo TCPDUMP: ${TCPDUMP}
 	@echo NETDISSECTLIB: ${NETDISSECTLIB}
 
+version:
+	@echo ${PANDORA_VERSION}
+
 distarchive:
-	git archive --prefix=unstrung-${PANDORA_VERSION}/ -o ../unstrung-${PANDORA_VERSION}.tar.gz HEAD
+	git archive --prefix=unstrung-${PANDORA_VERSION}/ -o ../downloads/unstrung-${PANDORA_VERSION}.tar.gz HEAD
 
