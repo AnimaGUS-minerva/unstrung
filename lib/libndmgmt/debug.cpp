@@ -18,28 +18,60 @@
 #include <string.h>
 extern "C" {
 #include <sys/time.h>
+#include <syslog.h>
 #include <time.h>
 }
 
 #include "debug.h"
 
-bool needslf=false;
-char syslogbuf[1024];
-
-void rpl_debug::logv_more_syslog(const char *fmt, va_list vargs)
+/* XXX: I guess LOG_PERROR could have been used rather than --stderr */
+void rpl_debug::open_syslog(void)
 {
-
+    if(syslog_open) return;
+    openlog(progname, LOG_CONS|LOG_PID, LOG_DAEMON);
+    syslog_open = true;
 }
 
-void rpl_debug::logv_syslog(const char *fmt, va_list vargs)
+void rpl_debug::logv_append(const char *fmt, va_list vargs)
 {
-
+    if(logspot == NULL) {
+        logspot=syslogbuf;
+        sysloglen=sizeof(syslogbuf);
+    }
+    int len = vsnprintf(logspot, sysloglen, fmt, vargs);
+    sysloglen -= len;
+    logspot   += len;
 }
 
-void rpl_debug::logv_more_file(const char *fmt, va_list vargs)
+void rpl_debug::log_append(const char *fmt, ...)
+{
+    va_list vargs;
+    va_start(vargs,fmt);
+    logv_append(fmt, vargs);
+}
+
+void rpl_debug::logv_syslog_flush(void)
+{
+    open_syslog();
+    syslog(LOG_INFO, "%s", syslogbuf);
+}
+
+
+void rpl_debug::logv_file_flush(void)
 {
     if(file == NULL) return;
-    vfprintf(file, fmt, vargs);
+    fprintf(file, "%s", syslogbuf);
+}
+
+void rpl_debug::logv_flush(void)
+{
+    if(log_file)   logv_file_flush();
+    if(log_syslog) logv_syslog_flush();
+}
+
+void rpl_debug::logv_more(const char *fmt, va_list vargs)
+{
+    logv_append(fmt, vargs);
     int len = strlen(fmt);
     if(len > 1 && fmt[len-1]=='\n') {
         needslf=false;
@@ -47,14 +79,13 @@ void rpl_debug::logv_more_file(const char *fmt, va_list vargs)
         needslf=true;
     }
 }
-
-void rpl_debug::logv_file(const char *fmt, va_list vargs)
+void rpl_debug::logv(const char *fmt, va_list vargs)
 {
     if(needslf) {
-        /* terminate previous line */
-        fputc('\n', file);
+        /* terminate previous line, flush */
+        logv_file_flush();
+        logv_syslog_flush();
     }
-    if(file == NULL) return;
     if(want_time_log) {
         struct timeval tv1;
         gettimeofday(&tv1, NULL);
@@ -64,20 +95,9 @@ void rpl_debug::logv_file(const char *fmt, va_list vargs)
 
         char tbuf[64];
         strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
-        fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
+        log_append("[%s.%u] ", tbuf, tv1.tv_usec/1000);
     }
-    logv_more_file(fmt, vargs);
-}
-
-void rpl_debug::logv_more(const char *fmt, va_list vargs)
-{
-    if(log_file)   logv_more_file(fmt, vargs);
-    if(log_syslog) logv_more_syslog(fmt, vargs);
-}
-void rpl_debug::logv(const char *fmt, va_list vargs)
-{
-    if(log_file)   logv_file(fmt, vargs);
-    if(log_syslog) logv_syslog(fmt, vargs);
+    logv_append(fmt, vargs);
 }
 
 void rpl_debug::log(const char *fmt, ...)

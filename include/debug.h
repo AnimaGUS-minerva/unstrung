@@ -24,8 +24,14 @@ public:
 	bool                    flag;
         bool                    log_syslog;
         bool                    log_file;
+        bool                    syslog_open;
+        char                   *logspot;
+        bool                    needslf;
+        char                    syslogbuf[1024];
+        int                     sysloglen;
 	unsigned int            debug_flags;
 	FILE                   *file;
+        char                    progname[64];
         bool                    want_time_log;
         bool                    verbose_test() {
                 return(flag && file!=NULL);
@@ -56,10 +62,13 @@ public:
         void logv(const char *fmt, va_list vargs);
         void logv_more(const char *fmt, va_list vargs);
  private:
-        void logv_file(const char *fmt, va_list vargs);
-        void logv_more_file(const char *fmt, va_list vargs);
-        void logv_syslog(const char *fmt, va_list vargs);
-        void logv_more_syslog(const char *fmt, va_list vargs);
+        void open_syslog(void);
+        void logv_flush(void);
+        void logv_file_flush(void);
+        void logv_syslog_flush(void);
+        void log_append(const char *fmt, ...);
+        void logv_append(const char *fmt, va_list vargs);
+
 };
 
 #endif /* _UNSTRUNG_DEBUG_H */
