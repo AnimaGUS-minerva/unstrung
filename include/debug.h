@@ -18,6 +18,8 @@ public:
                 debug_flags = 0;
                 file = out;
                 want_time_log = false;
+                log_file   = true;
+                log_syslog = false;
         };
 
         /* debugging */
