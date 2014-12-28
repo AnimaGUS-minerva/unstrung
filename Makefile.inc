@@ -29,7 +29,7 @@ OBJDIR?=OBJ.${ARCH}
 else
 OBJDIR=.
 endif
-OBJDIRTOP?=$(shell mkdir -p ${OBJDIR}; cd ${OBJDIR} && pwd)
+OBJDIRTOP?=$(shell cd ${UNSTRUNG_SRCDIR} && mkdir -p ${OBJDIR}; cd ${OBJDIR} && pwd)
 UNSTRUNG_OBJDIR?=${OBJDIRTOP}
 export OBJDIRTOP
 OSDEP=$(shell uname -s).${ARCH}

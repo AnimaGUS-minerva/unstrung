@@ -22,6 +22,8 @@ public:
 
         /* debugging */
 	bool                    flag;
+        bool                    log_syslog;
+        bool                    log_file;
 	unsigned int            debug_flags;
 	FILE                   *file;
         bool                    want_time_log;
@@ -53,6 +55,11 @@ public:
         void debug(unsigned int level, const char *fmt, ...);
         void logv(const char *fmt, va_list vargs);
         void logv_more(const char *fmt, va_list vargs);
+ private:
+        void logv_file(const char *fmt, va_list vargs);
+        void logv_more_file(const char *fmt, va_list vargs);
+        void logv_syslog(const char *fmt, va_list vargs);
+        void logv_more_syslog(const char *fmt, va_list vargs);
 };
 
 #endif /* _UNSTRUNG_DEBUG_H */

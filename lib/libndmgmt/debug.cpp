@@ -24,8 +24,19 @@ extern "C" {
 #include "debug.h"
 
 bool needslf=false;
+char syslogbuf[1024];
 
-void rpl_debug::logv_more(const char *fmt, va_list vargs)
+void rpl_debug::logv_more_syslog(const char *fmt, va_list vargs)
+{
+
+}
+
+void rpl_debug::logv_syslog(const char *fmt, va_list vargs)
+{
+
+}
+
+void rpl_debug::logv_more_file(const char *fmt, va_list vargs)
 {
     if(file == NULL) return;
     vfprintf(file, fmt, vargs);
@@ -37,7 +48,7 @@ void rpl_debug::logv_more(const char *fmt, va_list vargs)
     }
 }
 
-void rpl_debug::logv(const char *fmt, va_list vargs)
+void rpl_debug::logv_file(const char *fmt, va_list vargs)
 {
     if(needslf) {
         /* terminate previous line */
@@ -55,7 +66,18 @@ void rpl_debug::logv(const char *fmt, va_list vargs)
         strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
         fprintf(file, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
     }
-    logv_more(fmt, vargs);
+    logv_more_file(fmt, vargs);
+}
+
+void rpl_debug::logv_more(const char *fmt, va_list vargs)
+{
+    if(log_file)   logv_more_file(fmt, vargs);
+    if(log_syslog) logv_more_syslog(fmt, vargs);
+}
+void rpl_debug::logv(const char *fmt, va_list vargs)
+{
+    if(log_file)   logv_file(fmt, vargs);
+    if(log_syslog) logv_syslog(fmt, vargs);
 }
 
 void rpl_debug::log(const char *fmt, ...)

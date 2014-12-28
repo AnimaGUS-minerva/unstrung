@@ -1,3 +1,4 @@
+# -*- makefile -*-
 MANSRCDIR=${UNSTRUNG_SRCDIR}/lib/libopenswan
 
 RANLIB?=ranlib
@@ -36,7 +37,7 @@ default:: programs
 SHOULDWERESTART=${USE_OBJDIR}$(wildcard ${ONEFILE})
 ifeq ($(SHOULDWERESTART),true${ONEFILE})
 all programs clean install::
-	cd ${UNSTRUNG_SRCDIR} && cd ${OBJDIRTOP}/lib/lib${LIBRARY} && ${MAKE} $@
+	cd ${UNSTRUNG_SRCDIR} && ${MAKE} -C ${OBJDIRTOP}/lib/lib${LIBRARY} $@
 else
 all::	$(LIB)
 programs:: $(LIB)
