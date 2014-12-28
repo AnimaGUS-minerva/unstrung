@@ -26,6 +26,9 @@
 #include "dag.h"
 #include "unstrung.h"
 
+#define OPTION_SYSLOG 0x01
+#define OPTION_STDERR 0x02
+
 char *progname;
 static struct option const longopts[] =
 {
@@ -35,6 +38,8 @@ static struct option const longopts[] =
     { "prefix",    1, NULL, 'p'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
+    { "syslog",    1, NULL,  OPTION_SYSLOG},
+    { "stderr",    1, NULL,  OPTION_STDERR},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
     { "dagid",     1, NULL, 'G'},
@@ -144,6 +149,14 @@ int main(int argc, char *argv[])
 
         case 't':
             deb->want_time_log = true;
+            break;
+
+        case OPTION_STDERR:
+            deb->log_file   = true;
+            break;
+
+        case OPTION_SYSLOG:
+            deb->log_syslog = true;
             break;
 
         case 'p':
