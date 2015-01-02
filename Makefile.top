@@ -68,6 +68,7 @@ vars:
 	@echo NETDISSECTLIB: ${NETDISSECTLIB}
 	@echo USE_OBJDIR: ${USE_OBJDIR}
 	@echo OBJDIR: ${OBJDIR}
+	@echo ARCH: ${ARCH}
 
 version:
 	@echo ${PANDORA_VERSION}

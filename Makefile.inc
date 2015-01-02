@@ -47,7 +47,7 @@ TCPDUMP?=tcpdump
 
 ifeq ($(EMBEDDED),)
 # needed by fake interface library
-EXTRALIBS:=${LIBPCAP} -L/sandel/lib/i386-linux-gnu -lusb-1.0
+EXTRALIBS:=${LIBPCAP} ${EXTRALIBPATHS} -lusb-1.0
 endif
 
 NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
