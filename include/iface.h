@@ -53,7 +53,7 @@ public:
         return error_cnt;
     }
 
-    bool is_active() { return alive; };
+    bool is_active() { return alive && !disabled; };
 
     void set_debug(class rpl_debug *deb) {
         debug = deb;
@@ -159,6 +159,7 @@ public:
 protected:
     bool                    logged;
     unsigned int            hoplimit;
+    bool                    system_get_disable_ipv6(void);
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
 
@@ -173,6 +174,7 @@ protected:
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
     bool                    alive;
+    bool                    disabled;
     bool                    loopback;
 
     /* maintain list of all interfaces */

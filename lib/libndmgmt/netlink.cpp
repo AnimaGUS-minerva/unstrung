@@ -35,6 +35,11 @@ extern "C" {
 #include <time.h>
 #include "oswlibs.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <netlink/rt_names.h>
 #include <netlink/utils.h>
 #include <netlink/ll_map.h>
@@ -181,6 +186,43 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     }
 }
 
+/* from netifd */
+static char dev_buf[256];
+static int system_get_sysctl(const char *path, char *buf, const size_t buf_sz)
+{
+	int fd = -1, ret = -1;
+
+	fd = open(path, O_RDONLY);
+        if(fd >= 0) {
+            ssize_t len = read(fd, buf, buf_sz - 1);
+            if (len >= 0) {
+                ret = buf[len] = 0;
+            }
+        }
+
+	if (fd >= 0)
+		close(fd);
+
+	return ret;
+}
+
+static int
+system_get_dev_sysctl(const char *path, const char *device, char *buf, const size_t buf_sz)
+{
+	snprintf(dev_buf, sizeof(dev_buf), path, device);
+	return system_get_sysctl(dev_buf, buf, buf_sz);
+}
+
+bool network_interface::system_get_disable_ipv6(void)
+{
+    char b1[64];
+    system_get_dev_sysctl("/proc/sys/net/ipv6/conf/%s/disable_ipv6",
+                          this->if_name, b1, sizeof(b1));
+    bool disable = (strtoul(b1, NULL, 10) != 0);
+    return disable;
+}
+
+
 int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
@@ -236,7 +278,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         ni->node->debug = deb;
 
         /* log it for human */
-        deb->info("found[%d]: %s address=%s\n",
+        deb->info("ip found[%d]: %s address=%s\n",
                  ni->if_index, ni->if_name, b1);
         break;
 
@@ -277,7 +319,7 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     }
 
     /* log it for human */
-    deb->info("found[%d]: %s type=%s (%s %s)%s\n",
+    deb->info("link found[%d]: %s type=%s (%s %s)%s\n",
              ni->if_index, ni->get_if_name(),
              ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
              ni->alive   ? "active" : "inactive",
@@ -288,6 +330,13 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
 
     /* dummy0 interface is always changing */
     if(strcasecmp(ni->if_name, "dummy0")==0) {
+        return 0;
+    }
+
+    if (ni->system_get_disable_ipv6()) {
+        /* IPv6 is disabled, ignore this interface */
+        deb->warn("interface %s has IPv6 disabled; ignored\n", ni->if_name);
+        ni->disabled = true;
         return 0;
     }
 

@@ -74,7 +74,7 @@ protected:
             va_list vargs;
             va_start(vargs,fmt);
 
-            debug->logv(fmt, vargs);
+            debug->info(fmt, vargs);
         };
 
 private:
