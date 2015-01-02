@@ -228,8 +228,7 @@ int main(int argc, char *argv[])
 
         case 'v':
             verbose++;
-            if(deb) delete deb;
-            deb = new rpl_debug(verbose, stderr);
+            deb->set_verbose(stderr);
             break;
 
         case '?':
