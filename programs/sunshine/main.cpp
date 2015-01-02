@@ -28,6 +28,7 @@
 
 #define OPTION_SYSLOG 0x01
 #define OPTION_STDERR 0x02
+#define OPTION_SLEEP  0x03
 
 char *progname;
 static struct option const longopts[] =
@@ -40,6 +41,7 @@ static struct option const longopts[] =
     { "instanceid",1, NULL, 'I'},
     { "syslog",    0, NULL,  OPTION_SYSLOG},
     { "stderr",    0, NULL,  OPTION_STDERR},
+    { "sleep",     1, NULL,  OPTION_SLEEP},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
     { "dagid",     1, NULL, 'G'},
@@ -61,6 +63,7 @@ void usage()
             "\t [-W msec]   [--interval msec]   Number of miliseconds between DIO\n"
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
+            "\t [--sleep=secs]                  sleep secs before trying to talk to network\n"
         );
     exit(EX_USAGE);
 }
@@ -159,6 +162,13 @@ int main(int argc, char *argv[])
 
         case OPTION_SYSLOG:
             deb->log_syslog = true;
+            break;
+
+        case OPTION_SLEEP:
+            {
+                unsigned int doze=atoi(optarg);
+                if(doze > 0) sleep(doze);
+            }
             break;
 
         case 'p':
