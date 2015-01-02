@@ -38,8 +38,8 @@ static struct option const longopts[] =
     { "prefix",    1, NULL, 'p'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
-    { "syslog",    1, NULL,  OPTION_SYSLOG},
-    { "stderr",    1, NULL,  OPTION_STDERR},
+    { "syslog",    0, NULL,  OPTION_SYSLOG},
+    { "stderr",    0, NULL,  OPTION_STDERR},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
     { "dagid",     1, NULL, 'G'},
@@ -60,6 +60,7 @@ void usage()
             "\t [-I num]    [--instanceid num]  Instance ID (number)\n"
             "\t [-W msec]   [--interval msec]   Number of miliseconds between DIO\n"
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
+            "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
         );
     exit(EX_USAGE);
 }
