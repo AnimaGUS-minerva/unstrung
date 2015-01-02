@@ -20,6 +20,8 @@ public:
                 want_time_log = false;
                 log_file   = true;
                 log_syslog = false;
+                this->progname[0]='S';
+                this->progname[1]='\0';
         };
 
         /* debugging */
@@ -41,7 +43,8 @@ public:
 
         void set_progname(const char *a_progname) {
           this->progname[0]='\0';
-          strncpy(this->progname, progname, sizeof(this->progname));
+          strncat(this->progname, a_progname, sizeof(this->progname));
+          syslog_open = false;  /* so that openlog will be called again */
         };
 
         void set_verbose(FILE *f) {

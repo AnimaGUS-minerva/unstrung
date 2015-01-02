@@ -20,6 +20,8 @@ extern "C" {
 #include <sys/time.h>
 #include <syslog.h>
 #include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
 }
 
 #include "debug.h"
@@ -28,7 +30,8 @@ extern "C" {
 void rpl_debug::open_syslog(void)
 {
     if(syslog_open) return;
-    openlog(progname, LOG_CONS|LOG_PID, LOG_DAEMON);
+    openlog(progname, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_DAEMON);
+    syslog(LOG_NOTICE, "startup %s pid=%u\n", progname, getpid());
     syslog_open = true;
 }
 
