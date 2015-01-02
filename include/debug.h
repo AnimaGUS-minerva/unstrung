@@ -69,15 +69,15 @@ public:
         void verbose_more(const char *fmt, ...);
         void verbose2(const char *fmt, ...) { /* nothing */};
         void debug(unsigned int level, const char *fmt, ...);
-        void logv(const char *fmt, va_list vargs);
-        void logv_more(const char *fmt, va_list vargs);
+        void logv(int level, const char *fmt, va_list vargs);
+        void logv_more(int level, const char *fmt, va_list vargs);
  private:
         void open_syslog(void);
-        void logv_flush(void);
-        void logv_file_flush(void);
-        void logv_syslog_flush(void);
-        void log_append(const char *fmt, ...);
-        void logv_append(const char *fmt, va_list vargs);
+        void logv_flush(int level);
+        void logv_file_flush(int level);
+        void logv_syslog_flush(int level);
+        void log_append(int level, const char *fmt, ...);
+        void logv_append(int level, const char *fmt, va_list vargs);
 
 };
 

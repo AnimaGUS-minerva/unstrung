@@ -35,14 +35,14 @@ void rpl_debug::open_syslog(void)
     syslog_open = true;
 }
 
-void rpl_debug::logv_flush(void)
+void rpl_debug::logv_flush(int level)
 {
-    if(log_file)   logv_file_flush();
-    if(log_syslog) logv_syslog_flush();
+    if(log_file)   logv_file_flush(level);
+    if(log_syslog) logv_syslog_flush(level);
     logspot = NULL;
 }
 
-void rpl_debug::logv_append(const char *fmt, va_list vargs)
+void rpl_debug::logv_append(int level, const char *fmt, va_list vargs)
 {
     if(logspot == NULL) {
         logspot=syslogbuf;
@@ -54,42 +54,42 @@ void rpl_debug::logv_append(const char *fmt, va_list vargs)
 
     len = strlen(fmt);
     if(len > 1 && fmt[len-1]=='\n') {
-        logv_flush();
+        logv_flush(level);
         needslf=false;
     } else {
         needslf=true;
     }
 }
 
-void rpl_debug::log_append(const char *fmt, ...)
+void rpl_debug::log_append(int level, const char *fmt, ...)
 {
     va_list vargs;
     va_start(vargs,fmt);
-    logv_append(fmt, vargs);
+    logv_append(level, fmt, vargs);
 }
 
-void rpl_debug::logv_syslog_flush(void)
+void rpl_debug::logv_syslog_flush(int level)
 {
     open_syslog();
-    syslog(LOG_INFO, "%s", syslogbuf);
+    syslog(level ? level : LOG_INFO, "%s", syslogbuf);
 }
 
 
-void rpl_debug::logv_file_flush(void)
+void rpl_debug::logv_file_flush(int level)
 {
     if(file == NULL) return;
     fprintf(file, "%s", syslogbuf);
 }
 
-void rpl_debug::logv_more(const char *fmt, va_list vargs)
+void rpl_debug::logv_more(int level, const char *fmt, va_list vargs)
 {
-    logv_append(fmt, vargs);
+    logv_append(level, fmt, vargs);
 }
-void rpl_debug::logv(const char *fmt, va_list vargs)
+void rpl_debug::logv(int level, const char *fmt, va_list vargs)
 {
     if(needslf) {
        /* terminate previous line, flush */
-       logv_flush();
+       logv_flush(level);
     }
     if(want_time_log) {
         struct timeval tv1;
@@ -100,9 +100,9 @@ void rpl_debug::logv(const char *fmt, va_list vargs)
 
         char tbuf[64];
         strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
-        log_append("[%s.%u] ", tbuf, tv1.tv_usec/1000);
+        log_append(level, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
     }
-    logv_append(fmt, vargs);
+    logv_append(level, fmt, vargs);
 }
 
 void rpl_debug::log(const char *fmt, ...)
@@ -111,7 +111,7 @@ void rpl_debug::log(const char *fmt, ...)
     va_start(vargs,fmt);
 
     if(flag) {
-        logv(fmt, vargs);
+        logv(LOG_INFO, fmt, vargs);
     }
 }
 
@@ -120,7 +120,7 @@ void rpl_debug::info(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv(fmt, vargs);
+    logv(LOG_INFO, fmt, vargs);
 }
 
 void rpl_debug::info_more(const char *fmt, ...)
@@ -128,7 +128,7 @@ void rpl_debug::info_more(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv_more(fmt, vargs);
+    logv_more(LOG_INFO, fmt, vargs);
 }
 
 void rpl_debug::warn(const char *fmt, ...)
@@ -136,7 +136,7 @@ void rpl_debug::warn(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv(fmt, vargs);
+    logv(LOG_WARNING, fmt, vargs);
 }
 
 void rpl_debug::error(const char *fmt, ...)
@@ -144,7 +144,7 @@ void rpl_debug::error(const char *fmt, ...)
     va_list vargs;
     va_start(vargs,fmt);
 
-    logv(fmt, vargs);
+    logv(LOG_ERR, fmt, vargs);
 }
 
 void rpl_debug::verbose_more(const char *fmt, ...)
@@ -153,7 +153,7 @@ void rpl_debug::verbose_more(const char *fmt, ...)
     va_start(vargs,fmt);
 
     if(flag) {
-        logv_more(fmt, vargs);
+        logv_more(LOG_DEBUG, fmt, vargs);
     }
 }
 
@@ -163,7 +163,7 @@ void rpl_debug::verbose(const char *fmt, ...)
     va_start(vargs,fmt);
 
     if(flag) {
-        logv(fmt, vargs);
+        logv(LOG_DEBUG, fmt, vargs);
     }
 }
 
@@ -173,7 +173,7 @@ void rpl_debug::debug(unsigned int level, const char *fmt, ...)
     va_start(vargs,fmt);
 
     if(flag_set(level)) {
-        logv(fmt, vargs);
+        logv(LOG_DEBUG, fmt, vargs);
     }
 }
 
