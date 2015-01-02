@@ -116,6 +116,7 @@ int main(int argc, char *argv[])
 
     network_interface *iface = NULL;
     rpl_debug *deb = new rpl_debug(false, stderr);
+    deb->set_progname(progname);
 
     dag_network::init_stats();
     dag_network *dag = NULL;

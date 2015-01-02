@@ -39,6 +39,11 @@ public:
                 return(flag && file!=NULL);
         };
 
+        void set_progname(const char *a_progname) {
+          this->progname[0]='\0';
+          strncpy(this->progname, progname, sizeof(this->progname));
+        };
+
         void set_verbose(FILE *f) {
                 file = f;
                 flag = true;
