@@ -32,6 +32,13 @@ void rpl_debug::open_syslog(void)
     syslog_open = true;
 }
 
+void rpl_debug::logv_flush(void)
+{
+    if(log_file)   logv_file_flush();
+    if(log_syslog) logv_syslog_flush();
+    logspot = NULL;
+}
+
 void rpl_debug::logv_append(const char *fmt, va_list vargs)
 {
     if(logspot == NULL) {
@@ -41,6 +48,14 @@ void rpl_debug::logv_append(const char *fmt, va_list vargs)
     int len = vsnprintf(logspot, sysloglen, fmt, vargs);
     sysloglen -= len;
     logspot   += len;
+
+    len = strlen(fmt);
+    if(len > 1 && fmt[len-1]=='\n') {
+        logv_flush();
+        needslf=false;
+    } else {
+        needslf=true;
+    }
 }
 
 void rpl_debug::log_append(const char *fmt, ...)
@@ -63,28 +78,15 @@ void rpl_debug::logv_file_flush(void)
     fprintf(file, "%s", syslogbuf);
 }
 
-void rpl_debug::logv_flush(void)
-{
-    if(log_file)   logv_file_flush();
-    if(log_syslog) logv_syslog_flush();
-}
-
 void rpl_debug::logv_more(const char *fmt, va_list vargs)
 {
     logv_append(fmt, vargs);
-    int len = strlen(fmt);
-    if(len > 1 && fmt[len-1]=='\n') {
-        needslf=false;
-    } else {
-        needslf=true;
-    }
 }
 void rpl_debug::logv(const char *fmt, va_list vargs)
 {
     if(needslf) {
-        /* terminate previous line, flush */
-        logv_file_flush();
-        logv_syslog_flush();
+       /* terminate previous line, flush */
+       logv_flush();
     }
     if(want_time_log) {
         struct timeval tv1;
