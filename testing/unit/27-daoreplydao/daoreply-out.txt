@@ -1,8 +1,8 @@
-found[1]: wlan0 type=ether (active new) faked
+link found[1]: wlan0 type=ether (active new) faked
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
-found[1]: wlan0 address=fe80::1000:ff:fe64:6423
-found[2]: lo type=loopback (active new) faked
-found[2]: lo address=::1
+ip found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+link found[2]: lo type=loopback (active new) faked
+ip found[2]: lo address=::1
 Processing input file ../INPUTS/dio-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
@@ -52,7 +52,6 @@ packet 4 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:4a01 -> fe80::1000:ff:fe66:6601[1] hoplimit=0
 Got neighbour solicitation from fe80::1000:ff:fe66:4a01, looking for fe80::1000:ff:fe66:6601, has 8 bytes of options
     option 1[8] source-linkaddr 
-
 packet 5 is being processed
  wlan0: received packet from fe80::1000:ff:fe66:4a01 -> fe80::1000:ff:fe66:6601[1] hoplimit=0
 Got neighbor advertisement from fe80::1000:ff:fe66:4a01 (flags=solicited ), advertising: fe80::1000:ff:fe66:4a01, has 0 bytes of options

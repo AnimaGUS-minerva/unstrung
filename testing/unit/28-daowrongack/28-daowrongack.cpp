@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
         dioA_step(deb, "../OUTPUTS/28-node-E-out.pcap");
         daoackA_step(deb, "../INPUTS/daoack-A-wrongseq-ripple1.pcap", NULL);
 
+        printf("\ndone\n");
+
 	exit(0);
 }
 
