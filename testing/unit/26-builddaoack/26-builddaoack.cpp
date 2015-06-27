@@ -65,7 +65,7 @@ static void t1(rpl_debug *deb)
     assert(announced_from.validP());
 
     /* build a DAOACK, send it. */
-    my_if->send_daoack(announced_from, *dn1);
+    my_if->send_daoack(announced_from, *dn1, 5);
 }
 
 int main(int argc, char *argv[])
