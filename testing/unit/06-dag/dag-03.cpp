@@ -38,7 +38,7 @@ class dag_network *dn = NULL;
  */
 static void t1(rpl_debug *deb)
 {
-        class rpl_node n1("2001:db8::abcd:0002");
+  class rpl_node n1("2001:db8::abcd:0002", dn, deb);
 
         int pcap_link = DLT_EN10MB;
 	pcap_t *pout = pcap_open_dead(pcap_link, 65535);
