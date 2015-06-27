@@ -8,6 +8,7 @@ extern "C" {
 #include <netinet/ip6.h>
 #include <string.h>
 #include "oswlibs.h"
+#include <syslog.h>
 }
 
 #include <map>
@@ -74,7 +75,8 @@ protected:
             va_list vargs;
             va_start(vargs,fmt);
 
-            debug->info(fmt, vargs);
+            debug->logv(LOG_INFO, fmt, vargs);
+            va_end(vargs);
         };
 
 private:
