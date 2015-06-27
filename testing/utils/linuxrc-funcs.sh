@@ -30,6 +30,8 @@ mount_tmpfs() {
 
 # I hate this hack.  -- Md
 make_extra_nodes() {
+  [ -c /root/dev/console ] || mknod /root/dev/console c 5 1
+  [ -c /root/dev/null ] || mknod /root/dev/null c 1 3
   [ -e /root/etc/udev/links.conf ] || return 0
   grep '^[^#]' /root/etc/udev/links.conf | \
   while read type name arg1; do
@@ -41,6 +43,4 @@ make_extra_nodes() {
       *) echo "links.conf: unparseable line ($type $name $arg1)" ;;
     esac
   done
-  [ -c /root/dev/console ] || mknod /root/dev/console c 5 1
-  [ -c /root/dev/null ] || mknod /root/dev/null c 1 3
 }

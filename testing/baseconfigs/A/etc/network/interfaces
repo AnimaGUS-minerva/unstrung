@@ -3,9 +3,16 @@ iface lo inet loopback
 
 auto eth0
 auto eth1
+allow-hotplug eth2
 
 iface eth0 inet6 manual
         up modprobe ipv6; ifconfig eth0 up
 
 iface eth1 inet6 manual
         up modprobe ipv6; ifconfig eth1 up
+
+iface eth2 inet6 static
+      address 2607:f0b0:f:83::2
+      netmask 64
+      gateway 2607:f0b0:f:83::1
+      

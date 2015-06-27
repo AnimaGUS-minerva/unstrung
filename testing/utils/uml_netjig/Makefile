@@ -12,6 +12,8 @@
 #
 
 UNSTRUNG_SRCDIR?=../../..
+include $(UNSTRUNG_SRCDIR)/Makefile.inc
+
 OBJS = nethub.o cmdmode.o port.o hash.o tuntap.o
 OBJS+=getopt_long.o
 
@@ -42,9 +44,6 @@ PCAPH=-I/usr/include/pcap
 
 CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}
 LIBS = ${NETDISSECTLIB} ${LIBPCAP_HOST} ${OPENSSL}
-
-
-include $(UNSTRUNG_SRCDIR)/Makefile.inc
 
 def:
 	@echo "Please read doc/intro.html or INSTALL before running make"

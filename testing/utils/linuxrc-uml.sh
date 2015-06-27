@@ -2,6 +2,8 @@
 
 PATH="/sbin:/bin"
 
+# some extra toys
+/bin/busybox --install /bin
 
 # defaults
 tmpfs_size="10M"
@@ -43,10 +45,12 @@ echo "done."
 echo Invoked with Arguments: $*
 
 cd /root
-mkdir /initrd
-mount -n -t proc none /proc
-pivot_root /root /initrd
+mkdir -p /root/initrd
+mount -n -t proc none /root/proc
+mount -n -t sysfs none /root/sys
+pivot_root . /root/initrd
 if grep LATE /proc/cmdline; then echo STARTING SHELL2 - exit to continue; /bin/bash; fi
-exec </dev/console >/dev/console 2>&1
+exec </root/dev/console >/root/dev/console 2>&1
+#exec /usr/sbin/chroot . /bin/sh 
 exec /usr/sbin/chroot . /sbin/init $*
 

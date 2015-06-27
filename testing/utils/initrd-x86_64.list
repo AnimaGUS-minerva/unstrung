@@ -11,6 +11,11 @@
 ./bin/sh
 ./bin/bash
 ./bin/umount
+./usr/bin/strace
+./lib/libacl.so.1
+./lib/libacl.so.1.1.0
+./lib/libattr.so.1
+./lib/libattr.so.1.1.0
 ./lib/ld-2.7.so
 ./lib/libacl.so.1
 ./lib/libacl.so.1.1.0
