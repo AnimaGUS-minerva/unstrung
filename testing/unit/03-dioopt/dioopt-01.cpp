@@ -26,12 +26,16 @@ extern "C" {
 #include "dag.h"
 #include "dio.h"
 
+/* need this to initialize rpl_nodes */
+
+class dag_network *dn;
+rpl_debug *deb;
 /* TEST1:
  *   a DN shall have a sequence number
  */
 static void t1(void)
 {
-        class rpl_node n1("2001:db8::abcd:0001");
+  class rpl_node n1("2001:db8::abcd:0001", dn, deb);
 
         /* test data from senddio-test-04.out */
         u_int8_t diodata[]={
@@ -67,7 +71,7 @@ static void t1(void)
 
 static void t2(void)
 {
-        class rpl_node n2("2001:db8::abcd:0002");
+  class rpl_node n2("2001:db8::abcd:0002", dn, deb);
 
         /* test data from senddio-test-04.out */
         u_int8_t diodata[]={
@@ -97,6 +101,8 @@ static void t2(void)
 
 int main(int argc, char *argv[])
 {
+  deb = new rpl_debug(false, stdout);
+  dn  = new dag_network("1234", deb);
         printf("dioopt-01 t1\n");     t1();
         printf("dioopt-01 t2\n");     t2();
 

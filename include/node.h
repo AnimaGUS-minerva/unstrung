@@ -20,7 +20,6 @@ class rpl_node {
         friend class rpl_less;
 public:
         rpl_node() { valid = false; name[0]='\0'; self = false; };
-        rpl_node(const char *ipv6);
         rpl_node(const char *ipv6,
                  dag_network *dn, rpl_debug *deb);
         rpl_node(const struct in6_addr v6);

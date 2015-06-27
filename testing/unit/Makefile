@@ -49,8 +49,7 @@ SUBDIRS+=22-queues
 SUBDIRS+=23-selfdio
 SUBDIRS+=24-daoreply
 SUBDIRS+=25-childdio
+SUBDIRS+=26-builddaoack
 SUBDIRS+=26-senddaoack
-
-
-
-
+SUBDIRS+=27-daoreplydao
+SUBDIRS+=28-daowrongack

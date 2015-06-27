@@ -1,5 +1,4 @@
-# FreeS/WAN subdir makefile
-# Copyright (C) 1998-2001  Henry Spencer.
+# Copyright (C) 2002-2015  Michael Richardson
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -11,7 +10,6 @@
 # or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
 #
-# RCSID $Id: Makefile,v 1.22 2004/04/03 19:44:52 ken Exp $
 
 UNSTRUNG_SRCDIR?=../../..
 OBJS = nethub.o cmdmode.o port.o hash.o tuntap.o
@@ -22,17 +20,17 @@ SOBJS = uml_switch.o $(OBJS)
 
 OPTIONS=-DARP_PROCESS -DTUNTAP
 
-# To use the netdissect option, you have to have a very recent (pre-alpha) copy
-# of tcpdump source code from www.tcpdump.org. For now, leave it unset.
+# To use the netdissect option, you have to have at least version 4.3.0
+# of tcpdump source code installed.
 #
 # If you want to play with it, you'll need libnetdissect.a. You can get this
-# by checking code out of www.tcpdump.org:
-#
-# cvs -d :pserver:tcpdump@cvs.tcpdump.org:/tcpdump/master checkout -rmcr_dissect -dnetdissect_tcpdump
+# by checking code out of www.tcpdump.org.
 #
 NETDISSECTH?=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
 NETDISSECTH+=-D__ATTRIBUTE___NORETURN_OK_FOR_FUNCTION_POINTERS -D__ATTRIBUTE___FORMAT_OK_FOR_FUNCTION_POINTERS
-NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
+
+# this is set in Makefile.inc and probably overridden in Makefile.local
+#NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
 
 # to decode ESP packets (with netdissect), you need crypto, which you can
 # get from ssl.
