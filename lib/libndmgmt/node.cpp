@@ -22,12 +22,6 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 
-rpl_node::rpl_node(const char *ipv6) {
-    valid = false;
-    self  = false;
-    name[0]='\0';
-}
-
 void rpl_node::set_addr(const char *ipv6) {
     if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
         nodeip.u.v6.sin6_family = AF_INET6;
