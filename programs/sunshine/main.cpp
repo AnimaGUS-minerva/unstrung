@@ -131,6 +131,15 @@ int main(int argc, char *argv[])
               PANDORA_VERSION_MAJOR, PANDORA_VERSION_MINOR,
               BUILDNUMBER, today);
 
+    /* process one argument, if it's --sleep then do that first */
+    c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0);
+    if(c == OPTION_SLEEP) {
+        unsigned int doze=atoi(optarg);
+        if(doze > 0) sleep(doze);
+    }
+    /* reset argument processor */
+    optind = 1;
+
     network_interface::scan_devices(deb, true);
     devices_scanned=true;
 
@@ -165,10 +174,12 @@ int main(int argc, char *argv[])
             break;
 
         case OPTION_SLEEP:
+#if 0
             {
                 unsigned int doze=atoi(optarg);
                 if(doze > 0) sleep(doze);
             }
+#endif
             break;
 
         case 'p':
