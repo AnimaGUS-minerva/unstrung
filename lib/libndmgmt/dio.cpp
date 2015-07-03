@@ -136,7 +136,7 @@ int dag_network::build_prefix_dioopt(ip_subnet prefix)
         diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
     }
 
-    this->optlen = 30;
+    this->optlen = 32;
 
     return this->optlen;
 }
