@@ -110,8 +110,8 @@ struct rpl_dio_destprefix {
     u_int8_t rpl_dio_prf;              /* flags, including Route Preference */
     u_int32_t rpl_dio_valid_lifetime; /* in seconds */
     u_int32_t rpl_dio_preferred_lifetime; /* in seconds */
-    u_int32_t reserved2; /* in seconds */
-    u_int8_t rpl_dio_prefix[0];        /* variables number of bytes */
+    u_int32_t reserved2;              /* RFC6550 section 6.7.10 says to always*/
+    u_int8_t rpl_dio_prefix[16];      /* send 16 bytes,even if fewer are used*/
 } PACKED;
 
 /* section 6.4.1, DODAG Information Object (DIO) */

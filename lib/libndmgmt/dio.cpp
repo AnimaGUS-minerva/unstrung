@@ -136,7 +136,11 @@ int dag_network::build_prefix_dioopt(ip_subnet prefix)
         diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
     }
 
-    this->optlen = 32;
+    /* -2 because length does not include type/len.
+     * the size could be shorter if we do not transmit all of the dio_prefix,
+     * but RFC6550 says that we must always send them.
+     */
+    this->optlen = sizeof(struct rpl_dio_destprefix);
 
     return this->optlen;
 }
