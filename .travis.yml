@@ -2,6 +2,11 @@ language: c++
 compiler:
   - g++
 
+cache:
+  directories:
+  - $HOME/tcpdump
+  - $HOME/bin
+
 before_install:
   - "sudo apt-get update"
   - "sudo apt-get remove oracle-java7-installer oracle-java8-installer"
