@@ -2,6 +2,7 @@
 \#*\#
 .\#*
 *.bak
+*.8.html
 core
 UMLPOOL
 umlsetup.sh
