@@ -50,8 +50,8 @@ public:
         /* prime key for the DAG */
         dagid_t                    mDagid;
 	bool                       mActive;
-	bool 			   mIgnorePio;
-	bool 						mPrefixSet;
+	bool 	                   mIgnorePio;
+	bool                       mPrefixSet;
 
         unsigned int               mLastSeq;
         bool seq_too_old(unsigned int seq);
