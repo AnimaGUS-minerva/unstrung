@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
         dag_network *dag = dioA_setup(deb);
 
-        dioA_process(dag, deb, "../OUTPUTS/24-node-E-out.pcap");
+        dioA_process(dag, deb, "../OUTPUTS/29-node-E-out.pcap");
         daoackA_step(deb, "../INPUTS/daoack-A-ripple1.pcap", NULL);
 
 	exit(0);
