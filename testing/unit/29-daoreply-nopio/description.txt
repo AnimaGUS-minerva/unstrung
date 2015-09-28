@@ -1,0 +1,8 @@
+This test case validates that we can receive a DIO message.
+The DIO will include a PIO, but because of --ignore-dao-pio this node
+will ignore the PIO itself, and simply reply with a DAO ack.
+
+We should then expect to get a DAOACK from the parent.
+
+
+

@@ -1,0 +1,2 @@
+The inputs for this test are the same as from 24-daoreply, so the file is
+reused.
