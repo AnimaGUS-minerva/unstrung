@@ -1,40 +1,41 @@
-Ripple (by the Grateful Dead)
+
+Ripple
 ======
 
-if my words did glow
-With the gold of sunshine
-and my tunes were played on the harp unstrung
-would you hear my voice
-come through the music
-would you hold it near
-as it were your own
 
-its a hand me down
-the thoughts are broken
-perhaps
-they're better left unsung
 
-ripple, in still water
-where there is no pebble tossed
-nor wind to blow.
+RPL, pronounced *Ripple* is an IETF protocol that provides connectivity among
+nodes that can not all hear each other, but rather have to form a multihop
+mesh-like network.  The name comes a Grateful Dead Song.
 
-reach out your hand,
-if your cup is empty
-if your cup is full,
-may be be again.
+## Words by the Grateful Dead: ##
+
+    if my words did glow
+    With the gold of sunshine
+    and my tunes were played on the harp unstrung
+    would you hear my voice
+    come through the music
+    would you hold it near
+    as it were your own
+
+    its a hand me down
+    the thoughts are broken
+    perhaps
+    they're better left unsung
+
+    ripple, in still water
+    where there is no pebble tossed
+    nor wind to blow.
+
+    reach out your hand,
+    if your cup is empty
+    if your cup is full,
+    may be be again.
 
 =====
 
-RPL, pronounced Ripple is an IETF protocol that provides connectivity among
-nodes that can not all hear each other, but rather have to form a multihop
-mesh-like network.
-
 Unlike other mesh efforts, this all happens at layer-3, in IPv6
 ICMP messages (originally, was going to be in Router Solicitation/ND messages).
-
-The authors thinks that once RPL-style "mesh" routing is loose on
-citizen controlled mobile devices that citizens will no longer be
-held hostage to incumbent telcos that dominate the broadband "Internet".
 
 This set of programs, plus a test bed/simulation system is a set of tools
 that runs under the Linux kernel:
@@ -60,7 +61,7 @@ Programs include:
 Github:
     http://github.com/mcr/unstrung.git/
 
-Rudimentary web site:
+Web site:
     http://unstrung.sandelman.ca/
 
 to subscribe to mailing list:
