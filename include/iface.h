@@ -139,6 +139,7 @@ public:
     /* event lists */
     static class rpl_event_queue   things_to_do;
 
+    static bool                    signal_usr1;
     static bool                    signal_usr2;
     static bool                    terminating_soon;
     static void                    catch_signal_usr2(int, siginfo_t *, void*);

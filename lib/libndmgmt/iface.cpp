@@ -918,6 +918,14 @@ void network_interface::clear_events(void) {
     }
 }
 
+void network_interface::catch_signal_usr1(int signum,
+						 siginfo_t *si,
+						 void *ucontext)
+{
+    /* should be atomic */
+    network_interface::signal_usr1 = true;
+}
+
 void network_interface::catch_signal_usr2(int signum,
 						 siginfo_t *si,
 						 void *ucontext)
@@ -931,6 +939,14 @@ void network_interface::catch_signal_usr2(int signum,
 void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 {
     bool done = false;
+
+    struct sigaction usr1;
+    usr1.sa_sigaction = catch_signal_usr1;
+    usr1.sa_flags = SA_SIGINFO|SA_RESTART;
+
+    if(sigaction(SIGUSR1, &usr1, NULL) != 0) {
+	perror("sigaction USR1");
+    }
 
     struct sigaction usr2;
     usr2.sa_sigaction = catch_signal_usr2;
@@ -1022,6 +1038,10 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
             /* there was an error, maybe exited due to signal */
             perror("sunshine poll");
         }
+	if(signal_usr1) {
+            scan_devices(deb, true);
+	    signal_usr1 = false;
+	}
 	if(signal_usr2) {
 	    things_to_do.printevents(debug->file, "usr2 ");
 	    dag_network::print_all_dagstats(debug->file, "usr2 ");
