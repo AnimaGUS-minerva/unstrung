@@ -1,3 +1,6 @@
+# the cp for the libcrypto modules keeps us from using the containers.
+sudo: required
+
 language: c++
 compiler:
   - g++
@@ -11,6 +14,8 @@ before_install:
   - "sudo apt-get update"
   - "sudo apt-get remove oracle-java7-installer oracle-java8-installer"
 
+# the cp is because libssl-dev:i386 and libssl-dev:amd64 can not co-exist together due to package
+# incompatibilities, but in fact have no problems in practice.
 install:
   - "sudo apt-get install gcc-multilib g++-multilib pkg-config libssl1.0.0 libssl-dev"
   - "sudo cp /usr/lib/x86_64-linux-gnu/libcrypto* /tmp"
