@@ -78,6 +78,7 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
 {
     this->verbose_log("  peer '%s' announces prefix: %s\n",
                       announced_from->node_name(), dn->prefix_name());
+
     if(!installed) {
         struct in6_addr link = iface->link_local();
 
@@ -88,6 +89,14 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         /* when configuring an IP address on the lo, it should be /128 */
         this->set_prefix(link, 128);
         //this->set_prefix(link, dn->get_prefix().maskbits);
+
+        if(dn->mIgnorePio) {
+            this->verbose_log("  ignoring prefix: %s on iface: %s",
+                              node_name(),
+                              iface->get_if_name());
+            installed = true;
+            return;
+        }
 
         this->verbose_log("  adding prefix: %s learnt from iface: %s\n",
                           node_name(),

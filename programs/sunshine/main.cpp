@@ -37,6 +37,7 @@ static struct option const longopts[] =
     { "interface", 0, 0, 'i'},
     { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
+    { "ignore-pio",0, NULL, 'P'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
     { "syslog",    0, NULL,  OPTION_SYSLOG},
@@ -63,6 +64,7 @@ void usage()
             "\t [-W msec]   [--interval msec]   Number of miliseconds between DIO\n"
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
+            "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
             "\t [--sleep=secs]                  sleep secs before trying to talk to network\n"
         );
     exit(EX_USAGE);
@@ -194,6 +196,11 @@ int main(int argc, char *argv[])
             }
         }
         break;
+
+        case 'P':
+            check_dag(c, dag);
+            dag->set_ignore_pio(true);
+            break;
 
         case 'I':
 	    check_dag(c, dag);

@@ -50,6 +50,7 @@ public:
         /* prime key for the DAG */
         dagid_t                    mDagid;
 	bool                       mActive;
+	bool 			   mIgnorePio;
 	bool 						mPrefixSet;
 
         unsigned int               mLastSeq;
@@ -166,6 +167,9 @@ public:
 	void set_dagid(dagid_t dagid);
 	unsigned int get_dagRank(void) {
 	    return mMyRank;
+	};
+	void set_ignore_pio(const bool ignore) {
+            mIgnorePio = ignore;
 	};
 	void set_dagrank(const unsigned int dagrank) {
 	    mMyRank   = dagrank;
