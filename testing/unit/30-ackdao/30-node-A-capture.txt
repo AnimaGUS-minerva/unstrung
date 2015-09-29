@@ -1,0 +1,1 @@
+IP6 (hlim 64, next-header ICMPv6 (58) payload length: 24) fe80::216:3eff:fe11:3424 > fe80::216:3eff:fe11:3424: [icmp6 sum ok] ICMP6, RPL, (CLR)Destination Advertisement Object Ack [dagid:T10x000x000x000x000x000x000x000x000x000x000x000x000x000x00,seq:1,instance:1,status:0]
