@@ -53,3 +53,5 @@ SUBDIRS+=26-builddaoack
 SUBDIRS+=26-senddaoack
 SUBDIRS+=27-daoreplydao
 SUBDIRS+=28-daowrongack
+SUBDIRS+=29-daoreply-nopio
+SUBDIRS+=30-ackdao

@@ -14,11 +14,11 @@ iface1[1]: wlan0
     would invoke cmd: ip -6 route show
 Processing input file
 packet 1 is being processed
-  processing dao(52) [instance:2,daoseq:1,dao-ack,dagid:T10x00 ]
+  processing dao(44) [instance:1,daoseq:2,dao-ack,dagid:ripple0x00 ]
   new RPL node: fe80::216:3eff:fe11:3424
-received DAO about network 2001:db8::abcd:2/128, target fe80::216:3eff:fe11:3424 (added)
-  invoking ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
-    would invoke cmd: ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+received DAO about network 2001:db8:1:0:216:3eff:fe11:3424/128, target fe80::216:3eff:fe11:3424 (added)
+  invoking ip -6 route add 2001:db8:1:0:216:3eff:fe11:3424/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add 2001:db8:1:0:216:3eff:fe11:3424/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
 Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024

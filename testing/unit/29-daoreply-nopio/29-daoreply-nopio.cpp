@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
 
         dag_network *dag = dioA_setup(deb);
 
+        dag->set_ignore_pio(true);
+
         dioA_process(dag, deb, "../OUTPUTS/29-node-E-out.pcap");
         daoackA_step(deb, "../INPUTS/daoack-A-ripple1.pcap", NULL);
 
