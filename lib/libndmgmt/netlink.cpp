@@ -102,26 +102,34 @@ bool network_interface::addprefix(dag_network *dn _U_,  prefix_node &prefix)
 
 /* XXX do this with netlink too  */
 bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
-                                                   const ip_address &src,
+                                                   const ip_address *src,
                                                    /*const*/rpl_node &parent)
 {
     char buf[1024];
     char pbuf[SUBNETTOT_BUF];
     char nhbuf[ADDRTOT_BUF];
+    const char *srcstring = "";
     char srcbuf[ADDRTOT_BUF];
 
     subnettot(&prefix, 0, pbuf, sizeof(pbuf));
     addrtot(&parent.node_address(), 0, nhbuf, sizeof(nhbuf));
-    addrtot(&src, 0, srcbuf, sizeof(nhbuf));
+
+    srcbuf[0]='\0';
+    if(src) {
+        addrtot(src, 0, srcbuf, sizeof(nhbuf));
+        srcstring = "src ";
+    }
 
     snprintf(buf, 1024, "ip -6 route del %s", pbuf);
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
 
     snprintf(buf, 1024,
-             "ip -6 route add %s via %s dev %s src %s",
+             "ip -6 route add %s via %s dev %s %s%s",
              pbuf,  nhbuf,
-             this->get_if_name(), srcbuf);
+             this->get_if_name(),
+             srcstring, srcbuf);
+
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);

@@ -361,17 +361,30 @@ void dag_network::add_prefix(rpl_node advertising_peer,
     prefix_node &pre = this->dag_prefixes[prefix];
 
     if(!pre.is_installed()) {
-        dao_needed = true;
         this->set_prefix(prefix);
         pre.set_prefix(prefix);
         pre.set_debug(this->debug);
+        pre.set_installed(true);
         pre.set_announcer(&advertising_peer);
-        pre.configureip(iface, this);
-        if(dag_me == NULL) {
-            dag_me = &pre;
-        }
 
         maybe_schedule_dio();
+    }
+
+    /* next, see if we should configure an address in this prefix */
+    if(!mIgnorePio) {
+        prefix_node &preMe = this->dag_announced[prefix];
+
+        if(!preMe.is_installed()) {
+            dao_needed = true;
+            preMe.set_prefix(prefix);
+            preMe.set_debug(this->debug);
+            preMe.set_announcer(&advertising_peer);
+            preMe.configureip(iface, this);
+
+            if(dag_me == NULL) {
+                dag_me = &preMe;
+            }
+        }
     }
 }
 
@@ -515,19 +528,19 @@ void dag_network::send_dao(void)
                        cnt, pm.node_name(),
                        mDagName, dag_bestparent->node_name(),
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
-        pi++;
         cnt++;
+        pi++;
     }
-    pi = dag_prefixes.begin();
-    while(pi != dag_prefixes.end()) {
+    pi = dag_announced.begin();
+    while(pi != dag_announced.end()) {
 	prefix_node &pm = pi->second;
 
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
                        cnt, pm.node_name(),
                        mDagName, dag_bestparent->node_name(),
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
-        pi++;
         cnt++;
+        pi++;
     }
 
     if(dag_bestparent == NULL || dag_bestparentif ==NULL) return;
@@ -900,10 +913,18 @@ void dag_network::commit_parent(void)
         dag_parentif = dag_bestparentif;
         dag_parent   = dag_bestparent;
 
-        prefix_node &srcip = this->dag_prefixes[mPrefix];
-        dag_parentif->add_parent_route_to_prefix(mPrefix,
-                                                 srcip.prefix_number().addr,
-                                                 *dag_parent);
+        bool have_any_prefixes = this->dag_announced.size() > 0;
+        if(have_any_prefixes) {
+            prefix_node &srcip = this->dag_announced.begin()->second;
+
+            dag_parentif->add_parent_route_to_prefix(mPrefix,
+                                                     &srcip.prefix_number().addr,
+                                                     *dag_parent);
+        } else {
+            dag_parentif->add_parent_route_to_prefix(mPrefix,
+                                                     NULL,
+                                                     *dag_parent);
+        }
 
         /* now send a DIO */
         maybe_schedule_dio();

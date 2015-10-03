@@ -90,14 +90,6 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         this->set_prefix(link, 128);
         //this->set_prefix(link, dn->get_prefix().maskbits);
 
-        if(dn->mIgnorePio) {
-            this->verbose_log("  ignoring prefix: %s on iface: %s",
-                              node_name(),
-                              iface->get_if_name());
-            installed = true;
-            return;
-        }
-
         this->verbose_log("  adding prefix: %s learnt from iface: %s\n",
                           node_name(),
                           iface->get_if_name());

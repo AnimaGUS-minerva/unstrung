@@ -154,29 +154,29 @@ int dag_network::build_dao(unsigned char *buff,
     while(pi != endpi1) {
 	prefix_node &pm = pi->second;
 
-	/* add RPL_TARGET  */
-	build_target_opt(pm.get_prefix());
+        /* add RPL_TARGET  */
+        build_target_opt(pm.get_prefix());
 
-	int nextoptlen;
-	len = ((caddr_t)nextopt - (caddr_t)buff);
-	nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
-	nextopt += nextoptlen;
+        int nextoptlen;
+        len = ((caddr_t)nextopt - (caddr_t)buff);
+        nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
+        nextopt += nextoptlen;
 
 	/* advance to next prefix */
 	pi++;
     }
-    pi = dag_prefixes.begin();
-    prefix_map_iterator endpi2 = dag_prefixes.end();
+    pi = dag_announced.begin();
+    prefix_map_iterator endpi2 = dag_announced.end();
     while(pi != endpi2) {
 	prefix_node &pm = pi->second;
 
-	/* add RPL_TARGET  */
-	build_target_opt(pm.get_prefix());
+        /* add RPL_TARGET  */
+        build_target_opt(pm.get_prefix());
 
-	int nextoptlen;
-	len = ((caddr_t)nextopt - (caddr_t)buff);
-	nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
-	nextopt += nextoptlen;
+        int nextoptlen;
+        len = ((caddr_t)nextopt - (caddr_t)buff);
+        nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DAO_RPLTARGET);
+        nextopt += nextoptlen;
 
 	/* advance to next prefix */
 	pi++;
