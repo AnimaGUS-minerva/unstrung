@@ -20,6 +20,7 @@ clean::
 	@rm -rf 30-ackdao *.o
 
 update:
+	cp ../OUTPUTS/29-node-E-out.pcap ../INPUTS/29-dao-nopio.pcap
 	cp ../OUTPUTS/30-ackdao-output.raw  30-ackdao-output.txt
 	cp ../OUTPUTS/30-node-A-capture.txt 30-node-A-capture.txt
 
