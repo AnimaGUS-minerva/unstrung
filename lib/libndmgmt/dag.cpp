@@ -366,6 +366,7 @@ void dag_network::add_prefix(rpl_node advertising_peer,
         pre.set_debug(this->debug);
         pre.set_installed(true);
         pre.set_announcer(&advertising_peer);
+        dao_needed = true;
 
         maybe_schedule_dio();
     }
