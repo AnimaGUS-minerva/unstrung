@@ -19,7 +19,9 @@ dag_network *dioA_setup(rpl_debug *deb)
         return dag;
 }
 
-void dioA_process(dag_network *dag, rpl_debug *deb, const char *outpcap)
+pcap_network_interface *dioA_iface_setup(dag_network *dag,
+                                         rpl_debug *deb,
+                                         const char *outpcap)
 {
         pcap_network_interface *iface = NULL;
 
@@ -45,6 +47,12 @@ void dioA_process(dag_network *dag, rpl_debug *deb, const char *outpcap)
                iface->get_if_index(), iface->get_if_name(),
                iface->is_active() ? "active" : "inactive",
                iface->faked() ? " faked" : "");
+        return iface;
+}
+
+void dioA_event(pcap_network_interface *iface,
+                rpl_debug *deb, const char *outpcap)
+{
         iface->process_pcap();
 
         /* now drain off any created events */
@@ -55,7 +63,8 @@ void dioA_process(dag_network *dag, rpl_debug *deb, const char *outpcap)
 void dioA_step(rpl_debug *deb, const char *outpcap)
 {
   dag_network *dag = dioA_setup(deb);
-  dioA_process(dag, deb, outpcap);
+  pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
+  dioA_event(iface, deb, outpcap);
 }
 
 
