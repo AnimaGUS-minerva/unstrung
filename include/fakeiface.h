@@ -96,6 +96,19 @@ private:
                                      const u_char *p);
         void skip_10mb_pcap_headers(const struct pcap_pkthdr *h,
                                     const u_char *p);
+
+        static unsigned int   seq;
+        static void fake_linkinfo(const char *new_ifname,
+                                  unsigned int myindex,
+                                  struct network_interface_init *nii,
+                                  unsigned char hwaddr[6],
+                                  unsigned int type,
+                                  unsigned int flags);
+
+        static void fake_addrinfo(unsigned int myindex,
+                                  struct network_interface_init *nii,
+                                  unsigned char addr[16]);
+
 };
 
 
