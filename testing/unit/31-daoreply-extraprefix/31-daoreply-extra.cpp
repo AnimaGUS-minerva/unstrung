@@ -15,10 +15,15 @@ int main(int argc, char *argv[])
 
         dag_network *dag = dioA_setup(deb);
 
-        dag->set_ignore_pio(true);
+        class pcap_network_interface *iface = dioA_setup(dag, deb, "../OUTPUTS/29-node-E-out.pcap");
 
-        dioA_process(dag, deb, "../OUTPUTS/29-node-E-out.pcap");
-        daoackA_step(deb, "../INPUTS/daoack-A-ripple1.pcap", NULL);
+        dioA_process(iface, dag, deb, "../OUTPUTS/29-node-E-out.pcap");
+
+        /* add interface: acp0 with IPv6: 0xfd01:0203:0405:0607::1111/128 */
+        iface->set_interface_wildcard("acp*");
+
+        iface = daoackA_setup(deb, "../INPUTS/daoack-A-ripple1.pcap", NULL);
+        daoackA_step(deb, iface);
 
 	exit(0);
 }
