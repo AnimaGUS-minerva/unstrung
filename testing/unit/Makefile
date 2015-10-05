@@ -55,3 +55,5 @@ SUBDIRS+=27-daoreplydao
 SUBDIRS+=28-daowrongack
 SUBDIRS+=29-daoreply-nopio
 SUBDIRS+=30-ackdao
+SUBDIRS+=31-daoreply-extraprefix
+
