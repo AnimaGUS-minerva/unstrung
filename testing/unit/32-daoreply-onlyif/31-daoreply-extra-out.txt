@@ -1,0 +1,46 @@
+link found[1]: wlan0 type=ether (active new) faked
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+ip found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+link found[2]: lo type=loopback (active new) faked
+ip found[2]: lo address=::1
+Processing input file ../INPUTS/dio-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
+link found[10]: acp0 type=ether (active new) faked
+   adding as new interface 00:11:22:33:44:45/0211:22ff:fe33:4445
+ip found[10]: acp0 address=fd01:203:405:607::1111
+added fd01:203:405:607::1111 to DAG ripplepacket 1 is being processed
+  new RPL node: fe80::1000:ff:fe64:6423
+ wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
+ processing dio(60)  [seq:1,instance:1,rank:1,version:1,grounded,storing-mcast,dagid:ripple0x00 ]
+  does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
+  Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
+  peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
+  adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 learnt from iface: wlan0
+  invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+  invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 route show
+Scheduling dao in 2 ms
+inserting event #1 at 1073741824/3024
+invoked doit(send_dao) on rpl_event (if_name=none)
+event send_dao to parent
+SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+SENDING[1] dao about fd01:203:405:607::1111/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+sending DAO on if: wlan0(faked)
+Processing input file ../INPUTS/daoack-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
+packet 2 is being processed
+  processing daoack(20) [instance:1,daoseq:2,dagid:ripple0x00 ]
+  invoking ip -6 route del 2001:db8:1::/48
+    would invoke cmd: ip -6 route del 2001:db8:1::/48
+  invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route show
+Scheduling dio in 2 ms
+inserting event #2 at 1073741824/3024
+invoked doit(send_dio) on rpl_event (if_name=none)
+iface acp0 sending dio about dag: ripple
+sending DIO on if: acp0 for prefix: 2001:db8:1::/48
+iface lo sending dio about dag: ripple
+sending DIO on if: lo for prefix: 2001:db8:1::/48
+iface wlan0 sending dio about dag: ripple
+sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
