@@ -31,13 +31,16 @@ CFLAGS+=${WERROR}
 
 SRCS = ttosubnet.c ttoaddr.c addrtypeof.c subnettypeof.c
 SRCS+= ttoul.c initsubnet.c portof.c initaddr.c anyaddr.c
-SRCS+= addrtot.c ultot.c subnettot.c
+SRCS+= addrtot.c ultot.c subnettot.c sameaddr.c
 CXXSRCS=
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
 CXXFLAGS+=-g ${CROSSFLAGS}
 CFLAGS+=-g ${CROSSFLAGS}
+
+# must turn this off due to sameaddr.c
+CFLAGS+= -Wno-error=cast-qual
 
 OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o}
 
