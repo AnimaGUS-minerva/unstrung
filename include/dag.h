@@ -53,13 +53,6 @@ public:
 	bool 	                   mIgnorePio;
 	bool                       mPrefixSet;
 
-#define DAG_IFWILDCARD_MAX 8
-#define DAG_IFWILDCARD_LEN 32
-        int                        mIfWildcard_max;
-        char                       mIfWildcard[DAG_IFWILDCARD_MAX][DAG_IFWILDCARD_LEN];
-        int                        mIfFilter_max;
-        ip_subnet                  mIfFilter[DAG_IFWILDCARD_MAX];
-
         unsigned int               mLastSeq;
         bool seq_too_old(unsigned int seq);
         bool upd_seq(unsigned int seq);
@@ -72,9 +65,20 @@ public:
         unsigned int               mBestRank;   /* my best parent */
         bool dag_rank_infinite(void) { return (mBestRank >= RANK_INFINITE); };
 
+        /* this manages and evaluates a list of interface wildcards,
+         * and prefix (CIDR) patterns for addresses that will be added
+         * as locale addresses for DAOs sent from this node.
+         */
         bool set_interface_wildcard(const char *ifname);
         bool set_interface_filter(const char *filter);
         bool set_interface_filter(const ip_subnet i6);
+        bool matchesIfWildcard(const char *ifname);
+        bool matchesIfPrefix(const ip_address v6);
+        bool matchesIfPrefix(const struct in6_addr v6);
+        prefix_node *add_address(const ip_subnet v6);
+        prefix_node *add_address(const ip_address v6);
+        static void notify_new_interface(network_interface *one);
+
         void set_prefix(const struct in6_addr v6, const int prefixlen);
         void set_prefix(const ip_subnet prefix);
         const char *prefix_name(void);
@@ -246,6 +250,13 @@ private:
 	void init_dag(void);
 	static unsigned char           optbuff[256];
 	static unsigned int            optlen;
+
+#define DAG_IFWILDCARD_MAX 8
+#define DAG_IFWILDCARD_LEN 32
+        int                        mIfWildcard_max;
+        char                       mIfWildcard[DAG_IFWILDCARD_MAX][DAG_IFWILDCARD_LEN];
+        int                        mIfFilter_max;
+        ip_subnet                  mIfFilter[DAG_IFWILDCARD_MAX];
 
     /* space to format various messages */
     int append_suboption(unsigned char *buff,

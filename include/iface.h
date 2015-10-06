@@ -157,6 +157,7 @@ public:
     bool                    watching;   /* true if we should collect all DAGs*/
 
     bool                    loopbackP() { return loopback; };
+    rpl_node               *node;          /* the node that represents this if */
 
 protected:
     bool                    logged;
@@ -172,7 +173,6 @@ protected:
 
     /* debugging */
     rpl_debug              *debug;
-    rpl_node               *node;
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
     bool                    alive;

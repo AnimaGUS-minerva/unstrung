@@ -288,6 +288,9 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         /* log it for human */
         deb->info("ip found[%d]: %s address=%s\n",
                  ni->if_index, ni->if_name, b1);
+
+        /* now see if this IP address should be added to future DAOs */
+        dag_network::notify_new_interface(ni);
         break;
 
     default:

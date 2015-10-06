@@ -24,6 +24,7 @@ extern "C" {
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
+    #include <fnmatch.h>
 #include "oswlibs.h"
 #include "rpl.h"
 
@@ -225,6 +226,49 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
         return dn;
 }
 
+bool dag_network::matchesIfWildcard(const char *ifname)
+{
+    for(int i=0; i<mIfWildcard_max && i<DAG_IFWILDCARD_MAX; i++) {
+        if(fnmatch(mIfWildcard[i], ifname, FNM_CASEFOLD)==0) return true;
+    }
+    return false;
+}
+
+bool dag_network::matchesIfPrefix(const struct in6_addr v6)
+{
+    ip_address n6;
+    n6.u.v6.sin6_family = AF_INET6;
+    n6.u.v6.sin6_addr = v6;
+    return matchesIfPrefix(n6);
+}
+
+bool dag_network::matchesIfPrefix(const ip_address v6)
+{
+    for(int i=0; i<mIfFilter_max && i<DAG_IFWILDCARD_MAX; i++) {
+        if(addrinsubnet(&v6, &mIfFilter[i])==0) return true;
+    }
+    return false;
+}
+
+void dag_network::notify_new_interface(network_interface *one)
+{
+    for(class dag_network *dn = dag_network::all_dag;
+        dn != NULL;
+        dn = dn->next) {
+        if(dn->matchesIfWildcard(one->get_if_name()) &&
+           dn->matchesIfPrefix(one->if_addr)) {
+
+            /* XXX */
+            prefix_node *n = dn->add_address(one->node->node_address());
+            n->set_prefix(one->if_addr, 128);
+            n->set_debug(dn->debug);
+            dn->debug->info("added %s to DAG %s",
+                          one->node->node_name(),
+                          dn->get_dagName());
+        }
+    }
+}
+
 void dag_network::print_stats(FILE *out, const char *prefix)
 {
     int i;
@@ -354,6 +398,19 @@ void dag_network::add_childnode(rpl_node          *announcing_peer,
 #endif
 }
 
+prefix_node *dag_network::add_address(const ip_address addr)
+{
+    ip_subnet vs;
+
+    initsubnet(&addr, 128, 0, &vs);
+    return add_address(vs);
+}
+
+prefix_node *dag_network::add_address(const ip_subnet prefix)
+{
+    return &this->dag_announced[prefix];
+}
+
 void dag_network::add_prefix(rpl_node advertising_peer,
                              network_interface *iface,
                              ip_subnet prefix)
@@ -373,17 +430,17 @@ void dag_network::add_prefix(rpl_node advertising_peer,
 
     /* next, see if we should configure an address in this prefix */
     if(!mIgnorePio) {
-        prefix_node &preMe = this->dag_announced[prefix];
+        prefix_node *preMe = add_address(prefix);
 
-        if(!preMe.is_installed()) {
+        if(!preMe->is_installed()) {
             dao_needed = true;
-            preMe.set_prefix(prefix);
-            preMe.set_debug(this->debug);
-            preMe.set_announcer(&advertising_peer);
-            preMe.configureip(iface, this);
+            preMe->set_prefix(prefix);
+            preMe->set_debug(this->debug);
+            preMe->set_announcer(&advertising_peer);
+            preMe->configureip(iface, this);
 
             if(dag_me == NULL) {
-                dag_me = &preMe;
+                dag_me = preMe;
             }
         }
     }
