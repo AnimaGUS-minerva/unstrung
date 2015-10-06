@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
         /* now finish setting things up with netlink */
         pcap_network_interface::scan_devices(deb, false);
 
-        if(argc != 3) {
-          printf("usage: 30-ackdao <dao1.pcap> <doa2.pcap>\n");
+        if(argc < 2) {
+          printf("usage: 30-ackdao <dao1.pcap>...\n");
           exit(10);
         }
 
@@ -51,9 +51,11 @@ int main(int argc, char *argv[])
         printf("Processing input file1\n");
         iface->process_pcap();
 
-        iface->setup_infile(argv[2]);
-        printf("Processing input file2\n");
-        iface->process_pcap();
+        for(int i=2; i < argc; i++) {
+          iface->setup_infile(argv[i]);
+          printf("Processing input file%d\n", i);
+          iface->process_pcap();
+        }
 
 	exit(0);
 }
