@@ -48,9 +48,12 @@ int main(int argc, char *argv[])
 	dn->set_active();
 	dn->set_debug(deb);
 
-        printf("Processing input file\n");
+        printf("Processing input file1\n");
         iface->process_pcap();
 
+        iface->setup_infile(argv[2]);
+        printf("Processing input file2\n");
+        iface->process_pcap();
 
 	exit(0);
 }

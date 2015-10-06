@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         dag->set_interface_wildcard("acp*");
         dag->set_interface_filter("fd01::/64");
 
-        const char * outpcap= "../OUTPUTS/24-node-E-out.pcap";
+        const char * outpcap= "../OUTPUTS/31-node-E-out.pcap";
         pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
 
         /* add interface: acp0 with IPv6: fd01:0203:0405:0607::1111/128 */
