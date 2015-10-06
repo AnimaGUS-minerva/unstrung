@@ -31,13 +31,11 @@ int main(int argc, char *argv[])
         nii.setup = false;
 
         dag_network *dag = dioA_setup(deb);
-
-        const char * outpcap= "../OUTPUTS/24-node-E-out.pcap";
-
-        pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
-
         dag->set_interface_wildcard("acp*");
         dag->set_interface_filter("fd01::/64");
+
+        const char * outpcap= "../OUTPUTS/24-node-E-out.pcap";
+        pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
 
         /* add interface: acp0 with IPv6: fd01:0203:0405:0607::1111/128 */
         unsigned char hwaddr1[6];
