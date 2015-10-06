@@ -42,7 +42,7 @@ Processing input file ../INPUTS/27-daoJ.pcap on if=[1]: wlan0 state: active  fak
 packet 3 is being processed
   processing dao(52) [instance:1,daoseq:1,dao-ack,dagid:ripple0x00 ]
   new RPL node: fe80::1000:ff:fe66:4a01
-received DAO about network 2001:db8:1:0:1200:ff:fe66:4a01/128, target fe80::1000:ff:fe66:4a01 (added)
+  recv DAO rpltarget re: network 2001:db8:1:0:1200:ff:fe66:4a01/128, target fe80::1000:ff:fe66:4a01 (added)
   invoking ip -6 route add 2001:db8:1:0:1200:ff:fe66:4a01/128 via fe80::1000:ff:fe66:4a01 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8:1:0:1200:ff:fe66:4a01/128 via fe80::1000:ff:fe66:4a01 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show

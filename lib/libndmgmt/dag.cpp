@@ -912,7 +912,7 @@ void dag_network::receive_dao(network_interface *iface,
         /* need to look at dag_members, and see if the child node already
          * exists, and add if not
          */
-        debug->verbose("received DAO about network %s, target %s (added)\n",
+        debug->verbose("  recv DAO rpltarget re: network %s, target %s (added)\n",
                        addrfound, peer->node_name());
 
         add_childnode(peer, iface, prefix);
