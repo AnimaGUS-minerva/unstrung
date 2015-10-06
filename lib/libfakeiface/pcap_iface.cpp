@@ -532,6 +532,57 @@ void pcap_network_interface::close_pcap_files(void)
 }
 
 
+void pcap_network_interface::setup_infile(const char *infile)
+{
+    pcap_t *ppol;
+    char errbuf[PCAP_ERRBUF_SIZE];
+
+    ppol = pcap_open_offline(infile, errbuf);
+
+    if(!ppol) {
+        debug->error("can not open input %s: %s\n", infile, errbuf);
+        exit(1);
+    }
+
+    if(this->pol) {
+        pcap_close(this->pol);
+        this->pol = NULL;
+    }
+    this->pol = ppol;
+}
+
+void pcap_network_interface::setup_outfile(const char *outfile)
+{
+    int pcap_link = DLT_EN10MB;
+
+    if(this->pol) {
+        pcap_link = pcap_datalink(this->pol);
+    }
+    setup_outfile(outfile, pcap_link);
+}
+
+void pcap_network_interface::setup_outfile(const char *outfile,
+                                           int pcap_link)
+{
+    pcap_dumper_t *out = NULL;
+    if(outfile) {
+        pcap_t *pout = pcap_open_dead(pcap_link, 65535);
+        if(!pout) {
+            debug->error("can not create pcap_open_deads\n");
+            exit(1);
+        }
+
+        out = pcap_dump_open(pout, outfile);
+
+        if(!out) {
+            debug->error("can not open output %s\n", outfile);
+            exit(1);
+        }
+    }
+
+    this->set_link_encap(pcap_link);
+    this->pcap_out = out;
+}
 
 pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *ifname,
@@ -539,39 +590,14 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *outfile,
     rpl_debug *debug)
 {
-	char errbuf[PCAP_ERRBUF_SIZE];
-        pcap_t *ppol;
-
-	ppol = pcap_open_offline(infile, errbuf);
         pcap_network_interface *ndproc;
 
-	if(!ppol) {
-	    debug->error("can not open input %s: %s\n", infile, errbuf);
-	    exit(1);
-	}
-
-        int pcap_link = pcap_datalink(ppol);
-        pcap_dumper_t *out = NULL;
-        if(outfile) {
-            pcap_t *pout = pcap_open_dead(pcap_link, 65535);
-            if(!pout) {
-                debug->error("can not create pcap_open_deads\n");
-		exit(1);
-            }
-
-            out = pcap_dump_open(pout, outfile);
-
-            if(!out) {
-                debug->error("can not open output %s\n", outfile);
-                exit(1);
-            }
-        }
-
         ndproc = (pcap_network_interface *)find_by_name(ifname);
-        ndproc->set_link_encap(pcap_link);
-        ndproc->pol = ppol;
+
+        ndproc->setup_infile(infile);
+        ndproc->setup_outfile(outfile);
+
 	ndproc->set_debug(debug);
-	ndproc->pcap_out = out;
 
         return ndproc;
 }

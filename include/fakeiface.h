@@ -57,6 +57,10 @@ public:
                 if_addr = ifa;
         };
 
+        void setup_infile(const char *infile);
+        void setup_outfile(const char *outfile);
+        void setup_outfile(const char *outfile, int pcap_link);
+
         /* a kind of constructor */
         static pcap_network_interface *setup_infile_outfile(
                 const char *ifname,
