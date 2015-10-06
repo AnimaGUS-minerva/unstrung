@@ -83,6 +83,17 @@ public:
 	};
 
 
+        static void fake_linkinfo(const char *new_ifname,
+                                  unsigned int myindex,
+                                  struct network_interface_init *nii,
+                                  unsigned char hwaddr[6],
+                                  unsigned int type,
+                                  unsigned int flags);
+
+        static void fake_addrinfo(unsigned int myindex,
+                                  struct network_interface_init *nii,
+                                  unsigned char addr[16]);
+
 protected:
         void filter_and_receive_icmp6(const time_t now,
                                       const u_char *bytes, int len);
@@ -98,17 +109,6 @@ private:
                                     const u_char *p);
 
         static unsigned int   seq;
-        static void fake_linkinfo(const char *new_ifname,
-                                  unsigned int myindex,
-                                  struct network_interface_init *nii,
-                                  unsigned char hwaddr[6],
-                                  unsigned int type,
-                                  unsigned int flags);
-
-        static void fake_addrinfo(unsigned int myindex,
-                                  struct network_interface_init *nii,
-                                  unsigned char addr[16]);
-
 };
 
 

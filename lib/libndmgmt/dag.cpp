@@ -935,6 +935,30 @@ void dag_network::commit_parent(void)
 }
 
 
+bool dag_network::set_interface_wildcard(const char *wild)
+{
+    if(mIfWildcard_max < DAG_IFWILDCARD_MAX) {
+        int len = strlen(wild);
+        if(len > DAG_IFWILDCARD_LEN-1) len = DAG_IFWILDCARD_LEN;
+
+        memcpy(mIfWildcard[mIfWildcard_max++], wild, len);
+    }
+}
+
+bool dag_network::set_interface_filter(const ip_subnet i6)
+{
+    if(mIfFilter_max < DAG_IFWILDCARD_MAX) {
+        mIfFilter[mIfFilter_max++] = i6;
+    }
+}
+
+bool dag_network::set_interface_filter(const char *filter)
+{
+    ip_subnet i6;
+    ttosubnet(filter, 0, AF_INET6, &i6);
+    set_interface_filter(i6);
+}
+
 
 /*
  * Local Variables:
