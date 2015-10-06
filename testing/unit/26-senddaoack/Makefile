@@ -3,7 +3,7 @@ UNSTRUNG_SRCDIR?=$(shell cd ../../..; pwd)
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 include ${srcdir}../Makefile.testing
 
-export SENDDAO=${UNSTRUNG_SRCDIR}/programs/senddao/senddao
+export SENDDAO=${UNSTRUNG_OBJDIR}/programs/senddao/senddao
 PCAP01=../OUTPUTS/senddaoack-test-01out.pcap
 
 checkprograms::
