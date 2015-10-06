@@ -17,4 +17,6 @@ Usage: PATH/sunshine [-?] [-i ifname]
 	 [--verbose] [--timelog]         Turn on logging (with --time logged)
 	 [--syslog]  [--stderr]          Log to syslog and/or stderr
 	 [--ignore-pio]                  Ignore PIOs found in DIO
+	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
+	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from
 	 [--sleep=secs]                  sleep secs before trying to talk to network

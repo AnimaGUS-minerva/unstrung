@@ -38,6 +38,8 @@ static struct option const longopts[] =
     { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
     { "ignore-pio",0, NULL, 'P'},
+    { "dao-if-filter",  1, NULL, 'A'},
+    { "dao-addr-filter",1, NULL, 'a'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
     { "syslog",    0, NULL,  OPTION_SYSLOG},
@@ -65,6 +67,8 @@ void usage()
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
+            "\t [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from\n"
+            "\t [--dao-addr-filter]   List of prefixes/len to take DAO addresses from\n"
             "\t [--sleep=secs]                  sleep secs before trying to talk to network\n"
         );
     exit(EX_USAGE);
@@ -202,6 +206,16 @@ int main(int argc, char *argv[])
             dag->set_ignore_pio(true);
             break;
 
+        case 'A':
+            check_dag(c, dag);
+            dag->set_interface_wildcard(optarg);
+            break;
+
+        case 'a':
+            check_dag(c, dag);
+            dag->set_interface_filter(optarg);
+            break;
+
         case 'I':
 	    check_dag(c, dag);
             dag->set_instanceid(atoi(optarg));
@@ -236,11 +250,11 @@ int main(int argc, char *argv[])
 
         case 'i':
             check_dag(c, dag);
-        	if(dag->mPrefixSet){
-        		fprintf(stderr, "interface must preceed prefix parameter\n");
-        		usage();
-        	}
-        	iface = network_interface::find_by_name(optarg);
+            if(dag->mPrefixSet) {
+                fprintf(stderr, "interface must preceed prefix parameter\n");
+                usage();
+            }
+            iface = network_interface::find_by_name(optarg);
             if(!iface) {
                 deb->log("Can not find interface %s\n", optarg);
             } else {
