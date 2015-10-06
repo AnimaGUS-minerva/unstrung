@@ -38,6 +38,7 @@ SUBDIRS+=08-event
 SUBDIRS+=12-senddio
 SUBDIRS+=13-selfprefix
 SUBDIRS+=14-senddao
+SUBDIRS+=14-sunshine
 SUBDIRS+=15-builddao
 SUBDIRS+=16-vf
 SUBDIRS+=17-recvdao
