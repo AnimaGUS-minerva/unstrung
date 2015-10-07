@@ -276,6 +276,8 @@ bool dag_network::notify_new_interface(network_interface *one)
             dn->debug->info("added %s to DAG %s\n",
                           one->node->node_name(),
                           dn->get_dagName());
+            dn->dao_needed = true;
+            dn->maybe_send_dao();
         }
     }
     return announced;
