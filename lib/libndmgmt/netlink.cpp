@@ -240,6 +240,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
     struct rtattr * tb[IFA_MAX+1], *addrattr;
     int len = n->nlmsg_len;
     unsigned m_flag = 0;
+    bool announced = false;
     SPRINT_BUF(b1);
 
     len -= NLMSG_LENGTH(sizeof(*iai));
@@ -285,12 +286,16 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         ni->node = new rpl_node(ni->if_addr);
         ni->node->debug = deb;
 
-        /* log it for human */
-        deb->info("ip found[%d]: %s address=%s\n",
-                 ni->if_index, ni->if_name, b1);
+        if(iai->ifa_scope >= 2) {
+            /* now see if this IP address should be added to future DAOs */
+            announced = dag_network::notify_new_interface(ni);
+        }
 
-        /* now see if this IP address should be added to future DAOs */
-        dag_network::notify_new_interface(ni);
+        /* log it for human */
+        deb->info("ip found[%d]: %s scope=%u address=%s%s\n",
+                  ni->if_index, ni->if_name, iai->ifa_scope,
+                  b1, announced ? " announced" : "");
+
         break;
 
     default:

@@ -77,7 +77,7 @@ public:
         bool matchesIfPrefix(const struct in6_addr v6);
         prefix_node *add_address(const ip_subnet v6);
         prefix_node *add_address(const ip_address v6);
-        static void notify_new_interface(network_interface *one);
+        static bool notify_new_interface(network_interface *one);
 
         void set_prefix(const struct in6_addr v6, const int prefixlen);
         void set_prefix(const ip_subnet prefix);

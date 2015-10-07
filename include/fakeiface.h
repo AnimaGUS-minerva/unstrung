@@ -95,6 +95,7 @@ public:
                                   unsigned int flags);
 
         static void fake_addrinfo(unsigned int myindex,
+                                  unsigned int scope,
                                   struct network_interface_init *nii,
                                   unsigned char addr[16]);
 

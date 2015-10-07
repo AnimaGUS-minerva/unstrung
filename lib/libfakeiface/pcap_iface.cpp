@@ -373,6 +373,7 @@ void pcap_network_interface::fake_linkinfo(const char *new_ifname,
 }
 
 void pcap_network_interface::fake_addrinfo(unsigned int myindex,
+                                           unsigned int scope,
                                            struct network_interface_init *nii,
                                            unsigned char addr[16])
 {
@@ -390,7 +391,7 @@ void pcap_network_interface::fake_addrinfo(unsigned int myindex,
     iai->ifa_family  = AF_INET6;
     iai->ifa_prefixlen = 64;
     iai->ifa_flags   = IFA_F_PERMANENT;
-    iai->ifa_scope   = 0;
+    iai->ifa_scope   = scope;
     iai->ifa_index   = myindex;
 
     unsigned char *addr6 = (unsigned char *)RTA_DATA(rtaddr6);
@@ -443,7 +444,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
             addr6[10]= 0x00;                addr6[11]= 0xff;
             addr6[12]= 0xfe;                addr6[13]= 0x64;
             addr6[14]= 0x64;                addr6[15]= 0x23;
-            fake_addrinfo(myindex, &nii, addr6);
+            fake_addrinfo(myindex, 1, &nii, addr6);
         }
 
         /* now make a loopback interface */
@@ -469,7 +470,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
             addr6[10]= 0x00;                addr6[11]= 0x00;
             addr6[12]= 0x00;                addr6[13]= 0x00;
             addr6[14]= 0x00;                addr6[15]= 0x01;
-            fake_addrinfo(myindex, &nii, addr6);
+            fake_addrinfo(myindex, 1, &nii, addr6);
         }
 
         /* this is interface wlan1, and it's not up, has no IP addresses */

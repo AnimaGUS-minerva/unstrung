@@ -250,23 +250,26 @@ bool dag_network::matchesIfPrefix(const ip_address v6)
     return false;
 }
 
-void dag_network::notify_new_interface(network_interface *one)
+bool dag_network::notify_new_interface(network_interface *one)
 {
+    bool announced = false;
+
     for(class dag_network *dn = dag_network::all_dag;
         dn != NULL;
         dn = dn->next) {
         if(dn->matchesIfWildcard(one->get_if_name()) &&
            dn->matchesIfPrefix(one->if_addr)) {
 
-            /* XXX */
+            announced = true;
             prefix_node *n = dn->add_address(one->node->node_address());
             n->set_prefix(one->if_addr, 128);
             n->set_debug(dn->debug);
-            dn->debug->info("added %s to DAG %s",
+            dn->debug->info("added %s to DAG %s\n",
                           one->node->node_name(),
                           dn->get_dagName());
         }
     }
+    return announced;
 }
 
 void dag_network::print_stats(FILE *out, const char *prefix)
