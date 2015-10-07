@@ -12,10 +12,13 @@ extern "C" {
 
 class rpl_msg {
 public:
-    rpl_msg(const unsigned char *subopts, int subopt_len);
+    rpl_msg(const unsigned char *subopts, int subopt_len, u_int32_t *stats);
     struct nd_rpl_genoption *search_subopt(enum RPL_SUBOPT optnum,
                                            int *p_opt_len = NULL);
     void   reset_options(void);
+
+ protected:
+    u_int32_t              *mStats;
 
 private:
     u_int8_t                mBytes[2048];

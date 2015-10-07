@@ -548,7 +548,9 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
      * to do this, we have to crack open the DIO.  UP to this point
      * we haven't taken the DIO apart, so do, keeping stuff on the stack.
      */
-    rpl_dio decoded_dio(peer, dio, dio_len);
+    rpl_dio decoded_dio(peer, this, dio, dio_len);
+
+    unsigned int optcount = 0;
 
     struct rpl_dio_destprefix *dp;
     while((dp = decoded_dio.destprefix()) != NULL) {
@@ -890,7 +892,7 @@ void dag_network::receive_dao(network_interface *iface,
     }
 
     /* look for the suboptions, process them */
-    rpl_dao decoded_dao(data, dao_len);
+    rpl_dao decoded_dao(data, dao_len, this);
     unsigned int addrcount = 0;
 
     struct rpl_dao_target *rpltarget;

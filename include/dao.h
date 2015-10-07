@@ -15,7 +15,7 @@ extern "C" {
 
 class rpl_dao : public rpl_msg {
 public:
-    rpl_dao(unsigned char *data, int dao_len);
+    rpl_dao(unsigned char *data, int dao_len, dag_network *dag);
     struct rpl_dao_target *rpltarget(void);
 };
 

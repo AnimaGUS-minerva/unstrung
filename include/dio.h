@@ -15,7 +15,7 @@ extern "C" {
 
 class rpl_dio : public rpl_msg {
 public:
-    rpl_dio(rpl_node &peer,
+    rpl_dio(rpl_node &peer, dag_network *dag,
             const struct nd_rpl_dio *dio, int dio_len);
     struct rpl_dio_destprefix *destprefix(void);
 
