@@ -17,6 +17,7 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
+  processed 1 pio options
 Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024
 Events created for file 1
