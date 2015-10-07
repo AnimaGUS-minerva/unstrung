@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
         dag_network *dag = dioA_setup(deb);
         dag->set_interface_wildcard("acp*");
-        dag->set_interface_filter("fd01::/64");
+        dag->set_interface_filter("fd01::/16");
 
         const char * outpcap= "../OUTPUTS/31-node-E-out.pcap";
         pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);

@@ -229,7 +229,10 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
 bool dag_network::matchesIfWildcard(const char *ifname)
 {
     for(int i=0; i<mIfWildcard_max && i<DAG_IFWILDCARD_MAX; i++) {
-        if(fnmatch(mIfWildcard[i], ifname, FNM_CASEFOLD)==0) return true;
+        bool matched = fnmatch(mIfWildcard[i], ifname, FNM_CASEFOLD)==0;
+        debug->debug(RPL_DEBUG_NETLINK, "matching if:%s against %s: result: %s\n",
+                     ifname, mIfWildcard[i], matched ? "matched" : "failed");
+        if(matched) return true;
     }
     return false;
 }
@@ -244,8 +247,14 @@ bool dag_network::matchesIfPrefix(const struct in6_addr v6)
 
 bool dag_network::matchesIfPrefix(const ip_address v6)
 {
+    char b1[ADDRTOT_BUF], b2[SUBNETTOT_BUF];
+    addrtot(&v6, 0, b1, sizeof(b1));
     for(int i=0; i<mIfFilter_max && i<DAG_IFWILDCARD_MAX; i++) {
-        if(addrinsubnet(&v6, &mIfFilter[i])==0) return true;
+        bool matched = addrinsubnet(&v6, &mIfFilter[i]);
+        subnettot(&mIfFilter[i], 0, b2, sizeof(b2));
+        debug->debug(RPL_DEBUG_NETLINK, "matching addr:%s against %s: result: %s\n",
+                     b1, b2, matched ? "matched" : "failed");
+        if(matched) return true;
     }
     return false;
 }

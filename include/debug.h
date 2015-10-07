@@ -9,6 +9,7 @@ extern "C" {
 
 enum debug_level {
   RPL_DEBUG_NETINPUT = 1 << 1,
+  RPL_DEBUG_NETLINK  = 1 << 2,
 };
 
 class rpl_debug {
