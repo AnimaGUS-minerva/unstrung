@@ -25,7 +25,7 @@ extern "C" {
 #include <string.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
-
+#include <netlink/utils.h>   /* for RT_SCOPE_* */
 }
 
 #include "debug.h"

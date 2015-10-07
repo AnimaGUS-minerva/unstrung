@@ -1,13 +1,13 @@
 link found[1]: wlan0 type=ether (active new) faked
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
-ip found[1]: wlan0 scope=1 address=fe80::1000:ff:fe64:6423
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
-ip found[2]: lo scope=1 address=::1
+ip found[2]: lo scope=254 address=::1
 Processing input file ../INPUTS/dio-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
 link found[10]: acp0 type=ether (active new) faked
    adding as new interface 00:11:22:33:44:45/0211:22ff:fe33:4445
 added fd01:203:405:607::1111 to DAG ripple
-ip found[10]: acp0 scope=2 address=fd01:203:405:607::1111 announced
+ip found[10]: acp0 scope=0 address=fd01:203:405:607::1111 announced
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0

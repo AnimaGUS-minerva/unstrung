@@ -3,11 +3,6 @@ link found[1]: lo type=loopback (inactive new)
 link found[2]: eth0 type=ether (inactive new)
 link found[3]: vlan3800 type=ether (inactive new)
 link found[4]: guestvif type=ether (inactive new)
-ip found[1]: lo address=::1
-ip found[2]: eth0 address=2607:f0b0:f:2::247
-ip found[2]: eth0 address=fe80::3a60:77ff:fe38:e647
-ip found[3]: vlan3800 address=fe80::3a60:77ff:fe38:e647
-ip found[4]: guestvif address=2607:f0b0:f:83::1
 Usage: PATH/sunshine [-?] [-i ifname]
 	 [-p prefix] [--prefix prefix]   announce this IPv6 prefix in the destination option
 	 [-G dagid]  [--dagid dagid]     DAGid to use to announce, string or hexn

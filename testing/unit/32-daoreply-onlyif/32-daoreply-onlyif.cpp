@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
         ip_address a1;
         ttoaddr("fd01:0203:0405:0607::1111", 0, AF_INET6, &a1);
-        iface->fake_addrinfo(10, 2, &nii, a1.u.v6.sin6_addr.s6_addr);
+        iface->fake_addrinfo(10, RT_SCOPE_UNIVERSE, &nii, a1.u.v6.sin6_addr.s6_addr);
 
         dioA_event(iface, deb, outpcap);
 

@@ -286,7 +286,8 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         ni->node = new rpl_node(ni->if_addr);
         ni->node->debug = deb;
 
-        if(iai->ifa_scope >= 2) {
+        /* scopes are reversed on Linux: HOST=254, LINK=253, UNIVERSE=0 */
+        if(iai->ifa_scope <= RT_SCOPE_LINK) {
             /* now see if this IP address should be added to future DAOs */
             announced = dag_network::notify_new_interface(ni);
         }
