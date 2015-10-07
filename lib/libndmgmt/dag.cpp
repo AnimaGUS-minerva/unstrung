@@ -562,8 +562,10 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
         memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes);
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
+        optcount++;
         add_prefix(peer, iface, prefix);
     }
+    debug->verbose("  processed %u pio options\n", optcount);
 
     /* now schedule sending out packets */
     if(dag_parent) {
