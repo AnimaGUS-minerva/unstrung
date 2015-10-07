@@ -246,6 +246,7 @@ int main(int argc, char *argv[])
         case 'v':
             verbose=true;
             deb->set_verbose(stderr);
+            deb->set_debug_flags(0xffffffff);  /* improvise for now */
             break;
 
         case 'i':

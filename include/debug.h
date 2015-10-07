@@ -52,6 +52,9 @@ public:
                 file = f;
                 flag = true;
         };
+        void set_debug_flags(int flags) {
+          debug_flags = flags;
+        };
         void set_debug_flag(enum debug_level dl) {
           debug_flags |= dl;
         };
