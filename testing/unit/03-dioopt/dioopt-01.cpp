@@ -62,7 +62,7 @@ static void t1(void)
         };
         int dio_data_len=sizeof(diodata);
 
-        rpl_dio dio(n1, (struct nd_rpl_dio *)diodata,
+        rpl_dio dio(n1, dn, (struct nd_rpl_dio *)diodata,
                     dio_data_len);
 
         assert(dio.search_subopt(RPL_DIO_DESTPREFIX) != NULL);
@@ -86,7 +86,7 @@ static void t2(void)
         };
         int dio_data_len=sizeof(diodata);
 
-        rpl_dio dio(n2, (struct nd_rpl_dio *)diodata,
+        rpl_dio dio(n2, dn, (struct nd_rpl_dio *)diodata,
                     dio_data_len);
 
         assert(dio.search_subopt(RPL_DIO_DESTPREFIX) == NULL);
