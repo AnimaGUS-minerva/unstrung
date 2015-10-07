@@ -10,6 +10,7 @@ packet 1 is being processed
  processing dio(60)  [seq:1,instance:1,rank:1,version:1,grounded,storing-mcast,dagid:ripple0x00 ]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
+  processed 1 pio options
 Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024
 invoked doit(send_dao) on rpl_event (if_name=none)
