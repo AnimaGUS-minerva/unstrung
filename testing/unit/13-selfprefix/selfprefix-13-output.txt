@@ -1,8 +1,8 @@
 link found[1]: wlan0 type=ether (active new) faked
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
-ip found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+ip found[1]: wlan0 scope=1 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
-ip found[2]: lo address=::1
+ip found[2]: lo scope=1 address=::1
   invoking ip -6 route add unreachable 2001:db8:1::/48 dev lo
     would invoke cmd: ip -6 route add unreachable 2001:db8:1::/48 dev lo
     would invoke cmd: ip -6 route show
