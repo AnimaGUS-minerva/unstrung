@@ -118,13 +118,12 @@ struct nd_rpl_genoption *rpl_msg::search_subopt(enum RPL_SUBOPT optnum,
 
 struct rpl_dio_destprefix *rpl_dio::destprefix(void)
 {
-    int optlen = 0;
+    int optlen = -1;
     struct rpl_dio_destprefix *dp = (struct rpl_dio_destprefix *)search_subopt(RPL_DIO_DESTPREFIX, &optlen);
 
     if(dp==NULL) return NULL;
 
-    int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8)-1;
-    if(prefixbytes > (optlen - sizeof(struct rpl_dio_destprefix))) {
+    if(optlen < sizeof(struct rpl_dio_destprefix)) {
         mStats[PS_SUBOPTION_UNDERRUN]++;
         return NULL;
     }
