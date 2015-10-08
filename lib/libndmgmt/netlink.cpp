@@ -422,7 +422,7 @@ bool network_interface::open_netlink()
             return false;
         }
 
-        if(rtnl_open(netlink_handle, 0) < 0) {
+        if(rtnl_open(netlink_handle, RTMGRP_LINK|RTMGRP_IPV6_IFADDR) < 0) {
             fprintf(stderr, "Cannot open rtnetlink!!\n");
             free(netlink_handle);
             netlink_handle = NULL;
