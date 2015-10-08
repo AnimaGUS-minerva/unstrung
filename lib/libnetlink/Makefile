@@ -20,6 +20,7 @@ UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 include ${UNSTRUNG_SRCDIR}/Makefile.ver
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
+LIBDIR=netlink
 LIBRARY=netlinkstrung
 LIB=lib${LIBRARY}.a
 MANDIR=$(MANTREE)/man3
