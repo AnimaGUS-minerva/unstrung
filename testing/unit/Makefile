@@ -59,3 +59,10 @@ SUBDIRS+=30-ackdao
 SUBDIRS+=31-daoreply-extraprefix
 SUBDIRS+=32-daoreply-onlyif
 
+checkstop::
+	@for d in $(SUBDIRS) ; \
+	do \
+		if $(MAKE) -C $$d UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} check; then true; else echo ${SUBDIR} FAILED; exit 1; fi; \
+	done;
+
+
