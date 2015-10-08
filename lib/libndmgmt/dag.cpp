@@ -613,7 +613,8 @@ void dag_network::send_dao(void)
 
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
                        cnt, pm.node_name(),
-                       mDagName, dag_bestparent->node_name(),
+                       mDagName,
+                       dag_bestparent   ? dag_bestparent->node_name():"unknown",
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
         cnt++;
         pi++;
