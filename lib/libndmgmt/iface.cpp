@@ -957,9 +957,12 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 	perror("sigaction USR2");
     }
 
+    int netlink_fd = setup_msg_callback(debug);
+
+
     while(!done) {
-        struct pollfd            poll_if[network_interface::if_count()];
-        class network_interface* all_if[network_interface::if_count()];
+        struct pollfd            poll_if[1+network_interface::if_count()];
+        class network_interface* all_if[1+network_interface::if_count()];
         int pollnum=0;
         int timeout = 60*1000;   /* 60 seconds is maximum */
 
@@ -993,6 +996,12 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
          * do not really need to build this every time, but, for
          * now, this is fine.
          */
+        poll_if[pollnum].fd = netlink_fd;
+        poll_if[pollnum].events = POLLIN;
+        poll_if[pollnum].revents = 0;
+        all_if[pollnum] = NULL;
+        pollnum++;
+
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
             debug->verbose2("iface %s has socketfd: %d\n",
@@ -1031,7 +1040,14 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 time(&now);
 
                 if(poll_if[i].revents & POLLIN) {
-                    all_if[i]->receive(now);
+                    if(all_if[i] == NULL) {
+                        /* got something else */
+                        if(poll_if[i].fd == netlink_fd) {
+                            empty_socket(debug);
+                        }
+                    } else {
+                        all_if[i]->receive(now);
+                    }
                     n--;
                 }
             }

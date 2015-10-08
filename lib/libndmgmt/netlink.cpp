@@ -432,6 +432,43 @@ bool network_interface::open_netlink()
     return true;
 }
 
+void network_interface::empty_socket(rpl_debug *deb)
+{
+    struct network_interface_init nii;
+    nii.debug = deb;
+    nii.setup = true;
+
+    int results = rtnl_dump_filter(netlink_handle, gather_linkinfo,
+                                   (void *)&nii, NULL, NULL);
+    if(results != -1 && results != 0) {
+        deb->info("empty_socket returned with %d\n", results);
+    }
+}
+
+int network_interface::setup_msg_callback(rpl_debug *deb)
+{
+    int fd = rtnl_socket_get_fd(netlink_handle);
+
+    /* make it non-blocking */
+    if(fcntl(fd, F_SETFL, O_NONBLOCK) != 0) {
+        deb->error("can not set non-blocking mode on netlink socket: %s\n",
+                   strerror(errno));
+        return -1;
+    }
+
+    /*
+     * now subscribe to netfilter events to get updates to routing
+     * and address changes
+     */
+#if 0
+    nl_socket_modify_cb(netlink_handle,
+                        NL_CB_VALID, NL_CB_CUSTOM,
+                        unstrung_update_msg_parser, nii);
+#endif
+    return fd;
+}
+
+
 
 void network_interface::scan_devices(rpl_debug *deb, bool setup)
 {
