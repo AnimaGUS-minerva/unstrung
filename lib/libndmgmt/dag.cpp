@@ -379,7 +379,7 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
 /* here we mark that a DAO is needed soon */
 void dag_network::maybe_send_dao(void)
 {
-    if(dao_needed) {
+    if(dao_needed && dag_parent != NULL) {
         if(!root_node()) {
             schedule_dao();
         }
