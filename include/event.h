@@ -34,6 +34,7 @@ public:
     rpl_event() {
         deleted = false;
         mDag = NULL;
+        inQueue = false;
     };
 
     rpl_event(struct timeval &relative,
@@ -125,6 +126,7 @@ public:
     };
 
     dag_network        *mDag;
+    bool                inQueue;
 
     /* set to true to remove variable dates from debug output
      * used by regression testing routines.
@@ -143,9 +145,11 @@ public:
         set_alarm(relative, sec, msec);
         deleted = false;
         mDag = NULL;
+        inQueue = false;
     };
 
 private:
+    void _requeue(void);
     unsigned int        event_number;
     static unsigned int event_counter;
     unsigned int        repeat_sec;
@@ -180,7 +184,8 @@ public:
 
     void eat_event(void) {
 	if(!queue.empty()) {
-	    pop_heap(queue.begin(), queue.end(), rpl_eventless); queue.pop_back();
+	    pop_heap(queue.begin(), queue.end(), rpl_eventless);
+            queue.pop_back();
 	} else {
 	    fprintf(stderr, "attempt to remove from empty event queue");
 	}
@@ -188,13 +193,18 @@ public:
 
     class rpl_event *next_event(void) {
 	rpl_event *n = peek_event();
-	if(n) eat_event();
+	if(n) {
+            eat_event();
+            n->inQueue=false;
+        }
 	return n;
     };
 
     void add_event(class rpl_event *n) {
+        assert(!n->inQueue);
 	queue.push_back(n);
 	push_heap(queue.begin(), queue.end(), rpl_eventless);
+        n->inQueue=true;
     };
 
     int size(void) {
