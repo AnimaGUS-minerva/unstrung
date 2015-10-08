@@ -329,8 +329,28 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     }
 
     network_interface *ni = find_by_ifindex(ifi->ifi_index);
+    const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
+
+    if(n->nlmsg_type == RTM_DELLINK && ni == NULL) {
+        deb->info("link deleted[%d]: %s type=%s [ignored]\n",
+                  ni->if_index, ifname,
+                  ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
+        return 0;
+    }
+
+    if(n->nlmsg_type == RTM_DELLINK && ni != NULL) {
+        deb->info("link deleted[%d]: %s type=%s [ignored]\n",
+                  ni->if_index, ifname,
+                  ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
+                  ni->alive   ? "active" : "inactive",
+                  ni->on_list ? "existing" :"new",
+                  ni->faked() ? " faked" : "");
+        delete ni;
+        return 0;
+    }
+
     if(ni == NULL) {
-        ni = iface_maker->newnetwork_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]), deb);
+        ni = iface_maker->newnetwork_interface(ifname, deb);
         ni->if_index = ifi->ifi_index;
         ni->set_debug(deb);
     }

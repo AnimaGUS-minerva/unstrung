@@ -44,6 +44,7 @@ public:
     int announce_network();
     network_interface();
     network_interface(const char *if_name, rpl_debug *deb);
+    ~network_interface();
 
     // setup the object, open sockets, etc.
     bool setup(void);
@@ -183,6 +184,7 @@ protected:
 
     /* maintain list of all interfaces */
     void add_to_list(void);
+    void remove_from_list(void);
 
     unsigned short csum_ipv6_magic(
         const struct in6_addr *saddr,

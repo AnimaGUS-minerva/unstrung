@@ -360,6 +360,29 @@ void network_interface::add_to_list(void)
     on_list = true;
 }
 
+void network_interface::remove_from_list(void)
+{
+    if(!on_list) return;
+
+    network_interface **iifp = &network_interface::all_if;
+    while(*iifp != this) {
+        iifp = &(*iifp)->next;
+    }
+
+    /* if found, then remove it */
+    if(iifp) {
+        *iifp = (*iifp)->next;
+    }
+    on_list = false;
+}
+
+/* probably should just be the destructor */
+network_interface::~network_interface()
+{
+    remove_from_list();
+    clear_events();
+}
+
 network_interface *network_interface::find_by_ifindex(int index)
 {
     network_interface *ni = network_interface::all_if;
