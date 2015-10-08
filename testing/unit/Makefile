@@ -58,6 +58,7 @@ SUBDIRS+=29-daoreply-nopio
 SUBDIRS+=30-ackdao
 SUBDIRS+=31-daoreply-extraprefix
 SUBDIRS+=32-daoreply-onlyif
+SUBDIRS+=33-newifdao
 
 checkstop::
 	@for d in $(SUBDIRS) ; \
