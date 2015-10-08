@@ -170,10 +170,12 @@ int rtnl_dump_filter(struct rtnl_handle *rth,
 		status = recvmsg(rth->fd, &msg, 0);
 
 		if (status < 0) {
-			if (errno == EINTR)
-				continue;
-			perror("OVERRUN");
-			continue;
+                  if(errno == EINTR) continue;
+                  if(errno == EAGAIN) {
+                    return 0;  /* nothing ready to read */
+                  }
+                  perror("OVERRUN");
+                  continue;
 		}
 
 		if (status == 0) {
@@ -376,6 +378,9 @@ int rtnl_listen(struct rtnl_handle *rtnl,
 		if (status < 0) {
 			if (errno == EINTR)
 				continue;
+                        if(errno == EAGAIN) {
+                          return 0;  /* nothing ready to read */
+                        }
 			perror("OVERRUN");
 			continue;
 		}

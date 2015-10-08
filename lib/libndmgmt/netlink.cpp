@@ -191,6 +191,8 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     case RTM_NEWADDR:
         adddel_ipinfo(who, n, arg);
         break;
+    default:
+        fprintf(stderr, "ignored nlmsgtype: %u\n", n->nlmsg_type);
     }
 }
 
@@ -458,8 +460,7 @@ void network_interface::empty_socket(rpl_debug *deb)
     nii.debug = deb;
     nii.setup = true;
 
-    int results = rtnl_dump_filter(netlink_handle, gather_linkinfo,
-                                   (void *)&nii, NULL, NULL);
+    int results = rtnl_listen(netlink_handle, gather_linkinfo, (void *)&nii);
     if(results != -1 && results != 0) {
         deb->info("empty_socket returned with %d\n", results);
     }
