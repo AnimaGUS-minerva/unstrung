@@ -169,7 +169,9 @@ protected:
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
 
-    static int    adddel_linkinfo(const struct sockaddr_nl *who,
+    static int    add_linkinfo(const struct sockaddr_nl *who,
+                                  struct nlmsghdr *n, void *arg);
+    static int    del_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
     static int    adddel_ipinfo(const struct sockaddr_nl *who,
                                 struct nlmsghdr *n, void *arg);

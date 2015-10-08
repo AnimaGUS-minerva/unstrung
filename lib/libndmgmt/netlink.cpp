@@ -185,11 +185,16 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
 
     switch(n->nlmsg_type) {
     case RTM_NEWLINK:
+        add_linkinfo(who, n, arg);
+        break;
     case RTM_DELLINK:
-        adddel_linkinfo(who, n, arg);
+        del_linkinfo(who, n, arg);
         break;
     case RTM_NEWADDR:
         adddel_ipinfo(who, n, arg);
+        break;
+    case RTM_DELADDR:
+        /* handle this in some way */
         break;
     default:
         fprintf(stderr, "ignored nlmsgtype: %u\n", n->nlmsg_type);
@@ -308,7 +313,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
     return 0;
 }
 
-int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
+int network_interface::del_linkinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
     struct network_interface_init *nii = (struct network_interface_init *)arg;
@@ -333,23 +338,47 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     network_interface *ni = find_by_ifindex(ifi->ifi_index);
     const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
 
-    if(n->nlmsg_type == RTM_DELLINK && ni == NULL) {
+    if(ni == NULL) {
         deb->info("link deleted[%d]: %s type=%s [ignored]\n",
                   ni->if_index, ifname,
                   ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
         return 0;
     }
 
-    if(n->nlmsg_type == RTM_DELLINK && ni != NULL) {
-        deb->info("link deleted[%d]: %s type=%s [ignored]\n",
-                  ni->if_index, ifname,
-                  ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
-                  ni->alive   ? "active" : "inactive",
-                  ni->on_list ? "existing" :"new",
-                  ni->faked() ? " faked" : "");
-        delete ni;
-        return 0;
+    deb->info("link deleted[%d]: %s type=%s (%s %s)%s\n",
+              ni->if_index, ifname,
+              ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
+              ni->alive   ? "active" : "inactive",
+              ni->on_list ? "existing" :"new",
+              ni->faked() ? " faked" : "");
+    delete ni;
+    return 0;
+}
+
+int network_interface::add_linkinfo(const struct sockaddr_nl *who,
+                                       struct nlmsghdr *n, void *arg)
+{
+    struct network_interface_init *nii = (struct network_interface_init *)arg;
+    rpl_debug *deb = nii->debug;
+    struct ifinfomsg *ifi = (struct ifinfomsg *)NLMSG_DATA(n);
+    FILE *fp = stdout;
+    struct rtattr * tb[IFLA_MAX+1];
+    int len = n->nlmsg_len;
+    unsigned m_flag = 0;
+    SPRINT_BUF(b1);
+
+    len -= NLMSG_LENGTH(sizeof(*ifi));
+    if (len < 0)
+        return -1;
+
+    parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
+    if (tb[IFLA_IFNAME] == NULL) {
+        fprintf(stderr, "BUG: nil ifname\n");
+        return -1;
     }
+
+    network_interface *ni = find_by_ifindex(ifi->ifi_index);
+    const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
 
     if(ni == NULL) {
         ni = iface_maker->newnetwork_interface(ifname, deb);
