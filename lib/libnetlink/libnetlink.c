@@ -221,7 +221,7 @@ skip_it:
 		}
 		if (status) {
 			fprintf(stderr, "!!!Remnant of size %d\n", status);
-			exit(1);
+			return -1;
 		}
 	}
 }
