@@ -17,6 +17,7 @@
 UNSTRUNG_SRCDIR?=$(shell cd ..; pwd)
 export UNSTRUNG_SRCDIR
 
+NEEDCHECK=
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
