@@ -595,6 +595,10 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
 
         ndproc = (pcap_network_interface *)find_by_name(ifname);
 
+        if(ndproc == NULL) {
+            return NULL;
+        }
+
         ndproc->setup_infile(infile);
         ndproc->setup_outfile(outfile);
 
