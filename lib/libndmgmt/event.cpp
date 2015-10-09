@@ -207,6 +207,18 @@ void rpl_event_queue::printevents(FILE *out, const char *prefix) {
     }
 };
 
+/* remove all items from queue */
+void rpl_event_queue::clear(void) {
+    std::vector<class rpl_event *>::iterator one = queue.begin();
+
+    while(one != queue.end()) {
+        (*one)->inQueue = false;
+        one++;
+    }
+    queue.clear();
+};
+
+
 /*
  * Local Variables:
  * c-basic-offset:4

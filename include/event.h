@@ -207,6 +207,9 @@ public:
         n->inQueue=true;
     };
 
+    /* remove all items from queue */
+    void clear(void);
+
     int size(void) {
 	return queue.size();
     };
