@@ -21,6 +21,8 @@ class rpl_event;
 
 #define IMMEDIATELY 1  /* ms */
 
+#define EVENT_NAME_DEBUG 1
+
 class rpl_event {
 public:
     friend class rpl_eventless;
@@ -43,6 +45,13 @@ public:
         init_event(relative, sec, msec, t, reason, deb);
     };
 
+#ifdef EVENT_NAME_DEBUG
+    void set_event_name(const char *n) {
+        event_name_buf[0]='\0';
+        strncat(event_name_buf, n, 16);
+    };
+    char event_name_buf[16];
+#endif
     bool deleted;
     ~rpl_event();
 
