@@ -16,6 +16,8 @@ Processing input file1
 packet 1 is being processed
   processing dao(20) [instance:1,daoseq:2,dao-ack,dagid:ripple0x00 ]
   new RPL node: fe80::216:3eff:fe11:3424
+Scheduling dao in 2 ms
+inserting event #1 at 1073741824/3024
 sending DAOACK about 0 networks, to fe80::216:3eff:fe11:3424
 sending DAOACK on if: wlan0(faked)
 Processing input file2
@@ -29,6 +31,8 @@ packet 2 is being processed
   invoking ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
+Scheduling dao in 2 ms
+inserting event #1 at 1073741824/3024
 sending DAOACK about 2 networks, to fe80::216:3eff:fe11:3424
 sending DAOACK on if: wlan0(faked)
 Processing input file3
@@ -38,5 +42,7 @@ packet 3 is being processed
   invoking ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
+Scheduling dao in 2 ms
+inserting event #1 at 1073741824/3024
 sending DAOACK about 1 networks, to fe80::216:3eff:fe11:3424
 sending DAOACK on if: wlan0(faked)
