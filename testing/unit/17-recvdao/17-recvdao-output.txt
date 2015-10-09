@@ -20,7 +20,5 @@ packet 1 is being processed
   invoking ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
-Scheduling dao in 2 ms
-inserting event #1 at 1073741824/3024
 sending DAOACK about 1 networks, to fe80::216:3eff:fe11:3424
 sending DAOACK on if: wlan0(faked)
