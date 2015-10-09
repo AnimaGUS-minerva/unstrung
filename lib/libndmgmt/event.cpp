@@ -98,29 +98,31 @@ bool rpl_event::doit(void)
     return false;
 }
 
-void rpl_event::_requeue(void) {
+void rpl_event::_requeue(class rpl_event_queue &list) {
     if(this->inQueue) {
         /* resort the heap to put it into the right place */
-        network_interface::things_to_do.make_event_heap();
+        debug->log("make_event_heap\n");
+        list.make_event_heap();
+        list.printevents(debug->file, "requeue 2");
     } else {
-        network_interface::things_to_do.add_event(this);
+        list.add_event(this);
     }
 }
 
-void rpl_event::requeue(void) {
-    debug->verbose("inserting event #%u at %u/%u\n",
-		   event_number, alarm_time.tv_sec, alarm_time.tv_usec);
+void rpl_event::requeue(class rpl_event_queue &list) {
+    debug->verbose("inserting event #%u at %u/%u %u\n",
+		   event_number, alarm_time.tv_sec, alarm_time.tv_usec, inQueue);
 
-    _requeue();
+    _requeue(list);
 }
 
-void rpl_event::requeue(struct timeval &now) {
-    debug->verbose("re-inserting event #%u repeat: %u/%u\n",
-		   event_number, repeat_sec, repeat_msec);
+void rpl_event::requeue(class rpl_event_queue &list, struct timeval &now) {
+    debug->verbose("re-inserting event #%u repeat: %u/%u %u\n",
+		   event_number, repeat_sec, repeat_msec, inQueue);
 
     set_alarm(now, repeat_sec, repeat_msec);
 
-    _requeue();
+    _requeue(list);
 }
 
 

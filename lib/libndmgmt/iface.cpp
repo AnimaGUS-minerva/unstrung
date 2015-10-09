@@ -924,7 +924,7 @@ bool network_interface::force_next_event(void) {
 
     if(re) {
 	if(re->doit() && !terminating_soon) {
-            re->requeue(now);
+            re->requeue(things_to_do, now);
 	} else {
 	    delete re;
 	}
@@ -1000,7 +1000,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
             if(re->passed(now)) {
 		things_to_do.eat_event();
                 if(re->doit()) {
-                    re->requeue(now);
+                    re->requeue(things_to_do, now);
                 } else {
                     delete re;
                 }

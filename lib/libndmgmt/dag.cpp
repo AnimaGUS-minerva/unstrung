@@ -664,7 +664,7 @@ void dag_network::schedule_dio(unsigned int msec)
     mSendDioEvent->reset_alarm(0, msec+1);
 
     mSendDioEvent->mDag = this;
-    mSendDioEvent->requeue();
+    mSendDioEvent->requeue(network_interface::things_to_do);
     //this->dio_event = re;        // needs to be smart-pointer
 
 }
@@ -698,7 +698,7 @@ void dag_network::schedule_dao(void)
     mSendDaoEvent->reset_alarm(0, 2);
 
     mSendDaoEvent->mDag = this;
-    mSendDaoEvent->requeue();
+    mSendDaoEvent->requeue(network_interface::things_to_do);
 }
 
 rpl_node *dag_network::update_route(network_interface *iface,

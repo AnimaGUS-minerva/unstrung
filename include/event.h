@@ -88,8 +88,8 @@ public:
     const int           miliseconds_util(void);
     const int           miliseconds_util(struct timeval &now);
 
-    void requeue(void);
-    void requeue(struct timeval &now);
+    void requeue(class rpl_event_queue &list);
+    void requeue(class rpl_event_queue &list, struct timeval &now);
 
     void printevent(FILE *out);
 
@@ -149,7 +149,7 @@ public:
     };
 
 private:
-    void _requeue(void);
+    void _requeue(class rpl_event_queue &list);
     unsigned int        event_number;
     static unsigned int event_counter;
     unsigned int        repeat_sec;
