@@ -12,7 +12,7 @@ check::	event-01
 	./event-01
 
 checkprograms:: event-01
-programs::
+programs:: event-01
 
 clean::
 	@rm -rf event-01 *.o
