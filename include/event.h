@@ -125,6 +125,10 @@ public:
             alarm_time.tv_usec -= 1000000;
             alarm_time.tv_sec++;
         }
+
+        /* also remember the repeat values */
+        repeat_sec = sec;
+        repeat_msec= msec;
 	//fprintf(stderr, "%u: alarm for %u/%u + %u/%u\n", event_number, rel.tv_sec, rel.tv_usec, sec, msec);
     };
 
@@ -194,7 +198,9 @@ public:
     void eat_event(void) {
 	if(!queue.empty()) {
 	    pop_heap(queue.begin(), queue.end(), rpl_eventless);
+            rpl_event *n = queue.back();
             queue.pop_back();
+            if(n) n->inQueue=false;
 	} else {
 	    fprintf(stderr, "attempt to remove from empty event queue");
 	}
@@ -204,7 +210,6 @@ public:
 	rpl_event *n = peek_event();
 	if(n) {
             eat_event();
-            n->inQueue=false;
         }
 	return n;
     };
@@ -212,8 +217,8 @@ public:
     void add_event(class rpl_event *n) {
         assert(!n->inQueue);
 	queue.push_back(n);
-	push_heap(queue.begin(), queue.end(), rpl_eventless);
         n->inQueue=true;
+	push_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 
     /* remove all items from queue */
