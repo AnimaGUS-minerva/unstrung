@@ -129,9 +129,6 @@ void rpl_event::requeue(class rpl_event_queue &list, struct timeval &now) {
 
 const char *rpl_event::event_name() const
 {
-#ifdef EVENT_NAME_DEBUG
-    return event_name_buf;
-#else
     switch(event_type) {
     case rpl_send_dio:
         return "send_dio";
@@ -140,7 +137,6 @@ const char *rpl_event::event_name() const
     }
 
     return "<unknown-event>";
-#endif
 }
 
 void rpl_event::printevent(FILE *out)
