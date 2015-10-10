@@ -692,6 +692,7 @@ void dag_network::schedule_dao(void)
 	mSendDaoEvent = new rpl_event(0, mInterval_msec,
                                       rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
+        assert(mSendDaoEvent->inQueue == false);
     }
 
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
