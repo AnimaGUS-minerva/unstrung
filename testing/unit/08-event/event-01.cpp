@@ -23,6 +23,8 @@ extern "C" {
 #include "iface.h"
 #include "event.h"
 
+time_t testedable_now = 1444419263;
+struct timeval testable_b = { .tv_sec = 1444419263 };
 
 static void order_test(rpl_event_queue &eq1,
 		       rpl_event &e1, rpl_event &e2,
@@ -30,6 +32,8 @@ static void order_test(rpl_event_queue &eq1,
 		       rpl_event &e4)
 {
     rpl_event *n1;
+
+    /* RECALL: order of events is determined by their timer values! */
 
     /* first event is e3 */
     n1 = eq1.next_event();
@@ -48,8 +52,37 @@ static void order_test(rpl_event_queue &eq1,
     assert(n1 == &e4);
 }
 
+
+static void order_test2(rpl_event_queue &eq1,
+		       rpl_event &e1, rpl_event &e2,
+		       rpl_event &e3,
+		       rpl_event &e4)
+{
+    rpl_event *n1;
+
+    /* RECALL: order of events is determined by their timer values!
+     *         e4 was moved to be second.
+
+    /* first event is e3 */
+    n1 = eq1.next_event();
+    assert(n1 == &e3);
+
+    /* second event is e1 */
+    n1 = eq1.next_event();
+    assert(n1 == &e4);
+
+    /* third event is e4 */
+    n1 = eq1.next_event();
+    assert(n1 == &e1);
+
+    /* fourth event is e2 */
+    n1 = eq1.next_event();
+    assert(n1 == &e2);
+
+}
+
 /*
- * TEST1: insert three events, see that the youngest comes first.
+ * TEST1: insert four events, see that the youngest comes first.
  */
 static void t1(rpl_debug *deb)
 {
