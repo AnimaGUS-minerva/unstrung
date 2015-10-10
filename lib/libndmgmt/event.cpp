@@ -54,7 +54,7 @@ rpl_event::~rpl_event(void)
     deleted = true;
 }
 
-bool rpl_eventless(const class rpl_event *a, const class rpl_event *b)
+bool rpl_eventless::operator()(const class rpl_event *a, const class rpl_event *b) const
 {
     int match = b->alarm_time.tv_sec - a->alarm_time.tv_sec;
 #if 0
@@ -196,7 +196,7 @@ struct timeval rpl_event::occurs_in() {
 /* dump this event for humans */
 void rpl_event_queue::printevents(FILE *out, const char *prefix) {
     int i = 0;
-    std::vector<class rpl_event *>::iterator one = queue.begin();
+    rpl_event_queue_t::iterator one = queue.begin();
 
     fprintf(out, "event list (%u events)\n", queue.size());
     while(one != queue.end()) {
@@ -209,7 +209,7 @@ void rpl_event_queue::printevents(FILE *out, const char *prefix) {
 
 /* remove all items from queue */
 void rpl_event_queue::clear(void) {
-    std::vector<class rpl_event *>::iterator one = queue.begin();
+    rpl_event_queue_t::iterator one = queue.begin();
 
     while(one != queue.end()) {
         (*one)->inQueue = false;

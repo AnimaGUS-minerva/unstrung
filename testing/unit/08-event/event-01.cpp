@@ -121,13 +121,13 @@ static void t1(rpl_debug *deb)
     eq1.add_event(&e1);  assert(e1.inQueue == true);
     //eq1.printevents(stdout, "e4-e1   ");
 
-    eq1.printevents(stderr, "sort1");
+    eq1.printevents(stderr, "sort1  ");
     /* do not clear or test, because we it will remove */
 
     /* now change one of the timers, and requeue an existing event */
     e4.set_alarm(testable_b, 0, 400);
     e4.requeue(eq1, testable_b);
-    eq1.printevents(stderr, "resort");
+    eq1.printevents(stderr, "resort ");
     order_test2(eq1, e1, e2, e3, e4);
 }
 

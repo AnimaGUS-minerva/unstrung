@@ -9,14 +9,15 @@ extern "C" {
 
 #include <map>
 #include <algorithm>
+#include <queue>
 #include <vector>
+#include <boost/heap/priority_queue.hpp>
 
 #include "prefix.h"
 
 class network_interface;
 class dag_network;
 class rpl_node;
-class rpl_eventless;
 class rpl_event;
 
 #define IMMEDIATELY 1  /* ms */
@@ -163,38 +164,31 @@ private:
     rpl_debug *debug;
 };
 
-bool rpl_eventless(const class rpl_event *a, const class rpl_event *b);
+class rpl_eventless {
+ public:
+    bool operator()(const class rpl_event *a, const class rpl_event *b) const;
+};
+
+typedef boost::heap::priority_queue<class rpl_event *, boost::heap::compare<rpl_eventless> > rpl_event_queue_t;
 
 class rpl_event_queue {
 public:
-    std::vector<class rpl_event *> queue;
-
+    rpl_event_queue_t queue;
 
     rpl_event_queue() {
 	make_event_heap();
     };
 
     void make_event_heap() {
-	make_heap(queue.begin(), queue.end(), rpl_eventless);
+	//make_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 
     class rpl_event *peek_event(void) {
-	if(!queue.empty()) {
-	    return queue.front();
-	} else {
-	    return NULL;
-	}
+        return queue.top();
     };
 
     void eat_event(void) {
-	if(!queue.empty()) {
-	    pop_heap(queue.begin(), queue.end(), rpl_eventless);
-            rpl_event *n = queue.back();
-            queue.pop_back();
-            if(n) n->inQueue=false;
-	} else {
-	    fprintf(stderr, "attempt to remove from empty event queue");
-	}
+        queue.pop();
     };
 
     class rpl_event *next_event(void) {
@@ -207,9 +201,8 @@ public:
 
     void add_event(class rpl_event *n) {
         assert(!n->inQueue);
-	queue.push_back(n);
+	queue.push(n);
         n->inQueue=true;
-	push_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 
     /* remove all items from queue */
