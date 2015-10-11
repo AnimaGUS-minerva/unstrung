@@ -11,7 +11,7 @@ extern "C" {
 #include <algorithm>
 #include <queue>
 #include <vector>
-#include <boost/heap/priority_queue.hpp>
+#include <boost/heap/binomial_heap.hpp>
 
 #include "prefix.h"
 
@@ -21,6 +21,15 @@ class rpl_node;
 class rpl_event;
 
 #define IMMEDIATELY 1  /* ms */
+
+class rpl_eventless {
+ public:
+    bool operator()(const class rpl_event *a, const class rpl_event *b) const;
+};
+
+
+typedef boost::heap::binomial_heap<class rpl_event *, boost::heap::compare<rpl_eventless> > rpl_event_queue_t;
+typedef rpl_event_queue_t::handle_type rpl_event_queue_handle_t;
 
 class rpl_event {
 public:
@@ -132,6 +141,7 @@ public:
 
     dag_network        *mDag;
     bool                inQueue;
+    rpl_event_queue_handle_t handle;
 
     /* set to true to remove variable dates from debug output
      * used by regression testing routines.
@@ -164,13 +174,6 @@ private:
     rpl_debug *debug;
 };
 
-class rpl_eventless {
- public:
-    bool operator()(const class rpl_event *a, const class rpl_event *b) const;
-};
-
-typedef boost::heap::priority_queue<class rpl_event *, boost::heap::compare<rpl_eventless> > rpl_event_queue_t;
-
 class rpl_event_queue {
 public:
     rpl_event_queue_t queue;
@@ -187,21 +190,27 @@ public:
         return queue.top();
     };
 
-    void eat_event(void) {
-        queue.pop();
+    void update(rpl_event_queue_handle_t b) {
+        queue.update(b);
     };
 
-    class rpl_event *next_event(void) {
-	rpl_event *n = peek_event();
-	if(n) {
-            eat_event();
+    void eat_event(void) {
+        if(!queue.empty()) {
+            queue.pop();
         }
+    }
+
+    class rpl_event *next_event(void) {
+        if(queue.empty()) return NULL;
+	rpl_event *n = queue.top();
+        eat_event();
+        n->inQueue = false;
 	return n;
     };
 
     void add_event(class rpl_event *n) {
         assert(!n->inQueue);
-	queue.push(n);
+        n->handle = queue.push(n);
         n->inQueue=true;
     };
 

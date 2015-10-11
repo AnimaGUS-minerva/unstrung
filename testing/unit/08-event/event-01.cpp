@@ -50,6 +50,10 @@ static void order_test(rpl_event_queue &eq1,
     /* fourth event is e4 */
     n1 = eq1.next_event();
     assert(n1 == &e4);
+
+    /* then it is empty */
+    n1 = eq1.next_event();
+    assert(n1 == NULL);
 }
 
 
@@ -69,16 +73,19 @@ static void order_test2(rpl_event_queue &eq1,
 
     /* second event is e1 */
     n1 = eq1.next_event();
-    assert(n1 == &e4);
+    assert(n1 == &e1);
 
     /* third event is e4 */
     n1 = eq1.next_event();
-    assert(n1 == &e1);
+    assert(n1 == &e4);
 
     /* fourth event is e2 */
     n1 = eq1.next_event();
     assert(n1 == &e2);
 
+    /* then it is empty */
+    n1 = eq1.next_event();
+    assert(n1 == NULL);
 }
 
 /*
@@ -100,7 +107,6 @@ static void t1(rpl_debug *deb)
     //eq1.printevents(stdout, "e1-e4   ");
 
     order_test(eq1, e1, e2, e3, e4);
-    eq1.clear();
 
     /* now put all the events back on the list in a different order */
     eq1.add_event(&e2);
@@ -110,7 +116,6 @@ static void t1(rpl_debug *deb)
     //eq1.printevents(stdout, "swapped ");
 
     order_test(eq1, e1, e2, e3, e4);
-    eq1.clear();
     assert(e1.inQueue == false);    assert(e2.inQueue == false);
     assert(e3.inQueue == false);    assert(e4.inQueue == false);
 
@@ -121,13 +126,11 @@ static void t1(rpl_debug *deb)
     eq1.add_event(&e1);  assert(e1.inQueue == true);
     //eq1.printevents(stdout, "e4-e1   ");
 
-    eq1.printevents(stderr, "sort1  ");
     /* do not clear or test, because we it will remove */
-
     /* now change one of the timers, and requeue an existing event */
-    e4.set_alarm(testable_b, 0, 400);
+    e4.reset_alarm(testable_b, 0, 400);
     e4.requeue(eq1, testable_b);
-    eq1.printevents(stderr, "resort ");
+    //eq1.printevents(stderr, "resort ");
     order_test2(eq1, e1, e2, e3, e4);
 }
 

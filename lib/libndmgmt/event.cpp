@@ -100,10 +100,8 @@ bool rpl_event::doit(void)
 
 void rpl_event::_requeue(class rpl_event_queue &list) {
     if(this->inQueue) {
-        /* resort the heap to put it into the right place */
-        debug->log("make_event_heap\n");
-        list.make_event_heap();
-        list.printevents(debug->file, "requeue 2");
+        list.update(handle);
+        //list.printevents(debug->file, "requeue2 ");
     } else {
         list.add_event(this);
     }
