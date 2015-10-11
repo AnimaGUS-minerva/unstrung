@@ -19,7 +19,7 @@ packet 1 is being processed
     would invoke cmd: ip -6 route show
   processed 1 pio options
 Scheduling dao in 2 ms
-inserting event #1 at 1073741824/3024
+inserting event #1 at 1073741824/3024 0
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0

@@ -19,7 +19,7 @@ packet 1 is being processed
     would invoke cmd: ip -6 route show
   processed 1 pio options
 Scheduling dao in 2 ms
-inserting event #1 at 1073741824/3024
+inserting event #1 at 1073741824/3024 0
 Events created for file 1
 event list (1 events)
 0: event#1(T1) at (2004-January-10 01:37:04 PM)<1073741824:3024>, type: send_dao
@@ -28,7 +28,7 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-re-inserting event #1 repeat: 0/50
+re-inserting event #1 repeat: 0/50 0
 event list (1 events)
 0: event#1(T1) at (2004-January-10 01:37:05 PM)<1073741825:51024>, type: send_dao
 Forcing event2 created for file 1
@@ -36,7 +36,7 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-re-inserting event #1 repeat: 0/50
+re-inserting event #1 repeat: 0/50 0
 event list (1 events)
 0: event#1(T1) at (2004-January-10 01:37:06 PM)<1073741826:51024>, type: send_dao
 
