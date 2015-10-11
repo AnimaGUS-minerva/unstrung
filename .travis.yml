@@ -18,7 +18,7 @@ before_install:
 install:
   - "sudo apt-get install gcc-multilib g++-multilib pkg-config libssl1.0.0 libssl-dev"
   - "sudo cp /usr/lib/x86_64-linux-gnu/libcrypto* /tmp"
-  - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev flex bison libssl-dev:i386"
+  - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev flex bison libssl-dev:i386 libboose1.49-dev"
   - "sudo mv /tmp/libcrypto* /usr/lib/x86_64-linux-gnu"
   - "./build-setup-travis.sh"
   - "PATH=$HOME/bin:$PATH export PATH"
