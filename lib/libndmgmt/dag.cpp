@@ -650,6 +650,9 @@ void dag_network::schedule_dio(void)
 
 void dag_network::schedule_dio(unsigned int msec)
 {
+    struct timeval now;
+    gettimeofday(&now, NULL);
+
     /* do nothing if there is no valid DAG */
     if(dag_rank_infinite()) return;
 
@@ -661,7 +664,7 @@ void dag_network::schedule_dio(unsigned int msec)
 				      mDagName, this->debug);
     }
     mSendDioEvent->event_type = rpl_event::rpl_send_dio;
-    mSendDioEvent->reset_alarm(0, msec+1);
+    mSendDioEvent->set_alarm(now, 0, msec+1);
 
     mSendDioEvent->mDag = this;
     mSendDioEvent->requeue(network_interface::things_to_do);
@@ -696,7 +699,10 @@ void dag_network::schedule_dao(void)
     }
 
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
-    mSendDaoEvent->reset_alarm(0, 2);
+
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    mSendDaoEvent->set_alarm(now, 0, 2);
 
     mSendDaoEvent->mDag = this;
     mSendDaoEvent->requeue(network_interface::things_to_do);
