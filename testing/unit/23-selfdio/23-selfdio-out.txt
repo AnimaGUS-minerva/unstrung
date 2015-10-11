@@ -12,7 +12,7 @@ ip found[2]: lo scope=254 address=::1
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
 Scheduling dio in 2 ms
-inserting event #1 at 1073741824/3024
+inserting event #1 at 1073741824/3024 0
 Processing input file
 packet 1 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
