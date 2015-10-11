@@ -127,16 +127,17 @@ public:
             alarm_time.tv_sec++;
         }
 
-        /* also remember the repeat values */
-        repeat_sec = sec;
-        repeat_msec= msec;
 	//fprintf(stderr, "%u: alarm for %u/%u + %u/%u\n", event_number, rel.tv_sec, rel.tv_usec, sec, msec);
     };
 
-    void reset_alarm(unsigned int sec, unsigned int msec) {
-        struct timeval now;
-        gettimeofday(&now, NULL);
-	set_alarm(now, sec, msec);
+    void reset_alarm(struct timeval &relative,
+                     unsigned int sec, unsigned int msec) {
+	set_alarm(relative, sec, msec);
+
+        /* also remember the repeat values on reset */
+        repeat_sec = sec;
+        repeat_msec= msec;
+
     };
 
     dag_network        *mDag;
