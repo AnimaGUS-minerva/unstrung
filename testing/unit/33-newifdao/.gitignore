@@ -1,2 +1,3 @@
 33-newifdao
 *.o
+.gdbinit
