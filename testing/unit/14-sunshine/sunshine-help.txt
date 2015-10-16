@@ -1,8 +1,4 @@
 PANDORA unstrung version VERSION starting at TODAY
-link found[1]: lo type=loopback (inactive new)
-link found[2]: eth0 type=ether (inactive new)
-link found[3]: vlan3800 type=ether (inactive new)
-link found[4]: guestvif type=ether (inactive new)
 Usage: PATH/sunshine [-?] [-i ifname]
 	 [-p prefix] [--prefix prefix]   announce this IPv6 prefix in the destination option
 	 [-G dagid]  [--dagid dagid]     DAGid to use to announce, string or hexn
