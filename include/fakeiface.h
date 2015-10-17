@@ -25,7 +25,7 @@ extern "C" {
 #include <string.h>
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
-
+#include <netlink/utils.h>   /* for RT_SCOPE_* */
 }
 
 #include "debug.h"
@@ -57,6 +57,10 @@ public:
                 if_addr = ifa;
         };
 
+        void setup_infile(const char *infile);
+        void setup_outfile(const char *outfile);
+        void setup_outfile(const char *outfile, int pcap_link);
+
         /* a kind of constructor */
         static pcap_network_interface *setup_infile_outfile(
                 const char *ifname,
@@ -83,6 +87,18 @@ public:
 	};
 
 
+        static void fake_linkinfo(const char *new_ifname,
+                                  unsigned int myindex,
+                                  struct network_interface_init *nii,
+                                  unsigned char hwaddr[6],
+                                  unsigned int type,
+                                  unsigned int flags);
+
+        static void fake_addrinfo(unsigned int myindex,
+                                  unsigned int scope,
+                                  struct network_interface_init *nii,
+                                  unsigned char addr[16]);
+
 protected:
         void filter_and_receive_icmp6(const time_t now,
                                       const u_char *bytes, int len);
@@ -96,6 +112,8 @@ private:
                                      const u_char *p);
         void skip_10mb_pcap_headers(const struct pcap_pkthdr *h,
                                     const u_char *p);
+
+        static unsigned int   seq;
 };
 
 

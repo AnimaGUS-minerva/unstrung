@@ -208,7 +208,7 @@ setup_host_make() {
 	    echo "$TAB echo . ${TESTINGROOT}/baseconfigs/net.$host.sh   >>$startscript"
 	    echo "$TAB echo ''          >>$startscript"
 	    echo "$TAB # the umlroot= is a local hack >>$startscript"
-	    echo "$TAB echo '$POOLSPACE/plain${KERNVER}/vmlinux initrd=$POOLSPACE/initrd.cpio umlroot=$POOLSPACE/$hostroot root=/dev/ram0 rw ssl=pty umid=$host \$\$net \$\$UML_DEBUG_OPT \$\$UML_"${host}"_OPT  mem=64M rdinit=/linuxrc gim\$\$*' >>$startscript"
+	    echo "$TAB echo '$POOLSPACE/plain${KERNVER}/vmlinux mem=128m initrd=$POOLSPACE/initrd.cpio umlroot=$POOLSPACE/$hostroot root=/dev/ram0 rw ssl=pty umid=$host \$\$net \$\$UML_DEBUG_OPT \$\$UML_"${host}"_OPT  rdinit=/linuxrc gim\$\$*' >>$startscript"
 	    echo "$TAB chmod +x $startscript"
 	    echo
 	    depends="$depends $startscript"

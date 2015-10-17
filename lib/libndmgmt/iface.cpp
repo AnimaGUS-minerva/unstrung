@@ -44,6 +44,7 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 
+bool                  network_interface::signal_usr1;
 bool                  network_interface::signal_usr2;
 bool                  network_interface::faked_time;
 bool                  network_interface::terminating_soon = false;
@@ -357,6 +358,29 @@ void network_interface::add_to_list(void)
     network_interface::all_if = this;
 
     on_list = true;
+}
+
+void network_interface::remove_from_list(void)
+{
+    if(!on_list) return;
+
+    network_interface **iifp = &network_interface::all_if;
+    while(*iifp != this) {
+        iifp = &(*iifp)->next;
+    }
+
+    /* if found, then remove it */
+    if(iifp) {
+        *iifp = (*iifp)->next;
+    }
+    on_list = false;
+}
+
+/* probably should just be the destructor */
+network_interface::~network_interface()
+{
+    remove_from_list();
+    clear_events();
 }
 
 network_interface *network_interface::find_by_ifindex(int index)
@@ -900,7 +924,7 @@ bool network_interface::force_next_event(void) {
 
     if(re) {
 	if(re->doit() && !terminating_soon) {
-            re->requeue(now);
+            re->requeue(things_to_do, now);
 	} else {
 	    delete re;
 	}
@@ -919,8 +943,8 @@ void network_interface::clear_events(void) {
 }
 
 void network_interface::catch_signal_usr1(int signum,
-						 siginfo_t *si,
-						 void *ucontext)
+                                          siginfo_t *si,
+                                          void *ucontext)
 {
     /* should be atomic */
     network_interface::signal_usr1 = true;
@@ -956,9 +980,12 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 	perror("sigaction USR2");
     }
 
+    int netlink_fd = setup_msg_callback(debug);
+
+
     while(!done) {
-        struct pollfd            poll_if[network_interface::if_count()];
-        class network_interface* all_if[network_interface::if_count()];
+        struct pollfd            poll_if[1+network_interface::if_count()];
+        class network_interface* all_if[1+network_interface::if_count()];
         int pollnum=0;
         int timeout = 60*1000;   /* 60 seconds is maximum */
 
@@ -973,7 +1000,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
             if(re->passed(now)) {
 		things_to_do.eat_event();
                 if(re->doit()) {
-                    re->requeue(now);
+                    re->requeue(things_to_do, now);
                 } else {
                     delete re;
                 }
@@ -992,6 +1019,12 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
          * do not really need to build this every time, but, for
          * now, this is fine.
          */
+        poll_if[pollnum].fd = netlink_fd;
+        poll_if[pollnum].events = POLLIN;
+        poll_if[pollnum].revents = 0;
+        all_if[pollnum] = NULL;
+        pollnum++;
+
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
             debug->verbose2("iface %s has socketfd: %d\n",
@@ -1030,7 +1063,14 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 time(&now);
 
                 if(poll_if[i].revents & POLLIN) {
-                    all_if[i]->receive(now);
+                    if(all_if[i] == NULL) {
+                        /* got something else */
+                        if(poll_if[i].fd == netlink_fd) {
+                            empty_socket(debug);
+                        }
+                    } else {
+                        all_if[i]->receive(now);
+                    }
                     n--;
                 }
             }
@@ -1039,7 +1079,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
             perror("sunshine poll");
         }
 	if(signal_usr1) {
-            scan_devices(deb, true);
+            scan_devices(debug, true);
 	    signal_usr1 = false;
 	}
 	if(signal_usr2) {

@@ -24,6 +24,7 @@ extern "C" {
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
+    #include <fnmatch.h>
 #include "oswlibs.h"
 #include "rpl.h"
 
@@ -225,6 +226,63 @@ class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
         return dn;
 }
 
+bool dag_network::matchesIfWildcard(const char *ifname)
+{
+    for(int i=0; i<mIfWildcard_max && i<DAG_IFWILDCARD_MAX; i++) {
+        bool matched = fnmatch(mIfWildcard[i], ifname, FNM_CASEFOLD)==0;
+        debug->debug(RPL_DEBUG_NETLINK, "matching if:%s against %s: result: %s\n",
+                     ifname, mIfWildcard[i], matched ? "matched" : "failed");
+        if(matched) return true;
+    }
+    return false;
+}
+
+bool dag_network::matchesIfPrefix(const struct in6_addr v6)
+{
+    ip_address n6;
+    n6.u.v6.sin6_family = AF_INET6;
+    n6.u.v6.sin6_addr = v6;
+    return matchesIfPrefix(n6);
+}
+
+bool dag_network::matchesIfPrefix(const ip_address v6)
+{
+    char b1[ADDRTOT_BUF], b2[SUBNETTOT_BUF];
+    addrtot(&v6, 0, b1, sizeof(b1));
+    for(int i=0; i<mIfFilter_max && i<DAG_IFWILDCARD_MAX; i++) {
+        bool matched = addrinsubnet(&v6, &mIfFilter[i]);
+        subnettot(&mIfFilter[i], 0, b2, sizeof(b2));
+        debug->debug(RPL_DEBUG_NETLINK, "matching addr:%s against %s: result: %s\n",
+                     b1, b2, matched ? "matched" : "failed");
+        if(matched) return true;
+    }
+    return false;
+}
+
+bool dag_network::notify_new_interface(network_interface *one)
+{
+    bool announced = false;
+
+    for(class dag_network *dn = dag_network::all_dag;
+        dn != NULL;
+        dn = dn->next) {
+        if(dn->matchesIfWildcard(one->get_if_name()) &&
+           dn->matchesIfPrefix(one->if_addr)) {
+
+            announced = true;
+            prefix_node *n = dn->add_address(one->node->node_address());
+            n->set_prefix(one->if_addr, 128);
+            n->set_debug(dn->debug);
+            dn->debug->info("added %s to DAG %s\n",
+                          one->node->node_name(),
+                          dn->get_dagName());
+            dn->dao_needed = true;
+            dn->maybe_send_dao();
+        }
+    }
+    return announced;
+}
+
 void dag_network::print_stats(FILE *out, const char *prefix)
 {
     int i;
@@ -321,7 +379,7 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
 /* here we mark that a DAO is needed soon */
 void dag_network::maybe_send_dao(void)
 {
-    if(dao_needed) {
+    if(dao_needed && dag_bestparent != NULL) {
         if(!root_node()) {
             schedule_dao();
         }
@@ -354,6 +412,19 @@ void dag_network::add_childnode(rpl_node          *announcing_peer,
 #endif
 }
 
+prefix_node *dag_network::add_address(const ip_address addr)
+{
+    ip_subnet vs;
+
+    initsubnet(&addr, 128, 0, &vs);
+    return add_address(vs);
+}
+
+prefix_node *dag_network::add_address(const ip_subnet prefix)
+{
+    return &this->dag_announced[prefix];
+}
+
 void dag_network::add_prefix(rpl_node advertising_peer,
                              network_interface *iface,
                              ip_subnet prefix)
@@ -361,17 +432,31 @@ void dag_network::add_prefix(rpl_node advertising_peer,
     prefix_node &pre = this->dag_prefixes[prefix];
 
     if(!pre.is_installed()) {
-        dao_needed = true;
         this->set_prefix(prefix);
         pre.set_prefix(prefix);
         pre.set_debug(this->debug);
+        pre.set_installed(true);
         pre.set_announcer(&advertising_peer);
-        pre.configureip(iface, this);
-        if(dag_me == NULL) {
-            dag_me = &pre;
-        }
+        dao_needed = true;
 
         maybe_schedule_dio();
+    }
+
+    /* next, see if we should configure an address in this prefix */
+    if(!mIgnorePio) {
+        prefix_node *preMe = add_address(prefix);
+
+        if(!preMe->is_installed()) {
+            dao_needed = true;
+            preMe->set_prefix(prefix);
+            preMe->set_debug(this->debug);
+            preMe->set_announcer(&advertising_peer);
+            preMe->configureip(iface, this);
+
+            if(dag_me == NULL) {
+                dag_me = preMe;
+            }
+        }
     }
 }
 
@@ -477,7 +562,9 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
      * to do this, we have to crack open the DIO.  UP to this point
      * we haven't taken the DIO apart, so do, keeping stuff on the stack.
      */
-    rpl_dio decoded_dio(peer, dio, dio_len);
+    rpl_dio decoded_dio(peer, this, dio, dio_len);
+
+    unsigned int optcount = 0;
 
     struct rpl_dio_destprefix *dp;
     while((dp = decoded_dio.destprefix()) != NULL) {
@@ -489,8 +576,10 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
         memcpy(v6bytes, dp->rpl_dio_prefix, prefixbytes);
         initaddr(v6bytes, 16, AF_INET6, &prefix.addr);
 
+        optcount++;
         add_prefix(peer, iface, prefix);
     }
+    debug->verbose("  processed %u pio options\n", optcount);
 
     /* now schedule sending out packets */
     if(dag_parent) {
@@ -515,19 +604,20 @@ void dag_network::send_dao(void)
                        cnt, pm.node_name(),
                        mDagName, dag_bestparent->node_name(),
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
-        pi++;
         cnt++;
+        pi++;
     }
-    pi = dag_prefixes.begin();
-    while(pi != dag_prefixes.end()) {
+    pi = dag_announced.begin();
+    while(pi != dag_announced.end()) {
 	prefix_node &pm = pi->second;
 
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
                        cnt, pm.node_name(),
-                       mDagName, dag_bestparent->node_name(),
+                       mDagName,
+                       dag_bestparent   ? dag_bestparent->node_name():"unknown",
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
-        pi++;
         cnt++;
+        pi++;
     }
 
     if(dag_bestparent == NULL || dag_bestparentif ==NULL) return;
@@ -560,6 +650,9 @@ void dag_network::schedule_dio(void)
 
 void dag_network::schedule_dio(unsigned int msec)
 {
+    struct timeval now;
+    gettimeofday(&now, NULL);
+
     /* do nothing if there is no valid DAG */
     if(dag_rank_infinite()) return;
 
@@ -571,10 +664,10 @@ void dag_network::schedule_dio(unsigned int msec)
 				      mDagName, this->debug);
     }
     mSendDioEvent->event_type = rpl_event::rpl_send_dio;
-    mSendDioEvent->reset_alarm(0, msec+1);
+    mSendDioEvent->set_alarm(now, 0, msec+1);
 
     mSendDioEvent->mDag = this;
-    mSendDioEvent->requeue();
+    mSendDioEvent->requeue(network_interface::things_to_do);
     //this->dio_event = re;        // needs to be smart-pointer
 
 }
@@ -602,13 +695,17 @@ void dag_network::schedule_dao(void)
 	mSendDaoEvent = new rpl_event(0, mInterval_msec,
                                       rpl_event::rpl_send_dao,
 				      mDagName, this->debug);
+        assert(mSendDaoEvent->inQueue == false);
     }
 
     mSendDaoEvent->event_type = rpl_event::rpl_send_dao;
-    mSendDaoEvent->reset_alarm(0, 2);
+
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    mSendDaoEvent->set_alarm(now, 0, 2);
 
     mSendDaoEvent->mDag = this;
-    mSendDaoEvent->requeue();
+    mSendDaoEvent->requeue(network_interface::things_to_do);
 }
 
 rpl_node *dag_network::update_route(network_interface *iface,
@@ -819,7 +916,7 @@ void dag_network::receive_dao(network_interface *iface,
     }
 
     /* look for the suboptions, process them */
-    rpl_dao decoded_dao(data, dao_len);
+    rpl_dao decoded_dao(data, dao_len, this);
     unsigned int addrcount = 0;
 
     struct rpl_dao_target *rpltarget;
@@ -841,7 +938,7 @@ void dag_network::receive_dao(network_interface *iface,
         /* need to look at dag_members, and see if the child node already
          * exists, and add if not
          */
-        debug->verbose("received DAO about network %s, target %s (added)\n",
+        debug->verbose("  recv DAO rpltarget re: network %s, target %s (added)\n",
                        addrfound, peer->node_name());
 
         add_childnode(peer, iface, prefix);
@@ -900,10 +997,18 @@ void dag_network::commit_parent(void)
         dag_parentif = dag_bestparentif;
         dag_parent   = dag_bestparent;
 
-        prefix_node &srcip = this->dag_prefixes[mPrefix];
-        dag_parentif->add_parent_route_to_prefix(mPrefix,
-                                                 srcip.prefix_number().addr,
-                                                 *dag_parent);
+        bool have_any_prefixes = this->dag_announced.size() > 0;
+        if(have_any_prefixes) {
+            prefix_node &srcip = this->dag_announced.begin()->second;
+
+            dag_parentif->add_parent_route_to_prefix(mPrefix,
+                                                     &srcip.prefix_number().addr,
+                                                     *dag_parent);
+        } else {
+            dag_parentif->add_parent_route_to_prefix(mPrefix,
+                                                     NULL,
+                                                     *dag_parent);
+        }
 
         /* now send a DIO */
         maybe_schedule_dio();
@@ -912,6 +1017,30 @@ void dag_network::commit_parent(void)
     }
 }
 
+
+bool dag_network::set_interface_wildcard(const char *wild)
+{
+    if(mIfWildcard_max < DAG_IFWILDCARD_MAX) {
+        int len = strlen(wild);
+        if(len > DAG_IFWILDCARD_LEN-1) len = DAG_IFWILDCARD_LEN;
+
+        memcpy(mIfWildcard[mIfWildcard_max++], wild, len);
+    }
+}
+
+bool dag_network::set_interface_filter(const ip_subnet i6)
+{
+    if(mIfFilter_max < DAG_IFWILDCARD_MAX) {
+        mIfFilter[mIfFilter_max++] = i6;
+    }
+}
+
+bool dag_network::set_interface_filter(const char *filter)
+{
+    ip_subnet i6;
+    ttosubnet(filter, 0, AF_INET6, &i6);
+    set_interface_filter(i6);
+}
 
 
 /*

@@ -29,6 +29,8 @@ CFLAGS+= ${CROSSFLAGS}
 ARFLAGS=crvs
 MANS=
 
+LIBDIR?=${LIBRARY}
+
 .PHONY:	all install clean l t lt tar check depend checkprograms
 
 default:: programs
@@ -37,7 +39,7 @@ default:: programs
 SHOULDWERESTART=${USE_OBJDIR}$(wildcard ${ONEFILE})
 ifeq ($(SHOULDWERESTART),true${ONEFILE})
 all programs clean install::
-	cd ${UNSTRUNG_SRCDIR} && ${MAKE} -C ${OBJDIRTOP}/lib/lib${LIBRARY} $@
+	cd ${UNSTRUNG_SRCDIR} && ${MAKE} -C ${OBJDIRTOP}/lib/lib${LIBDIR} $@
 else
 all::	$(LIB)
 programs:: $(LIB)

@@ -1,0 +1,4 @@
+link found[10]: acp0 type=ether (inactive new)
+   adding as new interface 00:11:22:33:44:45/0211:22ff:fe33:4445
+added fd01:203:405:607::1111 to DAG ripple
+ip found[10]: acp0 scope=0 address=fd01:203:405:607::1111 announced

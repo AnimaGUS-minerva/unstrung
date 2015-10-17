@@ -19,6 +19,7 @@ clean::
 	@rm -rf 19-pickdag *.o
 
 update::
+	cp ../OUTPUTS/senddio-test-03.pcap  ../INPUTS/dio-19-t1.pcap
 	cp ../OUTPUTS/19-pickdag-output.raw 19-pickdag-output.txt
 	cp ../OUTPUTS/19-pickdag-pcap.raw   19-pickdag-pcap.txt
 

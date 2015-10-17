@@ -54,7 +54,7 @@ rpl_event::~rpl_event(void)
     deleted = true;
 }
 
-bool rpl_eventless(const class rpl_event *a, const class rpl_event *b)
+bool rpl_eventless::operator()(const class rpl_event *a, const class rpl_event *b) const
 {
     int match = b->alarm_time.tv_sec - a->alarm_time.tv_sec;
 #if 0
@@ -98,20 +98,29 @@ bool rpl_event::doit(void)
     return false;
 }
 
-void rpl_event::requeue(void) {
-    debug->verbose("inserting event #%u at %u/%u\n",
-		   event_number, alarm_time.tv_sec, alarm_time.tv_usec);
-
-    network_interface::things_to_do.add_event(this);
+void rpl_event::_requeue(class rpl_event_queue &list) {
+    if(this->inQueue) {
+        list.update(handle);
+        //list.printevents(debug->file, "requeue2 ");
+    } else {
+        list.add_event(this);
+    }
 }
 
-void rpl_event::requeue(struct timeval &now) {
-    debug->verbose("re-inserting event #%u repeat: %u/%u\n",
-		   event_number, repeat_sec, repeat_msec);
+void rpl_event::requeue(class rpl_event_queue &list) {
+    debug->verbose("inserting event #%u at %u/%u %u\n",
+		   event_number, alarm_time.tv_sec, alarm_time.tv_usec, inQueue);
+
+    _requeue(list);
+}
+
+void rpl_event::requeue(class rpl_event_queue &list, struct timeval &now) {
+    debug->verbose("re-inserting event #%u repeat: %u/%u %u\n",
+		   event_number, repeat_sec, repeat_msec, inQueue);
 
     set_alarm(now, repeat_sec, repeat_msec);
 
-    network_interface::things_to_do.add_event(this);
+    _requeue(list);
 }
 
 
@@ -185,7 +194,7 @@ struct timeval rpl_event::occurs_in() {
 /* dump this event for humans */
 void rpl_event_queue::printevents(FILE *out, const char *prefix) {
     int i = 0;
-    std::vector<class rpl_event *>::iterator one = queue.begin();
+    rpl_event_queue_t::iterator one = queue.begin();
 
     fprintf(out, "event list (%u events)\n", queue.size());
     while(one != queue.end()) {
@@ -195,6 +204,18 @@ void rpl_event_queue::printevents(FILE *out, const char *prefix) {
 	i++; one++;
     }
 };
+
+/* remove all items from queue */
+void rpl_event_queue::clear(void) {
+    rpl_event_queue_t::iterator one = queue.begin();
+
+    while(one != queue.end()) {
+        (*one)->inQueue = false;
+        one++;
+    }
+    queue.clear();
+};
+
 
 /*
  * Local Variables:

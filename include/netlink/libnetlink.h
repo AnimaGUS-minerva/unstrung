@@ -14,6 +14,8 @@ struct rtnl_handle
 	__u32			dump;
 };
 
+#define rtnl_socket_get_fd(handle) (handle->fd)
+
 extern int rtnl_open(struct rtnl_handle *rth, unsigned subscriptions);
 extern int rtnl_open_byproto(struct rtnl_handle *rth, unsigned subscriptions, int protocol);
 extern void rtnl_close(struct rtnl_handle *rth);

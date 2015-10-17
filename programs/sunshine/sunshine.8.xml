@@ -6,7 +6,7 @@
 <refmeta>
 <refentrytitle>sunshine</refentrytitle>
 <manvolnum>8</manvolnum>
-<refmiscinfo class='date'>07 october 2014</refmiscinfo>
+<refmiscinfo class='date'>06 october 2015</refmiscinfo>
 </refmeta>
 <refnamediv id='name'>
 <refname>sunshine</refname>
@@ -16,9 +16,25 @@
 <refsynopsisdiv id='synopsis'>
 <cmdsynopsis>
   <command>sunshine</command>
-    <arg choice='plain'><replaceable>setup</replaceable></arg>
-    <group choice='opt'><arg choice='plain'>--show </arg><arg choice='plain'>--showonly </arg></group>
-    <arg choice='plain'><replaceable>command</replaceable></arg>
+    <arg choice='plain'>interface</arg>
+    <group choice='opt'><replaceable>wlan0</replaceable></group>
+    <arg choice='plain'>dagid</arg>
+    <group choice='opt'><replaceable>0xabcd1234abcd1234</replaceable></group>
+    <arg choice='plain'>prefix</arg>
+    <group choice='opt'><replaceable>fd01:abcd::/32</replaceable></group>
+    <arg choice='plain'>rank</arg>
+    <group choice='opt'><replaceable>1</replaceable></group>
+    <arg choice='plain'>instanceid</arg>
+    <group choice='opt'><replaceable>1</replaceable></group>
+    <arg choice='plain'>interval</arg>
+    <group choice='opt'><replaceable>20000</replaceable></group>
+    <arg choice='plain'>ignore-pio</arg>
+    <arg choice='plain'>dao-if-filter</arg>
+    <group choice='opt'><replaceable>acp*</replaceable></group>
+    <arg choice='plain'>dao-addr-filter</arg>
+    <group choice='opt'><replaceable>fd01::/16</replaceable></group>
+    <arg choice='plain'>syslog</arg>
+    <arg choice='plain'>stderr</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
 
@@ -46,6 +62,20 @@
     <arg choice='plain'><replaceable>eth0</replaceable></arg>
     <arg choice='plain'> --interval </arg>
     <arg choice='plain'><replaceable>60000</replaceable></arg>
+    <arg choice='plain'> --timelog </arg>
+    <arg choice='plain'> --verbose </arg>
+</cmdsynopsis>
+<cmdsynopsis>
+  <command>sunshine</command>
+    <arg choice='plain'> --dagid </arg>
+    <arg choice='plain'><replaceable>funfun0</replaceable></arg>
+    <arg choice='plain'> --interface </arg>
+    <arg choice='plain'><replaceable>wlan0</replaceable></arg>
+    <arg choice='plain'> --ignore-pio </arg>
+    <arg choice='plain'> --dao-if-filter </arg>
+    <arg choice='plain'><replaceable>acp*</replaceable></arg>
+    <arg choice='plain'> --dao-addr-filter </arg>
+    <arg choice='plain'><replaceable>fd04:ec6f:d73f::/48</replaceable></arg>
     <arg choice='plain'> --timelog </arg>
     <arg choice='plain'> --verbose </arg>
 </cmdsynopsis>

@@ -78,6 +78,7 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
 {
     this->verbose_log("  peer '%s' announces prefix: %s\n",
                       announced_from->node_name(), dn->prefix_name());
+
     if(!installed) {
         struct in6_addr link = iface->link_local();
 

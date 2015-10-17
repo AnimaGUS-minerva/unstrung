@@ -1,0 +1,10 @@
+This test case validates that we can receive a DIO message, and send a DAO
+out.  The PIO in the DIO is ignored.
+A new interface is created after the DIO is received, and an IP address on
+that interface belongs in the DAO, so a DAO should be sent.
+
+
+
+
+
+

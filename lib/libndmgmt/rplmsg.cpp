@@ -39,13 +39,15 @@ extern "C" {
 /*
  * here are routines to crack open suboptions of DIO/DAG/etc. messages
  */
-rpl_msg::rpl_msg(const unsigned char *subopts, int subopt_len)
+rpl_msg::rpl_msg(const unsigned char *subopts, int subopt_len, u_int32_t *stats)
 {
     reset_options();
 
     if(subopt_len > sizeof(mBytes)) subopt_len = sizeof(mBytes);
     memcpy(mBytes, subopts, subopt_len);
     mLen = subopt_len;
+
+    mStats = stats;
 }
 
 void rpl_msg::reset_options(void)
@@ -116,14 +118,13 @@ struct nd_rpl_genoption *rpl_msg::search_subopt(enum RPL_SUBOPT optnum,
 
 struct rpl_dio_destprefix *rpl_dio::destprefix(void)
 {
-    int optlen = 0;
+    int optlen = -1;
     struct rpl_dio_destprefix *dp = (struct rpl_dio_destprefix *)search_subopt(RPL_DIO_DESTPREFIX, &optlen);
 
     if(dp==NULL) return NULL;
 
-    int prefixbytes = ((dp->rpl_dio_prefixlen+7) / 8)-1;
-    if(prefixbytes > (optlen - sizeof(struct rpl_dio_destprefix))) {
-        //(*mStats)[PS_SUBOPTION_UNDERRUN]++;
+    if(optlen < sizeof(struct rpl_dio_destprefix)) {
+        mStats[PS_SUBOPTION_UNDERRUN]++;
         return NULL;
     }
 
@@ -131,16 +132,16 @@ struct rpl_dio_destprefix *rpl_dio::destprefix(void)
 }
 
 
-rpl_dio::rpl_dio(rpl_node &peer,
+rpl_dio::rpl_dio(rpl_node &peer, dag_network *dag,
                  const struct nd_rpl_dio *dio, int dio_len) :
-    mPeer(peer),
-    rpl_msg((unsigned char *)(dio+1), dio_len-sizeof(*dio))
+mPeer(peer),
+    rpl_msg((unsigned char *)(dio+1), dio_len-sizeof(*dio), dag->mStats)
 {
 }
 
 
-rpl_dao::rpl_dao(unsigned char *data, int dao_len) :
-    rpl_msg(data, dao_len)
+rpl_dao::rpl_dao(unsigned char *data, int dao_len, dag_network *dag) :
+rpl_msg(data, dao_len, dag->mStats)
 {
 }
 

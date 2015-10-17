@@ -38,6 +38,7 @@ SUBDIRS+=08-event
 SUBDIRS+=12-senddio
 SUBDIRS+=13-selfprefix
 SUBDIRS+=14-senddao
+SUBDIRS+=14-sunshine
 SUBDIRS+=15-builddao
 SUBDIRS+=16-vf
 SUBDIRS+=17-recvdao
@@ -53,3 +54,16 @@ SUBDIRS+=26-builddaoack
 SUBDIRS+=26-senddaoack
 SUBDIRS+=27-daoreplydao
 SUBDIRS+=28-daowrongack
+SUBDIRS+=29-daoreply-nopio
+SUBDIRS+=30-ackdao
+SUBDIRS+=31-daoreply-extraprefix
+SUBDIRS+=32-daoreply-onlyif
+SUBDIRS+=33-newifdao
+
+checkstop::
+	@for d in $(SUBDIRS) ; \
+	do \
+		if $(MAKE) -C $$d UNSTRUNG_SRCDIR=${UNSTRUNG_SRCDIR} check; then true; else echo ${SUBDIR} FAILED; exit 1; fi; \
+	done;
+
+

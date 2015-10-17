@@ -54,7 +54,6 @@
 #define	MALLOC(n)	malloc(n)
 #define	FREE(p)		free(p)
 
-
 typedef const char *err_t;	/* error message, or NULL for success */
 typedef struct {
 	union {
@@ -113,6 +112,18 @@ size_t ultot(unsigned long src, int format, char *buf, size_t buflen);
 size_t subnetporttot(const ip_subnet *sub,
                      int format, char *dst,
                      size_t dstlen);
+
+extern int addrcmp(const ip_address *a, const ip_address *b);
+extern int sameaddr(const ip_address *a, const ip_address *b);
+extern int samesubnet(const ip_subnet *a, const ip_subnet *b);
+extern int subnetishost(const ip_subnet *a);
+extern int sameaddrtype(const ip_address *a, const ip_address *b);
+extern int samesubnettype(const ip_subnet *a, const ip_subnet *b);
+extern int addrinsubnet(const ip_address *a, const ip_subnet *s);
+extern int subnetinsubnet(const ip_subnet *a, const ip_subnet *b);
+
+
+
 
 
 #define _OSWLIBS_H_

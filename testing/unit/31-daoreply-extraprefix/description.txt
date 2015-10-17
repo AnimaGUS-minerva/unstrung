@@ -1,0 +1,10 @@
+This test case validates that we can receive a DIO message.
+The DIO will include a PIO, but because of the --additional-prefixes option,
+the prefixes found on the on the listed interface will also be returned
+in the DAO.
+
+We should then expect to get a DAOACK from the parent.
+
+
+
+

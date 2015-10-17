@@ -1,0 +1,10 @@
+This test case validates that we can receive a DAO message
+from a node of higher rank (further from the root), and that we install
+source routes for the destinations listed.
+One DAO that we receive has no destinations.
+A second DAO is received that has a non-PIO generated destination.
+
+The input file INPUTS/29nopio.pcap is produced by 29-daoreply-nopio.
+
+
+

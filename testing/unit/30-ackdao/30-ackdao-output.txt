@@ -1,0 +1,42 @@
+link found[1]: wlan0 type=ether (active new) faked
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
+link found[2]: lo type=loopback (active new) faked
+ip found[2]: lo scope=254 address=::1
+iface1[1]: wlan0
+  new RPL node: fe80::1000:ff:fe64:6423
+  peer '<ME>fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
+  adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 learnt from iface: wlan0
+  invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+  invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+    would invoke cmd: ip -6 route show
+Processing input file1
+packet 1 is being processed
+  processing dao(20) [instance:1,daoseq:2,dao-ack,dagid:ripple0x00 ]
+  new RPL node: fe80::216:3eff:fe11:3424
+sending DAOACK about 0 networks, to fe80::216:3eff:fe11:3424
+sending DAOACK on if: wlan0(faked)
+Processing input file2
+packet 2 is being processed
+  processing dao(60) [instance:1,daoseq:2,dao-ack,dagid:ripple0x00 ]
+  recv DAO rpltarget re: network 2001:db8:1:0:216:3eff:fe11:3424/128, target fe80::216:3eff:fe11:3424 (added)
+  invoking ip -6 route add 2001:db8:1:0:216:3eff:fe11:3424/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add 2001:db8:1:0:216:3eff:fe11:3424/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route show
+  recv DAO rpltarget re: network fd01:203:405:607::1111/128, target fe80::216:3eff:fe11:3424 (added)
+  invoking ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route show
+sending DAOACK about 2 networks, to fe80::216:3eff:fe11:3424
+sending DAOACK on if: wlan0(faked)
+Processing input file3
+packet 3 is being processed
+  processing dao(44) [instance:1,daoseq:2,dao-ack,dagid:ripple0x00 ]
+  recv DAO rpltarget re: network fd01:203:405:607::1111/128, target fe80::216:3eff:fe11:3424 (added)
+  invoking ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route show
+sending DAOACK about 1 networks, to fe80::216:3eff:fe11:3424
+sending DAOACK on if: wlan0(faked)

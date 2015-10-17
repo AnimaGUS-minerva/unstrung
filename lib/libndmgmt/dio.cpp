@@ -187,12 +187,12 @@ int dag_network::build_dio(unsigned char *buff,
 
     /* now announce the prefix using a destination option */
     /* this stores the option in this->optbuff */
-    build_prefix_dioopt(prefix);
+    int diooptlen = build_prefix_dioopt(prefix);
 
     int nextoptlen = 0;
 
     len = ((caddr_t)nextopt - (caddr_t)buff);
-    nextoptlen = append_suboption(nextopt, buff_len-len, RPL_DIO_DESTPREFIX);
+    nextoptlen = append_suboption(nextopt, diooptlen, RPL_DIO_DESTPREFIX);
 
     if(nextoptlen < 0) {
         /* failed to build DIO prefix option */

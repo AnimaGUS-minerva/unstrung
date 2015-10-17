@@ -9,6 +9,7 @@ extern "C" {
 
 enum debug_level {
   RPL_DEBUG_NETINPUT = 1 << 1,
+  RPL_DEBUG_NETLINK  = 1 << 2,
 };
 
 class rpl_debug {
@@ -50,6 +51,9 @@ public:
         void set_verbose(FILE *f) {
                 file = f;
                 flag = true;
+        };
+        void set_debug_flags(int flags) {
+          debug_flags = flags;
         };
         void set_debug_flag(enum debug_level dl) {
           debug_flags |= dl;

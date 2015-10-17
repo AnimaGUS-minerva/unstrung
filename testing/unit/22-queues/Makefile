@@ -16,3 +16,6 @@ programs::
 
 clean::
 	@rm -rf 22-queues *.o
+
+update:
+	cp ../OUTPUTS/22-queues.raw 22-queues-out.txt

@@ -50,7 +50,8 @@ public:
         /* prime key for the DAG */
         dagid_t                    mDagid;
 	bool                       mActive;
-	bool 						mPrefixSet;
+	bool 	                   mIgnorePio;
+	bool                       mPrefixSet;
 
         unsigned int               mLastSeq;
         bool seq_too_old(unsigned int seq);
@@ -63,6 +64,20 @@ public:
         unsigned int               mMyRank;     /* my rank */
         unsigned int               mBestRank;   /* my best parent */
         bool dag_rank_infinite(void) { return (mBestRank >= RANK_INFINITE); };
+
+        /* this manages and evaluates a list of interface wildcards,
+         * and prefix (CIDR) patterns for addresses that will be added
+         * as locale addresses for DAOs sent from this node.
+         */
+        bool set_interface_wildcard(const char *ifname);
+        bool set_interface_filter(const char *filter);
+        bool set_interface_filter(const ip_subnet i6);
+        bool matchesIfWildcard(const char *ifname);
+        bool matchesIfPrefix(const ip_address v6);
+        bool matchesIfPrefix(const struct in6_addr v6);
+        prefix_node *add_address(const ip_subnet v6);
+        prefix_node *add_address(const ip_address v6);
+        static bool notify_new_interface(network_interface *one);
 
         void set_prefix(const struct in6_addr v6, const int prefixlen);
         void set_prefix(const ip_subnet prefix);
@@ -167,6 +182,9 @@ public:
 	unsigned int get_dagRank(void) {
 	    return mMyRank;
 	};
+	void set_ignore_pio(const bool ignore) {
+            mIgnorePio = ignore;
+	};
 	void set_dagrank(const unsigned int dagrank) {
 	    mMyRank   = dagrank;
 	    mBestRank = dagrank;
@@ -210,6 +228,7 @@ public:
 	/* public for now, need better inteface */
         prefix_map         dag_children;     /* list of addresses downstream, usually /128 */
         prefix_map         dag_prefixes;     /* list of addresses, by prefix in this dag */
+        prefix_map         dag_announced;    /* list of me, to announce upstream  */
         bool               dao_needed;
         void               set_dao_needed() { dao_needed = true; };
         prefix_node       *dag_me;           /* my identity in this dag (/128) */
@@ -231,6 +250,13 @@ private:
 	void init_dag(void);
 	static unsigned char           optbuff[256];
 	static unsigned int            optlen;
+
+#define DAG_IFWILDCARD_MAX 8
+#define DAG_IFWILDCARD_LEN 32
+        int                        mIfWildcard_max;
+        char                       mIfWildcard[DAG_IFWILDCARD_MAX][DAG_IFWILDCARD_LEN];
+        int                        mIfFilter_max;
+        ip_subnet                  mIfFilter[DAG_IFWILDCARD_MAX];
 
     /* space to format various messages */
     int append_suboption(unsigned char *buff,

@@ -1,8 +1,8 @@
 link found[1]: wlan0 type=ether (active new) faked
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
-ip found[1]: wlan0 address=fe80::1000:ff:fe64:6423
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
-ip found[2]: lo address=::1
+ip found[2]: lo scope=254 address=::1
 Processing input file 1
 packet 1 is being processed
   new RPL node: fe80::216:3eff:fe11:3424
@@ -17,8 +17,9 @@ packet 1 is being processed
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
+  processed 1 pio options
 Scheduling dao in 2 ms
-inserting event #1 at 1073741824/3024
+inserting event #1 at 1073741824/3024 0
 Events created for file 1
 event list (1 events)
 0: event#1(T1) at (2004-January-10 01:37:04 PM)<1073741824:3024>, type: send_dao
@@ -27,7 +28,7 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-re-inserting event #1 repeat: 0/50
+re-inserting event #1 repeat: 0/50 0
 event list (1 events)
 0: event#1(T1) at (2004-January-10 01:37:05 PM)<1073741825:51024>, type: send_dao
 Forcing event2 created for file 1
@@ -35,7 +36,7 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for T1 to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-re-inserting event #1 repeat: 0/50
+re-inserting event #1 repeat: 0/50 0
 event list (1 events)
 0: event#1(T1) at (2004-January-10 01:37:06 PM)<1073741826:51024>, type: send_dao
 

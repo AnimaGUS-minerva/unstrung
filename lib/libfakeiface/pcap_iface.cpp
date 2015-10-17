@@ -37,6 +37,8 @@ extern "C" {
 
 unsigned wlan1_is_down = 0;
 
+unsigned int pcap_network_interface::seq = 0;
+
 class pcap_iface_factory : public iface_factory {
 public:
     virtual network_interface *newnetwork_interface(const char *name,
@@ -312,215 +314,176 @@ void pcap_network_interface::skip_linux_pcap_headers(const struct pcap_pkthdr *h
         this->filter_and_receive_icmp6(h->ts.tv_sec, bytes, len);
 }
 
+struct fake_device_msg {
+    struct nlmsghdr  nlh;
+    struct ifinfomsg if1;
+    struct rtattr    ifname;
+    unsigned char    ifnamespace[256];
+    struct rtattr    ifmtu;
+    unsigned int     ifmtu_value;
+};
+
+void pcap_network_interface::fake_linkinfo(const char *new_ifname,
+                                           unsigned int myindex,
+                                           struct network_interface_init *nii,
+                                           unsigned char eui[6],
+                                           unsigned int type,
+                                           unsigned int flags)
+{
+    struct sockaddr_nl who;
+    struct fake_device_msg fake1;
+    struct nlmsghdr *nlh = &fake1.nlh;
+    struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
+    struct rtattr    *rtname = IFLA_RTA(ifi);
+
+    int    len      = 0;
+
+    nlh->nlmsg_type  = RTM_NEWLINK;
+    nlh->nlmsg_flags = 0;  /* not sure what to set here */
+    nlh->nlmsg_seq   = ++seq;
+    nlh->nlmsg_pid   = getpid();
+
+    ifi->ifi_index   = myindex;
+    ifi->ifi_type    = type;   /* ARPHRD_ETHER; */
+    //ifi->ifi_family  = PF_ETHER;
+    ifi->ifi_flags   = flags;  /* IFF_BROADCAST; */
+
+    rtname->rta_type = IFLA_IFNAME;
+    char *ifname = (char *)RTA_DATA(rtname);
+    ifname[0]='\0';
+    strncat(ifname, new_ifname, sizeof(fake1.ifnamespace));
+    rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
+
+    struct rtattr *rtmtu = RTA_NEXT(rtname, len);
+    rtmtu->rta_type = IFLA_MTU;
+    unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
+    *mtu            = 1500;
+    rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
+
+    struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
+    rtaddr->rta_type= IFLA_ADDRESS;
+    unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
+    memcpy(hwaddr, eui, 6);
+    rtaddr->rta_len = RTA_LENGTH(6);
+
+    struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
+
+    nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
+    gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)nii);
+}
+
+void pcap_network_interface::fake_addrinfo(unsigned int myindex,
+                                           unsigned int scope,
+                                           struct network_interface_init *nii,
+                                           unsigned char addr[16])
+{
+    struct sockaddr_nl who;
+    struct fake_device_msg fake1;
+    struct nlmsghdr *nlh = &fake1.nlh;
+    struct ifaddrmsg *iai= (struct ifaddrmsg *)NLMSG_DATA(nlh);
+    struct rtattr    *rtaddr6 = IFA_RTA(iai);
+    int    len      = 0;
+    nlh->nlmsg_type  = RTM_NEWADDR;
+    nlh->nlmsg_flags = 0;  /* not sure what to set here */
+    nlh->nlmsg_seq   = ++seq;
+    nlh->nlmsg_pid   = getpid();
+
+    iai->ifa_family  = AF_INET6;
+    iai->ifa_prefixlen = 64;
+    iai->ifa_flags   = IFA_F_PERMANENT;
+    iai->ifa_scope   = scope;
+    iai->ifa_index   = myindex;
+
+    unsigned char *addr6 = (unsigned char *)RTA_DATA(rtaddr6);
+    memcpy(addr6, addr, 16);
+    rtaddr6->rta_type= IFA_LOCAL;
+    rtaddr6->rta_len = RTA_LENGTH(16);
+
+    struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
+    nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
+    gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)nii);
+}
+
+
 void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
 {
         /* fix up the factory */
         iface_maker = &pcap_factory;
 
         struct sockaddr_nl who;
-        unsigned int seq = 0;
         unsigned int ifindex = 0;
-        struct fake_device_msg {
-                struct nlmsghdr  nlh;
-                struct ifinfomsg if1;
-                struct rtattr    ifname;
-                unsigned char    ifnamespace[256];
-                struct rtattr    ifmtu;
-                unsigned int     ifmtu_value;
-        } fake1, fake2;
 
         struct network_interface_init nii;
+        struct fake_device_msg fake1, fake2;
 
         nii.debug = deb;
         nii.setup = setup;
 
         memset(&who, 0, sizeof(who));
-        int myindex;
+        int myindex = ++ifindex;
 
+        /* make a wlan0 interface */
         {
-                struct nlmsghdr *nlh = &fake1.nlh;
-                struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
-                struct rtattr    *rtname = IFLA_RTA(ifi);
-                int    len      = 0;
-                nlh->nlmsg_type  = RTM_NEWLINK;
-                nlh->nlmsg_flags = 0;  /* not sure what to set here */
-                nlh->nlmsg_seq   = ++seq;
-                nlh->nlmsg_pid   = getpid();
+            unsigned char hwaddr[6];
+            hwaddr[0]=0x00;        hwaddr[1]=0x16;
+            hwaddr[2]=0x3e;        hwaddr[3]=0x11;
+            hwaddr[4]=0x34;        hwaddr[5]=0x24;
 
-                ifi->ifi_index   = myindex = ++ifindex;
-                ifi->ifi_type    = ARPHRD_ETHER;
-                //ifi->ifi_family  = PF_ETHER;
-                ifi->ifi_flags   = IFF_BROADCAST;
-
-                rtname->rta_type = IFLA_IFNAME;
-                char *ifname = (char *)RTA_DATA(rtname);
-                ifname[0]='\0';
-                strncat(ifname, "wlan0", sizeof(fake1.ifnamespace));
-                rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
-
-                struct rtattr *rtmtu = RTA_NEXT(rtname, len);
-                rtmtu->rta_type = IFLA_MTU;
-                unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
-                *mtu            = 1500;
-                rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
-
-                struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
-                rtaddr->rta_type= IFLA_ADDRESS;
-                unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
-                hwaddr[0]=0x00;        hwaddr[1]=0x16;
-                hwaddr[2]=0x3e;        hwaddr[3]=0x11;
-                hwaddr[4]=0x34;        hwaddr[5]=0x24;
-                rtaddr->rta_len = RTA_LENGTH(6);
-
-                struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
-
-                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
+            fake_linkinfo("wlan0", myindex, &nii, hwaddr,
+                          ARPHRD_ETHER, IFF_BROADCAST);
         }
 
+        /* now send up the IPv6 address for a wlan0 address */
         {
-                /* now send up the IPv6 address */
-                struct nlmsghdr *nlh = &fake1.nlh;
-                struct ifaddrmsg *iai= (struct ifaddrmsg *)NLMSG_DATA(nlh);
-                struct rtattr    *rtaddr6 = IFA_RTA(iai);
-                int    len      = 0;
-                nlh->nlmsg_type  = RTM_NEWADDR;
-                nlh->nlmsg_flags = 0;  /* not sure what to set here */
-                nlh->nlmsg_seq   = ++seq;
-                nlh->nlmsg_pid   = getpid();
-
-                iai->ifa_family  = AF_INET6;
-                iai->ifa_prefixlen = 64;
-                iai->ifa_flags   = IFA_F_PERMANENT;
-                iai->ifa_scope   = 0;
-                iai->ifa_index   = myindex;
-
-                rtaddr6->rta_type= IFA_LOCAL;
-                unsigned char *addr6 = (unsigned char *)RTA_DATA(rtaddr6);
-                addr6[0] = 0xfe;                addr6[1] = 0x80;
-                addr6[2] = 0x00;                addr6[3] = 0x00;
-                addr6[4] = 0x00;                addr6[5] = 0x00;
-                addr6[6] = 0x00;                addr6[7] = 0x00;
-                addr6[8] = 0x10;                addr6[9] = 0x00;
-                addr6[10]= 0x00;                addr6[11]= 0xff;
-                addr6[12]= 0xfe;                addr6[13]= 0x64;
-                addr6[14]= 0x64;                addr6[15]= 0x23;
-                rtaddr6->rta_len = RTA_LENGTH(16);
-
-                struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
-                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
+            unsigned char addr6[16];
+            addr6[0] = 0xfe;                addr6[1] = 0x80;
+            addr6[2] = 0x00;                addr6[3] = 0x00;
+            addr6[4] = 0x00;                addr6[5] = 0x00;
+            addr6[6] = 0x00;                addr6[7] = 0x00;
+            addr6[8] = 0x10;                addr6[9] = 0x00;
+            addr6[10]= 0x00;                addr6[11]= 0xff;
+            addr6[12]= 0xfe;                addr6[13]= 0x64;
+            addr6[14]= 0x64;                addr6[15]= 0x23;
+            fake_addrinfo(myindex, RT_SCOPE_LINK, &nii, addr6);
         }
 
         /* now make a loopback interface */
         {
-                struct nlmsghdr *nlh = &fake2.nlh;
-                struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
-                struct rtattr    *rtname = IFLA_RTA(ifi);
-                int    len      = 0;
-                nlh->nlmsg_type  = RTM_NEWLINK;
-                nlh->nlmsg_flags = 0;  /* not sure what to set here */
-                nlh->nlmsg_seq   = ++seq;
-                nlh->nlmsg_pid   = getpid();
+            unsigned char hwaddr[6];
+            hwaddr[0]=0xc0;        hwaddr[1]=0x00;
+            hwaddr[2]=0x7f;        hwaddr[3]=0x00;
+            hwaddr[4]=0x00;        hwaddr[5]=0x01;
 
-                ifi->ifi_index   = myindex = ++ifindex;
-                ifi->ifi_type    = ARPHRD_LOOPBACK;
-                ifi->ifi_flags   = IFF_BROADCAST;
-
-                rtname->rta_type = IFLA_IFNAME;
-                char *ifname = (char *)RTA_DATA(rtname);
-                ifname[0]='\0';
-                strncat(ifname, "lo", sizeof(fake2.ifnamespace));
-                rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
-
-                struct rtattr *rtmtu = RTA_NEXT(rtname, len);
-                rtmtu->rta_type = IFLA_MTU;
-                unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
-                *mtu            = 1500;
-                rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
-
-                struct rtattr *rtlast = RTA_NEXT(rtmtu, len);
-
-                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake2, (void*)&nii);
+            myindex = ++ifindex;
+            fake_linkinfo("lo", myindex, &nii, hwaddr,
+                          ARPHRD_LOOPBACK, IFF_BROADCAST);
         }
 
         {
-                /* now send up the IPv6 address */
-                struct nlmsghdr *nlh = &fake2.nlh;
-                struct ifaddrmsg *iai= (struct ifaddrmsg *)NLMSG_DATA(nlh);
-                struct rtattr    *rtaddr6 = IFA_RTA(iai);
-                int    len      = 0;
-                nlh->nlmsg_type  = RTM_NEWADDR;
-                nlh->nlmsg_flags = 0;  /* not sure what to set here */
-                nlh->nlmsg_seq   = ++seq;
-                nlh->nlmsg_pid   = getpid();
-
-                iai->ifa_family  = AF_INET6;
-                iai->ifa_prefixlen = 64;
-                iai->ifa_flags   = IFA_F_PERMANENT;
-                iai->ifa_scope   = 0;
-                iai->ifa_index   = myindex;
-
-                rtaddr6->rta_type= IFA_LOCAL;
-                unsigned char *addr6 = (unsigned char *)RTA_DATA(rtaddr6);
-                addr6[0] = 0x00;                addr6[1] = 0x00;
-                addr6[2] = 0x00;                addr6[3] = 0x00;
-                addr6[4] = 0x00;                addr6[5] = 0x00;
-                addr6[6] = 0x00;                addr6[7] = 0x00;
-                addr6[8] = 0x00;                addr6[9] = 0x00;
-                addr6[10]= 0x00;                addr6[11]= 0x00;
-                addr6[12]= 0x00;                addr6[13]= 0x00;
-                addr6[14]= 0x00;                addr6[15]= 0x01;
-                rtaddr6->rta_len = RTA_LENGTH(16);
-
-                struct rtattr *rtlast = RTA_NEXT(rtaddr6, len);
-                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*iai)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake2, (void*)&nii);
+            /* now send up the IPv6 address */
+            unsigned char addr6[16];
+            addr6[0] = 0x00;                addr6[1] = 0x00;
+            addr6[2] = 0x00;                addr6[3] = 0x00;
+            addr6[4] = 0x00;                addr6[5] = 0x00;
+            addr6[6] = 0x00;                addr6[7] = 0x00;
+            addr6[8] = 0x00;                addr6[9] = 0x00;
+            addr6[10]= 0x00;                addr6[11]= 0x00;
+            addr6[12]= 0x00;                addr6[13]= 0x00;
+            addr6[14]= 0x00;                addr6[15]= 0x01;
+            fake_addrinfo(myindex,  RT_SCOPE_HOST, &nii, addr6);
         }
-
 
         /* this is interface wlan1, and it's not up, has no IP addresses */
         if(wlan1_is_down)
         {
-                struct nlmsghdr *nlh = &fake1.nlh;
-                struct ifinfomsg *ifi= (struct ifinfomsg *)NLMSG_DATA(nlh);
-                struct rtattr    *rtname = IFLA_RTA(ifi);
-                int    len      = 0;
-                nlh->nlmsg_type  = RTM_NEWLINK;
-                nlh->nlmsg_flags = 0;  /* not sure what to set here */
-                nlh->nlmsg_seq   = ++seq;
-                nlh->nlmsg_pid   = getpid();
+            unsigned char hwaddr[6];
+            hwaddr[0]=0x00;        hwaddr[1]=0x16;
+            hwaddr[2]=0xf0;        hwaddr[3]=0x0d;
+            hwaddr[4]=0xba;        hwaddr[5]=0xbe;
 
-                ifi->ifi_index   = myindex = ++ifindex;
-                ifi->ifi_type    = ARPHRD_ETHER;
-                //ifi->ifi_family  = PF_ETHER;
-                ifi->ifi_flags   = IFF_BROADCAST;
-
-                rtname->rta_type = IFLA_IFNAME;
-                char *ifname = (char *)RTA_DATA(rtname);
-                ifname[0]='\0';
-                strncat(ifname, "wlan1", sizeof(fake1.ifnamespace));
-                rtname->rta_len  = RTA_LENGTH(strlen(ifname)+1);
-
-                struct rtattr *rtmtu = RTA_NEXT(rtname, len);
-                rtmtu->rta_type = IFLA_MTU;
-                unsigned int *mtu = (unsigned int *)RTA_DATA(rtmtu);
-                *mtu            = 1500;
-                rtmtu->rta_len  = RTA_LENGTH(sizeof(int));
-
-                struct rtattr *rtaddr = RTA_NEXT(rtmtu, len);
-                rtaddr->rta_type= IFLA_ADDRESS;
-                unsigned char *hwaddr = (unsigned char *)RTA_DATA(rtaddr);
-                hwaddr[0]=0x00;        hwaddr[1]=0x16;
-                hwaddr[2]=0xf0;        hwaddr[3]=0x0d;
-                hwaddr[4]=0xba;        hwaddr[5]=0xbe;
-                rtaddr->rta_len = RTA_LENGTH(6);
-
-                struct rtattr *rtlast = RTA_NEXT(rtaddr, len);
-
-                nlh->nlmsg_len  = NLMSG_LENGTH(sizeof(*ifi)) + (-len);
-                gather_linkinfo(&who, (struct nlmsghdr *)&fake1, (void*)&nii);
+            /* now make a loopback interface */
+            myindex = ++ifindex;
+            fake_linkinfo("wlan1", myindex, &nii, hwaddr, ARPHRD_ETHER, IFF_BROADCAST);
         }
 }
 
@@ -570,6 +533,57 @@ void pcap_network_interface::close_pcap_files(void)
 }
 
 
+void pcap_network_interface::setup_infile(const char *infile)
+{
+    pcap_t *ppol;
+    char errbuf[PCAP_ERRBUF_SIZE];
+
+    ppol = pcap_open_offline(infile, errbuf);
+
+    if(!ppol) {
+        debug->error("can not open input %s: %s\n", infile, errbuf);
+        exit(1);
+    }
+
+    if(this->pol) {
+        pcap_close(this->pol);
+        this->pol = NULL;
+    }
+    this->pol = ppol;
+}
+
+void pcap_network_interface::setup_outfile(const char *outfile)
+{
+    int pcap_link = DLT_EN10MB;
+
+    if(this->pol) {
+        pcap_link = pcap_datalink(this->pol);
+    }
+    setup_outfile(outfile, pcap_link);
+}
+
+void pcap_network_interface::setup_outfile(const char *outfile,
+                                           int pcap_link)
+{
+    pcap_dumper_t *out = NULL;
+    if(outfile) {
+        pcap_t *pout = pcap_open_dead(pcap_link, 65535);
+        if(!pout) {
+            debug->error("can not create pcap_open_deads\n");
+            exit(1);
+        }
+
+        out = pcap_dump_open(pout, outfile);
+
+        if(!out) {
+            debug->error("can not open output %s\n", outfile);
+            exit(1);
+        }
+    }
+
+    this->set_link_encap(pcap_link);
+    this->pcap_out = out;
+}
 
 pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *ifname,
@@ -577,39 +591,18 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *outfile,
     rpl_debug *debug)
 {
-	char errbuf[PCAP_ERRBUF_SIZE];
-        pcap_t *ppol;
-
-	ppol = pcap_open_offline(infile, errbuf);
         pcap_network_interface *ndproc;
 
-	if(!ppol) {
-	    debug->error("can not open input %s: %s\n", infile, errbuf);
-	    exit(1);
-	}
+        ndproc = (pcap_network_interface *)find_by_name(ifname);
 
-        int pcap_link = pcap_datalink(ppol);
-        pcap_dumper_t *out = NULL;
-        if(outfile) {
-            pcap_t *pout = pcap_open_dead(pcap_link, 65535);
-            if(!pout) {
-                debug->error("can not create pcap_open_deads\n");
-		exit(1);
-            }
-
-            out = pcap_dump_open(pout, outfile);
-
-            if(!out) {
-                debug->error("can not open output %s\n", outfile);
-                exit(1);
-            }
+        if(ndproc == NULL) {
+            return NULL;
         }
 
-        ndproc = (pcap_network_interface *)find_by_name(ifname);
-        ndproc->set_link_encap(pcap_link);
-        ndproc->pol = ppol;
+        ndproc->setup_infile(infile);
+        ndproc->setup_outfile(outfile);
+
 	ndproc->set_debug(debug);
-	ndproc->pcap_out = out;
 
         return ndproc;
 }

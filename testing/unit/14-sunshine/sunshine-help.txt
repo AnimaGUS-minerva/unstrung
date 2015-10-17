@@ -1,0 +1,13 @@
+PANDORA unstrung version VERSION starting at TODAY
+Usage: PATH/sunshine [-?] [-i ifname]
+	 [-p prefix] [--prefix prefix]   announce this IPv6 prefix in the destination option
+	 [-G dagid]  [--dagid dagid]     DAGid to use to announce, string or hexn
+	 [-R rank]   [--rank rank]       Initial rank to announce with
+	 [-I num]    [--instanceid num]  Instance ID (number)
+	 [-W msec]   [--interval msec]   Number of miliseconds between DIO
+	 [--verbose] [--timelog]         Turn on logging (with --time logged)
+	 [--syslog]  [--stderr]          Log to syslog and/or stderr
+	 [--ignore-pio]                  Ignore PIOs found in DIO
+	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
+	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from
+	 [--sleep=secs]                  sleep secs before trying to talk to network

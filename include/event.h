@@ -9,17 +9,27 @@ extern "C" {
 
 #include <map>
 #include <algorithm>
+#include <queue>
 #include <vector>
+#include <boost/heap/binomial_heap.hpp>
 
 #include "prefix.h"
 
 class network_interface;
 class dag_network;
 class rpl_node;
-class rpl_eventless;
 class rpl_event;
 
 #define IMMEDIATELY 1  /* ms */
+
+class rpl_eventless {
+ public:
+    bool operator()(const class rpl_event *a, const class rpl_event *b) const;
+};
+
+
+typedef boost::heap::binomial_heap<class rpl_event *, boost::heap::compare<rpl_eventless> > rpl_event_queue_t;
+typedef rpl_event_queue_t::handle_type rpl_event_queue_handle_t;
 
 class rpl_event {
 public:
@@ -34,6 +44,7 @@ public:
     rpl_event() {
         deleted = false;
         mDag = NULL;
+        inQueue = false;
     };
 
     rpl_event(struct timeval &relative,
@@ -87,8 +98,8 @@ public:
     const int           miliseconds_util(void);
     const int           miliseconds_util(struct timeval &now);
 
-    void requeue(void);
-    void requeue(struct timeval &now);
+    void requeue(class rpl_event_queue &list);
+    void requeue(class rpl_event_queue &list, struct timeval &now);
 
     void printevent(FILE *out);
 
@@ -115,16 +126,23 @@ public:
             alarm_time.tv_usec -= 1000000;
             alarm_time.tv_sec++;
         }
+
 	//fprintf(stderr, "%u: alarm for %u/%u + %u/%u\n", event_number, rel.tv_sec, rel.tv_usec, sec, msec);
     };
 
-    void reset_alarm(unsigned int sec, unsigned int msec) {
-        struct timeval now;
-        gettimeofday(&now, NULL);
-	set_alarm(now, sec, msec);
+    void reset_alarm(struct timeval &relative,
+                     unsigned int sec, unsigned int msec) {
+	set_alarm(relative, sec, msec);
+
+        /* also remember the repeat values on reset */
+        repeat_sec = sec;
+        repeat_msec= msec;
+
     };
 
     dag_network        *mDag;
+    bool                inQueue;
+    rpl_event_queue_handle_t handle;
 
     /* set to true to remove variable dates from debug output
      * used by regression testing routines.
@@ -143,9 +161,11 @@ public:
         set_alarm(relative, sec, msec);
         deleted = false;
         mDag = NULL;
+        inQueue = false;
     };
 
 private:
+    void _requeue(class rpl_event_queue &list);
     unsigned int        event_number;
     static unsigned int event_counter;
     unsigned int        repeat_sec;
@@ -155,47 +175,48 @@ private:
     rpl_debug *debug;
 };
 
-bool rpl_eventless(const class rpl_event *a, const class rpl_event *b);
-
 class rpl_event_queue {
 public:
-    std::vector<class rpl_event *> queue;
-
+    rpl_event_queue_t queue;
 
     rpl_event_queue() {
 	make_event_heap();
     };
 
     void make_event_heap() {
-	make_heap(queue.begin(), queue.end(), rpl_eventless);
+	//make_heap(queue.begin(), queue.end(), rpl_eventless);
     };
 
     class rpl_event *peek_event(void) {
-	if(!queue.empty()) {
-	    return queue.front();
-	} else {
-	    return NULL;
-	}
+        return queue.top();
+    };
+
+    void update(rpl_event_queue_handle_t b) {
+        queue.update(b);
     };
 
     void eat_event(void) {
-	if(!queue.empty()) {
-	    pop_heap(queue.begin(), queue.end(), rpl_eventless); queue.pop_back();
-	} else {
-	    fprintf(stderr, "attempt to remove from empty event queue");
-	}
-    };
+        if(!queue.empty()) {
+            queue.pop();
+        }
+    }
 
     class rpl_event *next_event(void) {
-	rpl_event *n = peek_event();
-	if(n) eat_event();
+        if(queue.empty()) return NULL;
+	rpl_event *n = queue.top();
+        eat_event();
+        n->inQueue = false;
 	return n;
     };
 
     void add_event(class rpl_event *n) {
-	queue.push_back(n);
-	push_heap(queue.begin(), queue.end(), rpl_eventless);
+        assert(!n->inQueue);
+        n->handle = queue.push(n);
+        n->inQueue=true;
     };
+
+    /* remove all items from queue */
+    void clear(void);
 
     int size(void) {
 	return queue.size();

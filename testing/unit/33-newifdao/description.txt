@@ -1,0 +1,9 @@
+This tests that a new interface being added with an IP address that belongs
+in a DAO does not cause a problem when no DIO has been received yet, so
+there is no parent to notify yet.
+
+
+
+
+
+

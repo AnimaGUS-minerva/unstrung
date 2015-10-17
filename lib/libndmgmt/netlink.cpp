@@ -102,26 +102,34 @@ bool network_interface::addprefix(dag_network *dn _U_,  prefix_node &prefix)
 
 /* XXX do this with netlink too  */
 bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
-                                                   const ip_address &src,
+                                                   const ip_address *src,
                                                    /*const*/rpl_node &parent)
 {
     char buf[1024];
     char pbuf[SUBNETTOT_BUF];
     char nhbuf[ADDRTOT_BUF];
+    const char *srcstring = "";
     char srcbuf[ADDRTOT_BUF];
 
     subnettot(&prefix, 0, pbuf, sizeof(pbuf));
     addrtot(&parent.node_address(), 0, nhbuf, sizeof(nhbuf));
-    addrtot(&src, 0, srcbuf, sizeof(nhbuf));
+
+    srcbuf[0]='\0';
+    if(src) {
+        addrtot(src, 0, srcbuf, sizeof(nhbuf));
+        srcstring = "src ";
+    }
 
     snprintf(buf, 1024, "ip -6 route del %s", pbuf);
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
 
     snprintf(buf, 1024,
-             "ip -6 route add %s via %s dev %s src %s",
+             "ip -6 route add %s via %s dev %s %s%s",
              pbuf,  nhbuf,
-             this->get_if_name(), srcbuf);
+             this->get_if_name(),
+             srcstring, srcbuf);
+
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
@@ -177,12 +185,19 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
 
     switch(n->nlmsg_type) {
     case RTM_NEWLINK:
+        add_linkinfo(who, n, arg);
+        break;
     case RTM_DELLINK:
-        adddel_linkinfo(who, n, arg);
+        del_linkinfo(who, n, arg);
         break;
     case RTM_NEWADDR:
         adddel_ipinfo(who, n, arg);
         break;
+    case RTM_DELADDR:
+        /* handle this in some way */
+        break;
+    default:
+        fprintf(stderr, "ignored nlmsgtype: %u\n", n->nlmsg_type);
     }
 }
 
@@ -232,6 +247,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
     struct rtattr * tb[IFA_MAX+1], *addrattr;
     int len = n->nlmsg_len;
     unsigned m_flag = 0;
+    bool announced = false;
     SPRINT_BUF(b1);
 
     len -= NLMSG_LENGTH(sizeof(*iai));
@@ -277,9 +293,17 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
         ni->node = new rpl_node(ni->if_addr);
         ni->node->debug = deb;
 
+        /* scopes are reversed on Linux: HOST=254, LINK=253, UNIVERSE=0 */
+        if(iai->ifa_scope <= RT_SCOPE_LINK) {
+            /* now see if this IP address should be added to future DAOs */
+            announced = dag_network::notify_new_interface(ni);
+        }
+
         /* log it for human */
-        deb->info("ip found[%d]: %s address=%s\n",
-                 ni->if_index, ni->if_name, b1);
+        deb->info("ip found[%d]: %s scope=%u address=%s%s\n",
+                  ni->if_index, ni->if_name, iai->ifa_scope,
+                  b1, announced ? " announced" : "");
+
         break;
 
     default:
@@ -289,7 +313,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
     return 0;
 }
 
-int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
+int network_interface::del_linkinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
 {
     struct network_interface_init *nii = (struct network_interface_init *)arg;
@@ -312,8 +336,52 @@ int network_interface::adddel_linkinfo(const struct sockaddr_nl *who,
     }
 
     network_interface *ni = find_by_ifindex(ifi->ifi_index);
+    const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
+
     if(ni == NULL) {
-        ni = iface_maker->newnetwork_interface((const char*)RTA_DATA(tb[IFLA_IFNAME]), deb);
+        deb->info("link deleted[%d]: %s type=%s [ignored]\n",
+                  ni->if_index, ifname,
+                  ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
+        return 0;
+    }
+
+    deb->info("link deleted[%d]: %s type=%s (%s %s)%s\n",
+              ni->if_index, ifname,
+              ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)),
+              ni->alive   ? "active" : "inactive",
+              ni->on_list ? "existing" :"new",
+              ni->faked() ? " faked" : "");
+    delete ni;
+    return 0;
+}
+
+int network_interface::add_linkinfo(const struct sockaddr_nl *who,
+                                       struct nlmsghdr *n, void *arg)
+{
+    struct network_interface_init *nii = (struct network_interface_init *)arg;
+    rpl_debug *deb = nii->debug;
+    struct ifinfomsg *ifi = (struct ifinfomsg *)NLMSG_DATA(n);
+    FILE *fp = stdout;
+    struct rtattr * tb[IFLA_MAX+1];
+    int len = n->nlmsg_len;
+    unsigned m_flag = 0;
+    SPRINT_BUF(b1);
+
+    len -= NLMSG_LENGTH(sizeof(*ifi));
+    if (len < 0)
+        return -1;
+
+    parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
+    if (tb[IFLA_IFNAME] == NULL) {
+        fprintf(stderr, "BUG: nil ifname\n");
+        return -1;
+    }
+
+    network_interface *ni = find_by_ifindex(ifi->ifi_index);
+    const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
+
+    if(ni == NULL) {
+        ni = iface_maker->newnetwork_interface(ifname, deb);
         ni->if_index = ifi->ifi_index;
         ni->set_debug(deb);
     }
@@ -405,7 +473,7 @@ bool network_interface::open_netlink()
             return false;
         }
 
-        if(rtnl_open(netlink_handle, 0) < 0) {
+        if(rtnl_open(netlink_handle, RTMGRP_LINK|RTMGRP_IPV6_IFADDR) < 0) {
             fprintf(stderr, "Cannot open rtnetlink!!\n");
             free(netlink_handle);
             netlink_handle = NULL;
@@ -414,6 +482,42 @@ bool network_interface::open_netlink()
     }
     return true;
 }
+
+void network_interface::empty_socket(rpl_debug *deb)
+{
+    struct network_interface_init nii;
+    nii.debug = deb;
+    nii.setup = true;
+
+    int results = rtnl_listen(netlink_handle, gather_linkinfo, (void *)&nii);
+    if(results != -1 && results != 0) {
+        deb->info("empty_socket returned with %d\n", results);
+    }
+}
+
+int network_interface::setup_msg_callback(rpl_debug *deb)
+{
+    int fd = rtnl_socket_get_fd(netlink_handle);
+
+    /* make it non-blocking */
+    if(fcntl(fd, F_SETFL, O_NONBLOCK) != 0) {
+        deb->error("can not set non-blocking mode on netlink socket: %s\n",
+                   strerror(errno));
+        return -1;
+    }
+
+    /*
+     * now subscribe to netfilter events to get updates to routing
+     * and address changes
+     */
+#if 0
+    nl_socket_modify_cb(netlink_handle,
+                        NL_CB_VALID, NL_CB_CUSTOM,
+                        unstrung_update_msg_parser, nii);
+#endif
+    return fd;
+}
+
 
 
 void network_interface::scan_devices(rpl_debug *deb, bool setup)

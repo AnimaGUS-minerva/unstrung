@@ -65,7 +65,7 @@ static void t1(rpl_debug *deb)
 
 
 
-        rpl_dio dio(n1, (struct nd_rpl_dio *)diodata,
+        rpl_dio dio(n1, dn, (struct nd_rpl_dio *)diodata,
                     dio_data_len);
 
         ip_subnet prefix;

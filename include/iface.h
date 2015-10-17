@@ -44,6 +44,7 @@ public:
     int announce_network();
     network_interface();
     network_interface(const char *if_name, rpl_debug *deb);
+    ~network_interface();
 
     // setup the object, open sockets, etc.
     bool setup(void);
@@ -111,7 +112,7 @@ public:
     bool add_route_to_node(const ip_subnet &prefix, rpl_node *peer, const ip_address &srcip);
     bool add_null_route_to_prefix(const ip_subnet &prefix);
     bool add_parent_route_to_prefix(const ip_subnet &prefix,
-                                    const ip_address &src,
+                                    const ip_address *src,
                                     /*const*/ rpl_node &parent);
 
     /* eui string functions */
@@ -142,6 +143,7 @@ public:
     static bool                    signal_usr1;
     static bool                    signal_usr2;
     static bool                    terminating_soon;
+    static void                    catch_signal_usr1(int, siginfo_t *, void*);
     static void                    catch_signal_usr2(int, siginfo_t *, void*);
     static bool                    faked_time;
     static struct timeval          fake_time;
@@ -156,22 +158,26 @@ public:
     bool                    watching;   /* true if we should collect all DAGs*/
 
     bool                    loopbackP() { return loopback; };
+    rpl_node               *node;          /* the node that represents this if */
 
 protected:
     bool                    logged;
     unsigned int            hoplimit;
     bool                    system_get_disable_ipv6(void);
+    static int    setup_msg_callback(rpl_debug *deb);
+    static void   empty_socket(rpl_debug *deb);
     static int    gather_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
 
-    static int    adddel_linkinfo(const struct sockaddr_nl *who,
+    static int    add_linkinfo(const struct sockaddr_nl *who,
+                                  struct nlmsghdr *n, void *arg);
+    static int    del_linkinfo(const struct sockaddr_nl *who,
                                   struct nlmsghdr *n, void *arg);
     static int    adddel_ipinfo(const struct sockaddr_nl *who,
                                 struct nlmsghdr *n, void *arg);
 
     /* debugging */
     rpl_debug              *debug;
-    rpl_node               *node;
     dag_network            *dagnet;
     int                     if_index;      /* cached value for get_if_index()*/
     bool                    alive;
@@ -180,6 +186,7 @@ protected:
 
     /* maintain list of all interfaces */
     void add_to_list(void);
+    void remove_from_list(void);
 
     unsigned short csum_ipv6_magic(
         const struct in6_addr *saddr,
