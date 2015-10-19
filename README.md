@@ -58,15 +58,19 @@ Programs include:
 
 ===== community
 
-Github:
-    http://github.com/mcr/unstrung.git/
-
 Web site:
     http://unstrung.sandelman.ca/
+
+Github:
+    http://github.com/mcr/unstrung.git/
 
 to subscribe to mailing list:
     https://lists.sandelman.ca/mailman/listinfo/unstrung-hackers
 
+====== OpenWRT
+
+See [packaging/openwrt/OPENWRT.md](packaging/openwrt/OPENWRT.md) for help on
+building for OpenWRT CC+.
 
 ====== Testing environment
 
@@ -84,7 +88,7 @@ In addition, there are extensive unit tests, which are invokved by
       https://travis-ci.org/mcr/unstrung/
 
 Michael Richardson <mcr@sandelman.ca>,
-Ottawa, Ontario, October 2009-2014.
+Ottawa, Ontario, October 2009-2015.
 
 
 
