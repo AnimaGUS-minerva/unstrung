@@ -359,45 +359,6 @@ int inet_addr_match(const inet_prefix *a, const inet_prefix *b, int bits)
 	return 0;
 }
 
-int __iproute2_hz_internal;
-
-int __get_hz(void)
-{
-	char name[1024];
-	int hz = 0;
-	FILE *fp;
-
-	if (getenv("HZ"))
-		return atoi(getenv("HZ")) ? : HZ;
-
-	if (getenv("PROC_NET_PSCHED")) {
-		snprintf(name, sizeof(name)-1, "%s", getenv("PROC_NET_PSCHED"));
-	} else if (getenv("PROC_ROOT")) {
-		snprintf(name, sizeof(name)-1, "%s/net/psched", getenv("PROC_ROOT"));
-	} else {
-		strcpy(name, "/proc/net/psched");
-	}
-	fp = fopen(name, "r");
-
-	if (fp) {
-		unsigned nom, denom;
-		if (fscanf(fp, "%*08x%*08x%08x%08x", &nom, &denom) == 2)
-			if (nom == 1000000)
-				hz = denom;
-		fclose(fp);
-	}
-	if (hz)
-		return hz;
-	return HZ;
-}
-
-int __iproute2_user_hz_internal;
-
-int __get_user_hz(void)
-{
-	return sysconf(_SC_CLK_TCK);
-}
-
 const char *rt_addr_n2a(int af, int len, const void *addr, char *buf, int buflen)
 {
 	switch (af) {

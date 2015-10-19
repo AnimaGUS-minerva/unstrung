@@ -61,13 +61,6 @@ struct dn_naddr
         unsigned char a_addr[DN_MAXADDL];
 };
 
-#define IPX_NODE_LEN 6
-
-struct ipx_addr {
-	u_int32_t ipx_net;
-	u_int8_t  ipx_node[IPX_NODE_LEN];
-};
-
 extern __u32 get_addr32(const char *name);
 extern int get_addr_1(inet_prefix *dst, const char *arg, int family);
 extern int get_prefix_1(inet_prefix *dst, char *arg, int family);

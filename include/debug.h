@@ -85,6 +85,23 @@ public:
         void log_append(int level, const char *fmt, ...);
         void logv_append(int level, const char *fmt, va_list vargs);
 
+        /*
+         * annoyingly: basename(3) seems not to be in ulibc, and the boost file path
+         * manipulations are undergoing a version change among the boost libraries available
+         * on the target machines we care about in 2015.
+         */
+        const char *basename(const char *filename) {
+          const char *p;
+          const char *slash;
+
+          slash = filename;
+          /* find end of filename, noting where last slash is */
+          for(p=filename; *p!='\0'; p++) {
+            if(*p == '/') slash = p;
+          }
+          return slash;
+        };
+
 };
 
 #endif /* _UNSTRUNG_DEBUG_H */
