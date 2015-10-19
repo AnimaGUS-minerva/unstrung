@@ -1,8 +1,14 @@
 #
-# Copyright (C) 2010-2013 OpenWrt.org
+# Copyright (C) 2015 Sandelman Software Works
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
+#
+# This file is used to build unstrung on the OpenWRT platform.
+# To use it, you need an openwrt build tree.  The distribution/release tgz
+# can be used, adding/copying this file to
+#      package/network/ipv6/unstrung (a symlink can be used)
+#
 #
 
 include $(TOPDIR)/rules.mk

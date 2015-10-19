@@ -5,10 +5,12 @@ START=50
 
 USE_PROCD=1
 PROG=/sbin/sunshine
+OPTIONS=$(if [ -f /etc/sunshine.conf ]; then cat /etc/sunshine.conf; fi)
+# verbose needs to be taken from
 
 start_service() {
         procd_open_instance
-        procd_set_param command "$PROG" --dagid unstrung --instance 0 --interval 60000
+        procd_set_param command "$PROG" --sleep 90 --dagid unstrung --instance 0 --interval 60000 --syslog --verbose ${OPTIONS}
         procd_close_instance
 }
 
