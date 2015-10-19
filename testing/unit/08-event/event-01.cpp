@@ -24,7 +24,7 @@ extern "C" {
 #include "event.h"
 
 time_t testedable_now = 1444419263;
-struct timeval testable_b = { .tv_sec = 1444419263 };
+struct timeval testable_b = { tv_sec: 1444419263 };
 
 static void order_test(rpl_event_queue &eq1,
 		       rpl_event &e1, rpl_event &e2,
