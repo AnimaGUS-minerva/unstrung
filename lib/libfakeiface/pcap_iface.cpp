@@ -78,6 +78,12 @@ pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
 	packet_count = 0;
 }
 
+/* faked interfaces always have IPv6, or we wouldn't bother, would we? */
+bool pcap_network_interface::system_get_disable_ipv6(void)
+{
+    return false;
+}
+
 bool pcap_network_interface::faked(void) {
     return true;
 };

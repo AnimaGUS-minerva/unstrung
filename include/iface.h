@@ -163,7 +163,7 @@ public:
 protected:
     bool                    logged;
     unsigned int            hoplimit;
-    bool                    system_get_disable_ipv6(void);
+    virtual bool            system_get_disable_ipv6(void);
     static int    setup_msg_callback(rpl_debug *deb);
     static void   empty_socket(rpl_debug *deb);
     static int    gather_linkinfo(const struct sockaddr_nl *who,

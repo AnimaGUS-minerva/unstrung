@@ -100,6 +100,7 @@ public:
                                   unsigned char addr[16]);
 
 protected:
+        bool system_get_disable_ipv6(void);
         void filter_and_receive_icmp6(const time_t now,
                                       const u_char *bytes, int len);
 
