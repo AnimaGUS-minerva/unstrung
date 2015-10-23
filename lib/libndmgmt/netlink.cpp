@@ -28,7 +28,7 @@ extern "C" {
 #include <poll.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
-#include <net/if_arp.h>         /* for ARPHRD_ETHER */
+#include <linux/if_arp.h>       /* for ARPHRD_ETHER */
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
 #include <linux/if.h>           /* for IFNAMSIZ */
@@ -424,6 +424,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         }
 
     case ARPHRD_IEEE802154:
+    case ARPHRD_6LOWPAN:
         addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
         if(addr) {
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
