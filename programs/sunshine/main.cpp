@@ -52,6 +52,7 @@ static struct option const longopts[] =
     { "kill",      0, 0, 'K'},
     { "verbose",   0, 0, 'v'},
     { "timelog",   0, 0, 't'},
+    { "nomulticast",   0, 0, 'm'},
     { name: 0 },
 };
 
@@ -64,6 +65,7 @@ void usage()
             "\t [-R rank]   [--rank rank]       Initial rank to announce with\n"
             "\t [-I num]    [--instanceid num]  Instance ID (number)\n"
             "\t [-W msec]   [--interval msec]   Number of miliseconds between DIO\n"
+            "\t [-m]        [--nomulticast]     Disable multicast in DIOs\n"
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
@@ -149,7 +151,7 @@ int main(int argc, char *argv[])
     network_interface::scan_devices(deb, true);
     devices_scanned=true;
 
-    while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0)) != EOF) {
+    while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:m?v", longopts, 0)) != EOF) {
 	switch(c) {
 	default:
 	    fprintf(stderr, "Unknown option: %s\n", argv[optind-1]);
@@ -277,6 +279,11 @@ int main(int argc, char *argv[])
                 iface->set_debug(deb);
                 iface->setup();
             }
+            break;
+
+        case 'm':
+            check_dag(c, dag);
+            dag->set_nomulticast();
             break;
 	}
     }
