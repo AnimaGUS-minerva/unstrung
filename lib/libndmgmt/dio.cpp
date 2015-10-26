@@ -128,7 +128,7 @@ int dag_network::build_prefix_dioopt(ip_subnet prefix)
     memset(optbuff, 0, sizeof(optbuff));
     struct rpl_dio_destprefix *diodp = (struct rpl_dio_destprefix *)optbuff;
 
-    diodp->rpl_dio_prf  = 0x00;
+    diodp->rpl_dio_prf = RPL_DIO_PREFIX_AUTONOMOUS_ADDR_CONFIG_FLAG;
     diodp->rpl_dio_valid_lifetime = htonl(this->mDio_lifetime);
     diodp->rpl_dio_preferred_lifetime = htonl(this->mDio_lifetime);
     diodp->rpl_dio_prefixlen = prefix.maskbits;

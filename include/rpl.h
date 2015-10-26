@@ -103,6 +103,10 @@ struct rpl_dio_genoption {
 #define RPL_DIO_LIFETIME_INFINITE   0xffffffff
 #define RPL_DIO_LIFETIME_DISCONNECT 0
 
+#define RPL_DIO_PREFIX_AUTONOMOUS_ADDR_CONFIG_FLAG  0x40
+#define RPL_DIO_PREFIX_AUTONOMOUS_ADDR_CONFIG_SHIFT 6
+#define RPL_DIO_PREFIX_AUTONOMOUS_ADDR_CONFIG_MASK  (1 << RPL_DIO_PREFIX_AUTONOMOUS_ADDR_CONFIG_SHIFT)
+
 struct rpl_dio_destprefix {
     u_int8_t rpl_dio_type;
     u_int8_t rpl_dio_len;
