@@ -5,6 +5,7 @@ Usage: PATH/sunshine [-?] [-i ifname]
 	 [-R rank]   [--rank rank]       Initial rank to announce with
 	 [-I num]    [--instanceid num]  Instance ID (number)
 	 [-W msec]   [--interval msec]   Number of miliseconds between DIO
+	 [-m]        [--nomulticast]     Disable multicast in DIOs
 	 [--verbose] [--timelog]         Turn on logging (with --time logged)
 	 [--syslog]  [--stderr]          Log to syslog and/or stderr
 	 [--ignore-pio]                  Ignore PIOs found in DIO
