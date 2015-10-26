@@ -995,10 +995,11 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 	debug->verbose2("checking things to do list, has %d items\n",
 			things_to_do.size());
 
-        rpl_event *re = things_to_do.peek_event();
-        while((re = things_to_do.peek_event()) != NULL) {
+        rpl_event *re = NULL;
+        while(things_to_do.size() > 0 && (re = things_to_do.peek_event()) != NULL) {
             if(re->passed(now)) {
 		things_to_do.eat_event();
+                re->inQueue = false;
                 if(re->doit()) {
                     re->requeue(things_to_do, now);
                 } else {
