@@ -1,3 +1,13 @@
+Version 1.11.0
+==============
+
+- switches to "semantic" versioning.
+- use ARPHRD_6LOWPAN for newer kernels, but take care to make sure it is
+  defined.
+- fixed event queue processing so that it never pulls when empty (bradjc5)
+- set autonomous address flag in DIO (bradjc5) [rfc6550, sec 6.7.10]
+- added option to disable multicast of DIO messages.
+
 Version 1.10
 ============
 
