@@ -51,6 +51,14 @@ extern "C" {
 #include "iface.h"
 #include "prefix.h"
 
+#ifndef ARPHRD_IEEE802154
+#define ARPHRD_IEEE802154 804
+#endif
+#ifndef ARPHRD_6LOWPAN
+#define ARPHRD_6LOWPAN 825
+#endif
+
+
 struct rtnl_handle* network_interface::netlink_handle = NULL;
 
 class iface_factory basic_factory;
