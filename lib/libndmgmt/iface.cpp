@@ -522,8 +522,10 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
     /* XXX should maybe check the checksum? */
 
+    this->recv_cnt++;
     if(debug->flag_set(RPL_DEBUG_NETINPUT)) {
         this->log_received_packet(ip6_src, ip6_dst);
+        logged=true;
     }
 
     switch(icmp6->icmp6_type) {
@@ -546,6 +548,7 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
         default:
             this->log_received_packet(ip6_src, ip6_dst);
+            logged=true;
             debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);
             break;
         }
