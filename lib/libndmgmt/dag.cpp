@@ -323,7 +323,8 @@ void dag_network::discard_dio(enum packet_stats dr)
     mStats[dr]++;
 
     if(VERBOSE(this))
-        fprintf(this->verbose_file, "  DIO discarded %s (++%u)\n", dag_network_packet_stat_names[dr]);
+        fprintf(this->verbose_file, "  DIO discarded %s (++%u)\n",
+                dag_network_packet_stat_names[dr], mStats[dr]);
 }
 
 /*
