@@ -546,9 +546,17 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
                                  icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
             break;
 
+        case ND_RPL_DAG_IS:
+            dag_network::globalStats[PS_DIS_PACKET_IGNORED]++;
+#if 0
+            this->receive_dis(ip6_src, ip6_dst, now,
+                              icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
+#endif
+            break;
+
         default:
-            this->log_received_packet(ip6_src, ip6_dst);
-            logged=true;
+            this->log_received_packet(ip6_src, ip6_dst);  logged=true;
+            dag_network::globalStats[PS_RPL_UNKNOWN_CODE]++;
             debug->warn("Got unknown RPL code: %u\n", icmp6->icmp6_code);
             break;
         }
