@@ -2,7 +2,7 @@
 #define _UNSTRUNG_UNSTRUNG_H_
 
 #define PANDORA_VERSION_MAJOR 1
-#define PANDORA_VERSION_MINOR 0
+#define PANDORA_VERSION_MINOR 11
 
 #define _U_ __attribute__((unused))
 
