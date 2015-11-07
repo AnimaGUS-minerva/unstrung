@@ -37,6 +37,7 @@ extern "C" {
 
 class dag_network *dag_network::all_dag = NULL;
 u_int32_t dag_network::globalStats[PS_MAX];
+u_int32_t dag_network::globalOldStats[PS_MAX];
 
 unsigned char           dag_network::optbuff[256];
 unsigned int            dag_network::optlen;
@@ -283,7 +284,9 @@ bool dag_network::notify_new_interface(network_interface *one)
     return announced;
 }
 
-void dag_network::print_stats(FILE *out, const char *prefix)
+static void print_mStats(FILE *out, const char *prefix,
+                    u_int32_t mStats[PS_MAX],
+                    u_int32_t old_mStats[PS_MAX])
 {
     int i;
 
@@ -296,10 +299,16 @@ void dag_network::print_stats(FILE *out, const char *prefix)
     }
 }
 
+void dag_network::print_stats(FILE *out, const char *prefix)
+{
+    print_mStats(out, prefix, mStats, old_mStats);
+}
+
 void dag_network::print_all_dagstats(FILE *out, const char *prefix)
 {
     char prefixbuf2[64];
 
+    print_mStats(out, "global", globalStats, globalOldStats);
     for(class dag_network *dn = dag_network::all_dag;
 	dn != NULL;
 	dn = dn->next) {

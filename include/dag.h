@@ -151,6 +151,7 @@ public:
 
         /* let global stats public */
         static u_int32_t globalStats[PS_MAX];
+        static u_int32_t globalOldStats[PS_MAX];
 
         /* some decode routines */
         static const char *mop_decode(unsigned int mop) {
