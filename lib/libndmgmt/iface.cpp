@@ -424,6 +424,24 @@ void network_interface::remove_marks(void)
     foreach_if(remove_mark, NULL);
 }
 
+void network_interface::dump_stats(void)
+{
+    debug->log("%s[%u]: packets: %u errors %u\n",
+               this->get_if_name(), this->get_if_index(),
+               this->recv_count(),
+               this->errors());
+}
+
+static int log_ifstats(network_interface *ni, void *arg)
+{
+    ni->dump_stats();
+}
+
+void network_interface::dump_interface_stats(void)
+{
+    foreach_if(log_ifstats, NULL);
+}
+
 
 
 
@@ -1086,6 +1104,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 	if(signal_usr2) {
 	    things_to_do.printevents(debug->file, "usr2 ");
 	    dag_network::print_all_dagstats(debug->file, "usr2 ");
+            dump_interface_stats();
 	    signal_usr2 = false;
 	}
 

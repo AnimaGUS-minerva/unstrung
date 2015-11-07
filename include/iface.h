@@ -53,6 +53,8 @@ public:
     int errors(void) {
         return error_cnt;
     }
+    int recv_count(void) { return recv_cnt; }
+    void dump_stats(void);
 
     bool is_active() { return alive && !disabled; };
 
@@ -145,6 +147,7 @@ public:
     static bool                    terminating_soon;
     static void                    catch_signal_usr1(int, siginfo_t *, void*);
     static void                    catch_signal_usr2(int, siginfo_t *, void*);
+    static void                    dump_interface_stats(void);
     static bool                    faked_time;
     static struct timeval          fake_time;
     void set_fake_time(struct timeval n) {
@@ -200,6 +203,7 @@ protected:
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);
     int                     nd_socket;
+    int                     recv_cnt;
     int                     error_cnt;
 
     char                    if_name[IFNAMSIZ];
