@@ -808,7 +808,15 @@ void dag_network::receive_dio(network_interface *iface,
     this->mStats[PS_PACKET_RECEIVED]++;
     this->mStats[PS_DIO_PACKET_RECEIVED]++;
 
-    if(this->seq_too_old(dio->rpl_dtsn)) {
+    /* check the sequence number.  But, if it's the first packet,
+       accept it anyway. This still has a problem if we "sleep" for too
+       long, but in that case, perhaps we should have issued a DIS.
+       Maybe issue a DIS whenever this condition gets tripped?
+    */
+    if(this->seq_too_old(dio->rpl_dtsn)
+       && dio->rpl_dtsn != 0
+       && this->mStats[PS_DIO_PACKET_RECEIVED]!=1) {
+
         this->discard_dio(PS_SEQ_OLD);
         return;
     }
