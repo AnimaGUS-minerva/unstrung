@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         /* now finish setting things up with netlink */
         pcap_network_interface::scan_devices(deb, false);
 
-        dag_network *dag = new dag_network("ripple", deb);
+        dag_network *dag = new dag_network(1, "ripple", deb);
         dag->set_active();
         dag->set_interval(5000);
 

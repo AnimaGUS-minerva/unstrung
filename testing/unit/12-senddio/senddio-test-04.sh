@@ -22,12 +22,12 @@ set -e
 
 
 (
-${SENDDIO} --fake -i wlan0 -v -D thisismynicedag1 -p 2001:db8:0001::/48 -G -I 42 --version 1 -S 10 -R 2 -s  -P 12
+${SENDDIO} --fake -i wlan0 -v -I 42 -D thisismynicedag1 -p 2001:db8:0001::/48 -G --version 1 -S 10 -R 2 -s  -P 12
 ) | tee ../OUTPUTS/senddio-test-04.raw | diff -w -B - senddio-test-04.out
 
 (
 ${SENDDIO} --fake -i wlan0 -v \
-    --dagid thisismynicedag1 --prefix 2001:db8:0001::/48 --prefixlifetime 12 \
-   --instance 42 \
-    --grounded --storing --version 1 --sequence 10 --rank 2
+           --instance 42 \
+           --dagid thisismynicedag1 --prefix 2001:db8:0001::/48 --prefixlifetime 12 \
+           --grounded --storing --version 1 --sequence 10 --rank 2
 ) | tee ../OUTPUTS/senddio-test-04.raw | diff -w -B - senddio-test-04.out

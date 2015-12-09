@@ -9,7 +9,7 @@ dag_network *dioA_setup(rpl_debug *deb)
         pcap_network_interface *iface = NULL;
         struct in6_addr iface_src2;
 
-        dag_network *dag = new dag_network("ripple", deb);
+        dag_network *dag = new dag_network(1, "ripple", deb);
         dag->set_active();
         dag->set_interval(5000);
 
