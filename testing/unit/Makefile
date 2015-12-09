@@ -21,7 +21,7 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-# make loop add error codes, but doesn't work yet.
+# make loop add error codes, but doesn't work yet, use checkstop.
 #ACCUMULATE_ERRORS=true
 
 SUBDIRS=01-osw
