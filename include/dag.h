@@ -10,7 +10,8 @@ extern "C" {
 #include "counter_names.h"
 }
 
-typedef u_int8_t dagid_t[DAGID_LEN];
+typedef u_int8_t   dagid_t[DAGID_LEN];
+typedef u_int16_t  instanceID_t;
 
 #define RANK_INFINITE     65537     /* rank is otherwise 16bits */
 #define INVALID_SEQUENCE    257     /* sequence is 8 bits */
@@ -20,16 +21,19 @@ class rpl_event;
 
 class dag_network {
 public:
-    dag_network(dagid_t dagid, rpl_debug *debug);
-    dag_network(const char *dagid, rpl_debug *debug);
-        ~dag_network();
-        static class dag_network *find_by_dagid(dagid_t dagid);
-        static class dag_network *find_or_make_by_dagid(dagid_t dagid,
-                                                        rpl_debug *debug,
-							bool watching);
-	static class dag_network *find_or_make_by_string(const char *dagid,
-							 rpl_debug *debug,
-							 bool watching);
+    dag_network(instanceID_t instanceID, dagid_t dagid, rpl_debug *debug);
+    dag_network(instanceID_t instanceID, struct in6_addr *dagnum, rpl_debug *debug);
+    dag_network(instanceID_t instanceID, const char *dagid, rpl_debug *debug);
+    ~dag_network();
+    static class dag_network *find_by_instanceid(instanceID_t num, dagid_t dagid);
+    static class dag_network *find_or_make_by_instanceid(instanceID_t num,
+                                                    dagid_t dagid,
+                                                    rpl_debug *debug,
+                                                    bool watching);
+    static class dag_network *find_or_make_by_string(instanceID_t num,
+                                                     const char *dagid,
+                                                     rpl_debug *debug,
+                                                     bool watching);
         static void init_stats(void);
 
         int cmp_dag(dagid_t n_dagid) {
@@ -168,6 +172,8 @@ public:
         };
 
 	static void format_dagid(char *dagidstr,
+                                 unsigned int   dagidstr_len,
+                                 instanceID_t   rpl_instanceId,
 				 const u_int8_t rpl_dagid[DAGID_LEN]);
 	static void dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio);
 

@@ -44,26 +44,14 @@ unsigned int            dag_network::optlen;
 
 
 void dag_network::format_dagid(char *dagidstr,
+                               unsigned int dagidstr_len,
+                               instanceID_t   rpl_instance,
 			       const u_int8_t rpl_dagid[DAGID_LEN])
 {
-    char *d = dagidstr;
-    bool lastwasnull=false;
-    int  i;
+    char buf[64];
 
-    /* should attempt to format as IPv6 address too */
-    for(i=0;i<16;i++) {
-        if(isprint(rpl_dagid[i])) {
-            *d++ = rpl_dagid[i];
-            lastwasnull=false;
-        } else {
-            if(rpl_dagid[i] != '\0' || !lastwasnull) {
-                int cnt=snprintf(d, 6,"0x%02x ", rpl_dagid[i]);
-                d += strlen(d);
-            }
-            lastwasnull = (rpl_dagid[i] == '\0');
-        }
-    }
-    *d++ = '\0';
+    inet_ntop(AF_INET6, rpl_dagid, buf, 64);
+    snprintf(dagidstr, dagidstr_len, "%u/[%s]", rpl_instance, buf);
 }
 
 void dag_network::init_stats(void)
@@ -73,19 +61,7 @@ void dag_network::init_stats(void)
 void dag_network::init_dag_name(void)
 {
     memset(mDagName, 0, sizeof(mDagName));
-    char *dn = mDagName;
-    for(int i=0; i<DAGID_LEN && dn < mDagName+sizeof(mDagName)-2; i++) {
-	int c = mDagid[i];
-	if(c > ' ' && c < 127) {
-	    *dn++ = c;
-	} else if(c==0) {
-	    /* nothing */
-	} else {
-	    sprintf(dn, "%02x", c);
-	    dn += 2;
-	}
-    }
-    *dn='\0';
+    format_dagid(mDagName, sizeof(mDagName), mInstanceid, mDagid);
 }
 
 void dag_network::init_dag(void)
@@ -93,7 +69,6 @@ void dag_network::init_dag(void)
     mLastSeq = 0;
     mMyRank   = UINT_MAX;
     mBestRank = UINT_MAX;
-    mInstanceid = 1;
     mVersion  = 1;
     debug     = NULL;
     memset(mStats,     0, sizeof(mStats));
@@ -107,16 +82,26 @@ void dag_network::init_dag(void)
     mPrefixSet = false;
 }
 
-dag_network::dag_network(dagid_t n_dagid, rpl_debug *deb)
+dag_network::dag_network(instanceID_t num, dagid_t n_dagid, rpl_debug *deb)
 {
+    set_instanceid(num);
     set_dagid(n_dagid);
     init_dag();
     set_debug(deb);
 }
 
-
-dag_network::dag_network(const char *s_dagid, rpl_debug *deb)
+dag_network::dag_network(instanceID_t num, struct in6_addr *addr, rpl_debug *deb)
 {
+    set_instanceid(num);
+    set_dagid(addr->s6_addr);
+    init_dag();
+    set_debug(deb);
+}
+
+
+dag_network::dag_network(instanceID_t num, const char *s_dagid, rpl_debug *deb)
+{
+    set_instanceid(num);
     set_dagid(s_dagid);
     init_dag();
     set_debug(deb);
@@ -185,23 +170,25 @@ void dag_network::remove_from_list(void)
 }
 
 
-class dag_network *dag_network::find_or_make_by_dagid(dagid_t n_dagid,
-                                                      rpl_debug *debug,
-						      bool watching)
+class dag_network *dag_network::find_or_make_by_instanceid(instanceID_t num,
+                                                           dagid_t n_dagid,
+                                                           rpl_debug *debug,
+                                                           bool watching)
 {
-        class dag_network *dn = find_by_dagid(n_dagid);
+    class dag_network *dn = find_by_instanceid(num, n_dagid);
 
-        if(dn==NULL) {
-            dn = new dag_network(n_dagid, debug);
-            if(watching) {
-                globalStats[PS_DAG_CREATED_FOR_WATCHING]++;
-            }
-            dn->set_inactive();             /* in active by default */
+    if(dn==NULL) {
+        dn = new dag_network(num, n_dagid, debug);
+        if(watching) {
+            globalStats[PS_DAG_CREATED_FOR_WATCHING]++;
         }
-        return dn;
+        dn->set_inactive();             /* in active by default */
+    }
+    return dn;
 }
 
-class dag_network *dag_network::find_or_make_by_string(const char *dagid,
+class dag_network *dag_network::find_or_make_by_string(instanceID_t num,
+                                                       const char *dagid,
 						       rpl_debug *debug,
 						       bool watching)
 {
@@ -213,18 +200,19 @@ class dag_network *dag_network::find_or_make_by_string(const char *dagid,
 	len = sizeof(dagid_t);
     }
     memcpy(d, dagid, len);
-    return find_or_make_by_dagid(d, debug, watching);
+    return find_or_make_by_instanceid(num, d, debug, watching);
 }
 
-class dag_network *dag_network::find_by_dagid(dagid_t n_dagid)
+class dag_network *dag_network::find_by_instanceid(instanceID_t num, dagid_t n_dagid)
 {
-        class dag_network *dn = dag_network::all_dag;
+    class dag_network *dn = dag_network::all_dag;
 
-        while(dn != NULL &&
-              dn->cmp_dag(n_dagid)!=0) {
-                dn = dn->next;
-        }
-        return dn;
+    while(dn != NULL &&
+          dn->mInstanceid != num &&
+          dn->cmp_dag(n_dagid)!=0) {
+        dn = dn->next;
+    }
+    return dn;
 }
 
 bool dag_network::matchesIfWildcard(const char *ifname)
@@ -779,15 +767,15 @@ rpl_node *dag_network::update_node(network_interface *iface,
 
 void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio)
 {
-    char dagid[16*6];
+    char dagname[16*6];
 
-    format_dagid(dagid, dio->rpl_dagid);
-    debug->info_more(" [seq:%u,instance:%u,rank:%u,version:%u,%s%s,dagid:%s]\n",
-                dio->rpl_dtsn, dio->rpl_instanceid, ntohs(dio->rpl_dagrank),
-                dio->rpl_version,
-                (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
-                dag_network::mop_decode(dag_network::mop_extract(dio)),
-                dagid);
+    format_dagid(dagname, sizeof(dagname), dio->rpl_instanceid, dio->rpl_dagid);
+    debug->info_more(" [%s: seq:%u,rank:%u,version:%u,%s%s]\n",
+                     dagname,
+                     dio->rpl_dtsn, ntohs(dio->rpl_dagrank),
+                     dio->rpl_version,
+                     (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
+                     dag_network::mop_decode(dag_network::mop_extract(dio)));
 }
 
 /*

@@ -64,10 +64,10 @@ unsigned int read_hex_values(FILE *in, unsigned char *buffer)
     return count;
 }
 
-bool check_dag(dag_network *dag)
+bool check_dag(instanceID_t id, dag_network *dag)
 {
-    if(dag==NULL) {
-	fprintf(stderr, "--dagid must preceed DODAG parameters\n");
+    if(dag==NULL || id == 0) {
+	fprintf(stderr, "--dagid and --instanceID must preceed DODAG parameters\n");
 	usage();
     }
     return true;
@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
 {
     int c;
     const char *datafilename;
+    instanceID_t instanceID = 0;
     FILE *datafile;
     char *outfile     = NULL;
     char *prefixvalue = NULL;
@@ -186,7 +187,7 @@ int main(int argc, char *argv[])
                 usage();
                 exit(17);
             }
-            dn = iface->find_or_make_dag_by_dagid(optarg);
+            dn = iface->find_or_make_dag_by_instanceid(instanceID, optarg);
             break;
 
         case 'K':
@@ -194,18 +195,17 @@ int main(int argc, char *argv[])
             break;
 
         case 'R':
-	    check_dag(dn);
+	    check_dag(instanceID, dn);
             dn->set_dagrank(atoi(optarg));
             break;
 
         case 'S':
-	    check_dag(dn);
+	    check_dag(instanceID, dn);
             dn->set_sequence(atoi(optarg));
             break;
 
         case 'I':
-	    check_dag(dn);
-            dn->set_instanceid(atoi(optarg));
+            instanceID = atoi(optarg);
             break;
 
         case 'a':
@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
                 ip_subnet targetaddr;
                 err_t e = ttosubnet(targetvalue, strlen(targetvalue),
                                     AF_INET6, &targetaddr);
-                check_dag(dn);
+                check_dag(instanceID, dn);
                 if(!dest) {
                     fprintf(stderr, "destination must be set before target addresses\n");
                     usage();
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "Invalid prefix: %s\n",prefixvalue);
                     usage();
                 }
-                check_dag(dn);
+                check_dag(instanceID, dn);
                 dn->set_prefix(prefix);
             }
             break;
@@ -257,7 +257,7 @@ int main(int argc, char *argv[])
                 usage();
             }
             dag_me = new prefix_node(deb, myid, 128);
-            check_dag(dn);
+            check_dag(instanceID, dn);
             dn->dag_me = dag_me;
             break;
 

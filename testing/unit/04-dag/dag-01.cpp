@@ -19,18 +19,15 @@ extern "C" {
 
 rpl_debug *debug;
 
-/* TEST1: a DN shall have a dagid */
+/* TEST1: a DN shall have a dagid, which is an IPv6 address */
 static void t1(void)
 {
-        dagid_t d;
-        memset(d, 0, DAGID_LEN);
-        d[0]='T';
-        d[1]='1';
+    struct in6_addr t1name;
+    inet_pton(AF_INET6, "2001:DB8:0001:0002::babe", &t1name);
 
-        class dag_network dn(d, debug);
-
-        assert(dn.mDagid[0]=='T');
-        assert(dn.mDagid[1]=='1');
+    class dag_network dn(1, t1name, debug);
+    assert(dn.mDagid[0]==0x20);
+    assert(dn.mDagid[1]==0x01);
 }
 
 /* TEST2: a DN can be found by a dagid */
@@ -118,5 +115,14 @@ int main(int argc, char *argv[])
         printf("dag-01 t5\n");        t5();
 	exit(0);
 }
+
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * compile-command: "make check"
+ * End:
+ */
 
 
