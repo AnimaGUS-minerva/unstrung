@@ -342,9 +342,10 @@ void network_interface::check_allrouters_membership(void)
 	return;
 }
 
-class dag_network *network_interface::find_or_make_dag_by_dagid(const char *name)
+class dag_network *network_interface::find_or_make_dag_by_instanceid(instanceID_t num,
+                                                                     const char *name)
 {
-        return dag_network::find_or_make_by_string(name, debug, false);
+    return dag_network::find_or_make_by_string(num, name, debug, false);
 }
 
 

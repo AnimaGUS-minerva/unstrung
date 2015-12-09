@@ -47,11 +47,11 @@ void network_interface::receive_dio(struct in6_addr from,
 
     class dag_network *dn;
     if(watching) {
-	dn = dag_network::find_or_make_by_dagid(dio->rpl_dagid,
+	dn = dag_network::find_or_make_by_instanceid(dio->rpl_instanceid, dio->rpl_dagid,
 						this->debug,
 						watching);
     } else {
-	dn = dag_network::find_by_dagid(dio->rpl_dagid);
+	dn = dag_network::find_by_instanceid(dio->rpl_instanceid, dio->rpl_dagid);
     }
 
     if(dn) {
