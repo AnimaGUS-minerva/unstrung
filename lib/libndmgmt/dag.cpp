@@ -207,9 +207,8 @@ class dag_network *dag_network::find_by_instanceid(instanceID_t num, dagid_t n_d
 {
     class dag_network *dn = dag_network::all_dag;
 
-    while(dn != NULL &&
-          dn->mInstanceid != num &&
-          dn->cmp_dag(n_dagid)!=0) {
+    while(dn != NULL) {
+        if(dn->mInstanceid == num && dn->cmp_dag(n_dagid)==0) break;
         dn = dn->next;
     }
     return dn;

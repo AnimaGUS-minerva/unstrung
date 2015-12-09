@@ -55,6 +55,8 @@ static void t3(void)
 
         /* make a new dn */
         class dag_network *dn1 = new dag_network(1, d, debug);
+        class dag_network *dn1b = dag_network::find_by_instanceid(1, d);
+        assert(dn1b != NULL);
 
         /* now look for a phony instance ID network */
         class dag_network *dn2 = dag_network::find_by_instanceid(2, d);
