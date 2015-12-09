@@ -7,13 +7,12 @@ default:: programs
 # stuff to set... use -m32 by default because of UML testing, should remove this to elsewhere.
 INC=${UNSTRUNG_SRCDIR}/include
 #-I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
-CFLAGS+=-I${INC}
-CXXFLAGS+=-I${INC}
+CFLAGS+=-I${INC} -fno-show-column
+CXXFLAGS+=-I${INC}  -fno-show-column
 HOSTFLAGS=-m32
 
 USE_OBJDIR?=false
 XMLTO=xmlto
-
 MANTREE=/usr/share/man
 INSTALL=install
 INSTMANFLAGS=-D
