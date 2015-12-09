@@ -102,7 +102,7 @@ static void t2(void)
 int main(int argc, char *argv[])
 {
   deb = new rpl_debug(false, stdout);
-  dn  = new dag_network("1234", deb);
+  dn  = new dag_network(1, "1234", deb);
         printf("dioopt-01 t1\n");     t1();
         printf("dioopt-01 t2\n");     t2();
 

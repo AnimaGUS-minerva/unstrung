@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         const char *prefixstr = "2001:db8:1::/48";
         ip_subnet prefix;
 
-	dag_network *dn = iface->find_or_make_dag_by_dagid("T1");
+	dag_network *dn = iface->find_or_make_dag_by_instanceid(1, "T1");
 
         err_t e = ttosubnet(prefixstr, strlen(prefixstr),
                             AF_INET6, &prefix);
