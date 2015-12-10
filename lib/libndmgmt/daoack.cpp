@@ -52,15 +52,14 @@ void network_interface::receive_daoack(struct in6_addr from,
     dagid[0]=0;
     if(RPL_DAOACK_D(daoack->rpl_flags)) {
         memcpy(&dagid, dat2, DAGID_LEN);
-	dag_network::format_dagid(dagid_str, dat2);
         dat2 += DAGID_LEN;
 	dat_len -= DAGID_LEN;
     }
+    dag_network::format_dagid(dagid_str, sizeof(dagid_str), daoack->rpl_instanceid, dagid);
 
-    debug->info_more(" [instance:%u,daoseq:%u,dagid:%s]\n",
-                daoack->rpl_instanceid,
-                daoack->rpl_daoseq,
-                dagid_str[0] ? dagid_str : "<elided>");
+    debug->info_more(" [%s: daoseq:%u]\n",
+                     dagid_str,
+                     daoack->rpl_daoseq);
 
     /* XXX if rpl_instanceid is 0, then we are using a default DAG? */
     if(!RPL_DAOACK_D(daoack->rpl_flags)) {
@@ -69,7 +68,7 @@ void network_interface::receive_daoack(struct in6_addr from,
     }
 
     /* find the relevant DAG */
-    class dag_network *dn = dag_network::find_by_dagid(dagid);
+    class dag_network *dn = dag_network::find_by_instanceid(daoack->rpl_instanceid, dagid);
 
     if(dn) {
 	/* and process it */

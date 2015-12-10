@@ -14,7 +14,7 @@ iface1[1]: wlan0
     would invoke cmd: ip -6 route show
 Processing input file
 packet 1 is being processed
-  processing dao(52) [instance:2,daoseq:1,dao-ack,dagid:T10x00 ]
+  processing dao(52) [2/[5431::]: daoseq:1dao-ack,]
   new RPL node: fe80::216:3eff:fe11:3424
   recv DAO rpltarget re: network 2001:db8::abcd:2/128, target fe80::216:3eff:fe11:3424 (added)
   invoking ip -6 route add 2001:db8::abcd:2/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424

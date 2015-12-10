@@ -6,12 +6,12 @@ ip found[2]: lo scope=254 address=::1
 Processing input file ../INPUTS/dio-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
 link found[10]: acp0 type=ether (active new) faked
    adding as new interface 00:11:22:33:44:45/0211:22ff:fe33:4445
-added fd01:203:405:607::1111 to DAG ripple
+added fd01:203:405:607::1111 to DAG 1/[7269:7070:6c65::]
 ip found[10]: acp0 scope=0 address=fd01:203:405:607::1111 announced
 packet 1 is being processed
   new RPL node: fe80::1000:ff:fe64:6423
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
- processing dio(60)  [seq:1,instance:1,rank:1,version:1,grounded,storing-mcast,dagid:ripple0x00 ]
+ processing dio(60)  [1/[7269:7070:6c65::]: seq:1,rank:1,version:1,grounded,storing-mcast]
   does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
   Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
   processed 1 pio options
@@ -19,11 +19,11 @@ Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024 0
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
-SENDING[0] dao about fd01:203:405:607::1111/128 for ripple to: fe80::1000:ff:fe64:6423 on if=wlan0
+SENDING[0] dao about fd01:203:405:607::1111/128 for 1/[7269:7070:6c65::] to: fe80::1000:ff:fe64:6423 on if=wlan0
 sending DAO on if: wlan0(faked)
 Processing input file ../INPUTS/daoack-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
 packet 2 is being processed
-  processing daoack(20) [instance:1,daoseq:2,dagid:ripple0x00 ]
+  processing daoack(20) [1/[7269:7070:6c65::]: daoseq:2]
   invoking ip -6 route del 2001:db8:1::/48
     would invoke cmd: ip -6 route del 2001:db8:1::/48
   invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src fd01:203:405:607::1111
@@ -32,9 +32,9 @@ packet 2 is being processed
 Scheduling dio in 2 ms
 inserting event #2 at 1073741824/3024 0
 invoked doit(send_dio) on rpl_event (if_name=none)
-iface acp0 sending dio about dag: ripple
+iface acp0 sending dio about dag: 1/[7269:7070:6c65::]
 sending DIO on if: acp0 for prefix: 2001:db8:1::/48
-iface lo sending dio about dag: ripple
+iface lo sending dio about dag: 1/[7269:7070:6c65::]
 sending DIO on if: lo for prefix: 2001:db8:1::/48
-iface wlan0 sending dio about dag: ripple
+iface wlan0 sending dio about dag: 1/[7269:7070:6c65::]
 sending DIO on if: wlan0 for prefix: 2001:db8:1::/48

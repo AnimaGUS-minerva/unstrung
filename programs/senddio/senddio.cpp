@@ -46,11 +46,11 @@ extern "C" {
 
 static void usage(void)
 {
-    fprintf(stderr, "Usage: senddio [--verbose] [--prefix prefix]\n");
+    fprintf(stderr, "Usage: senddio [--verbose] [--instanceid #] [--dagid hexstring] [--prefix prefix]\n");
     fprintf(stderr, "               [-d datafile] [--fake] [--iface net]\n");
     fprintf(stderr, "               [--version #]   [--grounded] [--storing]\n");
     fprintf(stderr, "               [--non-storing] [--multicast] [--no-multicast]\n");
-    fprintf(stderr, "               [--sequence #] [--instance #] [--rank #] [--dagid hexstring]\n");
+    fprintf(stderr, "               [--sequence #] [--rank #] \n");
 
     exit(2);
 }
@@ -77,10 +77,10 @@ unsigned int read_hex_values(FILE *in, unsigned char *buffer)
     return count;
 }
 
-bool check_dag(dag_network *dag)
+bool check_dag(instanceID_t id, dag_network *dag)
 {
-    if(dag==NULL) {
-	fprintf(stderr, "--dagid must preceed DODAG parameters\n");
+    if(dag==NULL || id == 0) {
+	fprintf(stderr, "--dagid and --instanceID must preceed DODAG parameters\n");
 	usage();
     }
     return true;
@@ -89,6 +89,7 @@ bool check_dag(dag_network *dag)
 int main(int argc, char *argv[])
 {
     int c;
+    instanceID_t instanceID = 0;
     const char *datafilename;
     FILE *datafile;
     char *prefixvalue = NULL;
@@ -169,27 +170,26 @@ int main(int argc, char *argv[])
             break;
 
         case 'G':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_grounded(true);
             break;
 
         case 'D':
-	    dag = new dag_network(optarg, deb);
+	    dag = new dag_network(instanceID, optarg, deb);
             break;
 
         case 'R':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_dagrank(strtoul(optarg, NULL, 0));
             break;
 
         case 'S':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_sequence(strtoul(optarg, NULL, 0));
             break;
 
         case 'I':
-	    check_dag(dag);
-            dag->set_instanceid(strtoul(optarg, NULL, 0));
+            instanceID = strtoul(optarg, NULL, 0);
             break;
 
         case 'p':
@@ -197,32 +197,32 @@ int main(int argc, char *argv[])
             break;
 
         case 'P':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_prefixlifetime(strtoul(optarg, NULL, 0));
             break;
 
         case 'V':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_version(strtoul(optarg, NULL, 0));
             break;
 
         case 's':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_mode(RPL_DIO_STORING_MULTICAST);
             break;
 
         case 'N':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_mode(RPL_DIO_NONSTORING);
             break;
 
         case 'm':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_nomulticast();
             break;
 
         case 'M':
-	    check_dag(dag);
+	    check_dag(instanceID, dag);
             dag->set_multicast();
             break;
 

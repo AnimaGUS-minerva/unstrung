@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stderr);
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
-	dag_network *d1 = dag_network::find_or_make_by_string("T1",deb,false);
+	dag_network *d1 = dag_network::find_or_make_by_string(42, "T1",deb,false);
 	d1->set_active();
 	d1->set_interval(50);
 
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
         deb->log("Forcing event1 created for file 1\n");
 	iface->advance_fake_time();
-	iface->force_next_event();  
+	iface->force_next_event();
 	iface->things_to_do.printevents(stderr, "");
 
         deb->log("Forcing event2 created for file 1\n");

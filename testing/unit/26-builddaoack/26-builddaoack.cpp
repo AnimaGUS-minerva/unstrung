@@ -57,7 +57,7 @@ static void t1(rpl_debug *deb)
     ttosubnet("2001:db8::abcd:0001/128",0, AF_INET6, &out);
 
     /* make a new dn */
-    class dag_network *dn1 = new dag_network(dag1name, deb);
+    class dag_network *dn1 = new dag_network(1, dag1name, deb);
     dn1->set_active();
 
     /* who sent us a DAO */
