@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         ip_subnet prefix;
 
         /* must reflect DODAGID in packet */
-	dag_network *dn = iface->find_or_make_dag_by_instanceid(1, "FUNFUNFUN");
+	dag_network *dn = iface->find_or_make_dag_by_instanceid(1, "ripple");
 
         err_t e = ttosubnet(prefixstr, strlen(prefixstr),
                             AF_INET6, &prefix);
