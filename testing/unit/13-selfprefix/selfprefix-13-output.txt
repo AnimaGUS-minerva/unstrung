@@ -12,17 +12,13 @@ Got neighbour solicitation from ::, looking for 2001:db8:1:0:1200:ff:fe64:6423, 
 packet 2 is not ICMPv6, but=proto:0
 packet 3 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
-  received self packet (1/1)
 packet 4 is not ICMPv6, but=proto:0
 packet 5 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
-  received self packet (2/2)
 packet 6 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
-  received self packet (3/3)
 packet 7 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
-  received self packet (4/4)
 iface1[1]: wlan0
 iface2[1]: wlan0
 Processing input file
