@@ -25,8 +25,6 @@ srcdir?=$(shell pwd)
 #ACCUMULATE_ERRORS=true
 
 SUBDIRS=01-osw
-# test case 24-daoreply does a better job
-#SUBDIRS+=02-recvdio
 SUBDIRS+=03-dioopt
 SUBDIRS+=04-dag 05-dag 06-dag
 SUBDIRS+=07-dagset
@@ -35,9 +33,9 @@ SUBDIRS+=08-event
 #SUBDIRS+=09-netlink
 # fix this, ticket #2939
 #SUBDIRS+=10-netlink
+SUBDIRS+=11-senddao
 SUBDIRS+=12-senddio
 SUBDIRS+=13-selfprefix
-SUBDIRS+=14-senddao
 SUBDIRS+=14-sunshine
 SUBDIRS+=15-builddao
 SUBDIRS+=16-vf
