@@ -199,6 +199,17 @@ class dag_network *dag_network::find_or_make_by_instanceid(instanceID_t num,
     return dn;
 }
 
+class dag_network *dag_network::find_or_make_by_instanceid(instanceID_t num,
+                                                           struct in6_addr addr,
+                                                           rpl_debug *debug,
+                                                           bool watching)
+{
+    dagid_t n_dagid;
+
+    memcpy(n_dagid, addr.s6_addr, DAGID_LEN);
+    return find_or_make_by_instanceid(num,n_dagid,debug,watching);
+}
+
 class dag_network *dag_network::find_or_make_by_string(instanceID_t num,
                                                        const char *dagid,
 						       rpl_debug *debug,
