@@ -26,6 +26,7 @@ public:
     dag_network(instanceID_t instanceID, const char *dagid, rpl_debug *debug);
     ~dag_network();
     static class dag_network *find_by_instanceid(instanceID_t num, dagid_t dagid);
+    static class dag_network *find_by_instanceid(instanceID_t num);
     static class dag_network *find_or_make_by_instanceid(instanceID_t num,
                                                     dagid_t dagid,
                                                     rpl_debug *debug,

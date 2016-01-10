@@ -226,6 +226,17 @@ class dag_network *dag_network::find_by_instanceid(instanceID_t num, dagid_t n_d
     return dn;
 }
 
+class dag_network *dag_network::find_by_instanceid(instanceID_t num)
+{
+    class dag_network *dn = dag_network::all_dag;
+
+    while(dn != NULL) {
+        if(dn->mInstanceid == num) break;
+        dn = dn->next;
+    }
+    return dn;
+}
+
 bool dag_network::matchesIfWildcard(const char *ifname)
 {
     for(int i=0; i<mIfWildcard_max && i<DAG_IFWILDCARD_MAX; i++) {
