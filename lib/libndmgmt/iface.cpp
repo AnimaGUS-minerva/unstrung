@@ -549,10 +549,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
         case ND_RPL_DAG_IS:
             dag_network::globalStats[PS_DIS_PACKET_IGNORED]++;
-#if 0
             this->receive_dis(ip6_src, ip6_dst, now,
                               icmp6->icmp6_data8, bytes_end - icmp6->icmp6_data8);
-#endif
             break;
 
         default:

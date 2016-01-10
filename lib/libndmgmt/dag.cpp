@@ -822,6 +822,18 @@ void dag_network::receive_dis(network_interface *iface,
                               const time_t    now,
                               const struct nd_rpl_dis *dis, int dis_len)
 {
+    char b1[ADDRTOT_BUF], b2[ADDRTOT_BUF];
+    inet_ntop(AF_INET6, &from,   b1, sizeof(b1));
+    inet_ntop(AF_INET6, &ip6_to, b2, sizeof(b2));
+
+    /* increment stat of number of packets processed */
+    this->mStats[PS_PACKET_RECEIVED]++;
+    this->mStats[PS_DIS_PACKET_RECEIVED]++;
+
+    debug->warn("received DIS from %s <timer reset>", b1);
+
+    /* now reset timers, and send out DIO */
+
 }
 
 /*
