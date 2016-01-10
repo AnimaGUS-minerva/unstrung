@@ -42,6 +42,12 @@ void rpl_debug::logv_flush(int level)
     logspot = NULL;
 }
 
+void rpl_debug::flush(void)
+{
+    logv_flush(0);
+    if(log_file)   fputc('\n', file);
+}
+
 void rpl_debug::logv_append(int level, const char *fmt, va_list vargs)
 {
     if(logspot == NULL) {

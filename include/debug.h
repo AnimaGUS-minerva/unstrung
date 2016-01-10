@@ -78,6 +78,7 @@ public:
         void debug(unsigned int level, const char *fmt, ...);
         void logv(int level, const char *fmt, va_list vargs);
         void logv_more(int level, const char *fmt, va_list vargs);
+        void flush(void);
  private:
         void open_syslog(void);
         void logv_flush(int level);
