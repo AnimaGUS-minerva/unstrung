@@ -1,0 +1,6 @@
+This test case validates that we can receive a DIS message, and that
+it results in a reset of the trickle timers.  That should almost immediately
+result in a DIO being multicasted.
+
+The input file INPUTS/dis1.pcap is produced by 34-builddis.
+    cp ../OUTPUTS/34-node-E-dis.pcap ../INPUTS/35-nodeE-dis.pcap
