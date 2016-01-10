@@ -794,6 +794,19 @@ void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio)
  * the DIO is the downward announcement.
  *
  */
+void dag_network::receive_dis(network_interface *iface,
+                              struct in6_addr from,
+                              struct in6_addr ip6_to,
+                              const time_t    now,
+                              const struct nd_rpl_dis *dis, int dis_len)
+{
+}
+
+/*
+ * Process an incoming DODAG Information Object (DIO)
+ * the DIO is the downward announcement.
+ *
+ */
 void dag_network::receive_dio(network_interface *iface,
                               struct in6_addr from,
                               struct in6_addr ip6_to,

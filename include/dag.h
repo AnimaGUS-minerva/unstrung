@@ -95,6 +95,12 @@ public:
         };
         void remove_from_list(void);
 
+        void receive_dis(network_interface *iface,
+                         struct in6_addr from,
+                         struct in6_addr ip6_to,
+                         const time_t    now,
+                         const struct nd_rpl_dis *dis, int dis_len);
+
         void receive_dio(network_interface *iface,
                          struct in6_addr from,
                          struct in6_addr ip6_to,
@@ -202,6 +208,7 @@ public:
 	void set_instanceid(const unsigned int instanceid) {
 	    mInstanceid = instanceid;
 	};
+        instanceID_t get_instanceid(void) { return mInstanceid; };
 	void set_prefixlifetime(const unsigned int lifetime) {
 	    mLifetime = lifetime;
 	};
@@ -240,10 +247,12 @@ public:
         void               set_dao_needed() { dao_needed = true; };
         prefix_node       *dag_me;           /* my identity in this dag (/128) */
 
+	int build_info_disopt(void);
 	int build_prefix_dioopt(ip_subnet prefix);
         int build_target_opt(struct in6_addr addr, int maskbits);
 	int build_target_opt(ip_subnet prefix);
 
+	int  build_dis(unsigned char *buff, unsigned int buff_len);
 	int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 	int  build_dao(unsigned char *buff, unsigned int buff_len);
 	int  build_daoack(unsigned char *buff, unsigned int buff_len, unsigned short seq_num);
