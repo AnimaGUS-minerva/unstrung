@@ -31,6 +31,10 @@ public:
                                                     dagid_t dagid,
                                                     rpl_debug *debug,
                                                     bool watching);
+    static class dag_network *find_or_make_by_instanceid(instanceID_t num,
+                                                    struct in6_addr dagid,
+                                                    rpl_debug *debug,
+                                                    bool watching);
     static class dag_network *find_or_make_by_string(instanceID_t num,
                                                      const char *dagid,
                                                      rpl_debug *debug,
