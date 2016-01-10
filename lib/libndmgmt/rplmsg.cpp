@@ -147,8 +147,8 @@ rpl_msg(data, dao_len, dag->mStats)
 }
 
 
-rpl_dis::rpl_dis(const unsigned char *data, int dao_len, u_int32_t *stats) :
-rpl_msg(data, dao_len, stats)
+rpl_dis::rpl_dis(const unsigned char *data, int disopt_len, u_int32_t *stats) :
+rpl_msg(data, disopt_len, stats)
 {
 }
 

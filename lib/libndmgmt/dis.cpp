@@ -41,25 +41,33 @@ void network_interface::receive_dis(struct in6_addr from,
                                     const u_char *dat, const int dis_len)
 {
     struct nd_rpl_dis *dis = (struct nd_rpl_dis *)dat;
+    unsigned int dis_left = dis_len;
 
     if(this->packet_too_short("dis", dis_len, sizeof(*dis))) return;
 
+    dis_left -= sizeof(*dis);
+
     /* we need to process the options to find the instanceid */
-    rpl_dis decoded_dis(dat, dis_len, dag_network::globalStats);
+    rpl_dis decoded_dis(dis->rpl_dis_options,dis_left,dag_network::globalStats);
 
     struct rpl_dis_solicitedinfo *rplsi;
     while((rplsi = decoded_dis.rplsolicitedinfo()) != NULL) {
+        class dag_network *dn = NULL;
 
-        if(rplsi->rpl_dis_flags & (RPL_DIS_SI_I|RPL_DIS_SI_D)) {
-            class dag_network *dn;
+        if((rplsi->rpl_dis_flags & (RPL_DIS_SI_I|RPL_DIS_SI_D))==(RPL_DIS_SI_I|RPL_DIS_SI_D)) {
             dn = dag_network::find_by_instanceid(rplsi->rpl_dis_instanceid,
                                                  rplsi->rpl_dis_dagid);
-            if(dn) {
-                /* and process it */
-                dn->receive_dis(this, from, ip6_to, now, dis, dis_len);
-            } else {
-                dag_network::globalStats[PS_DIS_PACKET_IGNORED]++;
-            }
+        }else if(rplsi->rpl_dis_flags & (RPL_DIS_SI_I)) {
+            dn = dag_network::find_by_instanceid(rplsi->rpl_dis_instanceid);
+        } else {
+            /* just reset trickle timer? */
+        }
+
+        if(dn) {
+            /* and process it */
+            dn->receive_dis(this, from, ip6_to, now, dis, dis_len);
+        } else {
+            dag_network::globalStats[PS_DIS_PACKET_IGNORED]++;
         }
     }
 }
