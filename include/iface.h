@@ -70,6 +70,10 @@ public:
                                 const u_char *bytes, const int len);
     void log_received_packet(struct in6_addr src,
                              struct in6_addr dst);
+    void receive_dis(struct in6_addr from,
+                     struct in6_addr ip6_to,
+                     time_t          now,
+                     const u_char *dis_bytes, const int dis_len);
     void receive_dao(struct in6_addr from,
                      struct in6_addr ip6_to,
                      time_t          now,
@@ -83,6 +87,7 @@ public:
                         const  time_t now,
                         const u_char *dat, const int daoack_len);
 
+    void send_dis(dag_network *dag);
     void send_dio(dag_network *dag);
     void send_dao(rpl_node &parent, dag_network &dag);
     void send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num);
