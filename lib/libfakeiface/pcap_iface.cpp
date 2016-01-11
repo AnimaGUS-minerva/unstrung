@@ -67,8 +67,7 @@ pcap_network_interface::pcap_network_interface(const char *name, rpl_debug *deb)
 
 pcap_network_interface::~pcap_network_interface()
 {
-        pcap_dump_close(pcap_out);
-        pcap_out=NULL;
+    close();
 }
 
 pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
@@ -86,6 +85,11 @@ bool pcap_network_interface::system_get_disable_ipv6(void)
 
 bool pcap_network_interface::faked(void) {
     return true;
+};
+
+void pcap_network_interface::close(void) {
+    if(pcap_out) pcap_dump_close(pcap_out);
+    pcap_out=NULL;
 };
 
 void
