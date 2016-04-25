@@ -14,7 +14,7 @@ HOSTFLAGS=-m32
 USE_OBJDIR?=false
 XMLTO=xmlto
 
-MANTREE=${DESTDIR}/usr/share/man
+MANTREE=/usr/share/man
 INSTALL=install
 INSTMANFLAGS=-D
 INSTBINFLAGS=-D
