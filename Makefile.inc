@@ -23,7 +23,7 @@ ifneq ($(EMBEDDED),)
 CFLAGS+=-DEMBEDDED
 endif
 
-ARCH?=$(shell arch)
+ARCH?=$(shell uname -m)
 ifeq ($(USE_OBJDIR),true)
 OBJDIR?=OBJ.${ARCH}
 else
