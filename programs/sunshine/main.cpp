@@ -47,7 +47,6 @@ static struct option const longopts[] =
     { "sleep",     1, NULL,  OPTION_SLEEP},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
-    { "dagid",     1, NULL, 'G'},
     { "rank",      1, NULL, 'R'},
     { "kill",      0, 0, 'K'},
     { "verbose",   0, 0, 'v'},
