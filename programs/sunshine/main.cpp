@@ -34,7 +34,7 @@ char *progname;
 static struct option const longopts[] =
 {
     { "help",      0, 0, '?'},
-    { "interface", 0, 0, 'i'},
+    { "interface", 1, 0, 'i'},
     { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
     { "ignore-pio",0, NULL, 'P'},
