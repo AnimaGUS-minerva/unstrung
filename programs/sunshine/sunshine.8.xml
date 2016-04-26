@@ -43,14 +43,14 @@
   <command>sunshine</command>
     <arg choice='plain'> --dagid </arg>
     <arg choice='plain'><replaceable>funfun0</replaceable></arg>
-    <arg choice='plain'> --rank </arg>
-    <arg choice='plain'><replaceable>1</replaceable></arg>
-    <arg choice='plain'> --prefix </arg>
-    <arg choice='plain'><replaceable>2001:db8:0001::/48</replaceable></arg>
     <arg choice='plain'> --interface </arg>
     <arg choice='plain'><replaceable>eth1</replaceable></arg>
+    <arg choice='plain'> --prefix </arg>
+    <arg choice='plain'><replaceable>2001:db8:0001::/48</replaceable></arg>
     <arg choice='plain'> --interval </arg>
     <arg choice='plain'><replaceable>30000</replaceable></arg>
+    <arg choice='plain'> --rank </arg>
+    <arg choice='plain'><replaceable>1</replaceable></arg>
     <arg choice='plain'> --timelog </arg>
     <arg choice='plain'> --verbose </arg>
 </cmdsynopsis>
