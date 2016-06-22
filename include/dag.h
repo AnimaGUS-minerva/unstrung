@@ -317,7 +317,7 @@ private:
 
 	/* flag that it is time to send DAO */
 	bool               mTimeToSendDao;
-	char               mDagName[32];
+	char               mDagName[64];
 
 	/* RiPpLe statistics */
 	enum RPL_DIO_MOP        mMode;

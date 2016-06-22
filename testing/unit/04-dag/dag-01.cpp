@@ -30,6 +30,14 @@ static void t1(void)
     assert(dn.mDagid[1]==0x01);
 }
 
+/* TEST1b: a DN shall have a dagid, which is an IPv6 address */
+static void t1b(void)
+{
+    class dag_network dn(1, "2001:DB8:0001:0002::babe", debug);
+    assert(dn.mDagid[0]==0x20);
+    assert(dn.mDagid[1]==0x01);
+}
+
 /* TEST2: a DN can be found by a dagid */
 static void t2(void)
 {
@@ -114,7 +122,7 @@ int main(int argc, char *argv[])
 
         debug = new rpl_debug(true, stderr);
 
-        printf("dag-01 t1\n");        t1();
+        printf("dag-01 t1\n");        t1(); t1b();
         printf("dag-01 t2\n");        t2();
         printf("dag-01 t3\n");        t3();
         printf("dag-01 t4\n");        t4();

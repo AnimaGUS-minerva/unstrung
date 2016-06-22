@@ -101,8 +101,19 @@ dag_network::dag_network(instanceID_t num, struct in6_addr *addr, rpl_debug *deb
 
 dag_network::dag_network(instanceID_t num, const char *s_dagid, rpl_debug *deb)
 {
+    dagid_t n;
+    struct in6_addr dagnum;
+
+    int len = strlen(s_dagid);
+    if(len > 16) len=16;
+    memcpy(&n, s_dagid, len);
+
+    if(inet_pton(AF_INET6, s_dagid, &dagnum)==1) {
+        memcpy(&n, dagnum.s6_addr, 16);
+    }
+
     set_instanceid(num);
-    set_dagid(s_dagid);
+    set_dagid(n);
     init_dag();
     set_debug(deb);
 }
