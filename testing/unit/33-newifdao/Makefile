@@ -19,3 +19,9 @@ clean::
 update:
 	cp  ../OUTPUTS/33-newifdao-out.raw  33-newifdao-out.txt
 
+
+# Local Variables:
+# compile: "make check"
+#
+# End:
+
