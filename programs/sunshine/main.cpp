@@ -34,7 +34,7 @@ char *progname;
 static struct option const longopts[] =
 {
     { "help",      0, 0, '?'},
-    { "interface", 0, 0, 'i'},
+    { "interface", 1, 0, 'i'},
     { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
     { "ignore-pio",0, NULL, 'P'},
@@ -46,7 +46,6 @@ static struct option const longopts[] =
     { "stderr",    0, NULL,  OPTION_STDERR},
     { "sleep",     1, NULL,  OPTION_SLEEP},
     { "interval",  1, NULL, 'W'},
-    { "dagid",     1, NULL, 'G'},
     { "dagid",     1, NULL, 'G'},
     { "rank",      1, NULL, 'R'},
     { "kill",      0, 0, 'K'},
