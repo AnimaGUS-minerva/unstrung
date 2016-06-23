@@ -29,7 +29,6 @@ update:
 	cp OUTPUT/senddio-test-02.raw senddio-test-02.out
 	cp ../OUTPUTS/senddio-test-03.raw      senddio-test-03.out
 	cp ../OUTPUTS/senddio-test-03-pcap.raw senddio-test-03-pcap.txt
-	cp ../OUTPUTS/senddio-test-04.raw      senddio-test-04.out
-	cp ../OUTPUTS/senddio-test-04.raw      senddio-test-04.out
+	cp ../OUTPUTS/senddio-test-04a.raw     senddio-test-04.out
 
 
