@@ -3,7 +3,7 @@ Run VM A, and capture packets:
 
 then run:
 
-/sbin/sunshine.run --dagid ripple -i eth1 --rank 1 --prefix 2001:db8:0001::/48 --interval 3000 --verbose --timelog
+/sbin/sunshine.run --dagid 2001:0db8:661e::1 -i eth1 --rank 1 --prefix 2001:db8:0001::/48 --interval 3000 --verbose --timelog
 
 and hit ^C after two packets are sent.
 

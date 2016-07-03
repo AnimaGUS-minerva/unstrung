@@ -9,7 +9,7 @@ dag_network *dioA_setup(rpl_debug *deb)
         pcap_network_interface *iface = NULL;
         struct in6_addr iface_src2;
 
-        dag_network *dag = new dag_network(1, "ripple", deb);
+        dag_network *dag = new dag_network(1, "2001:0db8:661e::1", deb);
         dag->set_active();
         dag->set_interval(5000);
 
@@ -25,7 +25,7 @@ pcap_network_interface *dioA_iface_setup(dag_network *dag,
 {
         pcap_network_interface *iface = NULL;
 
-        const char *pcapin1 = "../INPUTS/dio-A-ripple1.pcap";
+        const char *pcapin1 = "../INPUTS/dio-A-661e.pcap";
         iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin1, outpcap, deb);
 
 	struct timeval n;
