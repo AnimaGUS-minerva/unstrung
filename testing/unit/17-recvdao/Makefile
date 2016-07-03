@@ -23,3 +23,6 @@ update:
 	cp ../OUTPUTS/17-recvdao-output.raw  17-recvdao-output.txt
 	cp ../OUTPUTS/17-node-A-capture.txt  17-node-A-capture.txt
 
+pcapupdate:
+	cp ../OUTPUTS/24-node-E-out.pcap     ../INPUTS/daoE.pcap
+

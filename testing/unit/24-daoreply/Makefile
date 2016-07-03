@@ -20,3 +20,8 @@ clean::
 update:
 	cp  ../OUTPUTS/24-daoreply-out.raw   24-daoreply-out.txt
 	cp  ../OUTPUTS/24-node-E-capture.txt 24-node-E-capture.txt
+
+
+pcapupdate:
+	cp ../OUTPUTS/senddio-test-03.pcap   ../INPUTS/dio-A-661e.pcap
+
