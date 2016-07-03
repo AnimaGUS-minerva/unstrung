@@ -1,3 +1,8 @@
+Test case 12, case 3 now produces the right packet.  Use 'make pcapupdate',
+but here are the old instructions:
+
+
+
 Run VM A, and capture packets:
     tcpdump -i eth1 -s 0 -n -w a1.pcap
 
@@ -10,7 +15,7 @@ and hit ^C after two packets are sent.
 cp ../../../UMLPOOL/A/root/root/a1-oct7.pcap .
 
 Then:
-        tcpdump -n -r a1.pcap -w ../INPUTS/dio-A-ripple.pcap ip6 dst ff02::1a
+        tcpdump -n -r a1.pcap -w ../INPUTS/dio-A-661e.pcap ip6 dst ff02::1a
 
 The result should be:
 % tcpdump -n -r ../INPUTS/dio-A-ripple.pcap
