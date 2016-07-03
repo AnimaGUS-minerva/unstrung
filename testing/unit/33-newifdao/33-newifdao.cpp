@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         nii.debug = deb;
         nii.setup = false;
 
-        dag_network *dag = new dag_network(1, "ripple", deb);
+        dag_network *dag = new dag_network(1, "2001:0db8:661e::1", deb);
         dag->set_active();
         dag->set_interval(5000);
         dag->set_interface_wildcard("acp*");
