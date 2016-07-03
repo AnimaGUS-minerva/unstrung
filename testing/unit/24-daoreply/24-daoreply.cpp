@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
         dioA_event(iface, deb, outpcap);
 
-        const char *pcapin2 = "../INPUTS/daoack-A-ripple1.pcap";
+        const char *pcapin2 = "../INPUTS/daoack-A-example661e.pcap";
         iface = daoackA_setup(deb,pcapin2,NULL);
         daoackA_process(iface);
 
