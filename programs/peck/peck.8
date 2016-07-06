@@ -1,41 +1,25 @@
-.\"     Title: peck
-.\"    Author: 
-.\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 11/09/2009
-.\"    Manual: 09 november 2009
-.\"    Source: 09 november 2009
-.\"
-.TH "PECK" "8" "11/09/2009" "09 november 2009" "09 november 2009"
-.\" disable hyphenation
-.nh
-.\" disable justification (adjust text to left margin only)
-.ad l
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "PECK" "8" "July 2016" "" ""
+.
 .SH "NAME"
-peck \- send arbitrary RPL DIO messages
-.SH "SYNOPSIS"
-.HP 5
-\fBpeck\fR \fIsetup\fR [\-\-show | \-\-showonly] \fIcommand\fR
-.SH "EXAMPLES"
-.HP 6
-\fBipsec\fR \fIsetup\fR [[\ \-\-showonly\ ]] {\ \-\-start\ |\ \-\-stop\ |\ \-\-restart\ }
-.HP 6
-\fBipsec\fR \fIsetup\fR \-\-status
-.SH "DESCRIPTION"
-.PP
-\fIpeck\fR
-opens an ICMPv6 socket and dumps any ICMPv6 messages seen\&.
-.SH "FILES"
-.PP
-file1
-.SH "SEE ALSO"
-.PP
-\fBping6\fR(8),
-.SH "DIAGNOSTICS"
-.PP
-All output from the commands
-.SH "HISTORY"
-.PP
-Written for the Pandora Unstrung project <\fIhttp://pandora\&.sandelman\&.ca\fR> by Michael Richardson\&.
-.SH "BUGS"
-.PP
-No known bugs\&.
+\fBpeck\fR \- poke EUI\-64 from CertifiKate
+.
+.P
+The peck command reads a Manufacturer installed certificate located by default at /boot/mic\.pem and configures the EUI\-64 contained within as the layer\-2 MAC address for the specified interface\.
+.
+.P
+In addition to configuring the layer\-2 address, this act also configures how SLAAC will form the link\-local layer\-3 address on the given interface\.
+.
+.P
+Unless supressed with \-\-noicmp, an ICMP Neighbor Discovery (ND) ICMP message is sent with the EARO option containing the indicated hostid\.
+.
+.P
+By default peck will fork into the background (writing it\'s pid into /run/peck\.pid) and then listen for a 6top connection from a JCE\. Security will be setup using DTLS, with a private key found in /boot/mic\.priv\.
+.
+.P
+If the file /run/peck\.pid already exists, and contains a valid PID (as determined by kill(USR1,PID)), then it will signal the existing peck instance to restart with a new ICMP message\.
+.
+.P
+Unless supressed with \-\-noinotify, peck will watch the file /boot/mic\.pem to see if it changes, and if it does, it will restart\.

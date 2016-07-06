@@ -1,0 +1,26 @@
+peck(8) -- poke EUI-64 from CertifiKate
+=======================================
+
+The peck command reads a Manufacturer installed certificate located by
+default at /boot/mic.pem and configures the EUI-64 contained within as
+the layer-2 MAC address for the specified interface.
+
+In addition to configuring the layer-2 address, this act also configures
+how SLAAC will form the link-local layer-3 address on the given interface.
+
+Unless supressed with --noicmp, an ICMP Neighbor Discovery (ND) ICMP message
+is sent with the EARO option containing the indicated hostid.
+
+By default peck will fork into the background (writing it's pid into
+/run/peck.pid) and then listen for a 6top connection from a JCE.
+Security will be setup using DTLS, with a private key found in /boot/mic.priv.
+
+If the file /run/peck.pid already exists, and contains a valid PID (as
+determined by kill(USR1,PID)), then it will signal the existing peck
+instance to restart with a new ICMP message.
+
+Unless supressed with --noinotify, peck will watch the file /boot/mic.pem
+to see if it changes, and if it does, it will restart.
+
+
+
