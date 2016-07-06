@@ -13,6 +13,7 @@ HOSTFLAGS=-m32
 
 USE_OBJDIR?=false
 XMLTO=xmlto
+RONN=ronn
 MANTREE=/usr/share/man
 INSTALL=install
 INSTMANFLAGS=-D

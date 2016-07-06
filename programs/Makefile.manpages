@@ -9,9 +9,29 @@ ifneq ($(strip $(XMLTO)),)
 %.5: %.5.xml
 	${XMLTO} man $<
 
+%.5: %.5.ronn
+	${XMLTO} man $<
+
 %.1: %.1.xml
 	${XMLTO} man $<
 endif
+
+# ronn is from https://rtomayko.github.io/ronn/
+ifneq ($(strip $(RONN)),)
+%.8: %.8.ronn
+	${RONN} --roff $<
+
+%.8.html: %.8.ronn
+	${RONN} --html $<
+
+%.5: %.5.ronn
+	${RONN} --roff $<
+
+%.1: %.1.ronn
+	${RONN} --roff $<
+endif
+
+
 
 
 
