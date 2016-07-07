@@ -1,3 +1,4 @@
 Usage: peck [--verbose] ifname
 Version: 1.0
 Usage: peck [--verbose] ifname
+working on interface: wlan0
