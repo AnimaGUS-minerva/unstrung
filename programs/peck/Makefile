@@ -15,9 +15,6 @@ UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 srcdir?=${UNSTRUNG_SRCDIR}/programs/peck/
 
 PROGRAM=peck
-# local install of pcap.h, or make sure you have libpcap-dev installed.
-CFLAGS+=-I/sandel/include -g
-CXXFLAGS+=-I/sandel/include -g
 PROGRAMDIR=/sbin
 ONEFILE=peck.c
 OBJS=peck.o
