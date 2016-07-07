@@ -7,6 +7,7 @@ PECK=${PECK-../../../programs/peck/peck}
 
 (
 ${PECK} --help
-# with no file.
 ${PECK} -V
+${PECK} --fake wlan0
+
 ) 2>&1 | tee OUTPUT/peck-test-01.raw | diff - peck-test-01.out

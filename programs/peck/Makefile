@@ -18,5 +18,6 @@ PROGRAM=peck
 PROGRAMDIR=/sbin
 ONEFILE=peck.c
 OBJS=peck.o
+LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE}
 
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
