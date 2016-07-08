@@ -17,7 +17,7 @@ Usage: peck [--verbose] ifname
       signed using      : ECDSA with SHA256
       EC key size       : 256 bits
       basic constraints : CA=false
-      subject alt name  : 
+      subject alt name  : 00-D0-E5-F2-00-01
 
   . Verifying X.509 certificate...
 Verify requested for (Depth 1):
@@ -43,7 +43,9 @@ expires on        : 2999-12-31 00:00:00
 signed using      : ECDSA with SHA256
 EC key size       : 256 bits
 basic constraints : CA=false
-subject alt name  : 
+subject alt name  : 00-D0-E5-F2-00-01
   This certificate has no flags
  ok
+
+0: name 00-D0-E5-F2-00-01Å
 working on interface: wlan0
