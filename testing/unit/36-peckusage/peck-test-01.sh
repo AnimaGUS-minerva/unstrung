@@ -9,5 +9,6 @@ PECK=${PECK-../../../programs/peck/peck}
 ${PECK} --help
 ${PECK} -V
 ${PECK} --fake wlan0
+${PECK} --fake --mic mic.pem --manuca vendor_secp384r1.crt wlan0
 
 ) 2>&1 | tee OUTPUT/peck-test-01.raw | diff - peck-test-01.out

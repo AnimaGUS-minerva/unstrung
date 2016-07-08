@@ -1,4 +1,49 @@
 Usage: peck [--verbose] ifname
 Version: 1.0
 Usage: peck [--verbose] ifname
+  . Loading the CA root certificate ... failed
+  !  mbedtls_x509_crt_parse returned -0x3e00
+
+  . Loading the CA root certificate ... ok (0 skipped)
+
+  . Loading the certificate(s) ... ok
+  . Peer certificate information    ...
+      cert. version     : 3
+      serial number     : 01
+      issuer name       : DC=ca, DC=sandelman, CN=Unstrung Highway CA
+      subject name      : DC=ca, DC=sandelman, CN=00-D0-E5-F2-00-01
+      issued  on        : 2016-05-09 18:47:45
+      expires on        : 2999-12-31 00:00:00
+      signed using      : ECDSA with SHA256
+      EC key size       : 256 bits
+      basic constraints : CA=false
+      subject alt name  : 
+
+  . Verifying X.509 certificate...
+Verify requested for (Depth 1):
+cert. version     : 3
+serial number     : 01
+issuer name       : DC=ca, DC=sandelman, CN=Unstrung Highway CA
+subject name      : DC=ca, DC=sandelman, CN=Unstrung Highway CA
+issued  on        : 2016-05-07 02:36:55
+expires on        : 2018-05-07 02:36:55
+signed using      : ECDSA with SHA256
+EC key size       : 384 bits
+basic constraints : CA=true
+key usage         : Key Cert Sign, CRL Sign
+  This certificate has no flags
+
+Verify requested for (Depth 0):
+cert. version     : 3
+serial number     : 01
+issuer name       : DC=ca, DC=sandelman, CN=Unstrung Highway CA
+subject name      : DC=ca, DC=sandelman, CN=00-D0-E5-F2-00-01
+issued  on        : 2016-05-09 18:47:45
+expires on        : 2999-12-31 00:00:00
+signed using      : ECDSA with SHA256
+EC key size       : 256 bits
+basic constraints : CA=false
+subject alt name  : 
+  This certificate has no flags
+ ok
 working on interface: wlan0
