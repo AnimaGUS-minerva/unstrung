@@ -58,6 +58,7 @@ SUBDIRS+=31-daoreply-extraprefix
 SUBDIRS+=32-daoreply-onlyif
 SUBDIRS+=33-newifdao
 SUBDIRS+=34-builddis
+SUBDIRS+=37-fmteui
 
 checkstop::
 	@for d in $(SUBDIRS) ; \

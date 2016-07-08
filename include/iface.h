@@ -130,6 +130,12 @@ public:
     void set_eui64(const unsigned char *addr64,
                    unsigned int addrlen);
 
+    /* parse and fmt link-layer addresses */
+    static int  parse_eui2bin(unsigned char *dst, size_t dstlen,
+                              const char *srcbuf);
+    static bool fmt_eui(char *txtbuf, size_t txtlen,
+                        const unsigned char *srceui, size_t srclen);
+
     /* find a dag network associated with the interface */
     dag_network       *find_or_make_dag_by_instanceid(instanceID_t num, const char *name);
 
