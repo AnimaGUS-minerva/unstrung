@@ -28,6 +28,7 @@ extern "C" {
 #include "mbedtls/net.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/x509.h"
+#include "mbedtls/oid.h"
 
 }
 
@@ -112,6 +113,7 @@ bool read_cert_file( const char *ca_file, const char *certfile )
     {
         mbedtls_x509_crt crt;
         mbedtls_x509_crt *cur = &crt;
+        mbedtls_x509_crt *last= &crt;
         mbedtls_x509_crt_init( &crt );
 
         /*
@@ -147,6 +149,8 @@ bool read_cert_file( const char *ca_file, const char *certfile )
 
             printf( "%s\n", buf );
 
+            last = cur;
+
             cur = cur->next;
         }
 
@@ -169,9 +173,70 @@ bool read_cert_file( const char *ca_file, const char *certfile )
                 mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "  ! ", flags );
 
                 printf( "%s\n", vrfy_buf );
+                goto exit;
             }
             else
                 printf( " ok\n" );
+        }
+
+        /* now process the last certificate that has the right subjectAltName */
+        if(last) {
+          const mbedtls_x509_sequence *cur_seq = &last->subject_alt_names;
+          unsigned int seqno=0;
+
+          while(cur_seq != NULL) {
+            mbedtls_x509_buf extn_oid = {0, 0, NULL};
+            unsigned char *end_ext_data = NULL;
+            size_t end_ext_len;
+            size_t utf8len, oNameLen;
+            char eui64buf[64];
+            int ret;
+
+            /* get the OID from the next bytes. */
+            end_ext_data = cur_seq->buf.p;
+            end_ext_len  = cur_seq->buf.len;
+
+            if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
+                                              end_ext_data+cur_seq->buf.len, &extn_oid.len,
+                                              MBEDTLS_ASN1_OID ) ) != 0 ) {
+              return ret;
+            }
+
+            extn_oid.p    = end_ext_data;
+            end_ext_data += extn_oid.len;
+            end_ext_len  -= extn_oid.len;
+
+            if( extn_oid.len != MBEDTLS_OID_SIZE( MBEDTLS_OID_EUI64 ) ||
+                memcmp( extn_oid.p, MBEDTLS_OID_EUI64, extn_oid.len ) != 0 ) {
+              continue;
+            }
+
+            if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
+                                              end_ext_data+end_ext_len,
+                                              &oNameLen,
+                                              MBEDTLS_ASN1_PRIVATE ) ) != 0 ) {
+              continue;
+            }
+            end_ext_len  -= 2;
+
+            if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
+                                              end_ext_data+end_ext_len,
+                                              &utf8len,
+                                              MBEDTLS_ASN1_UTF8_STRING ) ) != 0 ) {
+              continue;
+            }
+
+            end_ext_len  = utf8len;
+            if(end_ext_len > sizeof(eui64buf)-1) {
+              end_ext_len = sizeof(eui64buf)-1;
+            }
+            memcpy(eui64buf, end_ext_data, end_ext_len);
+
+            printf("\n%u: name %s\n", seqno, eui64buf);
+
+            cur_seq = cur_seq->next;
+            seqno++;
+          }
         }
 
         mbedtls_x509_crt_free( &crt );
