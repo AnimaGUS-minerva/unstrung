@@ -39,7 +39,7 @@ NETDISSECTH+=-D__ATTRIBUTE___NORETURN_OK_FOR_FUNCTION_POINTERS -D__ATTRIBUTE___F
 OPENSSL=-L/usr/local/ssl/lib -lcrypto
 
 # To read/write files, you need to have libpcap (-devel if on RH) installed.
-PCAPH=-I/usr/include/pcap
+#PCAPH=-I/usr/include/pcap
 #PCAPH=-I/home/mcr/src/libpcap
 
 CFLAGS = -g -Wall ${PCAPH} ${NETDISSECTH} ${OPTIONS}

@@ -50,8 +50,8 @@ ifeq ($(EMBEDDED),)
 EXTRALIBS:=${LIBPCAP} ${EXTRALIBPATHS} -lusb-1.0
 endif
 
-NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host -lnetdissect
-NETDISSECTH?=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0-host
+NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../amd64/tcpdump -lnetdissect
+NETDISSECTH?=-DNETDISSECT -I${UNSTRUNG_SRCDIR}/../tcpdump
 
 NEEDCHECK?=check
 

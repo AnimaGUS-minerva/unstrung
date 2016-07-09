@@ -80,7 +80,7 @@
 #include <sys/queue.h>
 
 #ifdef NETDISSECT
-#include "tcpdump-stdinc.h"
+#include "netdissect-stdinc.h"
 #include "netdissect.h"
 #include "gmt2local.h"
 #endif
@@ -294,14 +294,13 @@ void init_netdissect()
 {
 #ifdef NETDISSECT
   thiszone = gmt2local(0);
-  memset(&netjig_gndo, 0, sizeof(gndo));
+  memset(&netjig_gndo, 0, sizeof(*gndo));
   gndo = &netjig_gndo;
   netjig_gndo.ndo_default_print = netjig_default_print;
   netjig_gndo.ndo_printf        = netjig_ndo_printf;
-  netjig_gndo.ndo_info          = NULL;
   netjig_gndo.ndo_error         = ndo_error;
   netjig_gndo.ndo_warning       = ndo_warning;
-  netjig_gndo.ndo_program_name  = "uml_netjig";
+  netjig_gndo.program_name      = "uml_netjig";
 
   /* dump ethernet headers */
   netjig_gndo.ndo_eflag = 1;
