@@ -91,8 +91,7 @@ void network_interface::generate_linkaddr(void)
 
 void network_interface::generate_eui64(void)
 {
-    if(eui64[0]!=0) return;
-    eui64set=true;
+    if(eui64set) return;
 
     /*
      * eui64 is upper 3 bytes of eui48, with bit 0x02 set to indicate
@@ -112,6 +111,7 @@ void network_interface::generate_eui64(void)
     eui64[7]=eui48[5];
 
     generate_linkaddr();
+    eui64set=true;
 }
 
 char *network_interface::eui64_str(char *str, int strlen)
@@ -129,6 +129,24 @@ char *network_interface::eui48_str(char *str, int strlen)
              eui48[4], eui48[5]);
     return str;
 }
+
+void network_interface::set_eui48(const unsigned char *addr48,
+                                  unsigned int addrlen)
+{
+    memcpy(this->eui48, addr48, addrlen);
+    eui64set=false;
+    this->generate_eui64();
+}
+
+void network_interface::set_eui64(const unsigned char *addr64,
+                                  unsigned int addrlen)
+{
+    this->eui64set=true;
+    memcpy(this->eui64, addr64, addrlen);
+    this->eui64[0]=this->eui64[0] | 0x02;
+    this->generate_linkaddr();
+}
+
 
 void network_interface::setup_all_if(){
     network_interface *ni = network_interface::all_if;

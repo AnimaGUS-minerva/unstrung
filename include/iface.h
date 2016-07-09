@@ -125,6 +125,10 @@ public:
     /* eui string functions */
     char *eui48_str(char *str, int strlen);
     char *eui64_str(char *str, int strlen);
+    void set_eui48(const unsigned char *addr48,
+                   unsigned int addrlen);
+    void set_eui64(const unsigned char *addr64,
+                   unsigned int addrlen);
 
     /* find a dag network associated with the interface */
     dag_network       *find_or_make_dag_by_instanceid(instanceID_t num, const char *name);

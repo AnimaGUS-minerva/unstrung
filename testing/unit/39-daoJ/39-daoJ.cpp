@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
         iface->set_debug(deb);
         iface->set_if_index(1);
         iface->set_if_addr(iface_src2);
+
+        const unsigned char addr[6]={0x10,0x00,0x00,0x64,0x4a,0x01};
+        iface->set_eui48(addr, 6);
         iface->watching = true;
 
         printf("Processing input file %s on if=[%u]: %s state: %s %s\n",

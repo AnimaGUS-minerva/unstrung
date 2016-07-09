@@ -433,10 +433,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
         if(addr) {
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
-            if(memcpy(ni->eui48, addr, addrlen)==0) {
-                /* no change, go on to next interface */
-                return 0;
-            }
+            ni->set_eui48(addr, addrlen);
             break;
         }
 
@@ -445,10 +442,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
         if(addr) {
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
-            ni->eui64set=true;
-            memcpy(ni->eui64, addr, addrlen);
-            ni->eui64[0]=ni->eui64[0] | 0x02;
-            ni->generate_linkaddr();
+            ni->set_eui64(addr, addrlen);
             break;
         }
 

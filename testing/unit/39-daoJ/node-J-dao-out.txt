@@ -12,16 +12,16 @@ packet 1 is being processed
   does peer 'fe80::216:3eff:fe11:3424' have better rank? (3 < 4294967295)
   Yes, 'fe80::216:3eff:fe11:3424' has best rank 3
   peer 'fe80::216:3eff:fe11:3424' announces prefix: 2001:db8:1::/48
-  adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 learnt from iface: wlan0
-  invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-  invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+  adding prefix: 2001:db8:1:0:1200:ff:fe64:4a01/128 learnt from iface: wlan0
+  invoking ip -6 addr del 2001:db8:1:0:1200:ff:fe64:4a01/128 dev lo
+    would invoke cmd: ip -6 addr del 2001:db8:1:0:1200:ff:fe64:4a01/128 dev lo
+  invoking ip -6 addr add 2001:db8:1:0:1200:ff:fe64:4a01/128 dev lo
+    would invoke cmd: ip -6 addr add 2001:db8:1:0:1200:ff:fe64:4a01/128 dev lo
     would invoke cmd: ip -6 route show
   processed 1 pio options
 Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024 0
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
-SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[2001:db8:661e::1] to: fe80::216:3eff:fe11:3424 on if=wlan0
+SENDING[0] dao about 2001:db8:1:0:1200:ff:fe64:4a01/128 for 42/[2001:db8:661e::1] to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
