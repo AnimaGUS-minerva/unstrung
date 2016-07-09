@@ -163,6 +163,8 @@ public:
 
     rpl_node *host_node(void) { return node; };
     struct in6_addr         if_addr;
+    unsigned int            ifa_scope;
+    void                    update_addr(void); /* update/create ->node */
     bool                    watching;   /* true if we should collect all DAGs*/
 
     bool                    loopbackP() { return loopback; };

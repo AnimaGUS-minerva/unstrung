@@ -14,6 +14,7 @@ ip found[2]: lo scope=254 address=::1
   invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 route show
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 iface1[1]: wlan0
 Processing input file
 packet 1 is being processed

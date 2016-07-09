@@ -55,6 +55,7 @@ public:
         };
         void set_if_addr(struct in6_addr ifa) {
                 if_addr = ifa;
+                update_addr();
         };
 
         void setup_infile(const char *infile);

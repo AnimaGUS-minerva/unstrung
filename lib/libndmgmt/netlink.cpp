@@ -255,8 +255,6 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
     struct rtattr * tb[IFA_MAX+1], *addrattr;
     int len = n->nlmsg_len;
     unsigned m_flag = 0;
-    bool announced = false;
-    SPRINT_BUF(b1);
 
     len -= NLMSG_LENGTH(sizeof(*iai));
     if (len < 0)
@@ -295,23 +293,8 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 
             memcpy(&ni->if_addr, addr, addrlen);
         }
-
-        inet_ntop(AF_INET6, addr, b1, sizeof(b1));
-
-        ni->node = new rpl_node(ni->if_addr);
-        ni->node->debug = deb;
-
-        /* scopes are reversed on Linux: HOST=254, LINK=253, UNIVERSE=0 */
-        if(iai->ifa_scope <= RT_SCOPE_LINK) {
-            /* now see if this IP address should be added to future DAOs */
-            announced = dag_network::notify_new_interface(ni);
-        }
-
-        /* log it for human */
-        deb->info("ip found[%d]: %s scope=%u address=%s%s\n",
-                  ni->if_index, ni->if_name, iai->ifa_scope,
-                  b1, announced ? " announced" : "");
-
+        ni->ifa_scope = iai->ifa_scope;
+        ni->update_addr();
         break;
 
     default:
@@ -320,6 +303,32 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 
     return 0;
 }
+
+void network_interface::update_addr(void)
+{
+    bool announced = false;
+    SPRINT_BUF(b1);
+
+    if(this->node) {
+        delete this->node;
+    }
+    this->node = new rpl_node(if_addr);
+    this->node->debug = debug;
+
+    inet_ntop(AF_INET6, &if_addr, b1, sizeof(b1));
+
+    /* scopes are reversed on Linux: HOST=254, LINK=253, UNIVERSE=0 */
+    if(ifa_scope <= RT_SCOPE_LINK) {
+        /* now see if this IP address should be added to future DAOs */
+        announced = dag_network::notify_new_interface(this);
+    }
+
+    /* log it for human */
+    debug->info("ip found[%d]: %s scope=%u address=%s%s\n",
+              this->if_index, this->if_name, ifa_scope,
+              b1, announced ? " announced" : "");
+}
+
 
 int network_interface::del_linkinfo(const struct sockaddr_nl *who,
                                        struct nlmsghdr *n, void *arg)
