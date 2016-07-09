@@ -75,10 +75,10 @@ void usage()
     exit(EX_USAGE);
 }
 
-bool check_dag(unsigned char opt, instanceID_t instanceID, dag_network *dag)
+bool check_dag(unsigned char opt, instanceID_t instanceID)
 {
-    if(dag==NULL || instanceID==0) {
-	fprintf(stderr, "while processing '%c'; --dagid and --instance must preceed DODAG parameters\n",
+    if(instanceID==0) {
+	fprintf(stderr, "while processing '%c'; --instance must preceed DODAG parameters\n",
                 opt);
 	usage();
     }
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "invalid prefix string: %s\n", optarg);
 		usage();
 	    }
-	    check_dag(c, instanceID, dag);
+	    check_dag(c, instanceID);
             dag->set_prefix(prefix);
             dag->set_grounded(true);
             dag->set_dagrank(1);
@@ -215,17 +215,17 @@ int main(int argc, char *argv[])
         break;
 
         case 'P':
-            check_dag(c, instanceID, dag);
+            check_dag(c, instanceID);
             dag->set_ignore_pio(true);
             break;
 
         case 'A':
-            check_dag(c, instanceID, dag);
+            check_dag(c, instanceID);
             dag->set_interface_wildcard(optarg);
             break;
 
         case 'a':
-            check_dag(c, instanceID, dag);
+            check_dag(c, instanceID);
             dag->set_interface_filter(optarg);
             break;
 
@@ -234,12 +234,12 @@ int main(int argc, char *argv[])
             break;
 
         case 'W':
-	    check_dag(c, instanceID, dag);
+	    check_dag(c, instanceID);
             dag->set_interval(atoi(optarg));
             break;
 
         case 'R':
-	    check_dag(c, instanceID, dag);
+	    check_dag(c, instanceID);
 	    {
 		int rank = atoi(optarg);
 		dag->set_dagrank(rank);
@@ -250,9 +250,8 @@ int main(int argc, char *argv[])
             break;
 
         case 'G':
-	    dag = new dag_network(instanceID, optarg, deb);
-	    dag->set_active();
-            dag->set_interval(5000);
+            check_dag(c, instanceID);
+            dag->set_dagid(optarg);
             break;
 
         case 'v':
@@ -262,7 +261,9 @@ int main(int argc, char *argv[])
             break;
 
         case 'i':
-            check_dag(c, instanceID, dag);
+	    dag = new dag_network(instanceID, deb);
+	    dag->set_active();
+            dag->set_interval(5000);
             if(dag->mPrefixSet) {
                 fprintf(stderr, "interface must preceed prefix parameter\n");
                 usage();
@@ -281,7 +282,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'm':
-            check_dag(c, instanceID, dag);
+            check_dag(c, instanceID);
             dag->set_nomulticast();
             break;
 	}
@@ -314,11 +315,6 @@ int main(int argc, char *argv[])
     } else {
         fprintf(stderr, "Can not write pid=%u to %s: %s\n",
                 mypid, pidfilename, strerror(errno));
-    }
-
-    if(dag == NULL) {
-        fprintf(stderr, "must specify a DAG to manage\n");
-        usage();
     }
 
     dag->set_debug(deb);

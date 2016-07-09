@@ -101,23 +101,20 @@ dag_network::dag_network(instanceID_t num, struct in6_addr *addr, rpl_debug *deb
 
 dag_network::dag_network(instanceID_t num, const char *s_dagid, rpl_debug *deb)
 {
-    dagid_t n;
-    struct in6_addr dagnum;
-
-    int len = strlen(s_dagid);
-    if(len > DAGID_LEN) len=DAGID_LEN;
-    memset(&n, 0, DAGID_LEN);
-    memcpy(&n, s_dagid, len);
-
-    if(inet_pton(AF_INET6, s_dagid, &dagnum)==1) {
-        memcpy(&n, dagnum.s6_addr, 16);
-    }
-
+    set_dagid(s_dagid);
     set_instanceid(num);
-    set_dagid(n);
     init_dag();
     set_debug(deb);
 }
+
+dag_network::dag_network(instanceID_t num, rpl_debug *deb)
+{
+    set_instanceid(num);
+    init_dag();
+    set_debug(deb);
+}
+
+
 
 dag_network::~dag_network()
 {
@@ -231,7 +228,7 @@ class dag_network *dag_network::find_by_instanceid(instanceID_t num, dagid_t n_d
     class dag_network *dn = dag_network::all_dag;
 
     while(dn != NULL) {
-        if(dn->mInstanceid == num && dn->cmp_dag(n_dagid)==0) break;
+        if(dn->mInstanceid == num) break;
         dn = dn->next;
     }
     return dn;
@@ -925,14 +922,16 @@ void dag_network::set_dagid(const char *dagstr)
             digits++;
             if(digits[0]) digits++;
         }
+        init_dag_name();
     } else {
-        int len = strlen(dagstr);
-        if(len > 16) len=16;
+        struct in6_addr dagnum;
+        dagid_t n;
 
-        memset(this->mDagid, 0, 16);
-        memcpy(this->mDagid, dagstr, len);
+        if(inet_pton(AF_INET6, dagstr, &dagnum)==1) {
+            memcpy(&n, dagnum.s6_addr, 16);
+        }
+        set_dagid(n);
     }
-    init_dag_name();
 }
 
 void dag_network::set_dagid(dagid_t dag)
@@ -1028,7 +1027,7 @@ void dag_network::receive_daoack(network_interface *iface,
                                  unsigned char *data, int dao_len)
 {
     /* validate the DAOACK came from the correct parent */
-    if(!dag_bestparent->is_equal(from)) {
+    if(dag_bestparent==NULL || !dag_bestparent->is_equal(from)) {
         debug->warn("received DAOACK from non-potential parent");
         this->mStats[PS_DAOACK_WRONG_PARENT]++;
         return;
