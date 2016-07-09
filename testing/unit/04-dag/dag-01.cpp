@@ -70,10 +70,10 @@ static void t3(void)
         class dag_network *dn2 = dag_network::find_by_instanceid(2, d);
         assert(dn2 == NULL);
 
-        /* now look for a phony dag network */
+        /* now look for a network with different dagID: should be found */
         d[0]='N';
         class dag_network *dn3 = dag_network::find_by_instanceid(1, d);
-        assert(dn3 == NULL);
+        assert(dn3 != NULL);
 }
 
 /* TEST4: remove from list, twice to make sure */
@@ -85,22 +85,22 @@ static void t4(void)
         d[1]='4';
 
         /* make a new dn */
-        class dag_network *dn1 = new dag_network(1, d, debug);
+        class dag_network *dn1 = new dag_network(99, d, debug);
 
         dn1->remove_from_list();
 
         /* verify that we can not find it */
-        class dag_network *dn2 = dag_network::find_by_instanceid(1, d);
+        class dag_network *dn2 = dag_network::find_by_instanceid(99, d);
         assert(dn2 == NULL);
 
         dn1->remove_from_list();
 
         /* verify that we can not find it */
-        class dag_network *dn3 = dag_network::find_by_instanceid(1, d);
+        class dag_network *dn3 = dag_network::find_by_instanceid(99, d);
         assert(dn3 == NULL);
 }
 
-/* TEST5: look for a new dagid */
+/* TEST5: look for a new instanceID */
 static void t5(void)
 {
         dagid_t d;
@@ -109,7 +109,7 @@ static void t5(void)
         d[1]='5';
 
         /* verify that we can not find it */
-        class dag_network *dn2 = dag_network::find_or_make_by_instanceid(1, d, debug, false);
+        class dag_network *dn2 = dag_network::find_or_make_by_instanceid(99, d, debug, false);
         assert(dn2 != NULL);
 
         assert(dn2->mDagid[0]=='T');
