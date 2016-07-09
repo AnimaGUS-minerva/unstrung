@@ -13,6 +13,7 @@ check::	24-daoreply
 	@mkdir -p ../OUTPUTS
 	./24-daoreply 2>&1 | tee ../OUTPUTS/24-daoreply-out.raw | diff -B - 24-daoreply-out.txt
 	${TCPDUMP} -t -v -n -r ../OUTPUTS/24-node-E-out.pcap | tee ../OUTPUTS/24-node-E-capture.txt | diff -B - 24-node-E-capture.txt
+	${TCPDUMP} -t -v -n -r ../OUTPUTS/24-node-E-dio.pcap | tee ../OUTPUTS/24-node-E-dio.txt | diff -B - 24-node-E-dio.txt
 
 clean::
 	@rm -rf 24-daoreply *.o
@@ -20,6 +21,7 @@ clean::
 update:
 	cp  ../OUTPUTS/24-daoreply-out.raw   24-daoreply-out.txt
 	cp  ../OUTPUTS/24-node-E-capture.txt 24-node-E-capture.txt
+	cp  ../OUTPUTS/24-node-E-dio.txt     24-node-E-dio.txt
 
 
 pcapupdate:

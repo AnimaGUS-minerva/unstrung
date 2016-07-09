@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
         dioA_step(deb, NULL);
         daoackA_step(deb,
-                     "../INPUTS/daoack-A-661e.pcap",
+                     "../INPUTS/daoack-A-example661e.pcap",
                      "../OUTPUTS/27-node-E-dio.pcap");
 
         const char *pcapin3 = "../INPUTS/27-daoJ.pcap";

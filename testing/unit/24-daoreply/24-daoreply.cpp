@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
         dioA_event(iface, deb, outpcap);
 
         const char *pcapin2 = "../INPUTS/daoack-A-example661e.pcap";
-        iface = daoackA_setup(deb,pcapin2,NULL);
+        iface = daoackA_setup(deb,pcapin2,
+                              "../OUTPUTS/24-node-E-dio.pcap");
         daoackA_process(iface);
 
 	exit(0);

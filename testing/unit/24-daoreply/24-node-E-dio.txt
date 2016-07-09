@@ -1,0 +1,1 @@
+IP6 (hlim 64, next-header ICMPv6 (58) payload length: 64) fe80::216:3eff:fe11:3424 > ff02::1: [icmp6 sum ok] ICMP6, RPL, (CLR)DODAG Information Object [dagid:2001:db8:661e::1,seq:11,instance:42,rank:3,grounded,mop:storing-multicast,prf:0]
