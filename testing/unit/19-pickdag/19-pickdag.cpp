@@ -15,16 +15,17 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stderr);
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
-	dag_network *d1 = dag_network::find_or_make_by_string(42, "T1",deb,false);
+        dag_network *d1 = new dag_network(42, "2001:0db8:661e::1", deb);
+
 	d1->set_active();
 	d1->set_interval(50);
 
         /* now finish setting things up with netlink */
         pcap_network_interface::scan_devices(deb, false);
 
-	/* this has a DAGID: T1 */
+	/* this has a InstanceID: 42 */
         iface = pcap_network_interface::setup_infile_outfile("wlan0",
-							     "../INPUTS/dio-19-t1.pcap",
+							     "../INPUTS/dio-A-661e.pcap",
 							     "../OUTPUTS/19-pickdag.pcap", deb);
         iface->set_debug(deb);
 
@@ -55,7 +56,9 @@ int main(int argc, char *argv[])
 	iface->clear_events();
 
 	/* this has a DAGID: T2 (should not be processed */
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", "../INPUTS/dio-19-t2.pcap", "/dev/null", deb);
+        iface = pcap_network_interface::setup_infile_outfile("wlan0",
+                                                             "../INPUTS/dio-B-661e.pcap",
+                                                             "/dev/null", deb);
 
         deb->log("\nProcessing input file 2\n");
         iface->process_pcap();

@@ -4,5 +4,6 @@ This test case receives two DIO messages: one for a DAGID that
 The interesting DAGID will result in a DIO being scheduled, as well
     as a DAO being scheduled.
 
-The ../INPUTS/dio-19-t1.pcap file is produced by 12-senddio step 3.
+The ../INPUTS/dio-19-t1.pcap file is produced by 12-senddio step 3,
+which is also used in 24-daoreply, and therefore is not updated here.
 

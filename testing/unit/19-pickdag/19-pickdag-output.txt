@@ -7,7 +7,7 @@ Processing input file 1
 packet 1 is being processed
   new RPL node: fe80::216:3eff:fe11:3424
  wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
- processing dio(60)  [42/[5431::]: seq:10,rank:2,version:1,grounded,storing-mcast]
+ processing dio(60)  [42/[2001:db8:661e::1]: seq:10,rank:2,version:1,grounded,storing-mcast]
   does peer 'fe80::216:3eff:fe11:3424' have better rank? (2 < 4294967295)
   Yes, 'fe80::216:3eff:fe11:3424' has best rank 2
   peer 'fe80::216:3eff:fe11:3424' announces prefix: 2001:db8:1::/48
@@ -22,23 +22,23 @@ Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024 0
 Events created for file 1
 event list (1 events)
-0: event#1(42/[5431::]) at (2004-January-10 01:37:04 PM)<1073741824:3024>, type: send_dao
+0: event#1(42/[2001:db8:661e::1]) at (2004-January-10 01:37:04 PM)<1073741824:3024>, type: send_dao
 Forcing event1 created for file 1
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
-SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[5431::] to: fe80::216:3eff:fe11:3424 on if=wlan0
+SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[2001:db8:661e::1] to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
 re-inserting event #1 repeat: 0/50 0
 event list (1 events)
-0: event#1(42/[5431::]) at (2004-January-10 01:37:05 PM)<1073741825:51024>, type: send_dao
+0: event#1(42/[2001:db8:661e::1]) at (2004-January-10 01:37:05 PM)<1073741825:51024>, type: send_dao
 Forcing event2 created for file 1
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
-SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[5431::] to: fe80::216:3eff:fe11:3424 on if=wlan0
+SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[2001:db8:661e::1] to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
 re-inserting event #1 repeat: 0/50 0
 event list (1 events)
-0: event#1(42/[5431::]) at (2004-January-10 01:37:06 PM)<1073741826:51024>, type: send_dao
+0: event#1(42/[2001:db8:661e::1]) at (2004-January-10 01:37:06 PM)<1073741826:51024>, type: send_dao
 
 Processing input file 2
 packet 2 is being processed
