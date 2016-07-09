@@ -2,6 +2,9 @@ This test case validates that we can receive a DAO message
 from a node of higher rank (further from the root), and that we install
 source routes for the destinations listed.
 
-The input file INPUTS/dao2.pcap is produced by 14-senddao, subcase 04.
+We also reply to the DAO packet with a DAOACK.
+
+The input packet is produced by 24-daoreply, and can be updated with
+make pcapupdate.
 
 
