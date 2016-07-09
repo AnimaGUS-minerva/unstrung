@@ -24,18 +24,18 @@ invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
 SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[2001:db8:661e::1] to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
-Processing input file ../INPUTS/daoack-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
+Processing input file ../INPUTS/daoack-A-example661e.pcap on if=[1]: wlan0 state: active  faked
 packet 2 is being processed
-  processing daoack(20) [1/[7269:7070:6c65::]: daoseq:2]
+  processing daoack(20) [42/[2001:db8:661e::1]: daoseq:2]
   invoking ip -6 route del 2001:db8:1::/48
     would invoke cmd: ip -6 route del 2001:db8:1::/48
-  invoking ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
-    would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::1000:ff:fe64:6423 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+  invoking ip -6 route add 2001:db8:1::/48 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
+    would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route show
 Scheduling dio in 2 ms
 inserting event #2 at 1073741824/3024 0
 invoked doit(send_dio) on rpl_event (if_name=none)
-iface lo sending dio about dag: 1/[7269:7070:6c65::]
+iface lo sending dio about dag: 42/[2001:db8:661e::1]
 sending DIO on if: lo for prefix: 2001:db8:1::/48
-iface wlan0 sending dio about dag: 1/[7269:7070:6c65::]
+iface wlan0 sending dio about dag: 42/[2001:db8:661e::1]
 sending DIO on if: wlan0 for prefix: 2001:db8:1::/48

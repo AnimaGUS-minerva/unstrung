@@ -24,4 +24,5 @@ update:
 
 pcapupdate:
 	cp ../OUTPUTS/senddio-test-03.pcap   ../INPUTS/dio-A-661e.pcap
+	cp ../OUTPUTS/17-node-A-out.pcap     ../INPUTS/daoack-A-example661e.pcap
 

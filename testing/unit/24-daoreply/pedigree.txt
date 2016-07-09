@@ -1,7 +1,9 @@
 Test case 12, case 3 now produces the right packet.  Use 'make pcapupdate',
 but here are the old instructions:
 
+The second packet comes from 17-daoreply, and is also copied by pcapupdate.
 
+====
 
 Run VM A, and capture packets:
     tcpdump -i eth1 -s 0 -n -w a1.pcap
