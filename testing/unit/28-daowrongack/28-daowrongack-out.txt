@@ -3,14 +3,15 @@ link found[1]: wlan0 type=ether (active new) faked
 ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
-Processing input file ../INPUTS/dio-A-ripple1.pcap on if=[1]: wlan0 state: active  faked
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6602
+Processing input file ../INPUTS/dio-A-661e.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
-  new RPL node: fe80::1000:ff:fe64:6423
- wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1a[1] hoplimit=0
- processing dio(60)  [1/[7269:7070:6c65::]: seq:1,rank:1,version:1,grounded,storing-mcast]
-  does peer 'fe80::1000:ff:fe64:6423' have better rank? (1 < 4294967295)
-  Yes, 'fe80::1000:ff:fe64:6423' has best rank 1
-  peer 'fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
+  new RPL node: fe80::216:3eff:fe11:3424
+ wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
+ processing dio(60)  [42/[2001:db8:661e::1]: seq:10,rank:2,version:1,grounded,storing-mcast]
+  does peer 'fe80::216:3eff:fe11:3424' have better rank? (2 < 4294967295)
+  Yes, 'fe80::216:3eff:fe11:3424' has best rank 2
+  peer 'fe80::216:3eff:fe11:3424' announces prefix: 2001:db8:1::/48
   adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 learnt from iface: wlan0
   invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
     would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
@@ -22,7 +23,7 @@ Scheduling dao in 2 ms
 inserting event #1 at 1073741824/3024 0
 invoked doit(send_dao) on rpl_event (if_name=none)
 event send_dao to parent
-SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 1/[7269:7070:6c65::] to: fe80::1000:ff:fe64:6423 on if=wlan0
+SENDING[0] dao about 2001:db8:1:0:216:3eff:fe11:3424/128 for 42/[2001:db8:661e::1] to: fe80::216:3eff:fe11:3424 on if=wlan0
 sending DAO on if: wlan0(faked)
 Processing input file ../INPUTS/daoack-A-wrongseq-ripple1.pcap on if=[1]: wlan0 state: active  faked
 packet 2 is being processed
