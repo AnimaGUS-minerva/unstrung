@@ -1,11 +1,15 @@
 /*
  * Copyright (C) 2009-2016 Michael Richardson <mcr@sandelman.ca>
+ *
+ * SEE LICENSE
+ *
  */
 
 extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+  //#include "hexdump.c"
 
 #include <netinet/ip6.h>
 
@@ -64,7 +68,7 @@ extern "C" {
   }
 }
 
-bool read_cert_file( const char *ca_file, const char *certfile )
+mbedtls_x509_crt *load_cert_file( const char *ca_file, const char *certfile )
 {
     int ret = 0;
     unsigned char buf[1024];
@@ -74,7 +78,8 @@ bool read_cert_file( const char *ca_file, const char *certfile )
     mbedtls_ssl_context ssl;
     mbedtls_ssl_config conf;
     mbedtls_x509_crt cacert;
-    mbedtls_x509_crt clicert;
+    mbedtls_x509_crt *cur;
+    mbedtls_x509_crt *cert;
     mbedtls_pk_context pkey;
     int i;
     uint32_t flags;
@@ -84,12 +89,12 @@ bool read_cert_file( const char *ca_file, const char *certfile )
     /*
      * Set to sane values
      */
-    //mbedtls_net_free( &server_fd );
+    cert = (mbedtls_x509_crt *)mbedtls_calloc(1, sizeof(*cert));
+    cur  = cert;
+    mbedtls_x509_crt_init( cert );
     mbedtls_ctr_drbg_init( &ctr_drbg );
-    //mbedtls_ssl_init( &ssl );
-    //mbedtls_ssl_config_init( &conf );
     mbedtls_x509_crt_init( &cacert );
-    mbedtls_x509_crt_init( &clicert );
+
     /* Zeroize structure as CRL parsing is not supported and we have to pass
        it to the verify function */
     mbedtls_pk_init( &pkey );
@@ -105,156 +110,166 @@ bool read_cert_file( const char *ca_file, const char *certfile )
     if( ret < 0 )
     {
       fprintf(stderr, " failed\n  !  mbedtls_x509_crt_parse returned -0x%x\n\n", -ret );
-      return false;
+      return NULL;
     }
 
     mbedtls_printf( " ok (%d skipped)\n", ret );
 
-    {
-        mbedtls_x509_crt crt;
-        mbedtls_x509_crt *cur = &crt;
-        mbedtls_x509_crt *last= &crt;
-        mbedtls_x509_crt_init( &crt );
+    /*
+     * 1.1. Load the certificate(s)
+     */
+    printf( "\n  . Loading the certificate(s) ..." );
 
-        /*
-         * 1.1. Load the certificate(s)
-         */
-        printf( "\n  . Loading the certificate(s) ..." );
+    ret = mbedtls_x509_crt_parse_file( cert, certfile );
 
-        ret = mbedtls_x509_crt_parse_file( &crt, certfile );
+    if( ret < 0 )
+      {
+        printf( " failed\n  !  mbedtls_x509_crt_parse_file returned %d\n\n", ret );
+        mbedtls_x509_crt_free( cert );
+        goto exit;
+      }
 
-        if( ret < 0 )
-        {
-            printf( " failed\n  !  mbedtls_x509_crt_parse_file returned %d\n\n", ret );
-            mbedtls_x509_crt_free( &crt );
+    printf( " ok\n" );
+
+    /*
+     * 1.2 Print the certificate(s)
+     */
+    while( cur != NULL )
+      {
+        printf( "  . Peer certificate information    ...\n" );
+        ret = mbedtls_x509_crt_info( (char *) buf, sizeof( buf ) - 1, "      ",
+                                     cur );
+        if( ret == -1 )
+          {
+            printf( " failed\n  !  mbedtls_x509_crt_info returned %d\n\n", ret );
             goto exit;
-        }
-
-        printf( " ok\n" );
-
-        /*
-         * 1.2 Print the certificate(s)
-         */
-        while( cur != NULL )
-        {
-          printf( "  . Peer certificate information    ...\n" );
-          ret = mbedtls_x509_crt_info( (char *) buf, sizeof( buf ) - 1, "      ",
-                                 cur );
-          if( ret == -1 )
-            {
-              printf( " failed\n  !  mbedtls_x509_crt_info returned %d\n\n", ret );
-              mbedtls_x509_crt_free( &crt );
-              return false;
-            }
-
-            printf( "%s\n", buf );
-
-            last = cur;
-
-            cur = cur->next;
-        }
-
-        ret = 0;
-
-        /*
-         * 1.3 Verify the certificate
-         */
-        if( true )
-        {
-          printf( "  . Verifying X.509 certificate..." );
-
-          if( ( ret = mbedtls_x509_crt_verify( &crt, &cacert, NULL, NULL, &flags,
-                                         my_verify, NULL ) ) != 0 )
-            {
-                char vrfy_buf[512];
-
-                printf( " failed\n" );
-
-                mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "  ! ", flags );
-
-                printf( "%s\n", vrfy_buf );
-                goto exit;
-            }
-            else
-                printf( " ok\n" );
-        }
-
-        /* now process the last certificate that has the right subjectAltName */
-        if(last) {
-          const mbedtls_x509_sequence *cur_seq = &last->subject_alt_names;
-          unsigned int seqno=0;
-
-          while(cur_seq != NULL) {
-            mbedtls_x509_buf extn_oid = {0, 0, NULL};
-            unsigned char *end_ext_data = NULL;
-            size_t end_ext_len;
-            size_t utf8len, oNameLen;
-            char eui64buf[64];
-            int ret;
-
-            /* get the OID from the next bytes. */
-            end_ext_data = cur_seq->buf.p;
-            end_ext_len  = cur_seq->buf.len;
-
-            if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
-                                              end_ext_data+cur_seq->buf.len, &extn_oid.len,
-                                              MBEDTLS_ASN1_OID ) ) != 0 ) {
-              return ret;
-            }
-
-            extn_oid.p    = end_ext_data;
-            end_ext_data += extn_oid.len;
-            end_ext_len  -= extn_oid.len;
-
-            if( extn_oid.len != MBEDTLS_OID_SIZE( MBEDTLS_OID_EUI64 ) ||
-                memcmp( extn_oid.p, MBEDTLS_OID_EUI64, extn_oid.len ) != 0 ) {
-              continue;
-            }
-
-            if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
-                                              end_ext_data+end_ext_len,
-                                              &oNameLen,
-                                              MBEDTLS_ASN1_PRIVATE ) ) != 0 ) {
-              continue;
-            }
-            end_ext_len  -= 2;
-
-            if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
-                                              end_ext_data+end_ext_len,
-                                              &utf8len,
-                                              MBEDTLS_ASN1_UTF8_STRING ) ) != 0 ) {
-              continue;
-            }
-
-            end_ext_len  = utf8len;
-            if(end_ext_len > sizeof(eui64buf)-1) {
-              end_ext_len = sizeof(eui64buf)-1;
-            }
-            memcpy(eui64buf, end_ext_data, end_ext_len);
-
-            printf("\n%u: name %s\n", seqno, eui64buf);
-
-            cur_seq = cur_seq->next;
-            seqno++;
           }
-        }
 
-        mbedtls_x509_crt_free( &crt );
-    }
+        printf( "%s\n", buf );
+
+        cur = cur->next;
+      }
+
+    ret = 0;
+
+    /*
+     * 1.3 Verify the certificate
+     */
+    printf( "  . Verifying X.509 certificate..." );
+
+    if( ( ret = mbedtls_x509_crt_verify( cert, &cacert, NULL, NULL, &flags,
+                                         my_verify, NULL ) ) != 0 )
+      {
+        char vrfy_buf[512];
+
+        printf( " failed\n" );
+
+        mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "  ! ", flags );
+
+        printf( "%s\n", vrfy_buf );
+        goto exit;
+      }
+    else
+      printf( " ok\n" );
+
 
 exit:
-
     //mbedtls_net_free( &server_fd );
     mbedtls_x509_crt_free( &cacert );
-    mbedtls_x509_crt_free( &clicert );
     mbedtls_pk_free( &pkey );
     mbedtls_ctr_drbg_free( &ctr_drbg );
     mbedtls_entropy_free( &entropy );
 
-    if( ret < 0 )
-      return false;
+    if( ret < 0 ) {
+      mbedtls_x509_crt_free( cert );
+      mbedtls_free(cert);
+      return NULL;
+    }
 
-    return true;
+    return cert;
+}
+
+
+int extract_eui64_from_cert(unsigned char *eui64,
+                             char *eui64buf, unsigned int eui64buf_len,
+                             mbedtls_x509_crt *cert)
+{
+  /* now process the last certificate that has the right subjectAltName */
+  const mbedtls_x509_sequence *cur_seq = &cert->subject_alt_names;
+  unsigned int seqno=0;
+
+  for(; cur_seq != NULL; cur_seq = cur_seq->next) {
+    mbedtls_x509_buf extn_oid = {0, 0, NULL};
+    unsigned char *end_ext_data = NULL;
+    size_t end_ext_len;
+    size_t utf8len, oNameLen;
+    int ret;
+
+    seqno++;
+    /* get the OID from the next bytes. */
+    end_ext_data = cur_seq->buf.p;
+    end_ext_len  = cur_seq->buf.len;
+
+    if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
+                                      end_ext_data+cur_seq->buf.len, &extn_oid.len,
+                                      MBEDTLS_ASN1_OID ) ) != 0 ) {
+      return false;
+    }
+
+    extn_oid.p    = end_ext_data;
+    end_ext_data += extn_oid.len;
+    end_ext_len  -= extn_oid.len;
+
+    if( extn_oid.len != MBEDTLS_OID_SIZE( MBEDTLS_OID_EUI64 ) ||
+        memcmp( extn_oid.p, MBEDTLS_OID_EUI64, extn_oid.len ) != 0 ) {
+      continue;
+    }
+
+    if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
+                                      end_ext_data+end_ext_len,
+                                      &oNameLen,
+                                      MBEDTLS_ASN1_PRIVATE ) ) != 0 ) {
+      continue;
+    }
+    end_ext_len  -= 2;
+
+    if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
+                                      end_ext_data+end_ext_len,
+                                      &utf8len,
+                                      MBEDTLS_ASN1_UTF8_STRING ) ) != 0 ) {
+      continue;
+    }
+
+    end_ext_len  = utf8len;
+    if(end_ext_len > eui64buf_len-1) {
+      end_ext_len = eui64buf_len-1;
+    }
+    memcpy(eui64buf, end_ext_data, end_ext_len);
+    eui64buf[end_ext_len]='\0';
+
+    unsigned int eui64len = end_ext_len;
+
+    /* see if eui64 if printable or not */
+    if(eui64buf[2]=='-' || eui64buf[2]==':') {
+      /* convert printable form to binary, and then format it again */
+
+      eui64len = network_interface::parse_eui2bin(eui64, 8, eui64buf);
+      if(eui64len != 6 && eui64len != 8) {
+        printf("seqno: %d invalid EUI64 found: %s\n", seqno, eui64buf);
+        return false;
+      }
+    } else {
+      /* assume it is binary! */
+      memcpy(eui64, eui64buf, 8);
+    }
+
+    network_interface::fmt_eui(eui64buf, eui64buf_len, eui64, eui64len);
+
+    return eui64len;
+
+  }
+
+  return -1;
 }
 
 
@@ -268,7 +283,11 @@ int main(int argc, char *argv[])
   const char *micpemfile = "/boot/mic.pem";
   const char *micprivfile= "/boot/mic.priv";
   const char *manufact_ca= "/boot/manufacturer.pem";
+  mbedtls_x509_crt *bootstrap_cert = NULL;
   class rpl_debug *deb;
+  char eui64buf[64];
+  unsigned char eui64[8];
+
   struct option longoptions[]={
     {"help",     0, NULL, '?'},
     {"fake",     0, NULL, 'T'},
@@ -332,20 +351,23 @@ int main(int argc, char *argv[])
   }
 
   /* open the certificate file */
-  if(!read_cert_file( manufact_ca, micpemfile)) {
+  if((bootstrap_cert = load_cert_file( manufact_ca, micpemfile))==NULL) {
     exit(10);
   }
 
-
-
+  /* extract EUI-64 from certificate */
+  if(!extract_eui64_from_cert(eui64, eui64buf, sizeof(eui64buf), bootstrap_cert)) {
+    exit(11);
+  }
 
   for(int ifnum = optind; ifnum < argc; ifnum++) {
     class pcap_network_interface *iface = NULL;
     iface = (pcap_network_interface *)pcap_network_interface::find_by_name(argv[ifnum]);
 
-    printf("working on interface: %s\n", argv[ifnum]);
+    printf("assigning %s to interface: %s\n", eui64buf, argv[ifnum]);
   }
 
+  mbedtls_x509_crt_free( bootstrap_cert );
 
   exit(0);
 }
