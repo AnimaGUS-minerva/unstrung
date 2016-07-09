@@ -9,6 +9,8 @@ INC=${UNSTRUNG_SRCDIR}/include
 #-I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
 CFLAGS+=-I${INC} -fno-show-column
 CXXFLAGS+=-I${INC}  -fno-show-column
+USERLINK?=-g
+USERCPPCOMPILE?=-g -O
 HOSTFLAGS=-m32
 
 USE_OBJDIR?=false
