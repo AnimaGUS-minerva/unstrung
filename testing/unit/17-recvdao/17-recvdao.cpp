@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
 	dn->set_active();
 	dn->set_debug(deb);
         dn->set_prefix(prefix);
-        dn->addselfprefix(iface);
         dn->set_prefixlifetime(12);
         dn->set_grounded(true);
         dn->set_mode(RPL_DIO_STORING_MULTICAST);
@@ -40,6 +39,8 @@ int main(int argc, char *argv[])
                                                              "../INPUTS/daoE.pcap",
                                                              "../OUTPUTS/17-node-A-out.pcap",
                                                              deb);
+        dn->addselfprefix(iface);
+
 	struct timeval n;
 	n.tv_sec = 1024*1024*1024;
 	n.tv_usec = 1024;
