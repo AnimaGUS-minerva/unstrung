@@ -5,10 +5,9 @@ all: check
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 include ${srcdir}../Makefile.testing
 
-TESTNAME=27-daoreplydao
-OUTPUT=daoreply
-OUTPUT1=node-E-dio
-OUTPUT2=node-E-dio
+TESTNAME=39-daoJ
+OUTPUT=node-J-dao
+OUTPUT1=39-dao-J
 INCLUDES=../24-daoreply/dioA.cpp ../24-daoreply/daoackA.cpp
 INCLUDES+=${INC}/iface.h ${INC}/dag.h
 
@@ -18,7 +17,7 @@ ${TESTNAME}: ${TESTNAME}.cpp ${LIBNDMGMT} ${INCLUDES}
 
 check::	${TESTNAME}
 	./${TESTNAME} | tee ../OUTPUTS/${OUTPUT}-out.txt | diff -B -w - ${OUTPUT}-out.txt
-	@${TCPDUMP} -t -n -r ../OUTPUTS/27-${OUTPUT1}.pcap | tee ../OUTPUTS/${OUTPUT1}.txt | diff -B -w - ${OUTPUT1}.txt
+	@${TCPDUMP} -t -n -r ../OUTPUTS/${OUTPUT1}.pcap | tee ../OUTPUTS/${OUTPUT1}.txt | diff -B -w - ${OUTPUT1}.txt
 
 checkprograms:: ${TESTNAME}
 programs::
@@ -31,4 +30,5 @@ update:
 	cp ../OUTPUTS/${OUTPUT1}.txt ${OUTPUT1}.txt
 
 pcapupdate:
-	cp ../OUTPUTS/39-dao-J.pcap  ../INPUTS/27-daoJ-inst42.pcap
+	cp ../OUTPUTS/24-node-E-dio.pcap ../INPUTS/24-node-E-dio.pcap
+

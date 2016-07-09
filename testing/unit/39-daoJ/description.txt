@@ -1,0 +1,5 @@
+This test case validates a node J, two levels down can receive
+a DIO from an intermediate (E), and will reply with a DAO.
+
+
+

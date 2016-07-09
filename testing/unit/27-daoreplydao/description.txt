@@ -1,8 +1,13 @@
-This test case validates a node intermediate in the mesh will
-reply accurately to a DAO from a lower node, putting appropriate
+This test case validates a node intermediate (E) in the mesh will
+reply accurately to a DAO from a lower node (J), putting appropriate
 route entries, and then sending up a DAO to the parent.
+
+This is similar to test case 24, but it goes a step further,
+listening for the DAO from node J below this node E.
+
 QUESTION: do we wait for the DAOACK from the parent before sending
 our DAOACKs?
 
+The daoJ from node J comes from test case: 39-daoJ.
 
 

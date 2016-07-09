@@ -9,24 +9,36 @@
 int main(int argc, char *argv[])
 {
         pcap_network_interface *iface = NULL;
-        struct in6_addr iface_src2;
 
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
-        dioA_step(deb, NULL);
-        daoackA_step(deb,
-                     "../INPUTS/daoack-A-example661e.pcap",
-                     "../OUTPUTS/27-node-E-dio.pcap");
+        dioA_setup(deb);
 
-        const char *pcapin3 = "../INPUTS/27-daoJ-inst42.pcap";
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin3, "../OUTPUTS/27-daodaoack.pcap", deb);
+        const char *pcapin1 = "../INPUTS/24-node-E-dio.pcap";
+        const char *outpcap = "../OUTPUTS/39-dao-J.pcap";
+        iface = pcap_network_interface::setup_infile_outfile("wlan0",
+                                                             pcapin1,
+                                                             outpcap, deb);
+
+	struct timeval n;
+	n.tv_sec = 1024*1024*1024;
+	n.tv_usec = 1024;
+	iface->set_fake_time(n);
+
+        struct in6_addr iface_src2;
+        inet_pton(AF_INET6, "fe80::1000:ff:fe64:4a01", &iface_src2);
+        iface->set_debug(deb);
+        iface->set_if_index(1);
+        iface->set_if_addr(iface_src2);
+        iface->watching = true;
 
         printf("Processing input file %s on if=[%u]: %s state: %s %s\n",
-               pcapin3,
+               pcapin1,
                iface->get_if_index(), iface->get_if_name(),
                iface->is_active() ? "active" : "inactive",
                iface->faked() ? " faked" : "");
+
         iface->process_pcap();
 
         /* again, drain off any events */
