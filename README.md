@@ -87,6 +87,22 @@ In addition, there are extensive unit tests, which are invokved by
 "make unitcheck", and which run on travis-ci.org, see:
       https://travis-ci.org/mcr/unstrung/
 
+
+====== Unit Tests
+
+On a fully loaded host, if you've built libpcap with many other libraries
+present, then you will need additional link options for the pieces that
+need libpcap.  Specifically, you'll need:
+
+    LIBPCAP=-L/home/mcr/stuff/x86/libpcap-1.8.0 -lpcap -lpthread -ldbus-1
+
+In Makefile.local.
+
+The script build-setup-travis.sh may be useful to compile
+to correct version of libpcap and tcpdump.  Note it writes to ~/stuff, and
+it will overwrite your Makefile.local.
+
+
 Michael Richardson <mcr@sandelman.ca>,
 Ottawa, Ontario, October 2009-2015.
 
