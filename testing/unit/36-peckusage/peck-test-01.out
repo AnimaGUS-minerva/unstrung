@@ -46,6 +46,4 @@ basic constraints : CA=false
 subject alt name  : 00-D0-E5-F2-00-01
   This certificate has no flags
  ok
-
-0: name 00-D0-E5-F2-00-01Å
-working on interface: wlan0
+assigning 00-d0-e5-f2-00-01 to interface: wlan0
