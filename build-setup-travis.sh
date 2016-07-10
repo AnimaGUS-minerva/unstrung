@@ -26,7 +26,6 @@ fi
 echo LIBPCAP=${BUILDTOP}/x86/libpcap-1.8.0/libpcap.a >Makefile.local
 echo LIBPCAP_HOST=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a >>Makefile.local
 echo LIBPCAPINC=-I${BUILDTOP}/include                >>Makefile.local
-echo ARCH=i386  			             >>Makefile.local
 echo TCPDUMP=${BUILDTOP}/host/tcpdump-4.8.0/tcpdump  >>Makefile.local
 echo MBEDTLSH=-I${BUILDTOP}/include                  >>Makefile.local
 echo MBEDTLSLIB=${BUILDTOP}/lib                      >>Makefile.local
