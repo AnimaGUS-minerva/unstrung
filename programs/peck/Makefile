@@ -18,11 +18,12 @@ PROGRAM=peck
 PROGRAMDIR=/sbin
 ONEFILE=peck.c
 OBJS=peck.o
-MBEDTLS=/corp/projects/pandora/mbedtls
+MBEDTLSLIB?=/corp/projects/pandora/mbedtls
 LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE}
-LIBS+=${MBEDTLS}/library/libmbedx509.a
-LIBS+=${MBEDTLS}/library/libmbedcrypto.a
+LIBS+=${MBEDTLSLIB}/libmbedx509.a
+LIBS+=${MBEDTLSLIB}/libmbedcrypto.a
+LIBS+=-lpthread -ldbus-1
 #LIBS+=${MBEDTLS}/library/libmbedtls.a
-INCLUDES+=-I${MBEDTLS}/include
+INCLUDES+=${MBEDTLSH}
 
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
