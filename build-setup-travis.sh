@@ -10,6 +10,7 @@ if [ ! -d $BUILDTOP/include/mbedtls ]; then
     (cd ${BUILDTOP} && rm -rf host/mbedtls && mkdir -p host/mbedtls && cd host/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP ../../mbedtls && make && make install)
 fi
 
+LIBPCAP=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a
 if [ ! -x $BUILDTOP/host/tcpdump-4.8.0/tcpdump ]
 then
     if [ ! -d libpcap ]; then (cd ${BUILDTOP} && git clone https://github.com/mcr/libpcap.git ); fi
@@ -20,10 +21,15 @@ then
     if [ "$ARCH" = "x86_64" ]; then
         (cd ${BUILDTOP} && mkdir -p x86/libpcap-1.8.0 && cd x86/libpcap-1.8.0 && CFLAGS=-m32 ../../libpcap/configure --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
         (cd ${BUILDTOP} && ln -s x86/libpcap-1.8.0 libpcap && mkdir -p x86/tcpdump-4.8.0 && cd x86/tcpdump-4.8.0 && CFLAGS=-m32 ../../tcpdump/configure --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
+        LIBPCAP=${BUILDTOP}/x86/libpcap-1.8.0/libpcap.a
     fi
 fi
 
-echo LIBPCAP=${BUILDTOP}/x86/libpcap-1.8.0/libpcap.a >Makefile.local
+if [ "$ARCH" = "x86_64" ]; then
+    LIBPCAP=${BUILDTOP}/x86/libpcap-1.8.0/libpcap.a
+fi
+
+echo LIBPCAP=${LIBPCAP} >Makefile.local
 echo LIBPCAP_HOST=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a >>Makefile.local
 echo LIBPCAPINC=-I${BUILDTOP}/include                >>Makefile.local
 echo TCPDUMP=${BUILDTOP}/host/tcpdump-4.8.0/tcpdump  >>Makefile.local
