@@ -234,10 +234,21 @@ unsigned int network_interface::get_hatype(void)
  * set the long and short link-layer-addresses addresses.
  *
  */
-bool network_interface::set_link_layer64(const unsigned char eui64[8])
+bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
+                                         unsigned int eui64len)
 {
     struct ifreq ifr0;
     int s;
+
+    if(eui64len==6) {
+        memcpy(eui48, eui64bytes, 6);
+        eui64_from_eui48();
+    } else if(eui64len==8) {
+        memcpy(eui64, eui64bytes, 8);
+        eui64set = true;
+    } else {
+        return false;
+    }
 
     memset(&ifr0, 0, sizeof(ifr0));
     strncpy(ifr0.ifr_name, this->if_name, IFNAMSIZ);

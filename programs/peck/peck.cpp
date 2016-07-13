@@ -216,7 +216,7 @@ int extract_eui64_from_cert(unsigned char *eui64,
     if( ( ret = mbedtls_asn1_get_tag( &end_ext_data,
                                       end_ext_data+cur_seq->buf.len, &extn_oid.len,
                                       MBEDTLS_ASN1_OID ) ) != 0 ) {
-      return false;
+      return -1;
     }
 
     extn_oid.p    = end_ext_data;
@@ -359,7 +359,8 @@ int main(int argc, char *argv[])
   }
 
   /* extract EUI-64 from certificate */
-  if(!extract_eui64_from_cert(eui64, eui64buf, sizeof(eui64buf), bootstrap_cert)) {
+  unsigned int eui64len = extract_eui64_from_cert(eui64, eui64buf, sizeof(eui64buf), bootstrap_cert);
+  if(!eui64len == -1) {
     exit(11);
   }
 
@@ -371,7 +372,7 @@ int main(int argc, char *argv[])
 
     printf("assigning %s to interface: %s %u\n", eui64buf, argv[ifnum], ha1);
 
-    iface->set_link_layer64(eui64);
+    iface->set_link_layer64(eui64, eui64len);
 
   }
 

@@ -150,7 +150,7 @@ public:
     static void clear_events(void);
 
     virtual unsigned int get_hatype(void);
-    virtual bool set_link_layer64(const unsigned char eui64[8]);
+    virtual bool set_link_layer64(const unsigned char eui64[8], unsigned int eui64len);
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;
@@ -258,6 +258,7 @@ private:
 
     /* interface to netlink */
     void                    generate_eui64();
+    void                    eui64_from_eui48();
     void                    generate_linkaddr();
     bool                    eui64set;
     unsigned char           eui48[6];

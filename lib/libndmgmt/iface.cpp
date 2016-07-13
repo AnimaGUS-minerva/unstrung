@@ -89,10 +89,8 @@ void network_interface::generate_linkaddr(void)
     memcpy(ipv6_link_addr.s6_addr+8, eui64, 8);
 }
 
-void network_interface::generate_eui64(void)
+void network_interface::eui64_from_eui48(void)
 {
-    if(eui64set) return;
-
     /*
      * eui64 is upper 3 bytes of eui48, with bit 0x02 set to indicate
      * that it is a "globabally" generated eui64
@@ -109,9 +107,16 @@ void network_interface::generate_eui64(void)
     eui64[5]=eui48[3];
     eui64[6]=eui48[4];
     eui64[7]=eui48[5];
+    eui64set=true;
+}
+
+void network_interface::generate_eui64(void)
+{
+    if(!eui64set) {
+        eui64_from_eui48();
+    }
 
     generate_linkaddr();
-    eui64set=true;
 }
 
 char *network_interface::eui64_str(char *str, int strlen)
