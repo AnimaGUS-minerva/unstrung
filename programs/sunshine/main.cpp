@@ -279,6 +279,8 @@ int main(int argc, char *argv[])
                 iface->set_debug(deb);
                 iface->setup();
             }
+
+            printf("hatype for: %u\n", iface->get_hatype());
             break;
 
         case 'm':

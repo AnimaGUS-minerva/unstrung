@@ -365,6 +365,9 @@ int main(int argc, char *argv[])
     iface = (pcap_network_interface *)pcap_network_interface::find_by_name(argv[ifnum]);
 
     printf("assigning %s to interface: %s\n", eui64buf, argv[ifnum]);
+
+    iface->set_link_layer64(eui64);
+
   }
 
   mbedtls_x509_crt_free( bootstrap_cert );
