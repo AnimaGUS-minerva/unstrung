@@ -31,7 +31,7 @@ extern "C" {
 #include <linux/if_arp.h>       /* for ARPHRD_ETHER */
 #include <netinet/ip6.h>
 #include <netinet/icmp6.h>
-#include <linux/if.h>           /* for IFNAMSIZ */
+#include <sys/ioctl.h>
 #include <time.h>
 #include "oswlibs.h"
 
@@ -237,13 +237,25 @@ unsigned int network_interface::get_hatype(void)
 bool network_interface::set_link_layer64(const unsigned char eui64[8])
 {
     struct ifreq ifr0;
+    int s;
 
-#if 0
     memset(&ifr0, 0, sizeof(ifr0));
-    strncpy(ifr.ifr_name, this->if_name, IFNAMSIZ);
-    ifr->ifr_hwaddr.sa_family = hatype;
-#endif
+    strncpy(ifr0.ifr_name, this->if_name, IFNAMSIZ);
+    ifr0.ifr_hwaddr.sa_family = this->get_hatype();
+    memcpy(ifr0.ifr_hwaddr.sa_data, eui64, 8);
 
+    s = socket(PF_PACKET, SOCK_DGRAM, 0);
+    if (s < 0) {
+        perror("socket(PF_PACKET)");
+        return -1;
+    }
+
+    if (ioctl(s, SIOCSIFHWADDR, &ifr0) < 0) {
+        perror("SIOCSIFHWADDR");
+        close(s);
+        return -1;
+    }
+    close(s);
 }
 
 

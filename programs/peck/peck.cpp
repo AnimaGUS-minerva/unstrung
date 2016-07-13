@@ -43,6 +43,9 @@ extern "C" {
 static void usage(void)
 {
     fprintf(stderr, "Usage: peck [--verbose] ifname\n");
+    fprintf(stderr, "            [--help] \n");
+    fprintf(stderr, "            [--fake] \n");
+    fprintf(stderr, "            [--mic=filename] [--privmic=filename] [--manuca=filename]\n");
     exit(2);
 }
 
@@ -279,7 +282,7 @@ int main(int argc, char *argv[])
   int verbose = 0;
   bool fakesend=false;
   bool initted =false;
-  char c;
+  int c;
   const char *micpemfile = "/boot/mic.pem";
   const char *micprivfile= "/boot/mic.priv";
   const char *manufact_ca= "/boot/manufacturer.pem";
@@ -300,7 +303,7 @@ int main(int argc, char *argv[])
 
   deb = new rpl_debug(verbose, stderr);
 
-  while((c=getopt_long(argc, argv, "?hm:vFM:RV", longoptions, NULL))!=EOF){
+  while((c=getopt_long(argc, argv, "?hm:vFM:R:V", longoptions, NULL))!=EOF){
     switch(c) {
     case 'T':
       if(initted) {
@@ -364,7 +367,9 @@ int main(int argc, char *argv[])
     class pcap_network_interface *iface = NULL;
     iface = (pcap_network_interface *)pcap_network_interface::find_by_name(argv[ifnum]);
 
-    printf("assigning %s to interface: %s\n", eui64buf, argv[ifnum]);
+    unsigned int ha1 = iface->get_hatype();
+
+    printf("assigning %s to interface: %s %u\n", eui64buf, argv[ifnum], ha1);
 
     iface->set_link_layer64(eui64);
 
