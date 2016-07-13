@@ -149,6 +149,8 @@ public:
     static void terminating(void);
     static void clear_events(void);
 
+    virtual unsigned int get_hatype(void);
+    virtual bool set_link_layer64(const unsigned char eui64[8]);
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;
@@ -203,6 +205,8 @@ protected:
     bool                    alive;
     bool                    disabled;
     bool                    loopback;
+
+    unsigned int            hatype;    /* set by get_hatype */
 
     /* maintain list of all interfaces */
     void add_to_list(void);

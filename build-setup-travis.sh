@@ -29,7 +29,7 @@ if [ "$ARCH" = "x86_64" ]; then
     LIBPCAP=${BUILDTOP}/x86/libpcap-1.8.0/libpcap.a
 fi
 
-echo LIBPCAP=${LIBPCAP} >Makefile.local
+echo LIBPCAP=${LIBPCAP} -lpthread -ldbus-1 >Makefile.local
 echo LIBPCAP_HOST=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a >>Makefile.local
 echo LIBPCAPINC=-I${BUILDTOP}/include                >>Makefile.local
 echo TCPDUMP=${BUILDTOP}/host/tcpdump-4.8.0/tcpdump  >>Makefile.local

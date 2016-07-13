@@ -187,6 +187,66 @@ bool network_interface::add_route_to_node(const ip_subnet &prefix,
     return true;
 }
 
+/*
+ * get the hatype, and save it
+ *
+ */
+unsigned int network_interface::get_hatype(void)
+{
+    struct ifreq ifr0;
+    struct sockaddr_ll me;
+    socklen_t alen;
+    int s;
+
+    if(this->hatype != 0) return this->hatype;
+
+    /* look it up the old way */
+
+    s = socket(PF_PACKET, SOCK_DGRAM, 0);
+    if (s < 0) {
+        perror("socket(PF_PACKET)");
+        return -1;
+    }
+
+    memset(&me, 0, sizeof(me));
+    me.sll_family = AF_PACKET;
+    me.sll_ifindex = this->if_index;
+    me.sll_protocol = htons(ETH_P_LOOP);
+    if (bind(s, (struct sockaddr*)&me, sizeof(me)) == -1) {
+        perror("bind");
+        close(s);
+        return -1;
+    }
+
+    alen = sizeof(me);
+    if (getsockname(s, (struct sockaddr*)&me, &alen) == -1) {
+        perror("getsockname");
+        close(s);
+        return -1;
+    }
+    close(s);
+
+    this->hatype = me.sll_hatype;
+    return this->hatype;
+}
+
+/*
+ * set the long and short link-layer-addresses addresses.
+ *
+ */
+bool network_interface::set_link_layer64(const unsigned char eui64[8])
+{
+    struct ifreq ifr0;
+
+#if 0
+    memset(&ifr0, 0, sizeof(ifr0));
+    strncpy(ifr.ifr_name, this->if_name, IFNAMSIZ);
+    ifr->ifr_hwaddr.sa_family = hatype;
+#endif
+
+}
+
+
 int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
                            struct nlmsghdr *n, void *arg)
 {

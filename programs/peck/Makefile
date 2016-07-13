@@ -22,7 +22,6 @@ MBEDTLSLIB?=/corp/projects/pandora/mbedtls
 LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE}
 LIBS+=${MBEDTLSLIB}/libmbedx509.a
 LIBS+=${MBEDTLSLIB}/libmbedcrypto.a
-LIBS+=-lpthread -ldbus-1
 #LIBS+=${MBEDTLS}/library/libmbedtls.a
 INCLUDES+=${MBEDTLSH}
 
