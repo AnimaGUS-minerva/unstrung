@@ -43,7 +43,7 @@ extern "C" {
 #include <netlink/rt_names.h>
 #include <netlink/utils.h>
 #include <netlink/ll_map.h>
-
+#include <linux/rtnetlink.h>
 
 #include "rpl.h"
 }
@@ -267,6 +267,70 @@ bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
         return -1;
     }
     close(s);
+}
+
+/*
+ * implements:
+ *      ip link add link wpan2 name lowpan0 type lowpan
+ *
+ * where will wpan2 and lowpan0 come from!!!
+ *
+ */
+struct iplink_req {
+    struct nlmsghdr		n;
+    struct ifinfomsg	i;
+    char			buf[1024];
+};
+int network_interface::configure_wpan(void)
+{
+
+    struct iplink_req req;
+    char *dev  = this->if_name;
+    char *name = this->if_name;
+    const char *link = "wpan2";
+    int group = 0;
+    int index = this->if_index;
+    const int cmd   = RTM_NEWLINK;
+    const int flags = NLM_F_CREATE|NLM_F_EXCL;
+
+    if(this->ifi_type != ARPHRD_6LOWPAN) {
+        debug->info("no lowpan configuration needed for interface: %s\n", if_name);
+        return true;
+    } else {
+        debug->info("linking new lowpan%u on top of %s\n", 0, if_name);
+    }
+
+
+    memset(&req, 0, sizeof(req));
+
+    req.n.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
+    req.n.nlmsg_flags = NLM_F_REQUEST|flags;
+    req.n.nlmsg_type = RTM_NEWLINK;
+    req.i.ifi_family = AF_PACKET;
+    req.i.ifi_change |= IFF_UP;
+    req.i.ifi_flags  |= IFF_UP;
+
+    addattr_l(&req.n, sizeof(req), IFLA_GROUP,
+              &group, sizeof(group));
+
+    addattr_l(&req.n, sizeof(req), IFLA_LINK, &if_index, 4);
+
+    unsigned int len = strlen(name);
+    addattr_l(&req.n, sizeof(req), IFLA_IFNAME, name, len);
+
+    {
+        struct rtattr *linkinfo;
+        linkinfo = addattr_nest(&req.n, sizeof(req), IFLA_LINKINFO);
+
+        const char *type = "lowpan";
+        addattr_l(&req.n, sizeof(req), IFLA_INFO_KIND, type, strlen(type));
+        addattr_nest_end(&req.n, linkinfo);
+    }
+
+    if (rtnl_talk(netlink_handle, &req.n, 0, 0, NULL, NULL, NULL) < 0)
+        return false;
+
+    return true;
 }
 
 
@@ -511,6 +575,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
     const unsigned char *addr = NULL;
     unsigned int addrlen = 0;
 
+    ni->ifi_type = ifi->ifi_type;
     switch(ifi->ifi_type) {
     case ARPHRD_ETHER:
         addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);

@@ -38,6 +38,8 @@ extern int rtnl_send(struct rtnl_handle *rth, const char *buf, int);
 extern int addattr32(struct nlmsghdr *n, int maxlen, int type, __u32 data);
 extern int addattr_l(struct nlmsghdr *n, int maxlen, int type, const void *data, int alen);
 extern int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len);
+extern struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type);
+extern int addattr_nest_end(struct nlmsghdr *n, struct rtattr *nest);
 extern int rta_addattr32(struct rtattr *rta, int maxlen, int type, __u32 data);
 extern int rta_addattr_l(struct rtattr *rta, int maxlen, int type, const void *data, int alen);
 

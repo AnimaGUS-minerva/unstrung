@@ -374,6 +374,8 @@ int main(int argc, char *argv[])
 
     iface->set_link_layer64(eui64, eui64len);
 
+    iface->configure_wpan();
+
   }
 
   mbedtls_x509_crt_free( bootstrap_cert );
