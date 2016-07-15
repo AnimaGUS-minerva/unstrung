@@ -155,6 +155,7 @@ public:
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;
     };
+    int                            configure_wpan(void);
 
     /* event lists */
     static class rpl_event_queue   things_to_do;
@@ -176,6 +177,7 @@ public:
     rpl_node *host_node(void) { return node; };
     struct in6_addr         if_addr;
     unsigned int            ifa_scope;
+    unsigned int            ifi_type;
     void                    update_addr(void); /* update/create ->node */
     bool                    watching;   /* true if we should collect all DAGs*/
 
