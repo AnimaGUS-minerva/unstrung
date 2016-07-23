@@ -27,8 +27,13 @@ public:
     dag_network(instanceID_t instanceID, rpl_debug *debug);
     ~dag_network();
     static class dag_network *find_by_instanceid(instanceID_t num, dagid_t dagid);
+    static class dag_network *find_by_instanceid(instanceID_t num);
     static class dag_network *find_or_make_by_instanceid(instanceID_t num,
                                                     dagid_t dagid,
+                                                    rpl_debug *debug,
+                                                    bool watching);
+    static class dag_network *find_or_make_by_instanceid(instanceID_t num,
+                                                    struct in6_addr dagid,
                                                     rpl_debug *debug,
                                                     bool watching);
     static class dag_network *find_or_make_by_string(instanceID_t num,
@@ -95,6 +100,12 @@ public:
                 dag_network::all_dag = this;
         };
         void remove_from_list(void);
+
+        void receive_dis(network_interface *iface,
+                         struct in6_addr from,
+                         struct in6_addr ip6_to,
+                         const time_t    now,
+                         const struct nd_rpl_dis *dis, int dis_len);
 
         void receive_dio(network_interface *iface,
                          struct in6_addr from,
@@ -186,6 +197,9 @@ public:
 	    return mDagName;
 	};
 	void set_dagid(const char *dagstr);
+	void set_dagid(struct in6_addr addr) {
+            memcpy(this->mDagid, addr.s6_addr, DAGID_LEN);
+        };
 	void set_dagid(dagid_t dagid);
 	unsigned int get_dagRank(void) {
 	    return mMyRank;
@@ -203,6 +217,7 @@ public:
 	void set_instanceid(const unsigned int instanceid) {
 	    mInstanceid = instanceid;
 	};
+        instanceID_t get_instanceid(void) { return mInstanceid; };
 	void set_prefixlifetime(const unsigned int lifetime) {
 	    mLifetime = lifetime;
 	};
@@ -241,10 +256,12 @@ public:
         void               set_dao_needed() { dao_needed = true; };
         prefix_node       *dag_me;           /* my identity in this dag (/128) */
 
+	int build_info_disopt(void);
 	int build_prefix_dioopt(ip_subnet prefix);
         int build_target_opt(struct in6_addr addr, int maskbits);
 	int build_target_opt(ip_subnet prefix);
 
+	int  build_dis(unsigned char *buff, unsigned int buff_len);
 	int  build_dio(unsigned char *buff, unsigned int buff_len, ip_subnet prefix);
 	int  build_dao(unsigned char *buff, unsigned int buff_len);
 	int  build_daoack(unsigned char *buff, unsigned int buff_len, unsigned short seq_num);

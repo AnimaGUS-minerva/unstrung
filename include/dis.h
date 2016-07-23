@@ -1,5 +1,5 @@
-#ifndef _UNSTRUNG_DAO_H_
-#define _UNSTRUNG_DAO_H_
+#ifndef _UNSTRUNG_DIS_H_
+#define _UNSTRUNG_DIS_H_
 
 extern "C" {
 #include <errno.h>
@@ -13,14 +13,14 @@ extern "C" {
 #include "rplmsg.h"
 #include "node.h"
 
-class rpl_dao : public rpl_msg {
+class rpl_dis : public rpl_msg {
 public:
-    rpl_dao(const unsigned char *data, int dao_len, dag_network *dag);
-    struct rpl_dao_target *rpltarget(void);
+    rpl_dis(const unsigned char *data, int dis_len, u_int32_t *stats);
+    struct rpl_dis_solicitedinfo *rplsolicitedinfo(void);
 };
 
 
-#endif /* NODE_H */
+#endif /* _UNSTRUNG_DIS_H_ */
 
 /*
  * Local Variables:

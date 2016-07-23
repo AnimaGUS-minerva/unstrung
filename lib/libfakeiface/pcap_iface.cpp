@@ -67,8 +67,7 @@ pcap_network_interface::pcap_network_interface(const char *name, rpl_debug *deb)
 
 pcap_network_interface::~pcap_network_interface()
 {
-        pcap_dump_close(pcap_out);
-        pcap_out=NULL;
+    close();
 }
 
 pcap_network_interface::pcap_network_interface(pcap_dumper_t *pd) :
@@ -86,6 +85,11 @@ bool pcap_network_interface::system_get_disable_ipv6(void)
 
 bool pcap_network_interface::faked(void) {
     return true;
+};
+
+void pcap_network_interface::close(void) {
+    if(pcap_out) pcap_dump_close(pcap_out);
+    pcap_out=NULL;
 };
 
 void
@@ -560,12 +564,7 @@ void pcap_network_interface::setup_infile(const char *infile)
 
 void pcap_network_interface::setup_outfile(const char *outfile)
 {
-    int pcap_link = DLT_EN10MB;
-
-    if(this->pol) {
-        pcap_link = pcap_datalink(this->pol);
-    }
-    setup_outfile(outfile, pcap_link);
+    setup_outfile(outfile, this->pcap_link);
 }
 
 void pcap_network_interface::setup_outfile(const char *outfile,
@@ -605,9 +604,16 @@ pcap_network_interface *pcap_network_interface::setup_infile_outfile(
             return NULL;
         }
 
-        ndproc->setup_infile(infile);
-        ndproc->setup_outfile(outfile);
+        ndproc->pcap_link = DLT_EN10MB;
 
+        if(infile) {
+            ndproc->setup_infile(infile);
+            if(ndproc->pol) {
+                ndproc->pcap_link = pcap_datalink(ndproc->pol);
+            }
+        }
+
+        ndproc->setup_outfile(outfile);
 	ndproc->set_debug(debug);
 
         return ndproc;

@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
         const char *pcapin2 = "../INPUTS/daoack-A-ripple1.pcap";
         iface = daoackA_setup(deb,pcapin2,NULL);
         daoackA_process(iface);
+        iface->close();
 
 	exit(0);
 }

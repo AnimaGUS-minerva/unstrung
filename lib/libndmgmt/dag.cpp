@@ -196,6 +196,17 @@ class dag_network *dag_network::find_or_make_by_instanceid(instanceID_t num,
     return dn;
 }
 
+class dag_network *dag_network::find_or_make_by_instanceid(instanceID_t num,
+                                                           struct in6_addr addr,
+                                                           rpl_debug *debug,
+                                                           bool watching)
+{
+    dagid_t n_dagid;
+
+    memcpy(n_dagid, addr.s6_addr, DAGID_LEN);
+    return find_or_make_by_instanceid(num,n_dagid,debug,watching);
+}
+
 class dag_network *dag_network::find_or_make_by_string(instanceID_t num,
                                                        const char *dagid,
 						       rpl_debug *debug,
@@ -213,6 +224,17 @@ class dag_network *dag_network::find_or_make_by_string(instanceID_t num,
 }
 
 class dag_network *dag_network::find_by_instanceid(instanceID_t num, dagid_t n_dagid)
+{
+    class dag_network *dn = dag_network::all_dag;
+
+    while(dn != NULL) {
+        if(dn->mInstanceid == num) break;
+        dn = dn->next;
+    }
+    return dn;
+}
+
+class dag_network *dag_network::find_by_instanceid(instanceID_t num)
 {
     class dag_network *dn = dag_network::all_dag;
 
@@ -784,6 +806,31 @@ void dag_network::dump_dio(rpl_debug *debug, const struct nd_rpl_dio *dio)
                      dio->rpl_version,
                      (RPL_DIO_GROUNDED(dio->rpl_mopprf) ? "grounded," : ""),
                      dag_network::mop_decode(dag_network::mop_extract(dio)));
+}
+
+/*
+ * Process an incoming DODAG Information Object (DIO)
+ * the DIO is the downward announcement.
+ *
+ */
+void dag_network::receive_dis(network_interface *iface,
+                              struct in6_addr from,
+                              struct in6_addr ip6_to,
+                              const time_t    now,
+                              const struct nd_rpl_dis *dis, int dis_len)
+{
+    char b1[ADDRTOT_BUF], b2[ADDRTOT_BUF];
+    inet_ntop(AF_INET6, &from,   b1, sizeof(b1));
+    inet_ntop(AF_INET6, &ip6_to, b2, sizeof(b2));
+
+    /* increment stat of number of packets processed */
+    this->mStats[PS_PACKET_RECEIVED]++;
+    this->mStats[PS_DIS_PACKET_RECEIVED]++;
+
+    debug->warn("received DIS from %s <timer reset>", b1);
+
+    /* now reset timers, and send out DIO */
+    schedule_dio();
 }
 
 /*

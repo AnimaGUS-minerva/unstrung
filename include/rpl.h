@@ -16,8 +16,8 @@
 #define ND_RPL_MESSAGE 155  /* 0x9B */
 
 enum ND_RPL_CODE {
-    ND_RPL_DAG_IS=0x00,
-    ND_RPL_DAG_IO=0x01,
+    ND_RPL_DAG_IS=0x00,  /* DIS */
+    ND_RPL_DAG_IO=0x01,  /* DIO */
     ND_RPL_DAO   =0x02,
     ND_RPL_DAO_ACK=0x03,
     ND_RPL_SEC_DAG_IS = 0x80,
@@ -48,12 +48,28 @@ struct nd_rpl_security {
     u_int8_t  rpl_sec_ki[0];          /* depends upon kim */
 } PACKED;
 
-/* section 6.2.1, DODAG Information Solication (DIS_IS) */
-struct nd_rpl_dis_is {
+/* section 6.2.1, DODAG Information Solication (DIS) */
+struct nd_rpl_dis {
     u_int8_t rpl_dis_flags;
     u_int8_t rpl_dis_reserved;
     u_int8_t rpl_dis_options[0];
 } PACKED;
+
+/* section 6.7.9, DIS - Solicited Information */
+struct rpl_dis_solicitedinfo {
+    u_int8_t rpl_dis_type;
+    u_int8_t rpl_dis_len;
+    u_int8_t rpl_dis_instanceid;
+    u_int8_t rpl_dis_flags;           /* flags, V,I,D */
+    u_int8_t rpl_dis_dagid[DAGID_LEN];
+    u_int8_t rpl_dis_versionnum;
+} PACKED;
+#define RPL_DIS_SI_V      (1 << 7)
+#define RPL_DIS_SI_I      (1 << 6)
+#define RPL_DIS_SI_D      (1 << 5)
+#define RPL_DIS_SI_FLAGS  ((1 << 5)-1)
+
+
 
 /* section 6.3.1, DODAG Information Object (DIO) */
 struct nd_rpl_dio {
@@ -90,6 +106,7 @@ enum RPL_SUBOPT {
         RPL_DIO_CONFIG      = 4,
         RPL_DAO_RPLTARGET   = 5,
         RPL_DAO_TRANSITINFO = 6,
+        RPL_DIS_SOLICITEDINFO=7,
         RPL_DIO_DESTPREFIX  = 8,
         RPL_DAO_RPLTARGET_DESC=9,
 };

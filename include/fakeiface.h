@@ -60,6 +60,7 @@ public:
         void setup_infile(const char *infile);
         void setup_outfile(const char *outfile);
         void setup_outfile(const char *outfile, int pcap_link);
+        void close(void);
 
         /* a kind of constructor */
         static pcap_network_interface *setup_infile_outfile(
@@ -120,3 +121,9 @@ private:
 
 #endif /* _UNSTRUNG_FAKEIFACE_H_ */
 
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */

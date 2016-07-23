@@ -35,6 +35,7 @@ extern "C" {
 #include "rplmsg.h"
 #include "dio.h"
 #include "dao.h"
+#include "dis.h"
 
 /*
  * here are routines to crack open suboptions of DIO/DAG/etc. messages
@@ -140,8 +141,14 @@ mPeer(peer),
 }
 
 
-rpl_dao::rpl_dao(unsigned char *data, int dao_len, dag_network *dag) :
+rpl_dao::rpl_dao(const unsigned char *data, int dao_len, dag_network *dag) :
 rpl_msg(data, dao_len, dag->mStats)
+{
+}
+
+
+rpl_dis::rpl_dis(const unsigned char *data, int disopt_len, u_int32_t *stats) :
+rpl_msg(data, disopt_len, stats)
 {
 }
 
@@ -161,6 +168,15 @@ struct rpl_dao_target *rpl_dao::rpltarget(void)
     }
 
     return rpltarget;
+}
+
+
+struct rpl_dis_solicitedinfo *rpl_dis::rplsolicitedinfo(void)
+{
+    int optlen = 0;
+    struct rpl_dis_solicitedinfo *rplsi = (struct rpl_dis_solicitedinfo *)search_subopt(RPL_DIS_SOLICITEDINFO, &optlen);
+
+    return rplsi;
 }
 
 
