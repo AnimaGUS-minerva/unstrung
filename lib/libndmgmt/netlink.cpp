@@ -192,7 +192,7 @@ bool network_interface::add_route_to_node(const ip_subnet &prefix,
     addrtot(&src,                 0, sbuf, sizeof(sbuf));
 
     snprintf(buf, 1024,
-             "ip -6 route add %s via %s dev %s src %s", pbuf, tbuf, if_name, sbuf);
+             "ip -6 route replace %s via %s dev %s src %s", pbuf, tbuf, if_name, sbuf);
 
     debug->log("  invoking %s\n", buf);
     nisystem(buf);

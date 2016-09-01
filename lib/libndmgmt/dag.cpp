@@ -417,12 +417,10 @@ bool dag_network::check_security(const struct nd_rpl_dao *dao, int dao_len)
 /* here we mark that a DAO is needed soon */
 void dag_network::maybe_send_dao(void)
 {
-    if(dao_needed && dag_bestparent != NULL) {
-        if(!root_node()) {
-            schedule_dao();
-        }
-        dao_needed = false;
+    if(dao_needed && dag_bestparent && !root_node()) {
+        schedule_dao();
     }
+    dao_needed = false;
 }
 
 void dag_network::add_childnode(rpl_node          *announcing_peer,
@@ -433,7 +431,7 @@ void dag_network::add_childnode(rpl_node          *announcing_peer,
     char b1[256];
     subnettot(&prefix, 0, b1, 256);
 
-    if(!pre.is_installed()) {
+    //if(!pre.is_installed()) {
         dao_needed = true;
         pre.set_debug(this->debug);
         pre.set_prefix(prefix);
@@ -442,7 +440,7 @@ void dag_network::add_childnode(rpl_node          *announcing_peer,
         announcing_peer->add_route_via_node(prefix, iface);
         set_dao_needed();
         pre.set_installed(true);
-    }
+    //}
 #if 0
     debug->verbose("added child node %s/%s from %s\n",
                    b1, pre.node_name(),
@@ -1133,4 +1131,3 @@ bool dag_network::set_interface_filter(const char *filter)
  * compile-command: "make programs"
  * End:
  */
-
