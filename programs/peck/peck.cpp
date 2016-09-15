@@ -345,12 +345,10 @@ int main(int argc, char *argv[])
     initted = true;
   }
 
-  if(!initted) {
-    if(fakesend) {
-      pcap_network_interface::scan_devices(deb, false);
-    } else {
-      network_interface::scan_devices(deb, false);
-    }
+  if(fakesend) {
+    pcap_network_interface::scan_devices(deb, false);
+  } else {
+    network_interface::scan_devices(deb, false);
   }
 
   /* open the certificate file */
@@ -366,16 +364,14 @@ int main(int argc, char *argv[])
 
   for(int ifnum = optind; ifnum < argc; ifnum++) {
     class pcap_network_interface *iface = NULL;
-    iface = (pcap_network_interface *)pcap_network_interface::find_by_name(argv[ifnum]);
+    const char *ifname = argv[ifnum];
+    iface = (pcap_network_interface *)pcap_network_interface::find_by_name(ifname);
 
-    unsigned int ha1 = iface->get_hatype();
-
-    printf("assigning %s to interface: %s %u\n", eui64buf, argv[ifnum], ha1);
-
-    iface->set_link_layer64(eui64, eui64len);
-
-    iface->configure_wpan();
-
+    if(iface == NULL) {
+      printf("no such interface: %s", ifname);
+      exit(10);
+    }
+    iface->setup_lowpan(eui64, eui64len);
   }
 
   mbedtls_x509_crt_free( bootstrap_cert );

@@ -149,13 +149,14 @@ public:
     static void terminating(void);
     static void clear_events(void);
 
-    virtual unsigned int get_hatype(void);
-    virtual bool set_link_layer64(const unsigned char eui64[8], unsigned int eui64len);
+    virtual bool setup_lowpan(const unsigned char eui64[8], unsigned int eui64len);
+    unsigned int get_hatype(void);
+    bool set_link_layer64(const unsigned char eui64[8], unsigned int eui64len);
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;
     };
-    int                            configure_wpan(void);
+    int                    configure_wpan(void);
 
     /* event lists */
     static class rpl_event_queue   things_to_do;
