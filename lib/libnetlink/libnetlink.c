@@ -599,7 +599,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
 
 int addattr_nest_end(struct nlmsghdr *n, struct rtattr *nest)
 {
-	nest->rta_len = (void *)NLMSG_TAIL(n) - (void *)nest;
+	nest->rta_len = (char *)NLMSG_TAIL(n) - (char *)nest;
 	return n->nlmsg_len;
 }
 
