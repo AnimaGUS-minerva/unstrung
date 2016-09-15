@@ -231,12 +231,12 @@ private:
     int                     error_cnt;
 
     char                    if_name[IFNAMSIZ];
-    int			if_prefix_len;
+    int			    if_prefix_len;
 
-    uint8_t			if_hwaddr[HWADDR_MAX];
-    int			if_hwaddr_len;
+    uint8_t		    if_hwaddr[HWADDR_MAX];
+    int			    if_hwaddr_len;
 
-    int			if_maxmtu;
+    int			    if_maxmtu;
 
     /* list states */
     bool                    on_list;
