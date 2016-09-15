@@ -44,6 +44,7 @@ public:
 
         virtual void skip_pcap_headers(const struct pcap_pkthdr *h,
                                        const u_char *bytes);
+        virtual bool setup_lowpan(const unsigned char eui64[8], unsigned int eui64len);
 	int send_packet(const u_char *bytes, const int len);
 	void increment_packet(void)   { packet_count++; };
 	unsigned int packet_num(void) { return packet_count; };

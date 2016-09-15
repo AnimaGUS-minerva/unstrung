@@ -281,6 +281,7 @@ struct iplink_req {
     struct ifinfomsg	i;
     char			buf[1024];
 };
+
 int network_interface::configure_wpan(void)
 {
 
@@ -723,6 +724,25 @@ void network_interface::scan_devices(rpl_debug *deb, bool setup)
         /* now look for interfaces with no mark, as they may be removed */
 
 }
+
+/*
+ * determines if an interface is a 6lowpan interface, and if so, sets
+ * the eui64.
+ */
+bool network_interface::setup_lowpan(const unsigned char eui64[8],
+                                    unsigned int eui64len)
+{
+    unsigned int ha1 = this->get_hatype();
+
+    char eui64buf[128];
+    network_interface::fmt_eui(eui64buf, sizeof(eui64buf), eui64, eui64len);
+
+    debug->info("assigning %s to interface: %s %u\n", eui64buf, this->if_name, ha1);
+
+    this->set_link_layer64(eui64, eui64len);
+    this->configure_wpan();
+}
+
 
 
 /*

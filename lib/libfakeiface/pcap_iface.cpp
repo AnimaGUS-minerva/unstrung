@@ -590,6 +590,13 @@ void pcap_network_interface::setup_outfile(const char *outfile,
     this->pcap_out = out;
 }
 
+bool pcap_network_interface::setup_lowpan(const unsigned char eui64[8], unsigned int eui64len)
+{
+    debug->info("virtual interface, not assigning eui64");
+    return true;
+}
+
+
 pcap_network_interface *pcap_network_interface::setup_infile_outfile(
     const char *ifname,
     const char *infile,
