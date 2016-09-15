@@ -109,8 +109,9 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     memset(packet, 0, sizeof(packet));
     packet[0] =0x02; packet[1]=0x34; packet[2]=0x56;
     packet[3] =0x78; packet[4]=0x9a; packet[5]=0xbc;
-    packet[6] =0x02; packet[7]=0xcb; packet[8]=0xa9;
-    packet[9] =0x87; packet[10]=0x65; packet[11]=0x43;
+
+    memcpy(packet+6, this->if_hwaddr, 6);
+
     packet[12]=0x86;
     packet[13]=0xdd;
 
@@ -592,6 +593,7 @@ void pcap_network_interface::setup_outfile(const char *outfile,
 
 bool pcap_network_interface::setup_lowpan(const unsigned char eui64[8], unsigned int eui64len)
 {
+    this->set_link_layer64(eui64, eui64len);
     debug->info("virtual interface, not assigning eui64");
     return true;
 }

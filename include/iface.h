@@ -152,6 +152,8 @@ public:
     virtual bool setup_lowpan(const unsigned char eui64[8], unsigned int eui64len);
     unsigned int get_hatype(void);
     bool set_link_layer64(const unsigned char eui64[8], unsigned int eui64len);
+    bool set_link_layer64_hw(void);
+
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;
@@ -224,6 +226,9 @@ protected:
         const unsigned char *buff,
         int len, unsigned sum);
 
+    uint8_t		    if_hwaddr[HWADDR_MAX];
+    int			    if_hwaddr_len;
+
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);
     int                     nd_socket;
@@ -232,9 +237,6 @@ private:
 
     char                    if_name[IFNAMSIZ];
     int			    if_prefix_len;
-
-    uint8_t		    if_hwaddr[HWADDR_MAX];
-    int			    if_hwaddr_len;
 
     int			    if_maxmtu;
 
