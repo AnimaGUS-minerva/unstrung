@@ -237,9 +237,6 @@ unsigned int network_interface::get_hatype(void)
 bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
                                          unsigned int eui64len)
 {
-    struct ifreq ifr0;
-    int s;
-
     if(eui64len==6) {
         memcpy(eui48, eui64bytes, 6);
         eui64_from_eui48();
@@ -250,6 +247,15 @@ bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
         return false;
     }
 
+    memcpy(this->if_hwaddr, eui64, eui64len);
+    this->if_hwaddr_len = eui64len;
+}
+
+bool network_interface::set_link_layer64_hw(void)
+{
+    struct ifreq ifr0;
+    int s;
+
     memset(&ifr0, 0, sizeof(ifr0));
     strncpy(ifr0.ifr_name, this->if_name, IFNAMSIZ);
     ifr0.ifr_hwaddr.sa_family = this->get_hatype();
@@ -258,15 +264,16 @@ bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
     s = socket(PF_PACKET, SOCK_DGRAM, 0);
     if (s < 0) {
         perror("socket(PF_PACKET)");
-        return -1;
+        return false;
     }
 
     if (ioctl(s, SIOCSIFHWADDR, &ifr0) < 0) {
         perror("SIOCSIFHWADDR");
         close(s);
-        return -1;
+        return false;
     }
     close(s);
+    return true;
 }
 
 /*
@@ -740,6 +747,7 @@ bool network_interface::setup_lowpan(const unsigned char eui64[8],
     debug->info("assigning %s to interface: %s %u\n", eui64buf, this->if_name, ha1);
 
     this->set_link_layer64(eui64, eui64len);
+    this->set_link_layer64_hw();
     this->configure_wpan();
 }
 
