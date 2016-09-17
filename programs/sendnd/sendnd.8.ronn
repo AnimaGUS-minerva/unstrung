@@ -1,0 +1,9 @@
+sendnd(8) -- send 6lowPAN Neighbour Discovery messages
+======================================================
+
+The sendnd creates a number of different ND messages and sends them
+to a specified host or multicast address.  It then listens for ND
+messages for a period of time, and then exits.
+
+
+
