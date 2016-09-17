@@ -878,7 +878,6 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
                                       const unsigned char *icmp_body,
                                       const unsigned int icmp_len)
 {
-    uint8_t all_rpl_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
     struct sockaddr_in6 addr;
     struct in6_pktinfo *pkt_info;
     struct msghdr mhdr;
