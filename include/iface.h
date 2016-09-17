@@ -24,7 +24,11 @@ extern "C" {
 #include "dag.h"
 
 extern const uint8_t all_hosts_addr[];
+extern const struct in6_addr all_hosts_inaddr;
 extern const uint8_t all_rpl_addr[];
+
+/* forward definition */
+class device_identity;
 
 enum network_interface_exceptions {
     TOOSHORT = 1,
@@ -86,11 +90,17 @@ public:
                         struct in6_addr ip6_to,
                         const  time_t now,
                         const u_char *dat, const int daoack_len);
+    void receive_neighbour_discovery(struct in6_addr from,
+                                     struct in6_addr ip6_to,
+                                     const  time_t now,
+                                     const u_char *dat, const int nd_len);
 
     void send_dis(dag_network *dag);
     void send_dio(dag_network *dag);
     void send_dao(rpl_node &parent, dag_network &dag);
     void send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num);
+    void send_nd(device_identity &di);
+
     static void send_dio_all(dag_network *dag);
     static void send_dao_all(dag_network *dag);
 
@@ -244,8 +254,8 @@ private:
     bool                    on_list;
 
     /* timers */
-    time_t			last_multicast_sec;
-    suseconds_t		last_multicast_usec;
+    time_t		    last_multicast_sec;
+    suseconds_t		    last_multicast_usec;
 
     unsigned char          *control_msg_hdr;
     unsigned int            control_msg_hdrlen;
