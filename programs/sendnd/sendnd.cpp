@@ -84,13 +84,13 @@ int main(int argc, char *argv[])
                 }
                 initted = true;
             }
-            if(outfile == NULL) {
-                    fprintf(stderr, "Must specify pcap outfile (-O)\n");
-                    usage(2);
-            }
-
             iface = network_interface::find_by_name(optarg);
             if(iface && fakesend) {
+                if(outfile == NULL) {
+                    fprintf(stderr, "Must specify pcap outfile (-O)\n");
+                    usage(2);
+                }
+
                 if(iface->faked()) {
                     piface = (pcap_network_interface *)iface;
                     piface->set_pcap_out(outfile, DLT_EN10MB);
