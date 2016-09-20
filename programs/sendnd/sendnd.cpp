@@ -28,8 +28,8 @@ extern "C" {
 
 static void usage(int code)
 {
-        fprintf(stderr, "Usage: sendnd --solicit[] \n");
-        fprintf(stderr, "       sendnd --advert [] \n");
+        fprintf(stderr, "Usage: sendnd --solicit [] \n");
+        fprintf(stderr, "       sendnd --advert  [] \n");
 
         exit(code);
 }
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(solicit && advert) {
+    if(!initted || (solicit && advert) || (!solicit && !advert)) {
         fprintf(stderr, "please select either --advert or --solicit\n");
         usage(10);
     }
