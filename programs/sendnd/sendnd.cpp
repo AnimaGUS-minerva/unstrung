@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
     bool solicit= false;
 
     struct option longoptions[]={
+        {"help",     0, NULL, '?'},
         {"debug",    0, NULL, 'v'},
         {"verbose",  0, NULL, 'v'},
         {"fake",     0, NULL, 'T'},
