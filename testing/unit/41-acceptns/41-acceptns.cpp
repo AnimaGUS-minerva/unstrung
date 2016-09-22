@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
 
         dag_network::print_all_dagstats(stdout, "");
 
+        deb->close_log();
 	exit(0);
 }
 
