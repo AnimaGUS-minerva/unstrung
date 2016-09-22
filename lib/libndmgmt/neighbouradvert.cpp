@@ -42,6 +42,16 @@ void network_interface::receive_neighbour_advert(struct in6_addr from,
     debug->info("  processing ND(%u)",nd_len);
 }
 
+void network_interface::reply_neighbour_advert(struct in6_addr from,
+                                               struct in6_addr ip6_to,
+                                               const  time_t now,
+                                               struct nd_neighbor_solicit *ns, const int nd_len)
+{
+    char dstbuf[INET6_ADDRSTRLEN];
+    inet_ntop(AF_INET6, &from, dstbuf, sizeof(dstbuf));
+    debug->info("  sending NA to %s)", dstbuf);
+}
+
 /*
  * a NA will be sent as part of the join process to let other devices
  * know that it exists.
