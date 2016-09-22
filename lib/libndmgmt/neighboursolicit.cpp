@@ -42,6 +42,8 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
     struct nd_neighbor_solicit *ns = (struct nd_neighbor_solicit *)dat;
     debug->info("  processing NS(%u)\n",nd_len);
 
+    dag_network::globalStats[PS_NEIGHBOUR_SOLICIT]++;
+
     if(this->packet_too_short("ns", nd_len, sizeof(*ns))) return;
 
     /* there are a number of reasons to see an NS message */

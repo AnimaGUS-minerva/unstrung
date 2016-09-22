@@ -42,6 +42,8 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_NEIGHBOUR_UNICAST_REACHABILITY] = "Neighbour Soliciation for Unreachability Detection",
     [PS_NEIGHBOUR_MCAST_SOLICIT] = "Neighbour Soliciation for target address",
     [PS_NEIGHBOUR_IGNORED]      = "Neighbour Soliciation ignored",
+    [PS_NEIGHBOUR_SOLICIT]      = "Neighbour Soliciations received (total)",
+    [PS_NEIGHBOUR_ADVERT]       = "Neighbour Advertisements received (total)",
     [PS_MAX]                    = "max reason"
 };
 
