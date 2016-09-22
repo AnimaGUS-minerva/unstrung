@@ -49,7 +49,17 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
 {
     char dstbuf[INET6_ADDRSTRLEN];
     inet_ntop(AF_INET6, &from, dstbuf, sizeof(dstbuf));
-    debug->info("  sending NA to %s)", dstbuf);
+    debug->info("  sending NA to: %s", dstbuf);
+}
+
+void network_interface::reply_mcast_neighbour_advert(struct in6_addr from,
+                                               struct in6_addr ip6_to,
+                                               const  time_t now,
+                                               struct nd_neighbor_solicit *ns, const int nd_len)
+{
+    char dstbuf[INET6_ADDRSTRLEN];
+    inet_ntop(AF_INET6, &ns->nd_ns_target, dstbuf, sizeof(dstbuf));
+    debug->info("  NS looking for: %s", dstbuf);
 }
 
 /*
