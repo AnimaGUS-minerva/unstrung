@@ -37,7 +37,7 @@ public:
 	pcap_network_interface(pcap_dumper_t *pd);
         ~pcap_network_interface();
         int nisystem(const char *cmd);
-        void send_raw_icmp(struct in6_addr *dest,
+        void send_raw_icmp(struct in6_addr *dest, struct in6_addr *src,
                            const unsigned char *icmp_body,
                            const unsigned int icmp_len);
         bool faked(void);

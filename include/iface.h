@@ -90,7 +90,11 @@ public:
                         struct in6_addr ip6_to,
                         const  time_t now,
                         const u_char *dat, const int daoack_len);
-    void receive_neighbour_discovery(struct in6_addr from,
+    void receive_neighbour_advert(struct in6_addr from,
+                                     struct in6_addr ip6_to,
+                                     const  time_t now,
+                                     const u_char *dat, const int nd_len);
+    void receive_neighbour_solicit(struct in6_addr from,
                                      struct in6_addr ip6_to,
                                      const  time_t now,
                                      const u_char *dat, const int nd_len);
@@ -99,14 +103,19 @@ public:
     void send_dio(dag_network *dag);
     void send_dao(rpl_node &parent, dag_network &dag);
     void send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num);
-    void send_nd(device_identity &di);
+    void send_ns(device_identity &di);
+    void send_na(device_identity &di);
 
     static void send_dio_all(dag_network *dag);
     static void send_dao_all(dag_network *dag);
 
     virtual void send_raw_icmp(struct in6_addr *dest,
+                               struct in6_addr *src,
                                const unsigned char *icmp_body,
                                const unsigned int icmp_len);
+    void send_raw_icmp(struct in6_addr *dest,
+                       const unsigned char *icmp_body,
+                       const unsigned int icmp_len);
     virtual bool faked(void);
 
     void        set_if_name(const char *ifname);
@@ -164,6 +173,7 @@ public:
     bool set_link_layer64(const unsigned char eui64[8], unsigned int eui64len);
     bool set_link_layer64_hw(void);
 
+    unsigned const char *   get_eui64(void) { return (unsigned const char *)eui64; };
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;

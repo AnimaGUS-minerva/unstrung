@@ -33,22 +33,37 @@ extern "C" {
 #include "iface.h"
 #include "devid.h"
 
-void network_interface::receive_neighbour_advert(struct in6_addr from,
-                                                 struct in6_addr ip6_to,
-                                                 const  time_t now,
-                                                 const u_char *dat, const int nd_len)
+void network_interface::receive_neighbour_solicit(struct in6_addr from,
+                                                    struct in6_addr ip6_to,
+                                                    const  time_t now,
+                                                    const u_char *dat, const int nd_len)
 {
     unsigned int dat_len = nd_len;
-    debug->info("  processing ND(%u)",nd_len);
+    struct nd_neighbor_solicit *ns = (struct nd_neighbor_solicit *)dat;
+    debug->info("  processing NS(%u)",nd_len);
+
+    if(this->packet_too_short("ns", nd_len, sizeof(*ns))) return;
+
+    /* there are a number of reasons to see an NS message */
+
+    /* 1. if the destination address is our address, then the node is trying to confirm that
+     *    we exist, and we should respond with a straight NA.
+     */
+    if(this->matching_address(ip6_to)) {
+	dag_network::globalStats[PS_NEIGHBOUR_UNICAST_REACHABILITY]++;
+        return reply_neighbour_advert(from, ip6_to, now, ns, nd_len);
+    }
+
+
 }
 
 /*
- * a NA will be sent as part of the join process to let other devices
+ * a NS will be sent as part of the join process to let other devices
  * know that it exists.
  * It will cause a DAR/DAC process to be initiated upwards.
  *
  */
-int device_identity::build_neighbour_advert(network_interface *iface,
+int device_identity::build_neighbour_solicit(network_interface *iface,
                                             unsigned char *buff,
                                             unsigned int buff_len)
 {
@@ -97,11 +112,11 @@ int device_identity::build_neighbour_advert(network_interface *iface,
 }
 
 
-void network_interface::send_na(device_identity &di)
+void network_interface::send_ns(device_identity &di)
 {
     unsigned char icmp_body[2048];
 
-    debug->log("sending Neighbour Advertisement on if: %s%s\n",
+    debug->log("sending Neighbour Solication on if: %s%s\n",
                this->if_name,
 	       this->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
@@ -109,8 +124,10 @@ void network_interface::send_na(device_identity &di)
     unsigned int icmp_len = di.build_neighbour_advert(this, icmp_body, sizeof(icmp_body));
 
     struct in6_addr all_hosts_inaddr;
+    struct in6_addr unspecified_src;
     memcpy(all_hosts_inaddr.s6_addr, all_hosts_addr, 16);
-    send_raw_icmp(&all_hosts_inaddr, icmp_body, icmp_len);
+    memset(unspecified_src.s6_addr, 0, 16);
+    send_raw_icmp(&all_hosts_inaddr, &unspecified_src, icmp_body, icmp_len);
 }
 
 /*

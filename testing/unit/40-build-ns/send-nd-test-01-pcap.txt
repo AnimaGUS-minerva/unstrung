@@ -1,0 +1,3 @@
+IP6 (hlim 64, next-header ICMPv6 (58) payload length: 40) fe80::216:3eff:fe11:3424 > ff02::1: [icmp6 sum ok] ICMP6, neighbor solicitation, length 40, who has fe80::216:3eff:fe11:3424
+	  unknown option (33), length 16 (2): 
+	    0x0000:  0000 0000 0005 0216 3eff fe11 3424
