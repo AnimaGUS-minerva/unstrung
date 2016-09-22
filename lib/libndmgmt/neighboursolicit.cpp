@@ -40,7 +40,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
 {
     unsigned int dat_len = nd_len;
     struct nd_neighbor_solicit *ns = (struct nd_neighbor_solicit *)dat;
-    debug->info("  processing NS(%u)",nd_len);
+    debug->info("  processing NS(%u)\n",nd_len);
 
     if(this->packet_too_short("ns", nd_len, sizeof(*ns))) return;
 

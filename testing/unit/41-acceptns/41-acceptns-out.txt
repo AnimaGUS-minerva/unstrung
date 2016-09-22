@@ -7,4 +7,30 @@ ip found[1]: wlan0 scope=253 address=fe80::1200:ff:fe66:4a02
 Processing input file ../INPUTS/nodeM-ns.pcap on if=[1]: wlan0 state: active  faked
 packet 1 is being processed
  wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
-  processing NS(36)
+  processing NS(40)
+
+
+global 0000 (+0000) sequence too old
+global 0000 (+0000) packets received
+global 0000 (+0000) packets processed
+global 0000 (+0000) packets received due to watch
+global 0000 (+0000) packets with <dagrank
+global 0000 (+0000) packets with <dagrank rejected
+global 0000 (+0000) packets where subopt was too short
+global 0000 (+0000) packets from self that were ignored
+global 0000 (+0000) DAO packets received
+global 0000 (+0000) DIO packets received
+global 0000 (+0000) DAO packets ignored (non-local DODAG id)
+global 0000 (+0000) DIO packets ignored (non-local DODAG id)
+global 0000 (+0000) DAG created due to watch
+global 0000 (+0000) packet with same parent ignored
+global 0000 (+0000) packet with same sequence ignored
+global 0000 (+0000) DAOACK with unknown DAGID
+global 0000 (+0000) DAOACK with missing DAGID
+global 0000 (+0000) DAOACK from incorrect parent
+global 0000 (+0000) DAOACK with wrong SeqNo
+global 0000 (+0000) unknown RPL type code
+global 0000 (+0000) DIS packets received
+global 0000 (+0000) DIS packets ignored
+global 0000 (+0000) Neighbour Soliciation for Unreachability Detection
+global 0001 (+0001) Neighbour Soliciation for target address
