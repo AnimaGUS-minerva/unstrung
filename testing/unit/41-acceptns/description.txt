@@ -1,0 +1,7 @@
+This test case validates that we can receive a Neighbour Solicitation
+message that has an ARO in it.
+
+
+
+
+
