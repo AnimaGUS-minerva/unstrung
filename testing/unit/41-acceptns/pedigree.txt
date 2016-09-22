@@ -1,2 +1,6 @@
 The inputs for this are created by 40-buildns.
 
+../INPUTS/nodeM-ns-tooshort.pcap was created with:
+           bittwiste -I nodeM-ns.pcap -O nodeM-ns-tooshort.pcap  -D 62-90
+which just truncated the packet.
+
