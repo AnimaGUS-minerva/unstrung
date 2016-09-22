@@ -34,7 +34,12 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_SAME_SEQUENCE_IGNORED]  = "packet with same sequence ignored",
     [PS_DAOACK_PACKET_IGNORED]  = "DAOACK with unknown DAGID",
     [PS_DAOACK_NO_DAGID_IGNORED]= "DAOACK with missing DAGID",
+    [PS_DAOACK_WRONG_PARENT]    = "DAOACK from incorrect parent",
     [PS_DAOACK_WRONG_SEQNO]     = "DAOACK with wrong SeqNo",
+    [PS_RPL_UNKNOWN_CODE]       = "unknown RPL type code",
+    [PS_DIS_PACKET_RECEIVED]    = "DIS packets received",
+    [PS_DIS_PACKET_IGNORED]     = "DIS packets ignored",
+    [PS_NEIGHBOUR_UNICAST_REACHABILITY] = "Neighbour Soliciation for Unreachability Detection",
     [PS_MAX]                    = "max reason"
 };
 
