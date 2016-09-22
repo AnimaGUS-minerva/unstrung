@@ -5,6 +5,7 @@
 
 extern "C" {
 #include <stdarg.h>
+#include <syslog.h>
 }
 
 enum debug_level {
@@ -23,6 +24,9 @@ public:
                 log_syslog = false;
                 this->progname[0]='S';
                 this->progname[1]='\0';
+        };
+        void close_log(void) {
+          logv_flush(LOG_ERR);
         };
 
         /* debugging */
