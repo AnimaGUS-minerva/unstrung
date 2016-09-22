@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
         const char *pcapin1 = "../INPUTS/nodeM-ns.pcap";
         pcap_network_interface *iface = NULL;
 
+        if(argc > 1) pcapin1 = argv[1];
+
         iface = pcap_network_interface::setup_infile_outfile("wlan0",
                                                              pcapin1,
                                                              outpcap, deb);
@@ -81,6 +83,8 @@ int main(int argc, char *argv[])
         /* now drain off any created events */
         network_interface::terminating();
         while(network_interface::force_next_event());
+
+        puts("\n");
 
 	exit(0);
 }

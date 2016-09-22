@@ -4,3 +4,5 @@ The inputs for this are created by 40-buildns.
            bittwiste -I nodeM-ns.pcap -O nodeM-ns-tooshort.pcap  -D 62-90
 which just truncated the packet.
 
+../INPUTS/herring-ns.pcap was captured from a live network:
+   tcpdump -n -w herring-ns.pcap -c 1 ip6 src fe80::216:3eff:fe83:4f47
