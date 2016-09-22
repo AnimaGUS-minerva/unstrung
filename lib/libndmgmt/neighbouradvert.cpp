@@ -39,7 +39,7 @@ void network_interface::receive_neighbour_advert(struct in6_addr from,
                                                  const u_char *dat, const int nd_len)
 {
     unsigned int dat_len = nd_len;
-    debug->info("  processing ND(%u)",nd_len);
+    debug->info("  processing ND(%u)\n",nd_len);
 }
 
 void network_interface::reply_neighbour_advert(struct in6_addr from,
@@ -49,7 +49,7 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
 {
     char dstbuf[INET6_ADDRSTRLEN];
     inet_ntop(AF_INET6, &from, dstbuf, sizeof(dstbuf));
-    debug->info("  sending NA to: %s", dstbuf);
+    debug->info("  sending NA to: %s\n", dstbuf);
 }
 
 void network_interface::reply_mcast_neighbour_advert(struct in6_addr from,
@@ -59,7 +59,7 @@ void network_interface::reply_mcast_neighbour_advert(struct in6_addr from,
 {
     char dstbuf[INET6_ADDRSTRLEN];
     inet_ntop(AF_INET6, &ns->nd_ns_target, dstbuf, sizeof(dstbuf));
-    debug->info("  NS looking for: %s", dstbuf);
+    debug->info("  NS looking for: %s\n", dstbuf);
 }
 
 /*
