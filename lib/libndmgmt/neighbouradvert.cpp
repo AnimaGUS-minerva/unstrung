@@ -27,16 +27,16 @@ extern "C" {
 #include <linux/if.h>           /* for IFNAMSIZ */
 #include "oswlibs.h"
 #include "rpl.h"
-
+#include "neighbour.h"
 }
 
 #include "iface.h"
 #include "devid.h"
 
-void network_interface::receive_neighbour_discovery(struct in6_addr from,
-                                                    struct in6_addr ip6_to,
-                                                    const  time_t now,
-                                                    const u_char *dat, const int nd_len)
+void network_interface::receive_neighbour_advert(struct in6_addr from,
+                                                 struct in6_addr ip6_to,
+                                                 const  time_t now,
+                                                 const u_char *dat, const int nd_len)
 {
     unsigned int dat_len = nd_len;
     debug->info("  processing ND(%u)",nd_len);
@@ -63,8 +63,8 @@ int device_identity::build_neighbour_advert(network_interface *iface,
     memset(buff, 0, buff_len);
 
     icmp6 = (struct icmp6_hdr *)buff;
-    icmp6->icmp6_type = ND_NEIGHBOR_ADVERT;
-    icmp6->icmp6_code =
+    icmp6->icmp6_type = ND_NEIGHBOR_SOLICIT;
+    icmp6->icmp6_code = 0;
     icmp6->icmp6_cksum = 0;
 
     nna = (struct nd_neighbor_advert *)icmp6;
@@ -77,6 +77,18 @@ int device_identity::build_neighbour_advert(network_interface *iface,
     nna->nd_na_flags_reserved = ND_NA_FLAG_OVERRIDE;
     nna->nd_na_target         = iface->link_local();
 
+    /*
+     * now add ARO option in
+     */
+    struct nd_opt_aro *noa = (struct nd_opt_aro *)nextopt;
+    nextopt = (unsigned char *)(noa+1);
+
+    noa->nd_aro_type = ND_OPT_ARO;
+    noa->nd_aro_len  = (sizeof(struct nd_opt_aro)-8)/4; /* 32-bit units */
+    noa->nd_aro_status   = 0;
+    noa->nd_aro_lifetime = htons(ND_ARO_DEFAULT_LIFETIME);
+    memcpy(noa->nd_aro_eui64, iface->get_eui64(), 8);
+
     /* recalculate length */
     len = ((caddr_t)nextopt - (caddr_t)buff);
 
@@ -85,7 +97,7 @@ int device_identity::build_neighbour_advert(network_interface *iface,
 }
 
 
-void network_interface::send_nd(device_identity &di)
+void network_interface::send_na(device_identity &di)
 {
     unsigned char icmp_body[2048];
 

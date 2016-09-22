@@ -1,0 +1,5 @@
+This test case builds an ICMP Neighbour Advertisement message.
+This requires that a fake device identity be created so that it
+can be placed into the extension.
+
+

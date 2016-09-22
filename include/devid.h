@@ -21,6 +21,10 @@ extern "C" {
 
 class device_identity {
 public:
+  int build_neighbour_solicit(network_interface *iface,
+                             unsigned char *buff,
+                             unsigned int buff_len);
+
   int build_neighbour_advert(network_interface *iface,
                              unsigned char *buff,
                              unsigned int buff_len);

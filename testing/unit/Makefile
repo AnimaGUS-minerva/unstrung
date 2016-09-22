@@ -61,6 +61,10 @@ SUBDIRS+=34-builddis
 SUBDIRS+=35-recvdis
 SUBDIRS+=36-peckusage
 SUBDIRS+=37-fmteui
+SUBDIRS+=38-builddaoack
+nSUBDIRS+=39-daoJ
+SUBDIRS+=40-build-ns
+SUBDIRS+=41-acceptns
 
 checkstop::
 	@for d in $(SUBDIRS) ; \

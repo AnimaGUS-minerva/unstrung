@@ -1,3 +1,0 @@
-This test case builds an ICMP Neighbour Advertisement message.
-This requires that a fake device identity be created.
-

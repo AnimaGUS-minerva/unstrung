@@ -619,18 +619,10 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
 
     case ND_NEIGHBOR_SOLICIT:
     {
-	struct nd_neighbor_solicit *nns = (struct nd_neighbor_solicit *)bytes;
-	nd_options = (const struct nd_opt_hdr *)&nns[1];
-	if(debug->verbose_test()) {
-            this->log_received_packet(ip6_src, ip6_dst);
-
-	    char target_addrbuf[INET6_ADDRSTRLEN];
-	    inet_ntop(AF_INET6, &nns->nd_ns_target, target_addrbuf, INET6_ADDRSTRLEN);
-	    debug->verbose("Got neighbour solicitation from %s, looking for %s, has %u bytes of options\n",
-		    src_addrbuf,
-		    target_addrbuf,
-		    bytes_end - (u_char *)nd_options);
-	}
+        this->receive_neighbour_solicit(ip6_src, ip6_dst, now,
+                                        icmp6->icmp6_data8,
+                                        bytes_end - icmp6->icmp6_data8);
+        return;
     }
     break;
 
@@ -878,12 +870,21 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
                                       const unsigned char *icmp_body,
                                       const unsigned int icmp_len)
 {
+    send_raw_icmp(dest, NULL, icmp_body, icmp_len);
+}
+
+void network_interface::send_raw_icmp(struct in6_addr *dest,
+                                      struct in6_addr *src,
+                                      const unsigned char *icmp_body,
+                                      const unsigned int icmp_len)
+{
     struct sockaddr_in6 addr;
     struct in6_pktinfo *pkt_info;
     struct msghdr mhdr;
     struct cmsghdr *cmsg;
     struct iovec iov;
     char __attribute__((aligned(8))) chdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
+    char __attribute__((aligned(8))) shdr[CMSG_SPACE(sizeof(struct in6_pktinfo))];
 
     int err;
 
@@ -917,6 +918,9 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
     cmsg->cmsg_type  = IPV6_PKTINFO;
 
     pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
+    if(src) {
+        pkt_info->ipi6_addr    = *src;
+    }
     pkt_info->ipi6_ifindex = this->get_if_index();
     memcpy(&pkt_info->ipi6_addr, &this->if_addr, sizeof(struct in6_addr));
 

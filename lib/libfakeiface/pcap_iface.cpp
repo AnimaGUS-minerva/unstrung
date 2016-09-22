@@ -94,6 +94,7 @@ void pcap_network_interface::close(void) {
 
 void
 pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
+                                      struct in6_addr *src,
                                       const unsigned char *icmp_body,
                                       const unsigned int icmp_len)
 {
@@ -120,7 +121,9 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     struct ip6_hdr *v6 = (struct ip6_hdr *)layer3;
 
     v6->ip6_src = link_local();
-    /* leave zeroes v6->ip6_src = 0; */
+    if(src) {
+        memcpy(&v6->ip6_src, src, 16);
+    }
     v6->ip6_vfc = 6 << 4;
     memcpy(&v6->ip6_dst, dest, 16);
     v6->ip6_nxt = IPPROTO_ICMPV6;

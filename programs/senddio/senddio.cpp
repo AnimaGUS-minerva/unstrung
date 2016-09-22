@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
     }
 
     if(icmp_len > 0 && (!fakesend || pcapoutfile)) {
-        iface->send_raw_icmp(NULL, icmp_body, icmp_len);
+        iface->send_raw_icmp(NULL, NULL, icmp_body, icmp_len);
     }
 
     exit(0);

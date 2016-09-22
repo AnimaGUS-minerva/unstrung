@@ -1,0 +1,3 @@
+please select either --advert or --solicit
+Usage: sendnd --solicit [] 
+       sendnd --advert  [] 

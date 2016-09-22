@@ -152,9 +152,9 @@ int main(int argc, char *argv[])
 
     if(iface != NULL && icmp_len > 0) {
         if(piface != NULL) {
-            piface->send_raw_icmp(&all_hosts_inaddr, icmp_body, icmp_len);
+            piface->send_raw_icmp(&all_hosts_inaddr, NULL, icmp_body, icmp_len);
         } else {
-            iface->send_raw_icmp(&all_hosts_inaddr, icmp_body, icmp_len);
+            iface->send_raw_icmp(&all_hosts_inaddr, NULL, icmp_body, icmp_len);
         }
     }
 
