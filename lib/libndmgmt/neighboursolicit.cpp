@@ -48,10 +48,26 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
 
     /* 1. if the destination address is our address, then the node is trying to confirm that
      *    we exist, and we should respond with a straight NA.
+     *    RFC4861, section 4.3:
+     *          Neighbor Solicitations are multicast when the node needs
+     *          to resolve an address and UNICAST WHEN THE NODE SEEKS TO VERIFY THE
+     *          reachability of a neighbor.
      */
     if(this->matching_address(ip6_to)) {
 	dag_network::globalStats[PS_NEIGHBOUR_UNICAST_REACHABILITY]++;
-        return reply_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        reply_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        return;
+    }
+
+    /* 2. if the destination address is another
+     *    multicast, it's probably for the multicast group that
+     *    includes the address it is looking for.
+     *
+     */
+    if(IN6_IS_ADDR_MULTICAST(ip6_to.s6_addr)) {
+	dag_network::globalStats[PS_NEIGHBOUR_MCAST_SOLICIT]++;
+        reply_mcast_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        return;
     }
 
 

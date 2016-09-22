@@ -620,8 +620,8 @@ void network_interface::receive_packet(struct in6_addr ip6_src,
     case ND_NEIGHBOR_SOLICIT:
     {
         this->receive_neighbour_solicit(ip6_src, ip6_dst, now,
-                                        icmp6->icmp6_data8,
-                                        bytes_end - icmp6->icmp6_data8);
+                                        (const u_char *)icmp6,
+                                        bytes_end - (const unsigned char *)icmp6);
         return;
     }
     break;
