@@ -211,6 +211,8 @@ public:
     bool                    loopbackP() { return loopback; };
     rpl_node               *node;          /* the node that represents this if */
 
+    bool                    matching_address(struct in6_addr addr);
+
 protected:
     bool                    logged;
     unsigned int            hoplimit;

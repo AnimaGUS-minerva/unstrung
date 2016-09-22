@@ -747,6 +747,12 @@ int network_interface::packet_too_short(const char *thing,
     return 0;
 }
 
+bool network_interface::matching_address(struct in6_addr maybeme)
+{
+    if(memcmp(maybeme.s6_addr, this->ipv6_link_addr.s6_addr, 16)==0) return true;
+    return false;
+}
+
 void network_interface::receive(const time_t now)
 {
     unsigned char b[2048];
