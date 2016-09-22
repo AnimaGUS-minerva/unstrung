@@ -70,6 +70,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
         return;
     }
 
+    dag_network::globalStats[PS_NEIGHBOUR_IGNORED]++;
 
 }
 
