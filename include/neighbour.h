@@ -13,7 +13,7 @@
 
 /*
  * ICMPv6 - Neighbour Discovery --- RFC6775 extensions.
- *    /usr/include/netinet/icmp6.h usually has a base.
+ *    /usr/include/netinet/icmp6.h usually has a base called nd_neighbor_solicit.
  */
 
 enum ND_ND_OPTTYPE {

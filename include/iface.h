@@ -105,6 +105,10 @@ public:
     void send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num);
     void send_ns(device_identity &di);
     void send_na(device_identity &di);
+    void reply_neighbour_advert(struct in6_addr from,
+                                struct in6_addr ip6_to,
+                                const  time_t now,
+                                struct nd_neighbor_solicit *ns, const int ns_len);
 
     static void send_dio_all(dag_network *dag);
     static void send_dao_all(dag_network *dag);
