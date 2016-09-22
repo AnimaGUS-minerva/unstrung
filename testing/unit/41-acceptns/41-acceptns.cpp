@@ -86,6 +86,8 @@ int main(int argc, char *argv[])
 
         puts("\n");
 
+        dag_network::print_all_dagstats(stdout, "");
+
 	exit(0);
 }
 
