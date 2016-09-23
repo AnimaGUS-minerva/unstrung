@@ -66,6 +66,11 @@ public:
         debug = deb;
     }
 
+    bool all_hosts_addrP(struct in6_addr ia) {
+        return memcmp(ia.s6_addr, all_hosts_addr, 16)==0;
+    };
+
+
     virtual int nisystem(const char *cmd);
     virtual int ni_route_show(void);
     virtual void receive_packet(struct in6_addr ip6_src,

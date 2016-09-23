@@ -34,8 +34,9 @@ global 0000 (+0000) unknown RPL type code
 global 0000 (+0000) DIS packets received
 global 0000 (+0000) DIS packets ignored
 global 0000 (+0000) Neighbour Soliciation for Unreachability Detection
-global 0001 (+0001) Neighbour Soliciation for target address
+global 0000 (+0000) Neighbour Soliciation for target address
 global 0000 (+0000) Neighbour Soliciation ignored
 global 0001 (+0001) Neighbour Soliciations received (total)
 global 0000 (+0000) Neighbour Advertisements received (total)
+global 0001 (+0001) Neighbour Solication from new pledge
   NS looking for: fe80::216:3eff:fe11:3424
