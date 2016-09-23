@@ -67,8 +67,13 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
      *
      */
     if(IN6_IS_ADDR_MULTICAST(ip6_to.s6_addr)) {
-	dag_network::globalStats[PS_NEIGHBOUR_MCAST_SOLICIT]++;
-        reply_mcast_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        if(this->all_hosts_addrP(ip6_to)) {
+            dag_network::globalStats[PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]++;
+            reply_mcast_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        } else {
+            dag_network::globalStats[PS_NEIGHBOUR_MCAST_SOLICIT]++;
+            reply_mcast_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        }
         return;
     }
 
