@@ -44,6 +44,7 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_NEIGHBOUR_IGNORED]      = "Neighbour Soliciation ignored",
     [PS_NEIGHBOUR_SOLICIT]      = "Neighbour Soliciations received (total)",
     [PS_NEIGHBOUR_ADVERT]       = "Neighbour Advertisements received (total)",
+    [PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]= "Neighbour Solication from new pledge",
     [PS_MAX]                    = "max reason"
 };
 
