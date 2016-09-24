@@ -16,6 +16,7 @@ extern "C" {
 class dag_network;
 class network_interface;
 class rpl_less;
+
 class rpl_node {
         friend class rpl_less;
 public:
@@ -48,6 +49,13 @@ public:
             ifindex    = index;
             calc_name();
         };
+        void  markvalid(int index, struct in6_addr v6) {
+            nodeip.u.v6.sin6_addr = v6;
+            nodeip.u.v6.sin6_family=AF_INET6;
+            ifindex = index;
+            valid   = true;
+            calc_name();
+        };
         bool  isself() { return self; };
         unsigned int get_ifindex() { return ifindex; };
         bool  is_equal(const struct in6_addr v6) {
@@ -56,6 +64,8 @@ public:
         };
 
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
+
+        static rpl_node *find_by_addr(struct in6_addr v6);
 
 protected:
 	ip_address nodeip;

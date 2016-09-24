@@ -42,24 +42,27 @@ void network_interface::receive_neighbour_advert(struct in6_addr from,
     debug->info("  processing ND(%u)\n",nd_len);
 }
 
-void network_interface::reply_neighbour_advert(struct in6_addr from,
+void network_interface::reply_neighbour_advert(rpl_node &neighbour,
+                                               struct in6_addr from,
                                                struct in6_addr ip6_to,
                                                const  time_t now,
                                                struct nd_neighbor_solicit *ns, const int nd_len)
 {
-    char dstbuf[INET6_ADDRSTRLEN];
-    inet_ntop(AF_INET6, &from, dstbuf, sizeof(dstbuf));
-    debug->info("  sending NA to: %s\n", dstbuf);
+    debug->info("  sending NA to: %s\n", neighbour.node_name());
 }
 
-void network_interface::reply_mcast_neighbour_advert(struct in6_addr from,
-                                               struct in6_addr ip6_to,
-                                               const  time_t now,
-                                               struct nd_neighbor_solicit *ns, const int nd_len)
+void network_interface::reply_mcast_neighbour_advert(rpl_node &neighbour,
+                                                     struct in6_addr from,
+                                                     struct in6_addr ip6_to,
+                                                     const  time_t now,
+                                                     struct nd_neighbor_solicit *ns,
+                                                     const int nd_len)
 {
-    char dstbuf[INET6_ADDRSTRLEN];
-    inet_ntop(AF_INET6, &ns->nd_ns_target, dstbuf, sizeof(dstbuf));
-    debug->info("  NS looking for: %s\n", dstbuf);
+    debug->info("  NS looking for: %s\n", neighbour.node_name());
+
+    /* look up, on this interface, for the appropriate peer */
+
+
 }
 
 /*

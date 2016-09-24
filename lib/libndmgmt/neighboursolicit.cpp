@@ -48,6 +48,11 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
 
     /* there are a number of reasons to see an NS message */
 
+    /* look for the target node, and find the related node */
+    struct in6_addr *neighbourv6 = &ns->nd_ns_target;
+    rpl_node &target = this->neighbours[*neighbourv6];
+    target.markvalid(this->get_if_index(), *neighbourv6);
+
     /* 1. if the destination address is our address, then the node is trying to confirm that
      *    we exist, and we should respond with a straight NA.
      *    RFC4861, section 4.3:
@@ -57,7 +62,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
      */
     if(this->matching_address(ip6_to)) {
 	dag_network::globalStats[PS_NEIGHBOUR_UNICAST_REACHABILITY]++;
-        reply_neighbour_advert(from, ip6_to, now, ns, nd_len);
+        reply_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
         return;
     }
 
@@ -69,10 +74,10 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
     if(IN6_IS_ADDR_MULTICAST(ip6_to.s6_addr)) {
         if(this->all_hosts_addrP(ip6_to)) {
             dag_network::globalStats[PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]++;
-            reply_mcast_neighbour_advert(from, ip6_to, now, ns, nd_len);
+            reply_mcast_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
         } else {
             dag_network::globalStats[PS_NEIGHBOUR_MCAST_SOLICIT]++;
-            reply_mcast_neighbour_advert(from, ip6_to, now, ns, nd_len);
+            reply_mcast_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
         }
         return;
     }
