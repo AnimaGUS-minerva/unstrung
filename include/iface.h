@@ -110,12 +110,15 @@ public:
     void send_daoack(rpl_node &child, dag_network &dag, unsigned short seq_num);
     void send_ns(device_identity &di);
     void send_na(device_identity &di);
-    void reply_neighbour_advert(struct in6_addr from,
+
+    void reply_neighbour_advert(rpl_node &neighbour,
+                                struct in6_addr from,
                                 struct in6_addr ip6_to,
                                 const  time_t now,
                                 struct nd_neighbor_solicit *ns, const int ns_len);
 
-    void reply_mcast_neighbour_advert(struct in6_addr from,
+    void reply_mcast_neighbour_advert(rpl_node &neighbour,
+                                      struct in6_addr from,
                                       struct in6_addr ip6_to,
                                       const  time_t now,
                                       struct nd_neighbor_solicit *ns, const int ns_len);
@@ -308,6 +311,9 @@ private:
     prefix_map              ipv6_prefix_list;  /* for keeping track of what we put into
                                                   the kernel with netlink.
                                                   Always /128 networks */
+
+    /* this is a list of directly attached neighbours, index by their IPv6 link-local address */
+    node_map                neighbours;
 
 
     /* this is global to all the interfaces */
