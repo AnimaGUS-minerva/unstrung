@@ -39,6 +39,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
                                                     const u_char *dat, const int nd_len)
 {
     unsigned int dat_len = nd_len;
+    bool newNode = FALSE;
     struct nd_neighbor_solicit *ns = (struct nd_neighbor_solicit *)dat;
     debug->info("  processing NS(%u)\n",nd_len);
 
@@ -51,7 +52,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
     /* look for the target node, and find the related node */
     struct in6_addr *neighbourv6 = &ns->nd_ns_target;
     rpl_node &target = this->neighbours[*neighbourv6];
-    target.markvalid(this->get_if_index(), *neighbourv6);
+    newNode = !target.validP();
 
     /* 1. if the destination address is our address, then the node is trying to confirm that
      *    we exist, and we should respond with a straight NA.
@@ -61,6 +62,9 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
      *          reachability of a neighbor.
      */
     if(this->matching_address(ip6_to)) {
+        if(this->matching_address(*neighbourv6)) {
+            dag_network::globalStats[PS_NEIGHBOUR_UNICAST_TARGET_NS]++;
+        }
 	dag_network::globalStats[PS_NEIGHBOUR_UNICAST_REACHABILITY]++;
         reply_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
         return;
