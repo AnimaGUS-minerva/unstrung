@@ -63,12 +63,16 @@ public:
             return (memcmp(nodeip.u.v6.sin6_addr.s6_addr, v6.s6_addr, 16)==0);
         };
 
+        void update_nce_stamp(void);
+
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
         static rpl_node *find_by_addr(struct in6_addr v6);
 
 protected:
-	ip_address nodeip;
+	ip_address        nodeip;
+        unsignted int     ethertype;      /* ARPHRD_ETHER, or ARPHRD_IEEE802154 */
+        unsigned char     l2addr[8];
 
 private:
         bool       valid;

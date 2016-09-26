@@ -48,6 +48,12 @@ void network_interface::reply_neighbour_advert(rpl_node &neighbour,
                                                const  time_t now,
                                                struct nd_neighbor_solicit *ns, const int nd_len)
 {
+    target.markvalid(this->get_if_index(), *neighbourv6);
+    } else {
+        target.update_nce_stamp();
+    }
+
+
     debug->info("  sending NA to: %s\n", neighbour.node_name());
 }
 

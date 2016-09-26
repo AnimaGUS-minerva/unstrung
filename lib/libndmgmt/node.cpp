@@ -110,6 +110,11 @@ void rpl_node::makevalid(const struct in6_addr v6,
 }
 
 
+void rpl_node::update_nce_stamp(void)
+{
+    time(&this->lastseen);
+}
+
 void rpl_node::add_route_via_node(ip_subnet &prefix, network_interface *iface)
 {
     // dao_needed = true;
