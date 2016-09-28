@@ -7,6 +7,7 @@ include ${srcdir}../Makefile.testing
 
 RAWPCAP=../OUTPUTS/41-acceptns-out.pcap
 RAWPCAPOUT=../OUTPUTS/41-acceptns-out.txt
+RAWPCAPOUT2=../OUTPUTS/41-acceptns-almec-out.txt
 
 41-acceptns: 41-acceptns.cpp ${LIBS}
 	${CXX} ${CXXFLAGS} -DRAWPCAP=\"${RAWPCAP}\" -o 41-acceptns 41-acceptns.cpp ${LDFLAGS} ${LIBS}
@@ -18,6 +19,7 @@ check::	41-acceptns
 	@mkdir -p ../OUTPUTS
 	./41-acceptns ../INPUTS/nodeM-ns-tooshort.pcap 2>&1 | tee ../OUTPUTS/41-acceptns-tooshort.raw | diff -B - 41-acceptns-tooshort.txt
 	./41-acceptns ../INPUTS/almec-ns.pcap 2>&1 | tee ../OUTPUTS/41-acceptns-almec.raw | diff -B - 41-acceptns-almec.txt
+	${TCPDUMP} -t -v -v -n -r ${RAWPCAP} | tee ${RAWPCAPOUT2} | diff -B - 41-acceptns-almec-capture.txt
 	./41-acceptns 2>&1 | tee ../OUTPUTS/41-acceptns-out.raw | diff -B - 41-acceptns-out.txt
 	${TCPDUMP} -t -v -v -n -r ${RAWPCAP} | tee ${RAWPCAPOUT} | diff -B - 41-acceptns-capture.txt
 
@@ -27,6 +29,6 @@ clean::
 update:
 	cp  ../OUTPUTS/41-acceptns-tooshort.raw  41-acceptns-tooshort.txt
 	cp  ../OUTPUTS/41-acceptns-almec.raw     41-acceptns-almec.txt
-	cp  ${RAWPCAPOUT}                        41-acceptns-capture.txt
+	cp  ${RAWPCAPOUT2}                       41-acceptns-almec-capture.txt
 	cp  ../OUTPUTS/41-acceptns-out.raw       41-acceptns-out.txt
 	cp  ${RAWPCAPOUT}                        41-acceptns-capture.txt

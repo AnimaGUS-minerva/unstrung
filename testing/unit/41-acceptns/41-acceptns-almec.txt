@@ -9,6 +9,7 @@ packet 1 is being processed
  wlan0: received packet from 2607:f0b0:f:2::247 -> ff02::1:ff00:133[1] hoplimit=0
   processing NS(32)
   NS looking for: 2607:f0b0:f:2::133
+sending Neighbour Advertisement on if: wlan0(faked)
 
 
 global 0000 (+0000) sequence too old
@@ -41,4 +42,4 @@ global 0000 (+0000) Neighbour Soliciation ignored
 global 0001 (+0001) Neighbour Soliciations received (total)
 global 0000 (+0000) Neighbour Advertisements received (total)
 global 0000 (+0000) Neighbour Solication from new pledge
-  NS looking for: 2607:f0b0:f:2::133
+sending Neighbour Advertisement on if: wlan0(faked)
