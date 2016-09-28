@@ -134,9 +134,13 @@ int main(int argc, char *argv[])
         usage(10);
     }
 
+    struct in6_addr destip;
+
     if(advert) {
         rpl_node findthis;
         findthis.set_addr(nodeip);
+
+        destip = findthis.node_number();
 
         icmp_len = findthis.build_basic_neighbour_advert(iface, true, icmp_body, sizeof(icmp_body));
     }
@@ -145,6 +149,8 @@ int main(int argc, char *argv[])
         //device_identity di(nodeip);
         device_identity di;
         icmp_len = di.build_neighbour_solicit(iface, icmp_body, sizeof(icmp_body));
+
+        memcpy(destip.s6_addr, all_hosts_addr, 16);
     }
 
 
@@ -160,14 +166,11 @@ int main(int argc, char *argv[])
         }
     }
 
-    struct in6_addr all_hosts_inaddr;
-    memcpy(all_hosts_inaddr.s6_addr, all_hosts_addr, 16);
-
     if(iface != NULL && icmp_len > 0) {
         if(piface != NULL) {
-            piface->send_raw_icmp(&all_hosts_inaddr, NULL, icmp_body, icmp_len);
+            piface->send_raw_icmp(&destip, NULL, icmp_body, icmp_len);
         } else {
-            iface->send_raw_icmp(&all_hosts_inaddr, NULL, icmp_body, icmp_len);
+            iface->send_raw_icmp(&destip, NULL, icmp_body, icmp_len);
         }
     }
 
