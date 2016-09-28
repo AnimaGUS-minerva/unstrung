@@ -1,0 +1,11 @@
+link found[1]: wlan0 type=ether (active new) faked
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
+link found[2]: lo type=loopback (active new) faked
+ip found[2]: lo scope=254 address=::1
+ip found[1]: wlan0 scope=253 address=fe80::1200:ff:fe66:4a02
+Processing input file ../INPUTS/nodeM-ns-tooshort.pcap on if=[1]: wlan0 state: active  faked
+packet 1 is being processed
+ wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
+  processing NS(11)
+ns has invalid len: 11(<24)
