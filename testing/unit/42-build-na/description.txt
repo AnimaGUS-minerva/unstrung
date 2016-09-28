@@ -1,0 +1,7 @@
+This test case builds an ICMP Neighbour Advertisement message.
+This is sent unicast back to the place that asked for it.
+It needs to confirm reachability.
+
+The destination in this case is set to node M: fe80::1200:ff:fe66:4d01.
+
+
