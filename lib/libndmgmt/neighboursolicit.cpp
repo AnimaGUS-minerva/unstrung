@@ -39,7 +39,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
                                                     const u_char *dat, const int nd_len)
 {
     unsigned int dat_len = nd_len;
-    bool newNode = FALSE;
+    bool newNode = false;
     struct nd_neighbor_solicit *ns = (struct nd_neighbor_solicit *)dat;
     debug->info("  processing NS(%u)\n",nd_len);
 
@@ -66,20 +66,25 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
             dag_network::globalStats[PS_NEIGHBOUR_UNICAST_TARGET_NS]++;
         }
 	dag_network::globalStats[PS_NEIGHBOUR_UNICAST_REACHABILITY]++;
-        reply_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
+        reply_neighbour_advert(from, ip6_to, now, ns, nd_len);
         return;
     }
 
-    /* 2. if the destination address is another
-     *    multicast, it's probably for the multicast group that
-     *    includes the address it is looking for.
+    /* 2. if the destination address is rather a  multicast,
+     *    it's probably for the multicast group (the solicited node) multicast
+     *    that includes the address it is looking for.
      *
      */
     if(IN6_IS_ADDR_MULTICAST(ip6_to.s6_addr)) {
+        target.markvalid(this->get_if_index(), *neighbourv6);
+        //target.update_nce_stamp();
+
         if(this->all_hosts_addrP(ip6_to)) {
             dag_network::globalStats[PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]++;
             reply_mcast_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
-        } else {
+        }  else {
+            /* should check here for solicited node multicast group */
+            /* ip6_to.s6_addr[13] == 0xff and ip6_to.s6_addr[12] == 0xff */
             dag_network::globalStats[PS_NEIGHBOUR_MCAST_SOLICIT]++;
             reply_mcast_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
         }
