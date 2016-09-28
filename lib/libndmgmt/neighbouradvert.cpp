@@ -56,7 +56,7 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
     /* look for an SLLAO option in the message */
     rpl_node &source = this->neighbours[from];
 
-    source.markvalid(this->get_if_index(), from);
+    source.markvalid(this->get_if_index(), from, this->debug);
     source.update_nce_stamp();
 
     /* respond with NA for us, which confirms reachability */

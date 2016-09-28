@@ -49,12 +49,17 @@ public:
             ifindex    = index;
             calc_name();
         };
-        void  markvalid(int index, struct in6_addr v6) {
+        void  markvalid(int index, struct in6_addr v6, rpl_debug *deb) {
             nodeip.u.v6.sin6_addr = v6;
             nodeip.u.v6.sin6_family=AF_INET6;
             ifindex = index;
             valid   = true;
             calc_name();
+            if(deb != NULL) {
+                debug = deb;
+            } else {
+                debug = NULL;
+            }
         };
         bool  isself() { return self; };
         unsigned int get_ifindex() { return ifindex; };
