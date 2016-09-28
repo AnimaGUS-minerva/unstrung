@@ -41,6 +41,7 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_DIS_PACKET_IGNORED]     = "DIS packets ignored",
     [PS_NEIGHBOUR_UNICAST_REACHABILITY] = "Neighbour Soliciation for Unreachability Detection",
     [PS_NEIGHBOUR_UNICAST_TARGET_NS] = "Neighbour Soliciation for Unreachability Detection - target",
+    [PS_NEIGHBOUR_UNICAST_SOURCE_UNSPECIFIED] = "Neighbour Soliciation unicast with unspecified source",
     [PS_NEIGHBOUR_MCAST_SOLICIT] = "Neighbour Soliciation for target address",
     [PS_NEIGHBOUR_IGNORED]      = "Neighbour Soliciation ignored",
     [PS_NEIGHBOUR_SOLICIT]      = "Neighbour Soliciations received (total)",

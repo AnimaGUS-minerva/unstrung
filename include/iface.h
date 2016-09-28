@@ -111,8 +111,7 @@ public:
     void send_ns(device_identity &di);
     void send_na(device_identity &di);
 
-    void reply_neighbour_advert(rpl_node &neighbour,
-                                struct in6_addr from,
+    void reply_neighbour_advert(struct in6_addr from,
                                 struct in6_addr ip6_to,
                                 const  time_t now,
                                 struct nd_neighbor_solicit *ns, const int ns_len);

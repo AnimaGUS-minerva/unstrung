@@ -42,19 +42,24 @@ void network_interface::receive_neighbour_advert(struct in6_addr from,
     debug->info("  processing ND(%u)\n",nd_len);
 }
 
-void network_interface::reply_neighbour_advert(rpl_node &neighbour,
-                                               struct in6_addr from,
+void network_interface::reply_neighbour_advert(struct in6_addr from,
                                                struct in6_addr ip6_to,
                                                const  time_t now,
                                                struct nd_neighbor_solicit *ns, const int nd_len)
 {
-    target.markvalid(this->get_if_index(), *neighbourv6);
-    } else {
-        target.update_nce_stamp();
+    /* look up the node by from address, if the from is not :: */
+    if(memcmp(&in6addr_any, &from, 16)==0) {
+        dag_network::globalStats[PS_NEIGHBOUR_UNICAST_SOURCE_UNSPECIFIED]++;
+        return;
     }
 
+    /* look for an SLLAO option in the message */
+    rpl_node &source = this->neighbours[from];
 
-    debug->info("  sending NA to: %s\n", neighbour.node_name());
+    source.markvalid(this->get_if_index(), from);
+    source.update_nce_stamp();
+
+    debug->info("  sending NA to: %s\n", source.node_name());
 }
 
 void network_interface::reply_mcast_neighbour_advert(rpl_node &neighbour,
