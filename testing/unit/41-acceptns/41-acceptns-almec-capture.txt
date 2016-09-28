@@ -1,0 +1,1 @@
+IP6 (hlim 64, next-header ICMPv6 (58) payload length: 24) fe80::216:3eff:fe11:3424 > 2607:f0b0:f:2::247: [icmp6 sum ok] ICMP6, neighbor advertisement, length 24, tgt is fe80::216:3eff:fe11:3424, Flags [solicited, override]
