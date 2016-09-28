@@ -64,8 +64,13 @@ public:
         };
 
         void update_nce_stamp(void);
+        int  build_basic_neighbour_advert(network_interface *iface,
+                                          bool solicited,
+                                          unsigned char *buff, unsigned int buff_len);
 
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
+
+
 
         static rpl_node *find_by_addr(struct in6_addr v6);
 

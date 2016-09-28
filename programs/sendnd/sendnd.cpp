@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
         {"testing",  0, NULL, 'T'},
         {"iface",    1, NULL, 'i'},
         {"outpcap",  1, NULL, 'O'},
-        {"advert",   0, NULL, 'a'},
-        {"solicit",  0, NULL, 's'},
+        {"advert",   1, NULL, 'a'},
+        {"solicit",  1, NULL, 's'},
         {0,0,0,0},
     };
 
@@ -62,16 +62,19 @@ int main(int argc, char *argv[])
     class network_interface *iface = NULL;
     class pcap_network_interface *piface = NULL;
     bool initted = false;
+    char *nodeip = NULL;
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    while((c=getopt_long(argc, argv, "ashi:vTO:?", longoptions, NULL))!=EOF){
+    while((c=getopt_long(argc, argv, "a:s:hi:vTO:?", longoptions, NULL))!=EOF){
         switch(c) {
         case 'a':
             advert=true;
+            nodeip = optarg;
             break;
 
         case 's':
             solicit=true;
+            nodeip = optarg;
             break;
 
         case 'i':
@@ -131,9 +134,19 @@ int main(int argc, char *argv[])
         usage(10);
     }
 
-    device_identity di;
+    if(advert) {
+        rpl_node findthis;
+        findthis.set_addr(nodeip);
 
-    icmp_len = di.build_neighbour_advert(iface, icmp_body, sizeof(icmp_body));
+        icmp_len = findthis.build_basic_neighbour_advert(iface, true, icmp_body, sizeof(icmp_body));
+    }
+
+    if(solicit) {
+        //device_identity di(nodeip);
+        device_identity di;
+        icmp_len = di.build_neighbour_solicit(iface, icmp_body, sizeof(icmp_body));
+    }
+
 
     if(icmp_len == 0) {
         fprintf(stderr, "length of generated packet is 0, none sent\n");
