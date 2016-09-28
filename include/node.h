@@ -71,7 +71,7 @@ public:
 
 protected:
 	ip_address        nodeip;
-        unsignted int     ethertype;      /* ARPHRD_ETHER, or ARPHRD_IEEE802154 */
+        unsigned int      ethertype;      /* ARPHRD_ETHER, or ARPHRD_IEEE802154 */
         unsigned char     l2addr[8];
 
 private:
