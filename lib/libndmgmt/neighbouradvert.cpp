@@ -70,6 +70,51 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
  * It will cause a DAR/DAC process to be initiated upwards.
  *
  */
+class na_construction {
+ public:
+    unsigned char      *buff;
+    unsigned int        buff_len;
+    unsigned char      *nextopt;
+    struct icmp6_hdr   *icmp6;
+    struct nd_neighbor_advert *nna;
+};
+
+void rpl_node::start_neighbour_advert(na_construction &progress)
+{
+    memset(progress.buff, 0, progress.buff_len);
+
+    progress.icmp6 = (struct icmp6_hdr *)progress.buff;
+    progress.icmp6->icmp6_type = ND_NEIGHBOR_ADVERT;
+    progress.icmp6->icmp6_code = 0;
+    progress.icmp6->icmp6_cksum = 0;
+
+    progress.nna = (struct nd_neighbor_advert *)progress.icmp6;
+    progress.nextopt = (unsigned char *)(progress.nna+1);
+
+    /*
+     * ND_NA_FLAG_ROUTER    is off.
+     */
+    progress.nna->nd_na_flags_reserved = ND_NA_FLAG_OVERRIDE;
+    return;
+}
+
+int rpl_node::end_neighbour_advert(na_construction &progress)
+{
+    int len = 0;
+
+    /* calculate length */
+    len = ((caddr_t)progress.nextopt - (caddr_t)progress.buff);
+
+    len = (len + 7)&(~0x7);  /* round up to next multiple of 64-bits */
+    return len;
+}
+
+/*
+ * a NA will be sent as part of the join process to let other devices
+ * know that it exists.
+ * It will cause a DAR/DAC process to be initiated upwards.
+ *
+ */
 int rpl_node::build_basic_neighbour_advert(network_interface *iface,
                                            bool solicited,
                                            unsigned char *buff,
@@ -83,31 +128,19 @@ int rpl_node::build_basic_neighbour_advert(network_interface *iface,
     int optlen;
     int len = 0;
 
-    memset(buff, 0, buff_len);
+    na_construction buildit;
+    buildit.buff = buff;
+    buildit.buff_len = buff_len;
 
-    icmp6 = (struct icmp6_hdr *)buff;
-    icmp6->icmp6_type = ND_NEIGHBOR_ADVERT;
-    icmp6->icmp6_code = 0;
-    icmp6->icmp6_cksum = 0;
+    start_neighbour_advert(buildit);
 
-    nna = (struct nd_neighbor_advert *)icmp6;
-    nextopt = (unsigned char *)(nna+1);
-
-    /*
-     * ND_NA_FLAG_ROUTER    is off.
-     */
-    nna->nd_na_flags_reserved = ND_NA_FLAG_OVERRIDE;
     if(solicited) {
-        nna->nd_na_flags_reserved |= ND_NA_FLAG_SOLICITED;
+        buildit.nna->nd_na_flags_reserved |= ND_NA_FLAG_SOLICITED;
     }
 
-    nna->nd_na_target         = iface->link_local();
+    buildit.nna->nd_na_target         = iface->link_local();
 
-    /* calculate length */
-    len = ((caddr_t)nextopt - (caddr_t)buff);
-
-    len = (len + 7)&(~0x7);  /* round up to next multiple of 64-bits */
-    return len;
+    return end_neighbour_advert(buildit);
 }
 
 void rpl_node::reply_mcast_neighbour_advert(network_interface *iface,

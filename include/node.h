@@ -16,6 +16,7 @@ extern "C" {
 class dag_network;
 class network_interface;
 class rpl_less;
+class na_construction;
 
 class rpl_node {
         friend class rpl_less;
@@ -79,8 +80,15 @@ public:
                                           const  time_t now,
                                           struct nd_neighbor_solicit *ns,
                                           const int nd_len);
-        void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
+        void reply_mcast_neighbour_join(network_interface *iface,
+                                        struct in6_addr from,
+                                        struct in6_addr ip6_to,
+                                        const  time_t now,
+                                        struct nd_neighbor_solicit *ns,
+                                        const int nd_len);
+
+        void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
 
         static rpl_node *find_by_addr(struct in6_addr v6);
@@ -89,6 +97,10 @@ protected:
 	ip_address        nodeip;
         unsigned int      ethertype;      /* ARPHRD_ETHER, or ARPHRD_IEEE802154 */
         unsigned char     l2addr[8];
+
+        void start_neighbour_advert(na_construction &progress);
+        int  end_neighbour_advert(na_construction &progress);
+
 
 private:
         bool       valid;
