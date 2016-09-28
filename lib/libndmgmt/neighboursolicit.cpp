@@ -76,17 +76,16 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
      *
      */
     if(IN6_IS_ADDR_MULTICAST(ip6_to.s6_addr)) {
-        target.markvalid(this->get_if_index(), *neighbourv6);
-        //target.update_nce_stamp();
+        target.markvalid(this->get_if_index(), *neighbourv6, this->debug);
 
         if(this->all_hosts_addrP(ip6_to)) {
             dag_network::globalStats[PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]++;
-            reply_mcast_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
+            //reply_mcast_neighbour_join(target, from, ip6_to, now, ns, nd_len);
         }  else {
             /* should check here for solicited node multicast group */
             /* ip6_to.s6_addr[13] == 0xff and ip6_to.s6_addr[12] == 0xff */
             dag_network::globalStats[PS_NEIGHBOUR_MCAST_SOLICIT]++;
-            reply_mcast_neighbour_advert(target, from, ip6_to, now, ns, nd_len);
+            target.reply_mcast_neighbour_advert(this, from, ip6_to, now, ns, nd_len);
         }
         return;
     }

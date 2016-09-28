@@ -73,6 +73,12 @@ public:
                                           bool solicited,
                                           unsigned char *buff, unsigned int buff_len);
 
+        void reply_mcast_neighbour_advert(network_interface *iface,
+                                          struct in6_addr from,
+                                          struct in6_addr ip6_to,
+                                          const  time_t now,
+                                          struct nd_neighbor_solicit *ns,
+                                          const int nd_len);
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
 

@@ -64,20 +64,6 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
 
 }
 
-void network_interface::reply_mcast_neighbour_advert(rpl_node &neighbour,
-                                                     struct in6_addr from,
-                                                     struct in6_addr ip6_to,
-                                                     const  time_t now,
-                                                     struct nd_neighbor_solicit *ns,
-                                                     const int nd_len)
-{
-    debug->info("  NS looking for: %s\n", neighbour.node_name());
-
-    /* look up, on this interface, for the appropriate peer */
-
-
-}
-
 /*
  * a NA will be sent as part of the join process to let other devices
  * know that it exists.
@@ -124,23 +110,30 @@ int rpl_node::build_basic_neighbour_advert(network_interface *iface,
     return len;
 }
 
-#if 0
-void network_interface::send_na(device_identity &di)
+void rpl_node::reply_mcast_neighbour_advert(network_interface *iface,
+                                            struct in6_addr from,
+                                            struct in6_addr ip6_to,
+                                            const  time_t now,
+                                            struct nd_neighbor_solicit *ns,
+                                            const int nd_len)
 {
+    debug->info("  NS looking for: %s\n", this->node_name());
+
+    /* look up, on this interface, for the appropriate peer */
+    update_nce_stamp();
+
     unsigned char icmp_body[2048];
 
     debug->log("sending Neighbour Advertisement on if: %s%s\n",
-               this->if_name,
-	       this->faked() ? "(faked)" : "");
+               iface->get_if_name(),
+	       iface->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = di.build_neighbour_advert(this, icmp_body, sizeof(icmp_body));
+    unsigned int icmp_len = build_basic_neighbour_advert(iface, true, icmp_body, sizeof(icmp_body));
 
-    struct in6_addr all_hosts_inaddr;
-    memcpy(all_hosts_inaddr.s6_addr, all_hosts_addr, 16);
-    send_raw_icmp(&all_hosts_inaddr, NULL, icmp_body, icmp_len);
+    /* src set to NULL, because we received this via mcast, reply with our address on this iface */
+    iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
 }
-#endif
 
 /*
  * Local Variables:
