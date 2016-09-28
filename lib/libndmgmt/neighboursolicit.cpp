@@ -159,7 +159,7 @@ void network_interface::send_ns(device_identity &di)
 	       this->faked() ? "(faked)" : "");
     memset(icmp_body, 0, sizeof(icmp_body));
 
-    unsigned int icmp_len = di.build_neighbour_advert(this, icmp_body, sizeof(icmp_body));
+    unsigned int icmp_len = di.build_neighbour_solicit(this, icmp_body, sizeof(icmp_body));
 
     struct in6_addr all_hosts_inaddr;
     struct in6_addr unspecified_src;

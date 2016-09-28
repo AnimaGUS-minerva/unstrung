@@ -59,7 +59,9 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
     source.markvalid(this->get_if_index(), from);
     source.update_nce_stamp();
 
+    /* respond with NA for us, which confirms reachability */
     debug->info("  sending NA to: %s\n", source.node_name());
+
 }
 
 void network_interface::reply_mcast_neighbour_advert(rpl_node &neighbour,
@@ -82,9 +84,10 @@ void network_interface::reply_mcast_neighbour_advert(rpl_node &neighbour,
  * It will cause a DAR/DAC process to be initiated upwards.
  *
  */
-int device_identity::build_neighbour_advert(network_interface *iface,
-                                            unsigned char *buff,
-                                            unsigned int buff_len)
+int rpl_node::build_basic_neighbour_advert(network_interface *iface,
+                                           bool solicited,
+                                           unsigned char *buff,
+                                           unsigned int buff_len)
 {
     struct sockaddr_in6 addr;
     struct in6_addr *dest = NULL;
@@ -97,7 +100,7 @@ int device_identity::build_neighbour_advert(network_interface *iface,
     memset(buff, 0, buff_len);
 
     icmp6 = (struct icmp6_hdr *)buff;
-    icmp6->icmp6_type = ND_NEIGHBOR_SOLICIT;
+    icmp6->icmp6_type = ND_NEIGHBOR_ADVERT;
     icmp6->icmp6_code = 0;
     icmp6->icmp6_cksum = 0;
 
@@ -106,31 +109,22 @@ int device_identity::build_neighbour_advert(network_interface *iface,
 
     /*
      * ND_NA_FLAG_ROUTER    is off.
-     * ND_NA_FLAG_SOLICITED is off.
      */
     nna->nd_na_flags_reserved = ND_NA_FLAG_OVERRIDE;
+    if(solicited) {
+        nna->nd_na_flags_reserved |= ND_NA_FLAG_SOLICITED;
+    }
+
     nna->nd_na_target         = iface->link_local();
 
-    /*
-     * now add ARO option in
-     */
-    struct nd_opt_aro *noa = (struct nd_opt_aro *)nextopt;
-    nextopt = (unsigned char *)(noa+1);
-
-    noa->nd_aro_type = ND_OPT_ARO;
-    noa->nd_aro_len  = (sizeof(struct nd_opt_aro)-8)/4; /* 32-bit units */
-    noa->nd_aro_status   = 0;
-    noa->nd_aro_lifetime = htons(ND_ARO_DEFAULT_LIFETIME);
-    memcpy(noa->nd_aro_eui64, iface->get_eui64(), 8);
-
-    /* recalculate length */
+    /* calculate length */
     len = ((caddr_t)nextopt - (caddr_t)buff);
 
     len = (len + 7)&(~0x7);  /* round up to next multiple of 64-bits */
     return len;
 }
 
-
+#if 0
 void network_interface::send_na(device_identity &di)
 {
     unsigned char icmp_body[2048];
@@ -144,8 +138,9 @@ void network_interface::send_na(device_identity &di)
 
     struct in6_addr all_hosts_inaddr;
     memcpy(all_hosts_inaddr.s6_addr, all_hosts_addr, 16);
-    send_raw_icmp(&all_hosts_inaddr, icmp_body, icmp_len);
+    send_raw_icmp(&all_hosts_inaddr, NULL, icmp_body, icmp_len);
 }
+#endif
 
 /*
  * Local Variables:
