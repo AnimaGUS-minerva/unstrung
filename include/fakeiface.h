@@ -102,6 +102,17 @@ public:
                                   struct network_interface_init *nii,
                                   unsigned char addr[16]);
 
+        void set_neighbour_declined(struct in6_addr nip, bool declined) {
+            rpl_node &neighbour = find_neighbour(nip);
+            neighbour.set_declined(declined);
+        };
+        bool set_neighbour_declined(char *neighbourip, bool declined) {
+            struct in6_addr nip;
+            if(inet_pton(AF_INET6, neighbourip, &nip) != 1) return false;
+            set_neighbour_declined(nip, declined);
+            return true;
+        };
+
 protected:
         virtual bool system_get_disable_ipv6(void);
         void filter_and_receive_icmp6(const time_t now,

@@ -219,6 +219,8 @@ public:
 
     bool                    matching_address(struct in6_addr addr);
 
+    rpl_node &              find_neighbour(struct in6_addr nip);
+
 protected:
     bool                    logged;
     unsigned int            hoplimit;

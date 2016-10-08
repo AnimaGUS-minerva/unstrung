@@ -168,6 +168,80 @@ void rpl_node::reply_mcast_neighbour_advert(network_interface *iface,
     iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
 }
 
+void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
+                                          struct in6_addr from,
+                                          struct in6_addr ip6_to,
+                                          const  time_t now,
+                                          struct nd_neighbor_solicit *ns,
+                                          const int nd_len)
+{
+    unsigned char icmp_body[2048];
+    debug->info("  %s is looking to join network\n", this->node_name());
+
+    unsigned char *in_nextopt = (unsigned char *)(ns+1);
+    unsigned char *optend     = ((unsigned char *)ns) + nd_len;
+    struct nd_opt_aro *in_aro_opt = NULL;
+
+    while(in_nextopt < (optend-sizeof(struct nd_opt_hdr))) {
+        struct nd_opt_hdr *opt = (struct nd_opt_hdr *)in_nextopt;
+
+        /* process the options */
+        switch(opt->nd_opt_type) {
+        case ND_OPT_SOURCE_LINKADDR:
+            break;
+        case ND_OPT_TARGET_LINKADDR:
+        case ND_OPT_PREFIX_INFORMATION:
+        case ND_OPT_REDIRECTED_HEADER:
+        case ND_OPT_MTU:
+        case ND_OPT_RTR_ADV_INTERVAL:
+        case ND_OPT_HOME_AGENT_INFO:
+            break;
+
+        case ND_OPT_ARO:
+            struct nd_opt_aro *noa1 = (struct nd_opt_aro *)opt;
+            if(!in_aro_opt) in_aro_opt = noa1;
+            debug->info("ARO with target: %02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+                        noa1->nd_aro_eui64[0], noa1->nd_aro_eui64[1],
+                        noa1->nd_aro_eui64[2], noa1->nd_aro_eui64[3],
+                        noa1->nd_aro_eui64[4], noa1->nd_aro_eui64[5],
+                        noa1->nd_aro_eui64[6], noa1->nd_aro_eui64[7]);
+            break;
+        }
+
+        in_nextopt = (in_nextopt + (opt->nd_opt_len * 8));
+    }
+
+
+
+    /* see if NCE says that node was already declined. */
+    if(this->join_declined()) {
+        debug->log("sending declining Neighbour Advertisement on if: %s%s\n",
+                   iface->get_if_name(),
+                   iface->faked() ? "(faked)" : "");
+
+        na_construction buildit;
+        buildit.buff     = icmp_body;
+        buildit.buff_len = sizeof(icmp_body);
+        start_neighbour_advert(buildit);
+        buildit.nna->nd_na_flags_reserved |= ND_NA_FLAG_SOLICITED;
+        buildit.nna->nd_na_target         = this->node_number();
+
+        struct nd_opt_aro *noa = (struct nd_opt_aro *)buildit.nextopt;
+        buildit.nextopt = (unsigned char *)(noa+1);
+
+        if(in_aro_opt) {
+            *noa = *in_aro_opt;
+        }
+        noa->nd_aro_status   = ND_NS_JOIN_DECLINED;
+
+        unsigned int icmp_len = end_neighbour_advert(buildit);
+
+        /* src set to NULL, because we received this via mcast, reply with our address on this iface */
+        iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
+        return;
+    }
+}
+
 /*
  * Local Variables:
  * c-basic-offset:4

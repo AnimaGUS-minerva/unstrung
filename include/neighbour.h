@@ -49,6 +49,15 @@ struct nd_opt_aro {
 
 #define ND_ARO_DEFAULT_LIFETIME 5
 
+/* from RFC 6775, section 4.1 */
+enum nd_aro_status {
+    ND_NS_SUCCEEDED = 0,
+    ND_NS_DUPLICATE_ADDRESS = 1,
+    ND_NS_CACHE_FULL        = 2,
+    ND_NS_JOIN_DECLINED     = 253  /* not official yet */
+};
+
+
 
 #define _NEIGHBOUR_H_
 #endif /*  _NEIGHBOUR_H_ */

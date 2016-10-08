@@ -90,6 +90,8 @@ public:
 
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
+        bool join_declined(void) { return alreadyDeclined; };
+        void set_declined(bool declined) { alreadyDeclined = declined; };
 
         static rpl_node *find_by_addr(struct in6_addr v6);
 
@@ -101,6 +103,7 @@ protected:
         void start_neighbour_advert(na_construction &progress);
         int  end_neighbour_advert(na_construction &progress);
 
+        bool              alreadyDeclined;
 
 private:
         bool       valid;

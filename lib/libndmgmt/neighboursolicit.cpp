@@ -33,6 +33,16 @@ extern "C" {
 #include "iface.h"
 #include "devid.h"
 
+rpl_node & network_interface::find_neighbour(struct in6_addr nip)
+{
+    rpl_node &target = this->neighbours[nip];
+    if(!target.validP()) {
+        target.markvalid(this->get_if_index(), nip, this->debug);
+    }
+    return target;
+}
+
+
 void network_interface::receive_neighbour_solicit(struct in6_addr from,
                                                     struct in6_addr ip6_to,
                                                     const  time_t now,
@@ -51,7 +61,8 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
 
     /* look for the target node, and find the related node */
     struct in6_addr *neighbourv6 = &ns->nd_ns_target;
-    rpl_node &target = this->neighbours[*neighbourv6];
+
+    rpl_node &target = find_neighbour(*neighbourv6);
     newNode = !target.validP();
 
     /* 1. if the destination address is our address, then the node is trying to confirm that
@@ -80,7 +91,7 @@ void network_interface::receive_neighbour_solicit(struct in6_addr from,
 
         if(this->all_hosts_addrP(ip6_to)) {
             dag_network::globalStats[PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]++;
-            //reply_mcast_neighbour_join(target, from, ip6_to, now, ns, nd_len);
+            target.reply_mcast_neighbour_join(this, from, ip6_to, now, ns, nd_len);
         }  else {
             /* should check here for solicited node multicast group */
             /* ip6_to.s6_addr[13] == 0xff and ip6_to.s6_addr[12] == 0xff */

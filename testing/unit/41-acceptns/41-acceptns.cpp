@@ -32,8 +32,10 @@ int main(int argc, char *argv[])
         const char *outpcap = "../OUTPUTS/41-acceptns-out.pcap";
         const char *pcapin1 = "../INPUTS/nodeM-ns.pcap";
         pcap_network_interface *iface = NULL;
+        char *declinedneighbour = NULL;
 
         if(argc > 1) pcapin1 = argv[1];
+        if(argc > 2) declinedneighbour = argv[2];
 
         iface = pcap_network_interface::setup_infile_outfile("wlan0",
                                                              pcapin1,
@@ -44,6 +46,10 @@ int main(int argc, char *argv[])
 	n.tv_sec = 1024*1024*1024;
 	n.tv_usec = 1024;
 	iface->set_fake_time(n);
+
+        if(declinedneighbour) {
+          iface->set_neighbour_declined(declinedneighbour, true);
+        }
 
         /* now override our identity from faked out identity */
         /* this needs to be taken from a device identifier certificate */
