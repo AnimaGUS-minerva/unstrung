@@ -8,6 +8,9 @@ Processing input file ../INPUTS/nodeM-ns.pcap on if=[1]: wlan0 state: active  fa
 packet 1 is being processed
  wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
   processing NS(40)
+  fe80::216:3eff:fe11:3424 is looking to join network
+ARO with target: 0216:3eff:fe11:3424
+sending declining Neighbour Advertisement on if: wlan0(faked)
 
 
 global 0000 (+0000) sequence too old
@@ -40,4 +43,4 @@ global 0000 (+0000) Neighbour Soliciation ignored
 global 0001 (+0001) Neighbour Soliciations received (total)
 global 0000 (+0000) Neighbour Advertisements received (total)
 global 0001 (+0001) Neighbour Solication from new pledge
-  processing NS(40)
+sending declining Neighbour Advertisement on if: wlan0(faked)
