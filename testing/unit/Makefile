@@ -65,6 +65,8 @@ SUBDIRS+=38-builddaoack
 nSUBDIRS+=39-daoJ
 SUBDIRS+=40-build-ns
 SUBDIRS+=41-acceptns
+SUBDIRS+=42-build-na
+SUBDIRS+=43-sendgrasp
 
 checkstop::
 	@for d in $(SUBDIRS) ; \
