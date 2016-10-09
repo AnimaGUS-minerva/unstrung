@@ -1,0 +1,8 @@
+This case tests building a grasp request in CBOR and sending it down a
+TCP pipe.  For the purposes of testing, the pipe is just a file.
+
+
+
+
+
+
