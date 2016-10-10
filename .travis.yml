@@ -18,9 +18,9 @@ before_install:
 install:
   - "sudo apt-get install gcc-multilib g++-multilib pkg-config libssl1.0.0 libssl-dev"
   - "sudo cp /usr/lib/x86_64-linux-gnu/libcrypto* /tmp"
-  - "sudo apt-get install build-essential lib32stdc++6 libusb-1.0-0-dev:i386 lib32z1-dev flex bison libssl-dev:i386 libboost-dev libcmocka-dev libcmocka0:i386 libcmocka0:amd64 "
+  - "sudo apt-get install build-essential lib32stdc++6 libdbus-1-dev libusb-1.0-0-dev:i386 libusb-1.0-0-dev:amd64 lib32z1-dev flex bison libssl-dev:i386 libboost-dev libcmocka-dev libcmocka0:i386 libcmocka0:amd64 cmake"
   - "sudo mv /tmp/libcrypto* /usr/lib/x86_64-linux-gnu"
-  - "gem install ronn"
+  - "gem install ronn cbor cbor-diag"
   - "./build-setup-travis.sh"
   - "PATH=$HOME/bin:$PATH export PATH"
 
