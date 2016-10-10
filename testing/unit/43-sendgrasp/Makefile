@@ -18,7 +18,7 @@ programs::
 check::	43-sendgrasp
 	@mkdir -p ../OUTPUTS
 	./43-sendgrasp 2>&1 | tee ../OUTPUTS/43-sendgrasp-out.raw | diff -B - 43-sendgrasp-out.txt
-	-cbor-pretty ../OUTPUTS/43-6join-grasp.dump | tee ${RAWGRASPOUT} | diff -B - 43-grasp-out.txt
+	-cbor2pretty.rb ../OUTPUTS/43-6join-grasp.dump | tee ${RAWGRASPOUT} | diff -B - 43-grasp-out.txt
 
 clean::
 	@rm -rf 43-sendgrasp *.o

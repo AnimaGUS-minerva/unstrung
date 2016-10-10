@@ -67,5 +67,5 @@ echo MBEDTLSLIB=${BUILDTOP}/lib                      >>Makefile.local
 echo NETDISSECTLIB=${BUILDTOP}/host/tcpdump-4.8.0/libnetdissect.a >>Makefile.local
 echo NETDISSECTH=-DNETDISSECT -I${BUILDTOP}/include -I${BUILDTOP}/host/tcpdump-4.8.0/ -I${BUILDTOP}/tcpdump >>Makefile.local
 echo CBOR_LIB=${BUILDTOP}/${HOST}/lib/libcbor.a      >>Makefile.local
-echo CBOR_INC=${BUILDTOP}/include                    >>Makefile.local
+echo CBOR_INCLUDE=-I${BUILDTOP}/include -Drestrict=__restrict__   >>Makefile.local
 echo export ARCH LIBPCAP LIBPCAP_HOST LIBPCAPINC TCPDUMP NETDISSECTLIB NETDISSECTH >>Makefile.local
