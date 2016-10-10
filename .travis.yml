@@ -18,11 +18,7 @@ before_install:
 # the cp is because libssl-dev:i386 and libssl-dev:amd64 can not co-exist together due to package
 # incompatibilities, but in fact have no problems in practice.
 install:
-  - "sudo apt-get install dpkg-dev gcc-multilib g++-multilib pkg-config libssl1.0.0 libssl-dev"
-  - "sudo cp /usr/lib/x86_64-linux-gnu/libcrypto* /tmp"
-  - "sudo apt-get install build-essential lib32stdc++6 libdbus-1-dev libusb-1.0-0-dev:i386 libusb-1.0-0-dev:amd64 lib32z1-dev flex bison libssl-dev:i386 libboost-dev libcmocka-dev libcmocka0:i386 libcmocka0:amd64 cmake"
-  - "sudo mv /tmp/libcrypto* /usr/lib/x86_64-linux-gnu"
-  - "gem install ronn cbor cbor-diag"
+  - "sudo ./install-apt-deps.sh"
   - "./build-setup-travis.sh"
   - "PATH=$HOME/bin:$PATH export PATH"
 
