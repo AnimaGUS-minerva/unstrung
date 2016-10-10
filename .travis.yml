@@ -19,6 +19,7 @@ before_install:
 # incompatibilities, but in fact have no problems in practice.
 install:
   - "sudo ./install-apt-deps.sh"
+  - "rvm use 2.1.5"
   - "./build-setup-travis.sh"
   - "PATH=$HOME/bin:$PATH export PATH"
 
