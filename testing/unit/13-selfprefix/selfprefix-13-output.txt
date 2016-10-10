@@ -9,7 +9,9 @@ ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
     would invoke cmd: ip -6 route show
 packet 1 is being processed
  wlan0: received packet from :: -> ff02::1:ff64:6423[1] hoplimit=0
-Got neighbour solicitation from ::, looking for 2001:db8:1:0:1200:ff:fe64:6423, has 0 bytes of options
+  processing NS(24)
+  NS looking for: 2001:db8:1:0:1200:ff:fe64:6423
+sending Neighbour Advertisement on if: wlan0(faked)
 packet 2 is not ICMPv6, but=proto:0
 packet 3 is being processed
  wlan0: received packet from fe80::1000:ff:fe64:6423 -> ff02::1[1] hoplimit=0
