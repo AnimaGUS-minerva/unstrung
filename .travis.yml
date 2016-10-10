@@ -1,5 +1,6 @@
 # the cp for the libcrypto modules keeps us from using the containers.
 sudo: required
+dist: trusty
 
 language: c++
 compiler:
