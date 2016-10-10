@@ -59,7 +59,7 @@ fi
 LIBPCAP=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a
 
 echo LIBPCAP=${LIBPCAP} -lpthread -ldbus-1 >Makefile.local
-echo LIBPCAP_HOST=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a -lpthread -ldbus-1 >>Makefile.local
+echo LIBPCAP_HOST=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a -lpthread -lusb-1.0 -ldbus-1 >>Makefile.local
 echo LIBPCAPINC=-I${BUILDTOP}/include                >>Makefile.local
 echo TCPDUMP=${BUILDTOP}/host/tcpdump-4.8.0/tcpdump  >>Makefile.local
 echo MBEDTLSH=-I${BUILDTOP}/include                  >>Makefile.local
