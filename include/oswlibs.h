@@ -70,6 +70,7 @@ typedef struct {
 extern err_t ttosubnet(const char *src, size_t srclen, int af, ip_subnet *dst);
 /* looks up names in DNS */
 extern err_t ttoaddr(const char *src, size_t srclen, int af, ip_address *dst);
+extern err_t ttoaddr_num(const char *src, size_t srclen, int af, ip_address *dst);
 extern err_t tnatoaddr(const char *src, size_t srclen, int af, ip_address *dst);
 
 extern void setportof(int port, ip_address *dst);
