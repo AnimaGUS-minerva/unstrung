@@ -6,6 +6,7 @@
 
 extern "C" {
 #include "hexdump.c"
+#include "grasp.h"
 #include "pcap.h"
 #include "sll.h"
 #include "ether.h"
@@ -28,18 +29,6 @@ int main(int argc, char *argv[])
 
         /* we are writing a GRASP: 3.7.5.  Request Messages */
         /*  request-negotiation-message = [M_REQ_NEG, session-id, objective]*/
-
-        enum grasp_message {
-          M_NOOP = 0,
-          M_DISCOVERY = 1,
-          M_RESPONSE = 2,
-          M_REQ_NEG = 3,
-          M_REQ_SYN = 4,
-          M_NEGOTIATE = 5,
-          M_END = 6,
-          M_WAIT = 7,
-          M_SYNCH = 8,
-          M_FLOOD = 9};
 
 	/* Preallocate the new array structure */
 	cbor_item_t * root = cbor_new_definite_array(3);
@@ -118,6 +107,57 @@ int main(int argc, char *argv[])
 
 	fflush(stdout);
 	cbor_decref(&root);
+
+        FILE *in = fopen("grasp-reply.dump", "r");
+        if(!in) {
+          fprintf(stderr, "Can not open grasp-reply.dump: %s", strerror(errno));
+          exit(10);
+        }
+
+        unsigned char buf[256];
+        struct cbor_load_result res;
+        unsigned int cnt = fread(buf, 1, 256, in);
+
+        cbor_item_t *reply = cbor_load(buf, cnt, &res);
+        if(!reply) {
+          fprintf(stderr, "Can not load reply: decode details");
+          exit(12);
+        }
+        /* Pretty-print the result */
+        cbor_describe(reply, stdout);
+
+        if(cbor_typeof(reply) != CBOR_TYPE_ARRAY) {
+          fprintf(stderr, "GRASP objects should be array\n");
+          exit(13);
+        }
+
+        cbor_item_t *msgitem = cbor_array_get(reply, 0);
+        unsigned int msgtype = cbor_get_int(msgitem);
+
+        if(msgtype != M_END) {
+          fprintf(stderr, "GRASP response should be M_END\n");
+          exit(13);
+        }
+
+        cbor_item_t *session = cbor_array_get(reply, 1);
+        unsigned int sessionid = cbor_get_int(session);
+        printf("session-id: %04x\n", sessionid);
+
+        cbor_item_t *result = cbor_array_get(reply, 2);
+        if(!result) {
+          fprintf(stderr, "GRASP response does not contain result option\n");
+          exit(14);
+        }
+
+        cbor_item_t *option = cbor_array_get(result, 0);
+        unsigned int optionnum = cbor_get_int(option);
+        printf("option_num: %d\n", optionnum);
+
+        if(optionnum == O_ACCEPT) {
+          printf("accept eui64\n");
+        } else {
+          printf("decline eui64\n");
+        }
 
         deb->close_log();
 	exit(0);
