@@ -1,2 +1,10 @@
 0000: 83 03 1a 6b  8b 45 67 84  6b 34 36 39  33 30 3a 36    ...k.Eg.k46930:6
 0010: 4a 4f 49 4e  02 02 81 48  01 02 03 04  05 06 07 08    JOIN...H........
+ [CBOR_TYPE_ARRAY] Definite, size: 3
+    [CBOR_TYPE_UINT] Width: 1B, Value: 6
+    [CBOR_TYPE_UINT] Width: 4B, Value: 1804289383
+    [CBOR_TYPE_ARRAY] Definite, size: 1
+        [CBOR_TYPE_UINT] Width: 1B, Value: 101
+session-id: 6b8b4567
+option_num: 101
+accept eui64
