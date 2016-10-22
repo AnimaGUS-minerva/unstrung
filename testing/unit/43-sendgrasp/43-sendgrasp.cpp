@@ -43,19 +43,6 @@ int main(int argc, char *argv[])
         }
 
         /*
-         *    objective-flags = uint .bits objective-flag
-         * objective-flag = &(
-         *    F_DISC: 0 ; valid for discovery only
-         *    F_NEG: 1 ; valid for discovery and negotiation
-         *    F_SYNCH: 2) ; valid for discovery and synchronization
-         */
-        enum objective_flags {
-          F_DISC = 0,
-          F_NEG  = 1,
-          F_SYNCH= 2,
-        };
-
-        /*
          *
          * objective = [objective-name, objective-flags, loop-count, ?any]
          * objective-name = text ;see specification for uniqueness rules
@@ -82,10 +69,12 @@ int main(int argc, char *argv[])
 
           unsigned char mac1[8] = { 0x1, 0x2, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
           {
-            cbor_item_t * aro_box   = cbor_new_definite_array(1);
+            cbor_item_t * aro_box   = cbor_new_definite_array(2);
             cbor_item_t * aro       = cbor_build_bytestring(mac1, 8);
             cbor_array_set(aro_box,   0, cbor_move(aro));
             cbor_array_set(objective, 3, cbor_move(aro_box));
+
+            cbor_array_set(aro_box,   1, cbor_move(cbor_build_string("6p-ipip")));
           }
 
           cbor_array_set(root, 2, cbor_move(objective));
