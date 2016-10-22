@@ -1,6 +1,9 @@
 #ifndef _GRASP_H_
 #define _GRASP_H_
 
+/* forward reference */
+class rpl_debug;
+
 enum grasp_message {
   M_NOOP = 0,
   M_DISCOVERY = 1,
@@ -36,5 +39,22 @@ enum objective_flags {
   F_SYNCH= 2,
 };
 
+class grasp_client {
+  grasp_client(rpl_debug *debug) {
+    infd = -1;
+    outfd= -1;
+    deb = debug;
+  };
+  bool open_connection(const char *serverip, unsigned int port);
+  bool open_fake_connection(const char *outfile, const char *infile);
+  int  server_fd(void);
+  bool socket_read(void);
+  void send_negotiation(void);
+
+ private:
+  int  infd;
+  int  outfd;
+  rpl_debug *deb;
+};
 
 #endif /* _GRASP_H_ */
