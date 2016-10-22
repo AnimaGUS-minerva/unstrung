@@ -25,6 +25,8 @@
 
 #include "grasp.h"
 #include "debug.h"
+#include "cbor.h"
+#include "hexdump.c"
 
 bool grasp_client::open_connection(const char *serverip,
                                    unsigned int port)
@@ -90,6 +92,40 @@ bool grasp_client::open_fake_connection(const char *outfile, const char *infile)
         deb->error("can not open %s for output: %s", outfile, strerror(errno));
         return false;
     }
+}
+
+bool grasp_client::send_cbor(cbor_item_t *cb)
+{
+    unsigned char * buffer;
+    size_t buffer_size,
+        length = cbor_serialize_alloc(cb, &buffer, &buffer_size);
+
+    if(write(outfd, buffer, length) != length) {
+        deb->error("can not write %u bytes: %s",
+                   length, strerror(errno));
+        return false;
+    }
+
+    hexdump(buffer, 0, length);
+    free(buffer);
+    return true;
+}
+
+cbor_item_t *grasp_client::read_cbor(void)
+{
+    unsigned char buf[256];
+    struct cbor_load_result res;
+    unsigned int cnt = read(infd, buf, 256);
+
+    cbor_item_t *reply = cbor_load(buf, cnt, &res);
+
+    /* XXX checking res */
+    if(!reply) {
+        deb->error("can not load reply: decode details");
+        return NULL;
+    }
+
+    return reply;
 }
 
 

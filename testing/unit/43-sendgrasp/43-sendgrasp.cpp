@@ -80,34 +80,16 @@ int main(int argc, char *argv[])
           cbor_array_set(root, 2, cbor_move(objective));
         }
 
-	/* Output: `length` bytes of data in the `buffer` */
-	unsigned char * buffer;
-	size_t buffer_size,
-          length = cbor_serialize_alloc(root, &buffer, &buffer_size);
+        grasp_client gc(deb);
 
-        FILE *out = fopen("../OUTPUTS/43-6join-grasp.dump", "w");
-        if(out) {
-          fwrite(buffer, 1, length, out);
-          fclose(out);
-        }
+        gc.open_fake_connection("../OUTPUTS/43-6join-grasp.dump",
+                                "grasp-reply.dump");
 
-        hexdump(buffer, 0, length);
-	free(buffer);
-
-	fflush(stdout);
+        gc.send_cbor(root);
 	cbor_decref(&root);
 
-        FILE *in = fopen("grasp-reply.dump", "r");
-        if(!in) {
-          fprintf(stderr, "Can not open grasp-reply.dump: %s", strerror(errno));
-          exit(10);
-        }
 
-        unsigned char buf[256];
-        struct cbor_load_result res;
-        unsigned int cnt = fread(buf, 1, 256, in);
-
-        cbor_item_t *reply = cbor_load(buf, cnt, &res);
+        cbor_item_t *reply = gc.read_cbor();
         if(!reply) {
           fprintf(stderr, "Can not load reply: decode details");
           exit(12);

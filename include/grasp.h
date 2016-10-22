@@ -1,8 +1,9 @@
 #ifndef _GRASP_H_
 #define _GRASP_H_
 
-/* forward reference */
+/* forward references */
 class rpl_debug;
+struct cbor_item_t;
 
 enum grasp_message {
   M_NOOP = 0,
@@ -40,6 +41,7 @@ enum objective_flags {
 };
 
 class grasp_client {
+ public:
   grasp_client(rpl_debug *debug) {
     infd = -1;
     outfd= -1;
@@ -47,6 +49,8 @@ class grasp_client {
   };
   bool open_connection(const char *serverip, unsigned int port);
   bool open_fake_connection(const char *outfile, const char *infile);
+  bool send_cbor(cbor_item_t *query);
+  cbor_item_t *read_cbor(void);
   int  server_fd(void);
   bool socket_read(void);
   void send_negotiation(void);
