@@ -48,6 +48,7 @@ LIBNDMGMT=${UNSTRUNG_OBJDIR}/lib/libndmgmt/libndmgmt.a
 LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${UNSTRUNG_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
+LIBGRASP=${UNSTRUNG_OBJDIR}/lib/libgrasp/libgrasp.a
 LIBPCAP?=-lpcap $(pcap-config --libs --static)
 LIBPCAP_HOST?=-lpcap
 TCPDUMP?=tcpdump
