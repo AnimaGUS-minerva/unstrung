@@ -168,6 +168,35 @@ void rpl_node::reply_mcast_neighbour_advert(network_interface *iface,
     iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
 }
 
+void rpl_node::reply_neighbour_advert(network_interface *iface,
+                                      struct in6_addr from,
+                                      struct nd_opt_aro *in_aro_opt,
+                                      unsigned int success)
+{
+    unsigned char icmp_body[2048];
+
+    na_construction buildit;
+    buildit.buff     = icmp_body;
+    buildit.buff_len = sizeof(icmp_body);
+    start_neighbour_advert(buildit);
+    buildit.nna->nd_na_flags_reserved |= ND_NA_FLAG_SOLICITED;
+    buildit.nna->nd_na_target         = this->node_number();
+
+    struct nd_opt_aro *noa = (struct nd_opt_aro *)buildit.nextopt;
+    buildit.nextopt = (unsigned char *)(noa+1);
+
+    if(in_aro_opt) {
+        *noa = *in_aro_opt;
+    }
+    noa->nd_aro_status   = success;
+
+    unsigned int icmp_len = end_neighbour_advert(buildit);
+
+    /* src set to NULL, because we received this via mcast, reply with our address on this iface */
+    iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
+}
+
+
 void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
                                           struct in6_addr from,
                                           struct in6_addr ip6_to,
@@ -175,7 +204,6 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
                                           struct nd_neighbor_solicit *ns,
                                           const int nd_len)
 {
-    unsigned char icmp_body[2048];
     debug->info("  %s is looking to join network\n", this->node_name());
 
     unsigned char *in_nextopt = (unsigned char *)(ns+1);
@@ -211,35 +239,43 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
         in_nextopt = (in_nextopt + (opt->nd_opt_len * 8));
     }
 
+    if(!in_aro_opt) {
+        return;
+    }
 
+    dag_network::globalStats[PS_NEIGHBOUR_JOIN_NEIGHBOUR_SOLICITATION]++;
 
     /* see if NCE says that node was already declined. */
     if(this->join_declined()) {
+        dag_network::globalStats[PS_NEIGHBOUR_JOIN_QUERY_ALREADY_DECLINED]++;
         debug->log("sending declining Neighbour Advertisement on if: %s%s\n",
                    iface->get_if_name(),
                    iface->faked() ? "(faked)" : "");
 
-        na_construction buildit;
-        buildit.buff     = icmp_body;
-        buildit.buff_len = sizeof(icmp_body);
-        start_neighbour_advert(buildit);
-        buildit.nna->nd_na_flags_reserved |= ND_NA_FLAG_SOLICITED;
-        buildit.nna->nd_na_target         = this->node_number();
-
-        struct nd_opt_aro *noa = (struct nd_opt_aro *)buildit.nextopt;
-        buildit.nextopt = (unsigned char *)(noa+1);
-
-        if(in_aro_opt) {
-            *noa = *in_aro_opt;
-        }
-        noa->nd_aro_status   = ND_NS_JOIN_DECLINED;
-
-        unsigned int icmp_len = end_neighbour_advert(buildit);
-
-        /* src set to NULL, because we received this via mcast, reply with our address on this iface */
-        iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
+        reply_neighbour_advert(iface, from, in_aro_opt, ND_NS_JOIN_DECLINED);
         return;
     }
+
+    /* see if NCE says that the query is still in progress, in which case, do nothing */
+    if(this->join_queryInProgress()) {
+        dag_network::globalStats[PS_NEIGHBOUR_JOIN_QUERY_INPROGRESS]++;
+        return;
+    }
+
+    if(this->join_accepted()) {
+        dag_network::globalStats[PS_NEIGHBOUR_JOIN_QUERY_ALREADY_ACCEPTED]++;
+
+        debug->log("sending accepting Neighbour Advertisement on if: %s%s\n",
+                   iface->get_if_name(),
+                   iface->faked() ? "(faked)" : "");
+
+        reply_neighbour_advert(iface, from, in_aro_opt, 0);
+        return;
+    }
+
+    dag_network::globalStats[PS_NEIGHBOUR_JOIN_QUERY_STARTED]++;
+
+
 }
 
 /*
