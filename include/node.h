@@ -88,10 +88,19 @@ public:
                                         struct nd_neighbor_solicit *ns,
                                         const int nd_len);
 
+        void reply_neighbour_advert(network_interface *iface,
+                                    struct in6_addr from,
+                                    struct nd_opt_aro *in_aro_opt,
+                                    unsigned int success);
+
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
         bool join_declined(void) { return alreadyDeclined; };
+        bool join_accepted(void) { return alreadyAccepted; };
         void set_declined(bool declined) { alreadyDeclined = declined; };
+
+        bool join_queryInProgress(void) { return joinQueryStarted; };
+        void start_joinQuery(void);
 
         static rpl_node *find_by_addr(struct in6_addr v6);
 
@@ -104,6 +113,8 @@ protected:
         int  end_neighbour_advert(na_construction &progress);
 
         bool              alreadyDeclined;
+        bool              alreadyAccepted;
+        bool              joinQueryStarted;
 
 private:
         bool       valid;
