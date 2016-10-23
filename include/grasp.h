@@ -1,6 +1,13 @@
 #ifndef _GRASP_H_
 #define _GRASP_H_
 
+/* for random number generator for session-id */
+/* see: https://tls.mbed.org/kb/how-to/add-a-random-generator */
+/* kinda gross to suck in all of this just to get the sizes right */
+#include "mbedtls/entropy.h"
+#include "mbedtls/ctr_drbg.h"
+
+
 /* forward references */
 class rpl_debug;
 struct cbor_item_t;
@@ -40,25 +47,46 @@ enum objective_flags {
   F_SYNCH= 2,
 };
 
+typedef u_int32_t grasp_session_id;
+
 class grasp_client {
  public:
-  grasp_client(rpl_debug *debug) {
-    infd = -1;
-    outfd= -1;
-    deb = debug;
-  };
-  bool open_connection(const char *serverip, unsigned int port);
-  bool open_fake_connection(const char *outfile, const char *infile);
-  bool send_cbor(cbor_item_t *query);
-  cbor_item_t *read_cbor(void);
-  int  server_fd(void);
-  bool socket_read(void);
-  void send_negotiation(void);
+    grasp_client(rpl_debug *debug) {
+        infd = -1;
+        outfd= -1;
+        deb = debug;
+        init_random();
+    };
+    bool open_connection(const char *serverip, unsigned int port);
+    bool open_fake_connection(const char *outfile, const char *infile);
+    bool send_cbor(cbor_item_t *query);
+    cbor_item_t *read_cbor(void);
+    int  server_fd(void) {
+        return infd;
+    };
+    bool socket_read(void);
+    grasp_session_id start_query_for_aro(unsigned char eui64[8]);
+    grasp_session_id generate_random_sessionid(bool init);
+
+    void init_regress_random(void);
 
  private:
-  int  infd;
-  int  outfd;
-  rpl_debug *deb;
+    int  infd;
+    int  outfd;
+    rpl_debug *deb;
+    bool                     entropy_init;
+    mbedtls_entropy_context  entropy;
+    mbedtls_ctr_drbg_context ctr_drbg;
+
+    void init_random(void);
 };
 
 #endif /* _GRASP_H_ */
+
+/*
+ * Local Variables:
+ * c-basic-offset:4
+ * c-style: whitesmith
+ * End:
+ */
+
