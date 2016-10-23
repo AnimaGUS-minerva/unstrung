@@ -51,6 +51,7 @@ LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
 LIBGRASP=${UNSTRUNG_OBJDIR}/lib/libgrasp/libgrasp.a
 LIBPCAP?=-lpcap $(pcap-config --libs --static)
 LIBPCAP_HOST?=-lpcap
+LIBMBEDTLS=${MBEDTLSLIB}/libmbedtls.a ${MBEDTLSLIB}/libmbedcrypto.a
 TCPDUMP?=tcpdump
 
 ifeq ($(EMBEDDED),)

@@ -28,6 +28,12 @@
 #include "cbor.h"
 #include "hexdump.c"
 
+/* for generating random numbers, see:
+   https://tls.mbed.org/kb/how-to/add-a-random-generator
+*/
+
+#include "mbedtls/ctr_drbg.h"
+
 bool grasp_client::open_connection(const char *serverip,
                                    unsigned int port)
 {
@@ -79,20 +85,6 @@ bool grasp_client::open_connection(const char *serverip,
     this->outfd = sfd;
 }
 
-bool grasp_client::open_fake_connection(const char *outfile, const char *infile)
-{
-    infd = open(infile, O_RDONLY);
-    if(infd == -1) {
-        deb->error("can not open %s for input: %s", infile, strerror(errno));
-        return false;
-    }
-
-    outfd = open(outfile, O_WRONLY|O_TRUNC|O_CREAT, 0640);
-    if(outfd == -1) {
-        deb->error("can not open %s for output: %s", outfile, strerror(errno));
-        return false;
-    }
-}
 
 bool grasp_client::send_cbor(cbor_item_t *cb)
 {
@@ -126,6 +118,46 @@ cbor_item_t *grasp_client::read_cbor(void)
     }
 
     return reply;
+}
+
+
+grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
+{
+    grasp_session_id gsi = generate_random_sessionid(true);
+
+    return gsi;
+}
+
+
+grasp_session_id grasp_client::generate_random_sessionid(bool init)
+{
+    grasp_session_id newrand;
+    int ret = mbedtls_ctr_drbg_random(&ctr_drbg, (unsigned char *)&newrand, sizeof(newrand));
+    if( ret != 0 )
+    {
+        deb->error("can not generate sessionid");
+        return 0;
+    }
+
+    if(init) {
+        /* force upper bit to zero */
+        newrand &= 0x7fffffff;
+    } else {
+        /* force upper bit to one  */
+        newrand |= 0x80000000;
+    }
+    return newrand;
+}
+
+void grasp_client::init_random(void)
+{
+    entropy_init = true;
+
+    /* set up the entropy source */
+    mbedtls_entropy_init( &entropy );
+
+    const char *personalization = "unstrung grasp client";
+    mbedtls_ctr_drbg_init( &ctr_drbg );
 }
 
 

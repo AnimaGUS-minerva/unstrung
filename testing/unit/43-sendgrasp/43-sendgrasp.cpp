@@ -25,8 +25,14 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
-        unsigned int seqno = rand();
+        grasp_client gc(deb);
+        gc.init_regress_random();
 
+        for(int i=0; i<16; i++) {
+          fprintf(stderr, "random number check seqno[%u]: %08x\n", i, gc.generate_random_sessionid(true));
+        }
+
+        unsigned int seqno = gc.generate_random_sessionid(true);
         /* we are writing a GRASP: 3.7.5.  Request Messages */
         /*  request-negotiation-message = [M_REQ_NEG, session-id, objective]*/
 
@@ -79,8 +85,6 @@ int main(int argc, char *argv[])
 
           cbor_array_set(root, 2, cbor_move(objective));
         }
-
-        grasp_client gc(deb);
 
         gc.open_fake_connection("../OUTPUTS/43-6join-grasp.dump",
                                 "grasp-reply.dump");

@@ -1,4 +1,20 @@
-0000: 83 03 1a 6b  8b 45 67 84  6b 34 36 39  33 30 3a 36    ...k.Eg.k46930:6
+random number check seqno[0]: 2dcdceaa
+random number check seqno[1]: 56160134
+random number check seqno[2]: 55cda68f
+random number check seqno[3]: 41135912
+random number check seqno[4]: 15427af3
+random number check seqno[5]: 4aae1045
+random number check seqno[6]: 5d168cea
+random number check seqno[7]: 3dded818
+random number check seqno[8]: 21b926e7
+random number check seqno[9]: 0c076756
+random number check seqno[10]: 62282c80
+random number check seqno[11]: 3edd679a
+random number check seqno[12]: 1fc717c3
+random number check seqno[13]: 5b049004
+random number check seqno[14]: 0aafa068
+random number check seqno[15]: 43c18fea
+0000: 83 03 1a 5e  55 87 f9 84  6b 34 36 39  33 30 3a 36    ...^U...k46930:6
 0010: 4a 4f 49 4e  02 02 82 48  01 02 03 04  05 06 07 08    JOIN...H........
 0020: 67 36 70 2d  69 70 69 70                              g6p-ipip
  [CBOR_TYPE_ARRAY] Definite, size: 3
