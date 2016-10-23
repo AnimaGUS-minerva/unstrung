@@ -21,6 +21,7 @@ extern "C" {
 #include "node.h"
 #include "iface.h"
 #include "dag.h"
+#include "grasp.h"
 
 void rpl_node::set_addr(const char *ipv6) {
     if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
@@ -124,6 +125,19 @@ void rpl_node::add_route_via_node(ip_subnet &prefix, network_interface *iface)
                              mDN->dag_me->prefix_number().addr);
 }
 
+rpl_node *network_interface::find_neighbour_by_grasp_sessionid(grasp_session_id gsi)
+{
+    node_map_iterator nmi = this->neighbours.begin();
+    node_map_iterator nmi_end = this->neighbours.end();
+    while(nmi != nmi_end) {
+        if(nmi->second.queryId == gsi) {
+            return &nmi->second;
+        }
+        nmi++;
+    }
+
+    return NULL;
+}
 
 /*
  * Local Variables:

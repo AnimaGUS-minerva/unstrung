@@ -12,6 +12,7 @@ extern "C" {
 #include <map>
 #include "oswlibs.h"
 #include "debug.h"
+#include "grasp.h"
 
 class dag_network;
 class network_interface;
@@ -103,6 +104,9 @@ public:
         void start_joinQuery(void);
 
         static rpl_node *find_by_addr(struct in6_addr v6);
+
+        /* probably should be made accessible via friend function */
+        grasp_session_id  queryId;
 
 protected:
 	ip_address        nodeip;
