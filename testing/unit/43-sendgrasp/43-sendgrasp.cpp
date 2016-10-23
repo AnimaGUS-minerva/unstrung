@@ -32,66 +32,11 @@ int main(int argc, char *argv[])
           fprintf(stderr, "random number check seqno[%u]: %08x\n", i, gc.generate_random_sessionid(true));
         }
 
-        unsigned int seqno = gc.generate_random_sessionid(true);
-        /* we are writing a GRASP: 3.7.5.  Request Messages */
-        /*  request-negotiation-message = [M_REQ_NEG, session-id, objective]*/
-
-	/* Preallocate the new array structure */
-	cbor_item_t * root = cbor_new_definite_array(3);
-        {
-          cbor_item_t * req_neg = cbor_build_uint8(M_REQ_NEG);
-          cbor_array_set(root, 0, cbor_move(req_neg));
-        }
-
-        {
-          cbor_item_t * req_seqno = cbor_build_uint32(seqno);
-          cbor_array_set(root, 1, cbor_move(req_seqno));
-        }
-
-        /*
-         *
-         * objective = [objective-name, objective-flags, loop-count, ?any]
-         * objective-name = text ;see specification for uniqueness rules
-         * loop-count = 0..255
-         */
-        {
-          cbor_item_t * objective = cbor_new_definite_array(4);
-          {
-            /* Sandelman Software Works PEN
-             * http://pen.iana.org/pen/app?page=AssignPenComplete&service=external&sp=S70753
-             * with objective name: "6JOIN"
-             */
-            cbor_item_t * objname   = cbor_build_string("46930:6JOIN");
-            cbor_array_set(objective, 0, cbor_move(objname));
-          }
-          {
-            cbor_item_t * objflag   = cbor_build_uint8(1 << F_NEG);
-            cbor_array_set(objective, 1, cbor_move(objflag));
-          }
-          {
-            cbor_item_t * loopcount = cbor_build_uint8(2);
-            cbor_array_set(objective, 2, cbor_move(loopcount));
-          }
-
-          unsigned char mac1[8] = { 0x1, 0x2, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-          {
-            cbor_item_t * aro_box   = cbor_new_definite_array(2);
-            cbor_item_t * aro       = cbor_build_bytestring(mac1, 8);
-            cbor_array_set(aro_box,   0, cbor_move(aro));
-            cbor_array_set(objective, 3, cbor_move(aro_box));
-
-            cbor_array_set(aro_box,   1, cbor_move(cbor_build_string("6p-ipip")));
-          }
-
-          cbor_array_set(root, 2, cbor_move(objective));
-        }
-
         gc.open_fake_connection("../OUTPUTS/43-6join-grasp.dump",
                                 "grasp-reply.dump");
 
-        gc.send_cbor(root);
-	cbor_decref(&root);
-
+        unsigned char mac1[8] = { 0x1, 0x2, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+        unsigned int seqno = gc.start_query_for_aro(mac1);
 
         cbor_item_t *reply = gc.read_cbor();
         if(!reply) {

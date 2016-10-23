@@ -125,6 +125,61 @@ grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
 {
     grasp_session_id gsi = generate_random_sessionid(true);
 
+    /* we are writing a GRASP: 3.7.5.  Request Messages */
+    /*  request-negotiation-message = [M_REQ_NEG, session-id, objective]*/
+
+    /* Preallocate the new array structure */
+    cbor_item_t * root = cbor_new_definite_array(3);
+    {
+        cbor_item_t * req_neg = cbor_build_uint8(M_REQ_NEG);
+        cbor_array_set(root, 0, cbor_move(req_neg));
+    }
+
+    {
+        cbor_item_t * req_seqno = cbor_build_uint32(gsi);
+        cbor_array_set(root, 1, cbor_move(req_seqno));
+    }
+
+    /*
+     *
+     * objective = [objective-name, objective-flags, loop-count, ?any]
+     * objective-name = text ;see specification for uniqueness rules
+     * loop-count = 0..255
+     */
+    {
+        cbor_item_t * objective = cbor_new_definite_array(4);
+        {
+            /* Sandelman Software Works PEN
+             * http://pen.iana.org/pen/app?page=AssignPenComplete&service=external&sp=S70753
+             * with objective name: "6JOIN"
+             */
+            cbor_item_t * objname   = cbor_build_string("46930:6JOIN");
+            cbor_array_set(objective, 0, cbor_move(objname));
+        }
+        {
+            cbor_item_t * objflag   = cbor_build_uint8(1 << F_NEG);
+            cbor_array_set(objective, 1, cbor_move(objflag));
+        }
+        {
+            cbor_item_t * loopcount = cbor_build_uint8(2);
+            cbor_array_set(objective, 2, cbor_move(loopcount));
+        }
+
+        {
+            cbor_item_t * aro_box   = cbor_new_definite_array(2);
+            cbor_item_t * aro       = cbor_build_bytestring(eui64, 8);
+            cbor_array_set(aro_box,   0, cbor_move(aro));
+            cbor_array_set(objective, 3, cbor_move(aro_box));
+
+            cbor_array_set(aro_box,   1, cbor_move(cbor_build_string("6p-ipip")));
+        }
+
+        cbor_array_set(root, 2, cbor_move(objective));
+    }
+
+    send_cbor(root);
+    cbor_decref(&root);
+
     return gsi;
 }
 
