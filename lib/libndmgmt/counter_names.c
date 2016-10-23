@@ -47,6 +47,11 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_NEIGHBOUR_SOLICIT]      = "Neighbour Soliciations received (total)",
     [PS_NEIGHBOUR_ADVERT]       = "Neighbour Advertisements received (total)",
     [PS_NEIGHBOUR_JOINASSISTANT_SOLICIT]= "Neighbour Solication from new pledge",
+    [PS_NEIGHBOUR_JOIN_QUERY_STARTED]   = "Neighbour Solication, started query from pledge",
+    [PS_NEIGHBOUR_JOIN_QUERY_INPROGRESS]= "Neighbour Solication, repeated query from pledge",
+    [PS_NEIGHBOUR_JOIN_NEIGHBOUR_SOLICITATION]="Neighbour Solication with ARO for pledge",
+    [PS_NEIGHBOUR_JOIN_QUERY_ALREADY_ACCEPTED]="Neighbour Solication w/ARO already accepted",
+    [PS_NEIGHBOUR_JOIN_QUERY_ALREADY_DECLINED]="Neighbour Solication w/ARO already declined",
     [PS_MAX]                    = "max reason"
 };
 
