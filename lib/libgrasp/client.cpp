@@ -22,11 +22,14 @@
 #include <netdb.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <poll.h>
 
 #include "grasp.h"
 #include "debug.h"
 #include "cbor.h"
+#ifdef GRASP_CLIENT_DEBUG
 #include "hexdump.c"
+#endif
 
 /* for generating random numbers, see:
    https://tls.mbed.org/kb/how-to/add-a-random-generator
@@ -97,8 +100,13 @@ bool grasp_client::send_cbor(cbor_item_t *cb)
                    length, strerror(errno));
         return false;
     }
+    query_outstanding = false;
 
+#ifdef GRASP_CLIENT_DEBUG
+    /* Pretty-print the result */
+    cbor_describe(cb, stdout);
     hexdump(buffer, 0, length);
+#endif
     free(buffer);
     return true;
 }
@@ -109,6 +117,14 @@ cbor_item_t *grasp_client::read_cbor(void)
     struct cbor_load_result res;
     unsigned int cnt = read(infd, buf, 256);
 
+    if(cnt == 0) {
+        return NULL;
+    }
+
+#ifdef GRASP_CLIENT_DEBUG
+    hexdump(buf, 0, cnt);
+#endif
+
     cbor_item_t *reply = cbor_load(buf, cnt, &res);
 
     /* XXX checking res */
@@ -116,6 +132,11 @@ cbor_item_t *grasp_client::read_cbor(void)
         deb->error("can not load reply: decode details");
         return NULL;
     }
+
+#ifdef GRASP_CLIENT_DEBUG
+    /* Pretty-print the result */
+    cbor_describe(cb, stdout);
+#endif
 
     return reply;
 }
@@ -214,10 +235,22 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
 }
 
 
-bool grasp_client::process_grasp_reply(void)
+bool grasp_client::poll_setup(struct pollfd *fd1)
+{
+    if(query_outstanding) {
+        fd1->fd = this->infd;
+        fd1->events = POLLIN;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool grasp_client::process_grasp_reply(time_t now)
 {
     cbor_item_t *reply = read_cbor();
     if(!reply) {
+        query_outstanding = false;
         return false;
     }
 

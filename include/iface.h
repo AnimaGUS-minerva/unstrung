@@ -29,6 +29,7 @@ extern const uint8_t all_rpl_addr[];
 
 /* forward definition */
 class device_identity;
+class grasp_client;
 
 enum network_interface_exceptions {
     TOOSHORT = 1,
@@ -220,6 +221,11 @@ public:
     bool                    matching_address(struct in6_addr addr);
 
     rpl_node &              find_neighbour(struct in6_addr nip);
+
+#ifdef GRASP_CLIENT
+    grasp_client           *join_query_client;
+#endif
+
 
 protected:
     bool                    logged;

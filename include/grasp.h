@@ -57,6 +57,7 @@ class grasp_client {
         deb = debug;
         init_random();
     };
+    bool poll_setup(struct pollfd *fd1);
     bool open_connection(const char *serverip, unsigned int port);
     bool open_fake_connection(const char *outfile, const char *infile);
     bool send_cbor(cbor_item_t *query);
@@ -64,7 +65,7 @@ class grasp_client {
     int  server_fd(void) {
         return infd;
     };
-    bool process_grasp_reply(void);
+    bool process_grasp_reply(time_t now);
     bool decode_grasp_reply(cbor_item_t *reply);
     grasp_session_id start_query_for_aro(unsigned char eui64[8]);
     grasp_session_id generate_random_sessionid(bool init);
@@ -75,6 +76,7 @@ class grasp_client {
     int  infd;
     int  outfd;
     rpl_debug *deb;
+    bool query_outstanding;
     bool                     entropy_init;
     mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;

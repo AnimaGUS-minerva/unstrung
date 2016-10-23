@@ -28,7 +28,11 @@ INSTBINFLAGS=-D
 
 ifneq ($(EMBEDDED),)
 CFLAGS+=-DEMBEDDED
+CXXFLAGS+=-DEMBEDDED
 endif
+
+CFLAGS+=-DGRASP_CLIENT
+CXXFLAGS+=-DGRASP_CLIENT
 
 ifeq ($(USE_OBJDIR),true)
 OBJDIR?=OBJ.${ARCH}
@@ -51,6 +55,7 @@ LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
 LIBGRASP=${UNSTRUNG_OBJDIR}/lib/libgrasp/libgrasp.a
 LIBPCAP?=-lpcap $(pcap-config --libs --static)
 LIBPCAP_HOST?=-lpcap
+LIBCBOR=${CBOR_LIB}
 LIBMBEDTLS=${MBEDTLSLIB}/libmbedtls.a ${MBEDTLSLIB}/libmbedcrypto.a
 TCPDUMP?=tcpdump
 
