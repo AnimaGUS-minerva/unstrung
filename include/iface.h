@@ -221,6 +221,8 @@ public:
     bool                    matching_address(struct in6_addr addr);
 
     rpl_node &              find_neighbour(struct in6_addr nip);
+    rpl_node *              find_neighbour_by_grasp_sessionid(grasp_session_id gsi);
+
 
 #ifdef GRASP_CLIENT
     grasp_client           *join_query_client;
@@ -313,7 +315,9 @@ private:
                                                   the kernel with netlink.
                                                   Always /128 networks */
 
-    /* this is a list of directly attached neighbours, index by their IPv6 link-local address */
+    /* this is a list of directly attached neighbours,
+       index by their IPv6 link-local address
+    */
     node_map                neighbours;
 
 

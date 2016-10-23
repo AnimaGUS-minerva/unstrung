@@ -9,6 +9,7 @@
 
 
 /* forward references */
+class network_interface;
 class rpl_debug;
 struct cbor_item_t;
 
@@ -51,10 +52,11 @@ typedef u_int32_t grasp_session_id;
 
 class grasp_client {
  public:
-    grasp_client(rpl_debug *debug) {
+    grasp_client(rpl_debug *debug, network_interface *iface) {
         infd = -1;
         outfd= -1;
         deb = debug;
+        this->iface = iface;
         init_random();
     };
     bool poll_setup(struct pollfd *fd1);
@@ -77,6 +79,7 @@ class grasp_client {
     int  outfd;
     rpl_debug *deb;
     bool query_outstanding;
+    network_interface       *iface;
     bool                     entropy_init;
     mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
