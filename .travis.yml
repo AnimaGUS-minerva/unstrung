@@ -22,7 +22,6 @@ before_install:
 # incompatibilities, but in fact have no problems in practice.
 install:
   - "sudo ./install-apt-deps.sh"
-  - "rvm install ruby-2.1.5"
   - "rvm use 2.1.5"
   - "gem install ronn cbor cbor-diag"
   - "./build-setup-travis.sh"
