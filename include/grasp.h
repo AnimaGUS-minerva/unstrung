@@ -64,7 +64,8 @@ class grasp_client {
     int  server_fd(void) {
         return infd;
     };
-    bool socket_read(void);
+    bool process_grasp_reply(void);
+    bool decode_grasp_reply(cbor_item_t *reply);
     grasp_session_id start_query_for_aro(unsigned char eui64[8]);
     grasp_session_id generate_random_sessionid(bool init);
 

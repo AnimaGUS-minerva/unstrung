@@ -184,6 +184,48 @@ grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
 }
 
 
+bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
+{
+    cbor_item_t *msgitem = cbor_array_get(reply, 0);
+    unsigned int msgtype = cbor_get_int(msgitem);
+
+    if(msgtype != M_END) {
+        return false;
+    }
+
+    cbor_item_t *session = cbor_array_get(reply, 1);
+    grasp_session_id sessionid = cbor_get_int(session);
+
+    cbor_item_t *result = cbor_array_get(reply, 2);
+    if(!result) {
+        return false;
+    }
+
+    cbor_item_t *option = cbor_array_get(result, 0);
+    unsigned int optionnum = cbor_get_int(option);
+
+    if(optionnum == O_ACCEPT) {
+        printf("accept eui64\n");
+    } else {
+        printf("decline eui64\n");
+    }
+
+    return true;
+}
+
+
+bool grasp_client::process_grasp_reply(void)
+{
+    cbor_item_t *reply = read_cbor();
+    if(!reply) {
+        return false;
+    }
+
+    return decode_grasp_reply(reply);
+}
+
+
+
 grasp_session_id grasp_client::generate_random_sessionid(bool init)
 {
     grasp_session_id newrand;
