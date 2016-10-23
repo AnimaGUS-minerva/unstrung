@@ -44,6 +44,10 @@ extern "C" {
 #include "iface.h"
 #include "dag.h"
 
+#ifdef GRASP_CLIENT
+#include "grasp.h"
+#endif
+
 bool                  network_interface::signal_usr1;
 bool                  network_interface::signal_usr2;
 bool                  network_interface::faked_time;
@@ -55,6 +59,7 @@ class network_interface *loopback_interface = NULL;
 
 const uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x01};
 const uint8_t all_rpl_addr[]   = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
+
 
 
 network_interface::network_interface()
@@ -1044,8 +1049,12 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 
 
     while(!done) {
-        struct pollfd            poll_if[1+network_interface::if_count()];
+        unsigned int poll_max    = 1+(network_interface::if_count()*2);
+        struct pollfd            poll_if[poll_max];
         class network_interface* all_if[1+network_interface::if_count()];
+#ifdef GRASP_CLIENT
+        class grasp_client*      all_grasp[1+network_interface::if_count()];
+#endif
         int pollnum=0;
         int timeout = 60*1000;   /* 60 seconds is maximum */
 
@@ -1099,11 +1108,20 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 pollnum++;
             }
             iface = iface->next;
+
+#ifdef GRASP_CLIENT
+            if(iface->join_query_client) {
+                if(iface->join_query_client->poll_setup(&poll_if[pollnum])) {
+                    all_grasp[pollnum] = iface->join_query_client;
+                    pollnum++;
+                }
+            }
+#endif
         }
 
         /* now poll for input */
-        debug->verbose2("sleeping with %d file descriptors, for %d ms\n",
-			pollnum, timeout);
+        debug->verbose2("sleeping with %d file descriptors(max:%u), for %d ms\n",
+			pollnum, poll_max, timeout);
 #if 0
 	if(debug->flag) {
 	    things_to_do.printevents(debug->file, "loop");
@@ -1124,13 +1142,17 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 time(&now);
 
                 if(poll_if[i].revents & POLLIN) {
-                    if(all_if[i] == NULL) {
+                    if(all_if[i] != NULL) {
+                        all_if[i]->receive(now);
+#ifdef GRASP_CLIENT
+                    } else if(all_grasp[i] != NULL) {
+                        all_grasp[i]->process_grasp_reply(now);
+#endif
+                    } else {
                         /* got something else */
                         if(poll_if[i].fd == netlink_fd) {
                             empty_socket(debug);
                         }
-                    } else {
-                        all_if[i]->receive(now);
                     }
                     n--;
                 }
