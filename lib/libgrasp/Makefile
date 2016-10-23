@@ -28,7 +28,7 @@ MANDIR=$(MANTREE)/man3
 ONEFILE=client.cpp
 CXXSRCS=client.cpp
 ifeq ($(EMBEDDED),)
-CXXSRCS=rnd_regress.cpp
+CXXSRCS+=rnd_regress.cpp
 endif
 
 #enable to get lots more debugging about semantics.
