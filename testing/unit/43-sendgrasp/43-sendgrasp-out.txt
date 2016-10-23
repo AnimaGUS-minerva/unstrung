@@ -22,6 +22,4 @@ random number check seqno[15]: 43c18fea
     [CBOR_TYPE_UINT] Width: 4B, Value: 1804289383
     [CBOR_TYPE_ARRAY] Definite, size: 1
         [CBOR_TYPE_UINT] Width: 1B, Value: 101
-session-id: 6b8b4567
-option_num: 101
 accept eui64
