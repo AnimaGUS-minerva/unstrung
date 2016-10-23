@@ -7,7 +7,8 @@ PROGRAM=senddio
 PROGRAMDIR=/sbin
 ONEFILE=senddio.cpp
 OBJS=senddio.o
-LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE} ${LIBCBOR} ${LIBMBEDTLS}
+LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE}
+LIBS+=${LIBGRASP} ${LIBCBOR} ${LIBMBEDTLS}
 # debug for freed memory touches
 #LIBS+=/sandel/lib/i386-linux-gnu/libefence.a
 
