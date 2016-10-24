@@ -104,7 +104,7 @@ public:
 
         void set_neighbour_declined(struct in6_addr nip, bool declined) {
             rpl_node &neighbour = find_neighbour(nip);
-            neighbour.set_declined(declined);
+            neighbour.set_accepted(!declined);
         };
         bool set_neighbour_declined(char *neighbourip, bool declined) {
             struct in6_addr nip;

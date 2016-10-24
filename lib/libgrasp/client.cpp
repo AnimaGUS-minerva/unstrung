@@ -25,6 +25,7 @@
 #include <poll.h>
 
 #include "grasp.h"
+#include "iface.h"
 #include "debug.h"
 #include "cbor.h"
 #ifdef GRASP_CLIENT_DEBUG
@@ -223,15 +224,13 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
     }
 
     cbor_item_t *option = cbor_array_get(result, 0);
-    unsigned int optionnum = cbor_get_int(option);
-
-    if(optionnum == O_ACCEPT) {
-        printf("accept eui64\n");
+    if(option) {
+        unsigned int optionnum = cbor_get_int(option);
+        iface->process_grasp_reply(sessionid, (optionnum == O_ACCEPT));
+        return true;
     } else {
-        printf("decline eui64\n");
+        return false;
     }
-
-    return true;
 }
 
 
