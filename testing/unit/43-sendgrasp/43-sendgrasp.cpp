@@ -26,8 +26,14 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
-        grasp_client gc(deb);
+        pcap_network_interface::scan_devices(deb, false);
+        network_interface *iface = network_interface::find_by_name("wlan0");
+
+        grasp_client gc(deb, iface);
+
+        printf("init random\n");
         gc.init_regress_random();
+        printf(" end random\n");
 
         for(int i=0; i<16; i++) {
           fprintf(stderr, "random number check seqno[%u]: %08x\n", i, gc.generate_random_sessionid(true));
