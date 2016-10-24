@@ -221,6 +221,7 @@ public:
     bool                    matching_address(struct in6_addr addr);
 
     rpl_node &              find_neighbour(struct in6_addr nip);
+    void                    process_grasp_reply(grasp_session_id gsi, bool success);
     rpl_node *              find_neighbour_by_grasp_sessionid(grasp_session_id gsi);
 
 

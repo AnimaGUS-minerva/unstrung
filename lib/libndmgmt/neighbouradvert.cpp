@@ -169,8 +169,6 @@ void rpl_node::reply_mcast_neighbour_advert(network_interface *iface,
 }
 
 void rpl_node::reply_neighbour_advert(network_interface *iface,
-                                      struct in6_addr from,
-                                      struct nd_opt_aro *in_aro_opt,
                                       unsigned int success)
 {
     unsigned char icmp_body[2048];
@@ -185,15 +183,17 @@ void rpl_node::reply_neighbour_advert(network_interface *iface,
     struct nd_opt_aro *noa = (struct nd_opt_aro *)buildit.nextopt;
     buildit.nextopt = (unsigned char *)(noa+1);
 
-    if(in_aro_opt) {
-        *noa = *in_aro_opt;
-    }
+    unsigned char *aro64 = &this->nodeip.u.v6.sin6_addr.s6_addr[8];
+    memcpy(noa->nd_aro_eui64, aro64, 8);
+
     noa->nd_aro_status   = success;
+    noa->nd_aro_type     = ND_OPT_ARO;
+    noa->nd_aro_len      = sizeof(*noa);
 
     unsigned int icmp_len = end_neighbour_advert(buildit);
 
     /* src set to NULL, because we received this via mcast, reply with our address on this iface */
-    iface->send_raw_icmp(&from, NULL, icmp_body, icmp_len);
+    iface->send_raw_icmp(&this->nodeip.u.v6.sin6_addr, NULL, icmp_body, icmp_len);
 }
 
 
@@ -252,7 +252,7 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
                    iface->get_if_name(),
                    iface->faked() ? "(faked)" : "");
 
-        reply_neighbour_advert(iface, from, in_aro_opt, ND_NS_JOIN_DECLINED);
+        reply_neighbour_advert(iface, ND_NS_JOIN_DECLINED);
         return;
     }
 
@@ -269,7 +269,7 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
                    iface->get_if_name(),
                    iface->faked() ? "(faked)" : "");
 
-        reply_neighbour_advert(iface, from, in_aro_opt, 0);
+        reply_neighbour_advert(iface, 0);
         return;
     }
 
@@ -282,6 +282,16 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
     /* reply to query will send return value */
     return;
 }
+
+void network_interface::process_grasp_reply(grasp_session_id gsi, bool success)
+{
+    rpl_node *rn = find_neighbour_by_grasp_sessionid(gsi);
+    if(rn == NULL) return;
+
+    rn->set_accepted(success);
+    rn->reply_neighbour_advert(this, success ? 0 : ND_NS_JOIN_DECLINED);
+}
+
 
 /*
  * Local Variables:

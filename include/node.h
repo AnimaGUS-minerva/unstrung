@@ -90,15 +90,17 @@ public:
                                         const int nd_len);
 
         void reply_neighbour_advert(network_interface *iface,
-                                    struct in6_addr from,
-                                    struct nd_opt_aro *in_aro_opt,
                                     unsigned int success);
 
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
         bool join_declined(void) { return alreadyDeclined; };
         bool join_accepted(void) { return alreadyAccepted; };
-        void set_declined(bool declined) { alreadyDeclined = declined; };
+        void set_accepted(bool accepted) {
+            alreadyDeclined = !accepted;
+            alreadyAccepted = accepted;
+            joinQueryStarted = false;
+        };
 
         bool join_queryInProgress(void) { return joinQueryStarted; };
         void start_joinQuery(void);
