@@ -1,22 +1,29 @@
 random number check seqno[0]: 2dcdceaa
 random number check seqno[1]: 56160134
-random number check seqno[2]: 2667ff9c
-random number check seqno[3]: 25486fda
-random number check seqno[4]: 264b191c
-random number check seqno[5]: 1bb57f07
-random number check seqno[6]: 40db5df0
-random number check seqno[7]: 13611845
-random number check seqno[8]: 069e5e30
-random number check seqno[9]: 11ab6c35
-random number check seqno[10]: 0d2863c7
-random number check seqno[11]: 7faeae36
-random number check seqno[12]: 1ccc8c20
-random number check seqno[13]: 72d9777d
-random number check seqno[14]: 050d8f8d
-random number check seqno[15]: 76ae2d24
+random number check seqno[2]: 47810b65
+random number check seqno[3]: 082e19bc
+random number check seqno[4]: 23735bec
+random number check seqno[5]: 4e40750a
+random number check seqno[6]: 6ff72016
+random number check seqno[7]: 75811a87
+random number check seqno[8]: 04e1fccd
+random number check seqno[9]: 34e682fe
+random number check seqno[10]: 02942808
+random number check seqno[11]: 5ec66005
+random number check seqno[12]: 155b516a
+random number check seqno[13]: 5fc4b33f
+random number check seqno[14]: 0b311b07
+random number check seqno[15]: 09292e63
+link found[1]: wlan0 type=ether (active new) faked
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
+link found[2]: lo type=loopback (active new) faked
+ip found[2]: lo scope=254 address=::1
+init random
+ end random
  [CBOR_TYPE_ARRAY] Definite, size: 3
     [CBOR_TYPE_UINT] Width: 1B, Value: 6
     [CBOR_TYPE_UINT] Width: 4B, Value: 1804289383
     [CBOR_TYPE_ARRAY] Definite, size: 1
         [CBOR_TYPE_UINT] Width: 1B, Value: 101
-accept eui64
+ip found[2]: lo scope=254 address=::1
