@@ -24,8 +24,8 @@ fi
 LIBPCAP=${BUILDTOP}/host/libpcap-1.8.1/libpcap.a
 if [ ! -x $BUILDTOP/host/tcpdump-4.8.1/tcpdump ]
 then
-    if [ ! -d ${BUILDTOP}/libpcap ]; then (cd ${BUILDTOP} && git clone -b libpcap-1.8.1 https://github.com/mcr/libpcap.git ); fi
-    if [ ! -d ${BUILDTOP}/tcpdump ]; then (cd ${BUILDTOP} && git clone -b tcpdump-4.8.1 https://github.com/mcr/tcpdump.git ); fi
+    if [ ! -d ${BUILDTOP}/libpcap ]; then (cd ${BUILDTOP} && git clone -b libpcap-1.8.1 https://github.com/the-tcpdump-group/libpcap.git ); fi
+    if [ ! -d ${BUILDTOP}/tcpdump ]; then (cd ${BUILDTOP} && git clone -b tcpdump-4.8.1 https://github.com/the-tcpdump-group/tcpdump.git ); fi
     case $ARCH in
         x86_64) HOST=x86_64;;
         i386)   HOST=i386;;
