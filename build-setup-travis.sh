@@ -21,29 +21,29 @@ if [ ! -d $BUILDTOP/include/mbedtls ]; then
     (cd ${BUILDTOP} && rm -rf host/mbedtls && mkdir -p host/mbedtls && cd host/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP ../../mbedtls && make && make install)
 fi
 
-LIBPCAP=${BUILDTOP}/host/libpcap-1.8.0/libpcap.a
-if [ ! -x $BUILDTOP/host/tcpdump-4.8.0/tcpdump ]
+LIBPCAP=${BUILDTOP}/host/libpcap-1.8.1/libpcap.a
+if [ ! -x $BUILDTOP/host/tcpdump-4.8.1/tcpdump ]
 then
-    if [ ! -d ${BUILDTOP}/libpcap ]; then (cd ${BUILDTOP} && git clone https://github.com/mcr/libpcap.git ); fi
-    if [ ! -d ${BUILDTOP}/tcpdump ]; then (cd ${BUILDTOP} && git clone https://github.com/mcr/tcpdump.git ); fi
+    if [ ! -d ${BUILDTOP}/libpcap ]; then (cd ${BUILDTOP} && git clone -b libpcap-1.8.1 https://github.com/mcr/libpcap.git ); fi
+    if [ ! -d ${BUILDTOP}/tcpdump ]; then (cd ${BUILDTOP} && git clone -b tcpdump-4.8.1 https://github.com/mcr/tcpdump.git ); fi
     case $ARCH in
         x86_64) HOST=x86_64;;
         i386)   HOST=i386;;
     esac
 
     if [ ! -d "${BUILDTOP}/x86_64/tcpdump/." ]; then
-        (cd ${BUILDTOP} && mkdir -p x86_64/libpcap-1.8.0 && cd x86_64/libpcap-1.8.0 && CFLAGS=-m64 ../../libpcap/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS=-m64)
-        (cd ${BUILDTOP} && ln -f -s x86_64/libpcap-1.8.0 libpcap && mkdir -p x86_64/tcpdump-4.8.0 && cd x86_64/tcpdump-4.8.0 && CFLAGS=-m64 ../../tcpdump/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS=-m64)
-        (cd ${BUILDTOP}/x86_64 && ln -s -f tcpdump-4.8.0 tcpdump )
+        (cd ${BUILDTOP} && mkdir -p x86_64/libpcap-1.8.1 && cd x86_64/libpcap-1.8.1 && CFLAGS=-m64 ../../libpcap/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS=-m64)
+        (cd ${BUILDTOP} && ln -f -s x86_64/libpcap-1.8.1 libpcap && mkdir -p x86_64/tcpdump-4.8.1 && cd x86_64/tcpdump-4.8.1 && CFLAGS=-m64 ../../tcpdump/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS=-m64)
+        (cd ${BUILDTOP}/x86_64 && ln -s -f tcpdump-4.8.1 tcpdump )
     fi
 
     if [ ! -d "${BUILDTOP}/i386/tcpdump/." ]; then
-        (cd ${BUILDTOP} && mkdir -p i386/libpcap-1.8.0 && cd i386/libpcap-1.8.0 && CFLAGS=-m32 ../../libpcap/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
-        (cd ${BUILDTOP} && ln -f -s i386/libpcap-1.8.0 libpcap && mkdir -p i386/tcpdump-4.8.0 && cd i386/tcpdump-4.8.0 && CFLAGS=-m32 ../../tcpdump/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
+        (cd ${BUILDTOP} && mkdir -p i386/libpcap-1.8.1 && cd i386/libpcap-1.8.1 && CFLAGS=-m32 ../../libpcap/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
+        (cd ${BUILDTOP} && ln -f -s i386/libpcap-1.8.1 libpcap && mkdir -p i386/tcpdump-4.8.1 && cd i386/tcpdump-4.8.1 && CFLAGS=-m32 ../../tcpdump/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
         (cd ${BUILDTOP}/i386 && ln -s -f tcpdump-4.8.0 tcpdump )
     fi
 
-    (cd $BUILDTOP/host/libpcap-1.8.0 && make install)
+    (cd $BUILDTOP/host/libpcap-1.8.1 && make install)
 fi
 
 if [ ! -f $BUILDTOP/include/cobr.h ]
