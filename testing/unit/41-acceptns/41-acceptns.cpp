@@ -48,7 +48,13 @@ int main(int argc, char *argv[])
 	iface->set_fake_time(n);
 
         if(declinedneighbour) {
-          iface->set_neighbour_declined(declinedneighbour, true);
+          if(declinedneighbour[0]=='N') {
+            iface->set_neighbour_declined(declinedneighbour+1, true);
+          } else if(declinedneighbour[0]=='Y') {
+            iface->set_neighbour_declined(declinedneighbour+1, false);
+          } else {
+            iface->set_neighbour_declined(declinedneighbour, true);
+          }
         }
 
         /* now override our identity from faked out identity */
