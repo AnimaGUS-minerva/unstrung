@@ -20,9 +20,8 @@ check::	41-acceptns
 	./41-acceptns ../INPUTS/nodeM-ns-tooshort.pcap 2>&1 | tee ../OUTPUTS/41-acceptns-tooshort.raw | diff -B - 41-acceptns-tooshort.txt
 	./41-acceptns ../INPUTS/almec-ns.pcap 2>&1 | tee ../OUTPUTS/41-acceptns-almec.raw | diff -B - 41-acceptns-almec.txt
 	${TCPDUMP} -t -v -v -n -r ${RAWPCAP} | tee ${RAWPCAPOUT2} | diff -B - 41-acceptns-almec-capture.txt
-
-	./41-acceptns ../INPUTS/nodeM-ns.pcap fe80::1200:ff:fe66:4d01 2>&1 | tee ../OUTPUTS/41-acceptns-out.raw | diff -B - 41-acceptns-out.txt
-	./41-acceptns 2>&1 | tee ../OUTPUTS/41-acceptns-out.raw | diff -B - 41-acceptns-out.txt
+	./41-acceptns ../INPUTS/nodeM-ns.pcap Nfe80::216:3eff:fe11:3424 2>&1 | tee ../OUTPUTS/41-acceptns-out-declined.raw | diff -B - 41-acceptns-out-declined.txt
+	./41-acceptns ../INPUTS/nodeM-ns.pcap Yfe80::216:3eff:fe11:3424 2>&1 | tee ../OUTPUTS/41-acceptns-out.raw | diff -B - 41-acceptns-out.txt
 	${TCPDUMP} -t -v -v -n -r ${RAWPCAP} | tee ${RAWPCAPOUT} | diff -B - 41-acceptns-capture.txt
 
 clean::
@@ -33,4 +32,5 @@ update:
 	cp  ../OUTPUTS/41-acceptns-almec.raw     41-acceptns-almec.txt
 	cp  ${RAWPCAPOUT2}                       41-acceptns-almec-capture.txt
 	cp  ../OUTPUTS/41-acceptns-out.raw       41-acceptns-out.txt
+	cp  ../OUTPUTS/41-acceptns-out-declined.raw  41-acceptns-out-declined.txt
 	cp  ${RAWPCAPOUT}                        41-acceptns-capture.txt
