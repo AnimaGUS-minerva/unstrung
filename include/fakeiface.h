@@ -105,6 +105,9 @@ public:
         void set_neighbour_declined(struct in6_addr nip, bool declined) {
             rpl_node &neighbour = find_neighbour(nip);
             neighbour.set_accepted(!declined);
+            char buf[64];
+            inet_ntop(AF_INET6, &nip, buf, 64);
+            debug->info("marking %s as %s\n", buf, declined ? "declined" : "accepted");
         };
         bool set_neighbour_declined(char *neighbourip, bool declined) {
             struct in6_addr nip;
