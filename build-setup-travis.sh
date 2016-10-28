@@ -47,7 +47,7 @@ then
     (cd $BUILDTOP/host/libpcap-1.8.1 && make install)
 fi
 LIBPCAP_HOST_DIR=${BUILDTOP}/${HOST}/libpcap-1.8.1
-LIBPCAP_HOST=${LIBPCAP}/libpcap.a
+LIBPCAP_HOST=${LIBPCAP_HOST_DIR}/libpcap.a
 LIBPCAP=${LIBPCAP_HOST}
 TCPDUMP_HOST_DIR=${BUILDTOP}/${HOST}/tcpdump-4.8.1
 
