@@ -47,6 +47,8 @@ int main(int argc, char *argv[])
 	n.tv_usec = 1024;
 	iface->set_fake_time(n);
 
+        grasp_client gc(deb, iface);
+
         if(declinedneighbour) {
           if(declinedneighbour[0]=='N') {
             iface->set_neighbour_declined(declinedneighbour+1, true);
@@ -55,6 +57,9 @@ int main(int argc, char *argv[])
           } else {
             iface->set_neighbour_declined(declinedneighbour, true);
           }
+        } else {
+          gc.open_fake_connection("../OUTPUTS/43-6join-grasp.dump",
+                                  "../43-sendgrasp/grasp-reply.dump");
         }
 
         /* now override our identity from faked out identity */
