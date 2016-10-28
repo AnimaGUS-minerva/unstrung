@@ -97,11 +97,16 @@ public:
 
         void add_route_via_node(ip_subnet &prefix, network_interface *iface);
 
-        bool join_declined(void) { return alreadyDeclined; };
-        bool join_accepted(void) { return alreadyAccepted; };
+        bool join_declined(void) { return !joinQueryStarted && alreadyDeclined; };
+        bool join_accepted(void) { return !joinQueryStarted && alreadyAccepted; };
         void set_accepted(bool accepted) {
-            alreadyDeclined = !accepted;
-            alreadyAccepted = accepted;
+            if(accepted) {
+                alreadyDeclined = false;
+                alreadyAccepted = true;
+            } else {
+                alreadyDeclined = true;
+                alreadyAccepted = false;
+            }
             joinQueryStarted = false;
         };
 
