@@ -77,6 +77,14 @@ const char *rpl_node::node_name() {
     }
 };
 
+char *rpl_node::fmt_eui64(const unsigned char eui64[8], char *buf, size_t buf_len)
+{
+    snprintf(buf, buf_len, "%02x%02x:%02x%02x:%02x%02x:%02x%02x",
+             eui64[0], eui64[1], eui64[2], eui64[3],
+             eui64[4], eui64[5], eui64[6], eui64[7]);
+    return buf;
+}
+
 void rpl_node::set_dag(dag_network *dn,
                        rpl_debug *deb)
 {

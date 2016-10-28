@@ -19,6 +19,9 @@ class network_interface;
 class rpl_less;
 class na_construction;
 
+#define EUI64_BUF_LEN 20       /* space for 4x 4hex digit, plus 3 colons, plus \0 */
+
+
 class rpl_node {
         friend class rpl_less;
 public:
@@ -109,6 +112,8 @@ public:
 
         /* probably should be made accessible via friend function */
         grasp_session_id  queryId;
+
+        static char *fmt_eui64(const unsigned char eui64[8], char *buf, size_t buf_len);
 
 protected:
 	ip_address        nodeip;
