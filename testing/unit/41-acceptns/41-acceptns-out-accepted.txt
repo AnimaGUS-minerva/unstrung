@@ -1,1 +1,52 @@
-IP6 (hlim 64, next-header ICMPv6 (58) payload length: 40) fe80::216:3eff:fe11:3424 > fe80::216:3eff:fe11:3424: [icmp6 sum ok] ICMP6, neighbor advertisement, length 40, tgt is fe80::216:3eff:fe11:3424, Flags [solicited, override][ndp opt]
+link found[1]: wlan0 type=ether (active new) faked
+   adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
+ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
+link found[2]: lo type=loopback (active new) faked
+ip found[2]: lo scope=254 address=::1
+marking fe80::216:3eff:fe11:3424 as accepted
+ip found[1]: wlan0 scope=253 address=fe80::1200:ff:fe66:4a02
+Processing input file ../INPUTS/nodeM-ns.pcap on if=[1]: wlan0 state: active  faked
+packet 1 is being processed
+ wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
+  processing NS(40)
+  fe80::216:3eff:fe11:3424 is looking to join network
+ARO with target: 0216:3eff:fe11:3424
+sending accepting Neighbour Advertisement on if: wlan0(faked)
+
+
+global 0000 (+0000) sequence too old
+global 0000 (+0000) packets received
+global 0000 (+0000) packets processed
+global 0000 (+0000) packets received due to watch
+global 0000 (+0000) packets with <dagrank
+global 0000 (+0000) packets with <dagrank rejected
+global 0000 (+0000) packets where subopt was too short
+global 0000 (+0000) packets from self that were ignored
+global 0000 (+0000) DAO packets received
+global 0000 (+0000) DIO packets received
+global 0000 (+0000) DAO packets ignored (non-local DODAG id)
+global 0000 (+0000) DIO packets ignored (non-local DODAG id)
+global 0000 (+0000) DAG created due to watch
+global 0000 (+0000) packet with same parent ignored
+global 0000 (+0000) packet with same sequence ignored
+global 0000 (+0000) DAOACK with unknown DAGID
+global 0000 (+0000) DAOACK with missing DAGID
+global 0000 (+0000) DAOACK from incorrect parent
+global 0000 (+0000) DAOACK with wrong SeqNo
+global 0000 (+0000) unknown RPL type code
+global 0000 (+0000) DIS packets received
+global 0000 (+0000) DIS packets ignored
+global 0000 (+0000) Neighbour Soliciation for Unreachability Detection
+global 0000 (+0000) Neighbour Soliciation for Unreachability Detection - target
+global 0000 (+0000) Neighbour Soliciation unicast with unspecified source
+global 0000 (+0000) Neighbour Soliciation for target address
+global 0000 (+0000) Neighbour Soliciation ignored
+global 0001 (+0001) Neighbour Soliciations received (total)
+global 0000 (+0000) Neighbour Advertisements received (total)
+global 0001 (+0001) Neighbour Solication from new pledge
+global 0000 (+0000) Neighbour Solication, started query from pledge
+global 0000 (+0000) Neighbour Solication, repeated query from pledge
+global 0001 (+0001) Neighbour Solication with ARO for pledge
+global 0000 (+0000) Neighbour Solication w/ARO already declined
+global 0001 (+0001) Neighbour Solication w/ARO already accepted
+sending accepting Neighbour Advertisement on if: wlan0(faked)
