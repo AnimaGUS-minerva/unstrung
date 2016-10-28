@@ -545,7 +545,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
 
     parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
     if (tb[IFLA_IFNAME] == NULL) {
-        fprintf(stderr, "BUG: nil ifname\n");
+        deb->error("BUG: nil ifname\n");
         return -1;
     }
 
