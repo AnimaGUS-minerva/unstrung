@@ -146,6 +146,10 @@ cbor_item_t *grasp_client::read_cbor(void)
 grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
 {
     grasp_session_id gsi = generate_random_sessionid(true);
+    char eui64buf[EUI64_BUF_LEN];
+
+    deb->info("starting query Registrar for EUI: %02x",
+                rpl_node::fmt_eui64(eui64, eui64buf, sizeof(eui64buf)));
 
     /* we are writing a GRASP: 3.7.5.  Request Messages */
     /*  request-negotiation-message = [M_REQ_NEG, session-id, objective]*/

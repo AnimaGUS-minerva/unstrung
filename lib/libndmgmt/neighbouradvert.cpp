@@ -288,6 +288,8 @@ void network_interface::process_grasp_reply(grasp_session_id gsi, bool success)
     rpl_node *rn = find_neighbour_by_grasp_sessionid(gsi);
     if(rn == NULL) return;
 
+    debug->info("ending query from Registrar for %s", rn->node_name());
+
     rn->set_accepted(success);
     rn->reply_neighbour_advert(this, success ? 0 : ND_NS_JOIN_DECLINED);
 }
