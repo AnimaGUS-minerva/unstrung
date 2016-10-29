@@ -71,7 +71,7 @@ class grasp_client {
     bool process_grasp_reply(time_t now);
     bool decode_grasp_reply(cbor_item_t *reply);
     grasp_session_id start_query_for_aro(unsigned char eui64[8]);
-    grasp_session_id generate_random_sessionid(bool init);
+    virtual grasp_session_id generate_random_sessionid(bool init);
 
     void init_regress_random(void);
 
