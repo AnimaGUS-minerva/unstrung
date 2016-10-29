@@ -28,6 +28,8 @@
 #include "iface.h"
 #include "debug.h"
 #include "cbor.h"
+
+#undef GRASP_CLIENT_DEBUG
 #ifdef GRASP_CLIENT_DEBUG
 #include "hexdump.c"
 #endif
@@ -136,7 +138,7 @@ cbor_item_t *grasp_client::read_cbor(void)
 
 #ifdef GRASP_CLIENT_DEBUG
     /* Pretty-print the result */
-    cbor_describe(cb, stdout);
+    cbor_describe(reply, stdout);
 #endif
 
     return reply;
