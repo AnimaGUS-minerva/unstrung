@@ -3,6 +3,7 @@
 #include "iface.h"
 
 #include "fakeiface.h"
+#include "fakegrasp.h"
 
 extern "C" {
 #include "hexdump.c"
@@ -29,11 +30,7 @@ int main(int argc, char *argv[])
         pcap_network_interface::scan_devices(deb, false);
         network_interface *iface = network_interface::find_by_name("wlan0");
 
-        grasp_client gc(deb, iface);
-
-        printf("init random\n");
-        gc.init_regress_random();
-        printf(" end random\n");
+        fake_grasp_client gc(deb, iface);
 
         for(int i=0; i<16; i++) {
           fprintf(stderr, "random number check seqno[%u]: %08x\n", i, gc.generate_random_sessionid(true));

@@ -73,13 +73,17 @@ then
     fi
 fi
 
-echo LIBPCAP=${LIBPCAP} -lpthread -ldbus-1 >Makefile.local
-echo LIBPCAP_HOST=${LIBPCAP_HOST} -lpthread -lusb-1.0 -ldbus-1 >>Makefile.local
+echo >Makefile.local
+echo LIBNL=-lnl-3 -lnl-genl-3                          >>Makefile.local
+echo LIBPCAP_HOST_DIR=${LIBPCAP_HOST_DIR}              >>Makefile.local
+echo TCPDUMP_HOST_DIR=${TCPDUMP_HOST_DIR}              >>Makefile.local
+echo LIBPCAP=${LIBPCAP_HOST_DIR}/libpcap.a '${LIBNL}'    >>Makefile.local
+echo LIBPCAP_HOST=${LIBPCAP_HOST_DIR}/libpcap.a '${LIBNL}' >>Makefile.local
 echo LIBPCAPINC=-I${LIBPCAP_HOST_DIR}                >>Makefile.local
 echo TCPDUMP=${TCPDUMP_HOST_DIR}/tcpdump             >>Makefile.local
 echo MBEDTLSH=-I${BUILDTOP}/include                  >>Makefile.local
 echo MBEDTLSLIB=${BUILDTOP}/lib                      >>Makefile.local
-echo NETDISSECTLIB=${LIBPCAP_HOST_DIR}/libnetdissect.a >>Makefile.local
+echo NETDISSECTLIB=${TCPDUMP_HOST_DIR}/libnetdissect.a >>Makefile.local
 echo NETDISSECTH=-DNETDISSECT -I${BUILDTOP}/include -I${TCPDUMP_HOST_DIR} -I${BUILDTOP}/tcpdump >>Makefile.local
 echo CBOR_LIB=${BUILDTOP}/${HOST}/libcbor/src/libcbor.a      >>Makefile.local
 echo CBOR_INCLUDE=-I${BUILDTOP}/include -Drestrict=__restrict__   >>Makefile.local
