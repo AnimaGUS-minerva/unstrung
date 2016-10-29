@@ -41,10 +41,10 @@ then
     if [ ! -d "${BUILDTOP}/i386/tcpdump/." ]; then
         (cd ${BUILDTOP} && mkdir -p i386/libpcap-1.8.1 && cd i386/libpcap-1.8.1 && CFLAGS=-m32 ../../libpcap/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
         (cd ${BUILDTOP} && ln -f -s i386/libpcap-1.8.1 libpcap && mkdir -p i386/tcpdump-4.8.1 && cd i386/tcpdump-4.8.1 && CFLAGS=-m32 ../../tcpdump/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
-        (cd ${BUILDTOP}/i386 && ln -s -f tcpdump-4.8.0 tcpdump )
+        (cd ${BUILDTOP}/i386 && ln -s -f tcpdump-4.8.1 tcpdump )
     fi
 
-    (cd $BUILDTOP/host/libpcap-1.8.1 && make install)
+    (cd $BUILDTOP/${HOST}/libpcap-1.8.1 && make install)
 fi
 LIBPCAP_HOST_DIR=${BUILDTOP}/${HOST}/libpcap-1.8.1
 LIBPCAP_HOST=${LIBPCAP_HOST_DIR}/libpcap.a
