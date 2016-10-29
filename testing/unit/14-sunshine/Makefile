@@ -12,6 +12,7 @@ clean::
 	@rm -rf OUTPUTS
 
 check::
+	@(echo file ${SUNSHINE}; echo set args "--help") >.gdbinit
 	${SUNSHINE} --help 2>&1 | tee ../OUTPUTS/sunshine-help.raw | sed -f pathnames.sed | diff - sunshine-help.txt
 	@if [ -f core.* ]; then echo CORE FILES FOUND; exit 1; else exit 0; fi
 
