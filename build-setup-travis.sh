@@ -32,13 +32,13 @@ then
         i386)   HOST=i386;;
     esac
 
-    if [ ! -d "${BUILDTOP}/x86_64/tcpdump/." ]; then
+    if [ ! -d "${BUILDTOP}/x86_64/tcpdump-4.8.1/." ]; then
         (cd ${BUILDTOP} && mkdir -p x86_64/libpcap-1.8.1 && cd x86_64/libpcap-1.8.1 && CFLAGS=-m64 ../../libpcap/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS=-m64)
         (cd ${BUILDTOP} && ln -f -s x86_64/libpcap-1.8.1 libpcap && mkdir -p x86_64/tcpdump-4.8.1 && cd x86_64/tcpdump-4.8.1 && CFLAGS=-m64 ../../tcpdump/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS=-m64)
         (cd ${BUILDTOP}/x86_64 && ln -s -f tcpdump-4.8.1 tcpdump )
     fi
 
-    if [ ! -d "${BUILDTOP}/i386/tcpdump/." ]; then
+    if [ ! -d "${BUILDTOP}/i386/tcpdump-4.8.1/." ]; then
         (cd ${BUILDTOP} && mkdir -p i386/libpcap-1.8.1 && cd i386/libpcap-1.8.1 && CFLAGS=-m32 ../../libpcap/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
         (cd ${BUILDTOP} && ln -f -s i386/libpcap-1.8.1 libpcap && mkdir -p i386/tcpdump-4.8.1 && cd i386/tcpdump-4.8.1 && CFLAGS=-m32 ../../tcpdump/configure --prefix=$HOME/stuff --target=i686-pc-linux-gnu && make LDFLAGS=-m32 CFLAGS=-m32)
         (cd ${BUILDTOP}/i386 && ln -s -f tcpdump-4.8.1 tcpdump )
