@@ -1,29 +1,27 @@
-random number check seqno[0]: 2dcdceaa
-random number check seqno[1]: 56160134
-random number check seqno[2]: 47810b65
-random number check seqno[3]: 082e19bc
-random number check seqno[4]: 23735bec
-random number check seqno[5]: 4e40750a
-random number check seqno[6]: 6ff72016
-random number check seqno[7]: 75811a87
-random number check seqno[8]: 04e1fccd
-random number check seqno[9]: 34e682fe
-random number check seqno[10]: 02942808
-random number check seqno[11]: 5ec66005
-random number check seqno[12]: 155b516a
-random number check seqno[13]: 5fc4b33f
-random number check seqno[14]: 0b311b07
-random number check seqno[15]: 09292e63
-link found[1]: wlan0 type=ether (active new) faked
+random number check seqno[0]: 6b8b4567
+random number check seqno[1]: 6b8b4568
+random number check seqno[2]: 6b8b4569
+random number check seqno[3]: 6b8b456a
+random number check seqno[4]: 6b8b456b
+random number check seqno[5]: 6b8b456c
+random number check seqno[6]: 6b8b456d
+random number check seqno[7]: 6b8b456e
+random number check seqno[8]: 6b8b456f
+random number check seqno[9]: 6b8b4570
+random number check seqno[10]: 6b8b4571
+random number check seqno[11]: 6b8b4572
+random number check seqno[12]: 6b8b4573
+random number check seqno[13]: 6b8b4574
+random number check seqno[14]: 6b8b4575
+random number check seqno[15]: 6b8b4576
+Can not load reply: decode detailslink found[1]: wlan0 type=ether (active new) faked
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
 ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
-init random
- end random
+starting query Registrar for EUI: 0102:0304:0506:0708
  [CBOR_TYPE_ARRAY] Definite, size: 3
     [CBOR_TYPE_UINT] Width: 1B, Value: 6
     [CBOR_TYPE_UINT] Width: 4B, Value: 1804289383
     [CBOR_TYPE_ARRAY] Definite, size: 1
         [CBOR_TYPE_UINT] Width: 1B, Value: 101
-ip found[2]: lo scope=254 address=::1
