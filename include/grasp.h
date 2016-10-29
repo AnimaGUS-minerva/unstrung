@@ -57,6 +57,7 @@ class grasp_client {
         outfd= -1;
         deb = debug;
         this->iface = iface;
+        init_query_client(iface);
         init_random();
     };
     bool poll_setup(struct pollfd *fd1);
@@ -85,6 +86,7 @@ class grasp_client {
     mbedtls_ctr_drbg_context ctr_drbg;
 
     void init_random(void);
+    void init_query_client(network_interface *iface);
 };
 
 #endif /* _GRASP_H_ */

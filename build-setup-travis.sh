@@ -18,7 +18,7 @@ mkdir -p ${BUILDTOP}/${HOST}
 if [ ! -d $BUILDTOP/include/mbedtls ]; then
     if [ ! -d $BUILDTOP/mbedtls ]; then (cd ${BUILDTOP} && git clone -b mcr_add_otherName https://github.com/mcr/mbedtls.git ); fi
     set -x
-    (cd ${BUILDTOP} && rm -rf host/mbedtls && mkdir -p host/mbedtls && cd host/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP ../../mbedtls && make && make install)
+    (cd ${BUILDTOP} && rm -rf host/mbedtls && mkdir -p host/mbedtls && cd host/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP ../../mbedtls && make CFLAGS='--coverage -g3 -O0' && make install)
 fi
 
 LIBPCAP=${BUILDTOP}/host/libpcap-1.8.1/libpcap.a
