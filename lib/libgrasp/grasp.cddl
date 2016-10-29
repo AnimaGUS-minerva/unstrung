@@ -1,0 +1,103 @@
+grasp-message = (message .within message-structure) / noop-message
+
+message-structure = [MESSAGE_TYPE, session-id, ?initiator, *grasp-option]
+
+MESSAGE_TYPE = 0..255
+session-id = 0..16777215 ;up to 24 bits
+grasp-option = any
+
+message /= discovery-message
+discovery-message = [M_DISCOVERY, session-id, initiator, objective]
+
+message /= response-message ;response to Discovery
+
+response-message = [M_RESPONSE, session-id, initiator, ttl,
+                   (+locator-option // divert-option), ?objective]
+
+message /= synch-message ;response to Synchronization request
+synch-message = [M_SYNCH, session-id, objective]
+
+message /= flood-message
+flood-message = [M_FLOOD, session-id, initiator, ttl,
+                (locator-option / []), +objective]
+
+message /= request-negotiation-message
+request-negotiation-message = [M_REQ_NEG, session-id, objective]
+
+message /= request-synchronization-message
+request-synchronization-message = [M_REQ_SYN, session-id, objective]
+
+message /= negotiation-message
+negotiation-message = [M_NEGOTIATE, session-id, objective]
+
+message /= end-message
+end-message = [M_END, session-id, accept-option / decline-option ]
+
+message /= wait-message
+wait-message = [M_WAIT, session-id, waiting-time]
+
+noop-message = [M_NOOP]
+
+divert-option = [O_DIVERT, +locator-option]
+
+accept-option = [O_ACCEPT]
+
+decline-option = [O_DECLINE, ?reason]
+reason = text  ;optional error message
+
+waiting-time = 0..4294967295 ; in milliseconds
+ttl = 0..4294967295 ; in milliseconds
+
+locator-option /= [O_IPv4_LOCATOR, ipv4-address,
+                   transport-proto, port-number]
+ipv4-address = bytes .size 4
+
+locator-option /= [O_IPv6_LOCATOR, ipv6-address,
+                   transport-proto, port-number]
+ipv6-address = bytes .size 16
+
+locator-option /= [O_FQDN_LOCATOR, text, transport-proto, port-number]
+
+transport-proto = IPPROTO_TCP / IPPROTO_UDP
+
+IPPROTO_TCP = 6
+IPPROTO_UDP = 17
+port-number = 0..65535
+
+locator-option /= [O_URI_LOCATOR, text]
+
+initiator = ipv4-address / ipv6-address
+
+objective-flags = uint .bits objective-flag
+
+objective-flag = &(
+ F_DISC: 0 ; valid for discovery only
+ F_NEG: 1 ; valid for discovery and negotiation
+ F_SYNCH: 2) ; valid for discovery and synchronization
+
+objective = [objective-name, objective-flags, loop-count, ?any]
+
+objective-name = text ;see specification for uniqueness rules
+
+loop-count = 0..255
+
+; Constants for message types and option types
+
+M_NOOP = 0
+M_DISCOVERY = 1
+M_RESPONSE = 2
+M_REQ_NEG = 3
+M_REQ_SYN = 4
+M_NEGOTIATE = 5
+M_END = 6
+M_WAIT = 7
+M_SYNCH = 8
+M_FLOOD = 9
+
+O_DIVERT = 100
+O_ACCEPT = 101
+O_DECLINE = 102
+O_IPv6_LOCATOR = 103
+O_IPv4_LOCATOR = 104
+O_FQDN_LOCATOR = 105
+O_URI_LOCATOR = 106
