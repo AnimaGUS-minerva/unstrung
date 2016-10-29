@@ -3,7 +3,7 @@
 set -e
 mkdir -p $HOME/stuff
 BUILDTOP=$(cd $HOME/stuff; pwd)
-ARCH=$(arch)
+ARCH=${ARCH-$(arch)}
 
 case $ARCH in
     x86_64) HOST=x86_64;;
