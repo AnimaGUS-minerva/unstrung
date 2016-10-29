@@ -148,7 +148,9 @@ int main(int argc, char *argv[])
     /* reset argument processor */
     optind = 1;
 
-    network_interface::scan_devices(deb, true);
+    if(network_interface::scan_devices(deb, true) != true) {
+        exit(10);
+    }
     devices_scanned=true;
 
     while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:m?v", longopts, 0)) != EOF) {

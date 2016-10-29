@@ -169,7 +169,7 @@ public:
     /* find a dag network associated with the interface */
     dag_network       *find_or_make_dag_by_instanceid(instanceID_t num, const char *name);
 
-    static void scan_devices(rpl_debug *deb, bool setup);
+    static bool scan_devices(rpl_debug *deb, bool setup);
     static void main_loop(FILE *verbose, rpl_debug *debug);
     static network_interface *find_by_ifindex(int ifindex);
     static network_interface *find_by_name(const char *name);

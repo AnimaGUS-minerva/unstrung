@@ -688,7 +688,7 @@ int network_interface::setup_msg_callback(rpl_debug *deb)
 
 
 
-void network_interface::scan_devices(rpl_debug *deb, bool setup)
+bool network_interface::scan_devices(rpl_debug *deb, bool setup)
 {
 	struct nlmsg_list *linfo = NULL;
 	struct nlmsg_list *ainfo = NULL;
@@ -697,7 +697,7 @@ void network_interface::scan_devices(rpl_debug *deb, bool setup)
 	int no_link = 0;
         struct network_interface_init nii;
 
-        if(!open_netlink()) return;
+        if(!open_netlink()) return true;
 
         remove_marks();
 
@@ -706,30 +706,31 @@ void network_interface::scan_devices(rpl_debug *deb, bool setup)
 
         /* get list of interfaces */
 	if (rtnl_wilddump_request(netlink_handle, AF_PACKET, RTM_GETLINK) < 0) {
-		perror("Cannot send dump request");
-		exit(1);
+            deb->error("Cannot send dump request");
+            return false;
 	}
 
 	if (rtnl_dump_filter(netlink_handle, gather_linkinfo,
                              (void *)&nii, NULL, NULL) < 0) {
-		fprintf(stderr, "Dump terminated\n");
-		exit(1);
+            deb->error("Dump terminated\n");
+            return false;
 	}
 
         /* get list of addresses on the interfaces */
 	if (rtnl_wilddump_request(netlink_handle, AF_INET6, RTM_GETADDR) < 0) {
-		perror("Cannot send dump request");
-		exit(1);
+            deb->error("Cannot send dump request: %s", strerror(errno));
+
 	}
 
 	if (rtnl_dump_filter(netlink_handle, gather_linkinfo,
                              (void *)&nii, NULL, NULL) < 0) {
-		fprintf(stderr, "Dump terminated\n");
-		exit(1);
+            deb->error("Dump terminated\n");
+            return false;
 	}
 
         /* now look for interfaces with no mark, as they may be removed */
-
+        /* XXX */
+        return true;
 }
 
 /*
