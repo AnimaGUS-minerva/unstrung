@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "iface.h"
+#include "grasp.h"
 
 #include "fakeiface.h"
+#include "fakegrasp.h"
 
 extern "C" {
 #include "pcap.h"
@@ -47,7 +49,7 @@ int main(int argc, char *argv[])
 	n.tv_usec = 1024;
 	iface->set_fake_time(n);
 
-        grasp_client gc(deb, iface);
+        fake_grasp_client gc(deb, iface);
         gc.init_regress_random();
 #if 0
         for(int i=0; i<16; i++) {
@@ -102,6 +104,11 @@ int main(int argc, char *argv[])
         deb->set_debug_flag(RPL_DEBUG_NETINPUT);
 
         iface->process_pcap();
+
+        if(!declinedneighbour) {
+          time_t testable_now = 1444419263;
+          gc.process_grasp_reply(testable_now);
+        }
 
         /* now drain off any created events */
         network_interface::terminating();
