@@ -74,7 +74,7 @@ then
 fi
 
 echo >Makefile.local
-echo LIBNL=-lnl-3 -lnl-genl-3                          >>Makefile.local
+echo LIBNL=-lnl-3 -lnl-genl-3 -ldbus-1 -lpthread       >>Makefile.local
 echo LIBPCAP_HOST_DIR=${LIBPCAP_HOST_DIR}              >>Makefile.local
 echo TCPDUMP_HOST_DIR=${TCPDUMP_HOST_DIR}              >>Makefile.local
 echo LIBPCAP=${LIBPCAP_HOST_DIR}/libpcap.a '${LIBNL}'    >>Makefile.local
