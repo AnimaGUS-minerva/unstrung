@@ -212,6 +212,10 @@ grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
 
 bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
 {
+    if(!cbor_typeof(reply) != CBOR_TYPE_ARRAY) {
+        return false;
+    }
+
     cbor_item_t *msgitem = cbor_array_get(reply, 0);
     unsigned int msgtype = cbor_get_int(msgitem);
 
@@ -224,6 +228,10 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
 
     cbor_item_t *result = cbor_array_get(reply, 2);
     if(!result) {
+        return false;
+    }
+
+    if(!cbor_typeof(result) != CBOR_TYPE_ARRAY) {
         return false;
     }
 
