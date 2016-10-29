@@ -48,6 +48,12 @@ int main(int argc, char *argv[])
 	iface->set_fake_time(n);
 
         grasp_client gc(deb, iface);
+        gc.init_regress_random();
+#if 0
+        for(int i=0; i<16; i++) {
+          fprintf(stderr, "random number check seqno[%u]: %08x\n", i, gc.generate_random_sessionid(true));
+        }
+#endif
 
         if(declinedneighbour) {
           if(declinedneighbour[0]=='N') {

@@ -148,7 +148,7 @@ grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
     grasp_session_id gsi = generate_random_sessionid(true);
     char eui64buf[EUI64_BUF_LEN];
 
-    deb->info("starting query Registrar for EUI: %02x",
+    deb->info("starting query Registrar for EUI: %s\n",
                 rpl_node::fmt_eui64(eui64, eui64buf, sizeof(eui64buf)));
 
     /* we are writing a GRASP: 3.7.5.  Request Messages */
@@ -282,15 +282,24 @@ grasp_session_id grasp_client::generate_random_sessionid(bool init)
     return newrand;
 }
 
+void grasp_client::init_query_client(network_interface *iface)
+{
+    if(iface) {
+        iface->join_query_client = this;
+    }
+}
+
 void grasp_client::init_random(void)
 {
-    entropy_init = true;
+    if(!entropy_init) {
+        entropy_init = true;
 
-    /* set up the entropy source */
-    mbedtls_entropy_init( &entropy );
+        /* set up the entropy source */
+        mbedtls_entropy_init( &entropy );
 
-    const char *personalization = "unstrung grasp client";
-    mbedtls_ctr_drbg_init( &ctr_drbg );
+        //const char *personalization = "unstrung grasp client";
+        mbedtls_ctr_drbg_init( &ctr_drbg );
+    }
 }
 
 
