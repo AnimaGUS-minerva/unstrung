@@ -67,13 +67,15 @@ network_interface::network_interface()
     nd_socket = -1;
     alive = false;
     debug = NULL;
+    node  = NULL;
     this->set_if_name("<unset>");
 }
 
 network_interface::network_interface(const char *if_name, rpl_debug *deb)
 {
-    alive = false;
     nd_socket = -1;
+    alive = false;
+    node  = NULL;
     set_debug(deb);
 
     this->set_if_name(if_name);
