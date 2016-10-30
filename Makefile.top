@@ -28,18 +28,12 @@ distclean:	clean
 uml:	checkprograms virtualmachines
 
 virtualmachines:
-	-chmod +x testing/utils/make-uml.sh testing/utils/verify-uml.sh
-	./testing/utils/verify-uml.sh
-	./testing/utils/make-uml.sh `pwd`
-
-umluserland:
-	(touch ${UNSTRUNG_SRCDIR}/Makefile.inc && source ${UNSTRUNG_SRCDIR}/umlsetup.sh && cd $$POOLSPACE && $(MAKE) $$UNSTRUNG_HOSTS $$REGULARHOSTS )
-
+	echo MORE DO TO.
 
 checkprograms::
 	@for d in $(SUBDIRS); do (cd $$d && $(MAKE) DESTDIR=${DESTDIR} checkprograms || exit 1); done
 
-check::	uml Makefile.ver
+check::	Makefile.ver
 ifneq ($(strip(${REGRESSRESULTS})),)
 	mkdir -p ${REGRESSRESULTS}
 endif

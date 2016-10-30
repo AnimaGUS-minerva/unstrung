@@ -21,5 +21,4 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=uml_netjig
 
