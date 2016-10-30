@@ -13,6 +13,7 @@
 ./bin/chmod
 ./bin/rm
 ./usr/sbin/chroot
+./usr/bin/strace
 ./sbin/pivot_root
 ./lib/i386-linux-gnu/libacl.so.1
 ./lib/i386-linux-gnu/libacl.so.1.1.0
