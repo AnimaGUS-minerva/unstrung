@@ -15,11 +15,15 @@ rm -f ${BUILDTOP}/host
 ln -f -s ${BUILDTOP}/${HOST} ${BUILDTOP}/host
 mkdir -p ${BUILDTOP}/${HOST}
 
-if [ ! -d $BUILDTOP/include/mbedtls ]; then
     if [ ! -d $BUILDTOP/mbedtls ]; then (cd ${BUILDTOP} && git clone -b mcr_add_otherName https://github.com/mcr/mbedtls.git ); fi
-    set -x
-    (cd ${BUILDTOP} && rm -rf host/mbedtls && mkdir -p host/mbedtls && cd host/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP ../../mbedtls && make CFLAGS='--coverage -g3 -O0' && make install)
-fi
+
+    if [ ! -d "${BUILDTOP}/x86_64/mbedtls" ]; then
+        (cd ${BUILDTOP} && rm -rf x86_64/mbedtls && mkdir -p x86_64/mbedtls && cd x86_64/mbedtls && cmake -DCMAKE_C_FLAGS:STRING=-m64 -DCMAKE_INSTALL_PREFIX=$BUILDTOP/x86_64 ../../mbedtls && make CFLAGS='-m64 --coverage -g3 -O0' && make install)
+    fi
+
+    if [ ! -d "${BUILDTOP}/i386/mbedtls" ]; then
+        (cd ${BUILDTOP} && rm -rf i386/mbedtls && mkdir -p i386/mbedtls && cd i386/mbedtls && cmake -DCMAKE_C_FLAGS:STRING=-m32 -DCMAKE_INSTALL_PREFIX=$BUILDTOP/i386 ../../mbedtls && make CFLAGS='-m32 --coverage -g3 -O0' && make install)
+    fi
 
 LIBPCAP=${BUILDTOP}/host/libpcap-1.8.1/libpcap.a
 if [ ! -x $BUILDTOP/host/tcpdump-4.8.1/tcpdump ]
@@ -51,7 +55,7 @@ LIBPCAP_HOST=${LIBPCAP_HOST_DIR}/libpcap.a
 LIBPCAP=${LIBPCAP_HOST}
 TCPDUMP_HOST_DIR=${BUILDTOP}/${HOST}/tcpdump-4.8.1
 
-if [ ! -f $BUILDTOP/include/cobr.h ]
+if [ ! -f $BUILDTOP/include/cbor.h ]
 then
     if [ ! -d ${BUILDTOP}/libcbor ]; then ( cd $BUILDTOP && git clone https://github.com/mcr/libcbor.git) ; fi
 
@@ -65,11 +69,11 @@ then
 
 
     if [ ! -d "${BUILDTOP}/x86_64/libcbor" ]; then
-        (cd ${BUILDTOP} && mkdir -p x86_64/libcbor && cd x86_64/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS_DEBUG=-m64 -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/x86_64 && make && make install)
+        (cd ${BUILDTOP} && mkdir -p x86_64/libcbor && cd x86_64/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS:STRING=-m64 -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/x86_64 && make && make install)
     fi
 
     if [ ! -d "${BUILDTOP}/i386/libcbor" ]; then
-        (cd ${BUILDTOP} && mkdir -p i386/libcbor && cd i386/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS_DEBUG=-m32 -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/i386 && make && make install)
+        (cd ${BUILDTOP} && mkdir -p i386/libcbor && cd i386/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS:STRING=-m32 -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/i386 && make debug && make install)
     fi
 fi
 
@@ -81,8 +85,8 @@ echo LIBPCAP=${LIBPCAP_HOST_DIR}/libpcap.a '${LIBNL}'    >>Makefile.local
 echo LIBPCAP_HOST=${LIBPCAP_HOST_DIR}/libpcap.a '${LIBNL}' >>Makefile.local
 echo LIBPCAPINC=-I${LIBPCAP_HOST_DIR}                >>Makefile.local
 echo TCPDUMP=${TCPDUMP_HOST_DIR}/tcpdump             >>Makefile.local
-echo MBEDTLSH=-I${BUILDTOP}/include                  >>Makefile.local
-echo MBEDTLSLIB=${BUILDTOP}/lib                      >>Makefile.local
+echo MBEDTLSH=-I${BUILDTOP}/${HOST}/include          >>Makefile.local
+echo MBEDTLSLIB=${BUILDTOP}/${HOST}/lib              >>Makefile.local
 echo NETDISSECTLIB=${TCPDUMP_HOST_DIR}/libnetdissect.a >>Makefile.local
 echo NETDISSECTH=-DNETDISSECT -I${BUILDTOP}/include -I${TCPDUMP_HOST_DIR} -I${BUILDTOP}/tcpdump >>Makefile.local
 echo CBOR_LIB=${BUILDTOP}/${HOST}/libcbor/src/libcbor.a      >>Makefile.local
