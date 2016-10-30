@@ -17,9 +17,9 @@ mkdir -p ${BUILDTOP}/${HOST}
 
     if [ ! -d $BUILDTOP/mbedtls ]; then (cd ${BUILDTOP} && git clone -b mcr_add_otherName https://github.com/mcr/mbedtls.git ); fi
 
-    if [ ! -d "${BUILDTOP}/x86_64/mbedtls" ]; then
+    #if [ ! -d "${BUILDTOP}/x86_64/mbedtls" ]; then
         (cd ${BUILDTOP} && rm -rf x86_64/mbedtls && mkdir -p x86_64/mbedtls && cd x86_64/mbedtls && cmake -DCMAKE_C_FLAGS:STRING=-m64 -DCMAKE_INSTALL_PREFIX=$BUILDTOP/x86_64 ../../mbedtls && make CFLAGS='-m64 --coverage -g3 -O0' && make install)
-    fi
+    #fi
 
     if [ ! -d "${BUILDTOP}/i386/mbedtls" ]; then
         (cd ${BUILDTOP} && rm -rf i386/mbedtls && mkdir -p i386/mbedtls && cd i386/mbedtls && cmake -DCMAKE_C_FLAGS:STRING=-m32 -DCMAKE_INSTALL_PREFIX=$BUILDTOP/i386 ../../mbedtls && make CFLAGS='-m32 --coverage -g3 -O0' && make install)
