@@ -68,6 +68,7 @@ network_interface::network_interface()
     alive = false;
     debug = NULL;
     node  = NULL;
+    join_query_client = NULL;
     this->set_if_name("<unset>");
 }
 
@@ -75,11 +76,12 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
 {
     nd_socket = -1;
     alive = false;
+    debug = NULL;
     node  = NULL;
+    join_query_client = NULL;
     set_debug(deb);
 
     this->set_if_name(if_name);
-    debug = NULL;
 }
 
 void network_interface::set_if_name(const char *if_name)
@@ -1053,6 +1055,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         class network_interface* all_if[1+network_interface::if_count()];
 #ifdef GRASP_CLIENT
         class grasp_client*      all_grasp[1+network_interface::if_count()];
+        for(int i = 0; i < 1+network_interface::if_count(); i++) all_grasp[i]=NULL;
 #endif
         int pollnum=0;
         int timeout = 60*1000;   /* 60 seconds is maximum */
@@ -1106,8 +1109,6 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 
                 pollnum++;
             }
-            iface = iface->next;
-
 #ifdef GRASP_CLIENT
             if(iface->join_query_client) {
                 if(iface->join_query_client->poll_setup(&poll_if[pollnum])) {
@@ -1116,6 +1117,9 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 }
             }
 #endif
+
+            iface = iface->next;
+
         }
 
         /* now poll for input */
