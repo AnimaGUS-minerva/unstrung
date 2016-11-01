@@ -10,6 +10,7 @@ compiler:
   - g++
 
 cache:
+  - bundler
   directories:
   - $HOME/stuff
 
