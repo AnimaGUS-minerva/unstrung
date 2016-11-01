@@ -11,6 +11,8 @@ compiler:
 
 cache:
   - bundler
+
+cache:
   directories:
   - $HOME/stuff
 
@@ -26,7 +28,7 @@ install:
   - "rvm install ruby-2.1.5"
   - "rvm use 2.1.5"
   - "gem install ronn cbor cbor-diag"
-  - "./build-setup-travis.sh"
+  - "./build-setup-travis.sh ONLYARCH=x86_64"
   - "PATH=$HOME/bin:$PATH export PATH"
 
 script:
