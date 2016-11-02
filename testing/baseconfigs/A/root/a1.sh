@@ -8,4 +8,4 @@ fi
 cd /tmp
 ulimit -c unlimited
 
-/sbin/sunshine.run --dagid ripple -i eth1 --rank 1 --prefix 2001:db8:0001::/48 --interval 30000 --verbose --timelog
+/sbin/sunshine.run -i 1 --dagid 2001:db8:0001::1 -i eth1 --rank 1 --prefix 2001:db8:0001::/48 --interval 30000 --verbose --timelog
