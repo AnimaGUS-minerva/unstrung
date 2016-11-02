@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
         const char * outpcap= "../OUTPUTS/24-node-E-out.pcap";
         dag_network *dag = dioA_setup(deb);
-        pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
+        pcap_network_interface *iface = dioA_iface_setup(NULL, dag,deb,outpcap);
         dioA_event(iface, deb, outpcap);
 
         const char *pcapin2 = "../INPUTS/daoack-A-example661e.pcap";
