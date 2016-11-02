@@ -1,0 +1,1 @@
+IP6 fe80::216:3eff:fe11:3424 > ff02::1: ICMP6, RPL, (CLR)DODAG Information Object, length 64
