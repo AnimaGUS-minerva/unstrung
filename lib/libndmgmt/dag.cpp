@@ -1067,10 +1067,18 @@ void dag_network::commit_parent(void)
             dag_parentif->add_parent_route_to_prefix(mPrefix,
                                                      &srcip.prefix_number().addr,
                                                      *dag_parent);
+            if(this->groundedP()) {
+                dag_parentif->add_parent_route_to_default(&srcip.prefix_number().addr,
+                                                          *dag_parent);
+            }
+
         } else {
             dag_parentif->add_parent_route_to_prefix(mPrefix,
                                                      NULL,
                                                      *dag_parent);
+            if(this->groundedP()) {
+                dag_parentif->add_parent_route_to_default(NULL, *dag_parent);
+            }
         }
 
         /* now send a DIO */

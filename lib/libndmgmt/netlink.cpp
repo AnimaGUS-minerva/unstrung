@@ -145,6 +145,20 @@ bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
 }
 
 /* XXX do this with netlink too  */
+bool network_interface::add_parent_route_to_default(const ip_address *src,
+                                                    /*const*/rpl_node &parent)
+{
+    ip_subnet defaultroute;
+
+    memset(&defaultroute, 0, sizeof(defaultroute));
+    defaultroute.maskbits = 0;                     /* maybe should say 2000::/3 */
+    defaultroute.addr.u.v6.sin6_family = AF_INET6;
+
+    return add_parent_route_to_prefix(defaultroute, src, parent);
+}
+
+
+/* XXX do this with netlink too  */
 bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
 {
     char buf[1024];

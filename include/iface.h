@@ -151,6 +151,8 @@ public:
     bool add_parent_route_to_prefix(const ip_subnet &prefix,
                                     const ip_address *src,
                                     /*const*/ rpl_node &parent);
+    bool add_parent_route_to_default(const ip_address *src,
+                                    /*const*/ rpl_node &parent);
 
     /* eui string functions */
     char *eui48_str(char *str, int strlen);

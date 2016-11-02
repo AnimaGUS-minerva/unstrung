@@ -33,6 +33,11 @@ packet 2 is being processed
   invoking ip -6 route add 2001:db8:1::/48 via fe80::216:3eff:fe11:3424 dev wlan0 src fd01:203:405:607::1111
     would invoke cmd: ip -6 route add 2001:db8:1::/48 via fe80::216:3eff:fe11:3424 dev wlan0 src fd01:203:405:607::1111
     would invoke cmd: ip -6 route show
+  invoking ip -6 route del ::/0
+    would invoke cmd: ip -6 route del ::/0
+  invoking ip -6 route add ::/0 via fe80::216:3eff:fe11:3424 dev wlan0 src fd01:203:405:607::1111
+    would invoke cmd: ip -6 route add ::/0 via fe80::216:3eff:fe11:3424 dev wlan0 src fd01:203:405:607::1111
+    would invoke cmd: ip -6 route show
 Scheduling dio in 2 ms
 inserting event #2 at 1073741824/3024 0
 invoked doit(send_dio) on rpl_event (if_name=none)
