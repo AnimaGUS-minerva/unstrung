@@ -18,6 +18,7 @@
 NEEDCHECK:=
 MAKEFILETOP:=true
 SUBDIRS=lib programs testing
+VDE_DIR=${UNSTRUNG_SRCDIR}/UMLPOOL/.vde
 
 clean::
 	-echo cleaning
@@ -72,5 +73,18 @@ version:
 distarchive:
 	git archive --prefix=unstrung-${PANDORA_VERSION}/ -o ../downloads/unstrung-${PANDORA_VERSION}.tar.gz HEAD
 
+vde:
+	mkdir -p ${VDE_DIR}/0 ${VDE_DIR}/1 ${VDE_DIR}/2 ${VDE_DIR}/3 ${VDE_DIR}/4 ${VDE_DIR}/99
+	vde_switch -f testing/utils/vde99_script.rc -daemon -M ${VDE_DIR}/control99 -sock ${VDE_DIR}/99 -tap unstrung0
+	vde_switch -f testing/utils/vde0_script.rc -daemon -M ${VDE_DIR}/control0 -sock ${VDE_DIR}/0
+	vde_switch -f testing/utils/vde1_script.rc -daemon -M ${VDE_DIR}/control1 -sock ${VDE_DIR}/1
+	vde_switch -f testing/utils/vde2_script.rc -daemon -M ${VDE_DIR}/control2 -sock ${VDE_DIR}/2
+	vde_switch -f testing/utils/vde3_script.rc -daemon -M ${VDE_DIR}/control3 -sock ${VDE_DIR}/3
+	vde_switch -f testing/utils/vde4_script.rc -daemon -M ${VDE_DIR}/control4 -sock ${VDE_DIR}/4
+
+vde_console:
+	unixterm ${UNSTRUNG_SRCDIR}/.vdecontrol
+
 # export USE_ variables
 export USE_OBJDIR
+
