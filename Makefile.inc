@@ -14,9 +14,9 @@ CXXFLAGS+=-I${INC}  -fno-show-column ${CBOR_INCLUDE}
 USERLINK?=-g
 USERCPPCOMPILE?=-g -O
 
-ifeq ($(ARCH),x86_64)
-HOSTFLAGS=-m32
-endif
+#ifeq ($(ARCH),x86_64)
+#HOSTFLAGS=-m32
+#endif
 
 USE_OBJDIR?=false
 XMLTO=xmlto
