@@ -69,7 +69,7 @@ then
     fi
 
     if [ ! -d "${BUILDTOP}/i386/libcbor" ]; then
-        (cd ${BUILDTOP} && mkdir -p i386/libcbor && cd i386/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS:STRING="-m32 -fPIC" -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/i386 && make debug && make install)
+        (cd ${BUILDTOP} && mkdir -p i386/libcbor && cd i386/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS:STRING="-m32 -fPIC" -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/i386 && make && make install)
     fi
 fi
 
