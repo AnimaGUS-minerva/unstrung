@@ -1,10 +1,13 @@
+Creating PCAP interface: wlan0
 link found[1]: wlan0 type=ether (active new) faked
    adding as new interface 00:16:3e:11:34:24/0216:3eff:fe11:3424
 ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
+Creating PCAP interface: lo
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
 ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6602
 Processing input file ../INPUTS/dio-A-661e.pcap on if=[1]: wlan0 state: active  faked
+Creating PCAP interface: acp0
 link found[10]: acp0 type=ether (active new) faked
    adding as new interface 00:11:22:33:44:45/0211:22ff:fe33:4445
 added fd01:203:405:607::1111 to DAG 42/[2001:db8:661e::1]
