@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
           }
 
           if(!gc.decode_grasp_reply(reply)) {
-            fprintf(stderr, "Can not load reply: decode details");
+            fprintf(stderr, "Can not load reply: decode details\n");
             exit(12);
           }
         }
