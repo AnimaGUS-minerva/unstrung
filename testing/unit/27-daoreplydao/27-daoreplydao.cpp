@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         rpl_debug *deb = new rpl_debug(true, stdout);
         deb->want_time_log = false;
 
-        dioA_step(deb, NULL);
+        dioA_step(deb, NULL, NULL);
         daoackA_step(deb,
                      "../INPUTS/daoack-A-example661e.pcap",
                      "../OUTPUTS/27-node-E-dio.pcap");
