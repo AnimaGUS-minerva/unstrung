@@ -432,7 +432,7 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
          * might work if we have a name to go with it, but we will
          * not create it for now.
          */
-        deb->warn("Not creating new interface index=%d\n", iai->ifa_index);
+        // deb->warn("Not creating new interface index=%d\n", iai->ifa_index);
         return 0;
     }
 
