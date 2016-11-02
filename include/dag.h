@@ -225,6 +225,7 @@ public:
 	    mVersion = version;
 	};
 	void set_grounded(const bool grounded);
+        bool groundedP(void) { return mGrounded; };
 	void set_interval(const int msec) {
 	    mInterval_msec = msec;
 	};
