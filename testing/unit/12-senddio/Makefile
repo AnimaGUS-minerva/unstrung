@@ -23,6 +23,8 @@ check::
 	@if [ -f core.* ]; then echo CORE FILES FOUND; exit 1; else exit 0; fi
 	./senddio-test-04.sh
 	@if [ -f core.* ]; then echo CORE FILES FOUND; exit 1; else exit 0; fi
+	./senddio-test-05.sh
+	@if [ -f core.* ]; then echo CORE FILES FOUND; exit 1; else exit 0; fi
 
 update:
 	cp OUTPUT/senddio-test-01.err senddio-test-01.err
@@ -30,5 +32,7 @@ update:
 	cp ../OUTPUTS/senddio-test-03.raw      senddio-test-03.out
 	cp ../OUTPUTS/senddio-test-03-pcap.raw senddio-test-03-pcap.txt
 	cp ../OUTPUTS/senddio-test-04a.raw     senddio-test-04.out
+	cp ../OUTPUTS/senddio-test-05.raw     senddio-test-05.out
+	cp ../OUTPUTS/senddio-test-05-pcap.raw     senddio-test-05-pcap.txt
 
 
