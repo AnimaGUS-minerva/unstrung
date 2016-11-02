@@ -5,7 +5,7 @@ mkdir -p $HOME/stuff
 BUILDTOP=$(cd $HOME/stuff; pwd)
 ARCH=${ARCH-$(arch)}
 
-case $ARCH in
+case $(arch) in
     x86_64) HOST=x86_64;;
     i386)   HOST=i386;;
 esac
