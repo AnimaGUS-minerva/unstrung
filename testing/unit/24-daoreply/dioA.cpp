@@ -19,14 +19,16 @@ dag_network *dioA_setup(rpl_debug *deb)
         return dag;
 }
 
-pcap_network_interface *dioA_iface_setup(dag_network *dag,
+pcap_network_interface *dioA_iface_setup(const char *pcapin1_file,
+                                         dag_network *dag,
                                          rpl_debug *deb,
                                          const char *outpcap)
 {
         pcap_network_interface *iface = NULL;
 
         const char *pcapin1 = "../INPUTS/dio-A-661e.pcap";
-        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin1, outpcap, deb);
+        if(pcapin1_file == NULL) pcapin1_file = pcapin1;
+        iface = pcap_network_interface::setup_infile_outfile("wlan0", pcapin1_file, outpcap, deb);
 
 	struct timeval n;
 	n.tv_sec = 1024*1024*1024;
@@ -43,7 +45,7 @@ pcap_network_interface *dioA_iface_setup(dag_network *dag,
         dag->set_debug(deb);
 
         printf("Processing input file %s on if=[%u]: %s state: %s %s\n",
-               pcapin1,
+               pcapin1_file,
                iface->get_if_index(), iface->get_if_name(),
                iface->is_active() ? "active" : "inactive",
                iface->faked() ? " faked" : "");
@@ -63,7 +65,7 @@ void dioA_event(pcap_network_interface *iface,
 void dioA_step(rpl_debug *deb, const char *outpcap)
 {
   dag_network *dag = dioA_setup(deb);
-  pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
+  pcap_network_interface *iface = dioA_iface_setup(NULL, dag, deb,outpcap);
   dioA_event(iface, deb, outpcap);
 }
 

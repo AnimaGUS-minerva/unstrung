@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         dag->set_ignore_pio(true);
 
         const char * outpcap= "../OUTPUTS/32-node-E-out.pcap";
-        pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
+        pcap_network_interface *iface = dioA_iface_setup(NULL, dag,deb,outpcap);
 
         /* add interface: acp0 with IPv6: fd01:0203:0405:0607::1111/128 */
         unsigned char hwaddr1[6];

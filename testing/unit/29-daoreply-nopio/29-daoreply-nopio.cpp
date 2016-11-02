@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         dag->set_ignore_pio(true);
 
         const char *outpcap = "../OUTPUTS/29-node-E-out.pcap";
-        pcap_network_interface *iface = dioA_iface_setup(dag,deb,outpcap);
+        pcap_network_interface *iface = dioA_iface_setup(NULL, dag,deb,outpcap);
         dioA_event(iface, deb, outpcap);
         daoackA_step(deb, "../INPUTS/daoack-A-example661e.pcap", NULL);
 
