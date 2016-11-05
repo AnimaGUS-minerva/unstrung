@@ -178,21 +178,15 @@ void network_interface::setup_all_if(){
 
 bool network_interface::setup()
 {
+    debug->verbose("Starting setup for %s\n", this->if_name);
     generate_eui64();
 
     if(alive) return true;
 
     alive = true;
-
-    debug->verbose("Starting setup for %s\n", this->if_name);
     add_to_list();
 
-    if(nd_socket != -1) {
-        setup_allrpl_membership();
-        setup_allhosts_membership();
-        setup_allrouters_membership();
-        return true;
-    }
+    if(nd_socket != -1) return true;
 
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
     struct icmp6_filter filter;
@@ -285,25 +279,7 @@ void network_interface::setup_allhosts_membership(void)
 {
 	struct ipv6_mreq mreq;
 
-	memset(&mreq, 0, sizeof(mreq));
-	mreq.ipv6mr_interface = this->get_if_index();
-
-	/* ipv6-allhosts: ff02::1 */
-        memcpy(&mreq.ipv6mr_multiaddr.s6_addr[0], all_hosts_addr, sizeof(mreq.ipv6mr_multiaddr));
-
-        if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
-        {
-            /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
-            if (errno != EADDRINUSE)
-            {
-                debug->error("can not join ipv6-allrouters on %s: %s\n",
-                             this->if_name, strerror(errno));
-                alive = false;
-                return;
-            }
-        }
-
-	return;
+    return true;
 }
 
 void network_interface::setup_allrouters_membership(void)
@@ -364,7 +340,6 @@ void network_interface::check_allrouters_membership(void)
 
 	FILE *fp;
 	unsigned int if_idx, allrouters_ok=0, allrpl_ok=0;
-        bool allhosts_ok = false;
 	char addr[32+1];
 	int ret=0;
         int lineno=0;
@@ -384,8 +359,6 @@ void network_interface::check_allrouters_membership(void)
 #endif
             if (ret == 2) {
                 if (this->if_index == if_idx) {
-                    if (strncmp(addr, ALL_HOSTS_MCAST, sizeof(addr)) == 0)
-                        allhosts_ok = true;
                     if (strncmp(addr, ALL_ROUTERS_MCAST, sizeof(addr)) == 0)
                         allrouters_ok = 1;
                     if (strncmp(addr, ALL_RPL_MCAST, sizeof(addr)) == 0)
@@ -395,11 +368,6 @@ void network_interface::check_allrouters_membership(void)
 	}
 
 	fclose(fp);
-
-	if (!allhosts_ok) {
-            debug->info("resetting ipv6-allhosts membership on %s\n", this->if_name);
-            setup_allhosts_membership();
-	}
 
 	if (!allrouters_ok) {
             debug->info("resetting ipv6-allrouters membership on %s\n", this->if_name);
@@ -1139,7 +1107,6 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         poll_if[pollnum].fd = nd_socket;
         poll_if[pollnum].events = POLLIN;
         poll_if[pollnum].revents= 0;
-        pollnum++;
 
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
