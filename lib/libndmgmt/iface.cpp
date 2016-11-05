@@ -854,7 +854,12 @@ void network_interface::receive(const time_t now)
             iface = find_by_ifindex(recv_ifindex);
         }
 
-        iface->receive_packet(src, dst, now, b, len);
+        if(iface) {
+            iface->receive_packet(src, dst, now, b, len);
+        } else {
+            debug->info(" received packet for unrecognized ifindex: %d (not: %d)\n",
+                        recv_ifindex, if_index);
+        }
     }
 
 }
