@@ -57,14 +57,20 @@ class rpl_event_queue network_interface::things_to_do;
 
 class network_interface *loopback_interface = NULL;
 
+unsigned char   *network_interface::control_msg_hdr = NULL;
+unsigned int     network_interface::control_msg_hdrlen;
+
+
+
 const uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x01};
 const uint8_t all_rpl_addr[]   = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
 
 
+int network_interface::nd_socket = -1;
+
 
 network_interface::network_interface()
 {
-    nd_socket = -1;
     alive = false;
     debug = NULL;
     node  = NULL;
@@ -74,7 +80,6 @@ network_interface::network_interface()
 
 network_interface::network_interface(const char *if_name, rpl_debug *deb)
 {
-    nd_socket = -1;
     alive = false;
     debug = NULL;
     node  = NULL;
@@ -172,11 +177,15 @@ void network_interface::setup_all_if(){
 
 bool network_interface::setup()
 {
-    if(alive && nd_socket != -1) return true;
-
+    debug->verbose("Starting setup for %s\n", this->if_name);
     generate_eui64();
 
-    debug->verbose("Starting setup for %s\n", this->if_name);
+    if(alive) return true;
+
+    alive = true;
+    add_to_list();
+
+    if(nd_socket != -1) return true;
 
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
     struct icmp6_filter filter;
@@ -265,9 +274,6 @@ bool network_interface::setup()
     /* XXX rpl_node should include all this nodes' addresses, on
      *     all of this nodes' interface
      */
-
-    alive = true;
-    add_to_list();
 
     return true;
 }
@@ -759,13 +765,14 @@ bool network_interface::matching_address(struct in6_addr maybeme)
     return false;
 }
 
-void network_interface::receive(const time_t now)
+void network_interface::receive(const time_t now, rpl_debug *debug)
 {
     unsigned char b[2048];
     struct sockaddr_in6 src_sock;
     struct in6_addr src, dst;
     int len, n;
     int recv_ifindex;
+    int hoplimit;
     struct msghdr mhdr;
     struct iovec iov;
     struct in6_pktinfo *pkt_info;
@@ -791,7 +798,7 @@ void network_interface::receive(const time_t now)
     mhdr.msg_control = (void *)control_msg_hdr;
     mhdr.msg_controllen = control_msg_hdrlen;
 
-    if((len = recvmsg(this->nd_socket, &mhdr, 0)) >= 0) {
+    if((len = recvmsg(nd_socket, &mhdr, 0)) >= 0) {
         struct cmsghdr *cmsg;
 
         memset(&dst, 0, sizeof(dst));
@@ -837,7 +844,7 @@ void network_interface::receive(const time_t now)
             }
 	}
 
-        recv_ifindex = if_index;    /* default value */
+        recv_ifindex = -1;
         if(pkt_info) {
             dst     = pkt_info->ipi6_addr;
             recv_ifindex = pkt_info->ipi6_ifindex;
@@ -847,18 +854,17 @@ void network_interface::receive(const time_t now)
         /*
          * multicast sockets will receive one per interface; the ifindex
          * is the accurate view of where it was received, so we have to
-         * switch interfaces if this->ifindex !+ ifindex
+         * switch interfaces if this->ifindex != ifindex
          */
-        network_interface *iface = this;
-        if(recv_ifindex != if_index) {
-            iface = find_by_ifindex(recv_ifindex);
-        }
+        debug->info("picking if_index [%u]\n", recv_ifindex);
+        network_interface *iface = find_by_ifindex(recv_ifindex);
 
         if(iface) {
+            iface->hoplimit = hoplimit;
             iface->receive_packet(src, dst, now, b, len);
         } else {
-            debug->info(" received packet for unrecognized ifindex: %d (not: %d)\n",
-                        recv_ifindex, if_index);
+            debug->info(" received packet for unrecognized ifindex: %d\n",
+                        recv_ifindex);
         }
     }
 
@@ -1053,11 +1059,10 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
 
     int netlink_fd = setup_msg_callback(debug);
 
-
     while(!done) {
-        unsigned int poll_max    = 1+(network_interface::if_count()*2);
+        unsigned int poll_max    = 2+(network_interface::if_count());
         struct pollfd            poll_if[poll_max];
-        class network_interface* all_if[1+network_interface::if_count()];
+        //class network_interface* all_if[1+network_interface::if_count()];
 #ifdef GRASP_CLIENT
         class grasp_client*      all_grasp[1+network_interface::if_count()];
         for(int i = 0; i < 1+network_interface::if_count(); i++) all_grasp[i]=NULL;
@@ -1099,21 +1104,14 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         poll_if[pollnum].fd = netlink_fd;
         poll_if[pollnum].events = POLLIN;
         poll_if[pollnum].revents = 0;
-        all_if[pollnum] = NULL;
         pollnum++;
+
+        poll_if[pollnum].fd = nd_socket;
+        poll_if[pollnum].events = POLLIN;
+        poll_if[pollnum].revents= 0;
 
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
-            debug->verbose2("iface %s has socketfd: %d\n",
-			   iface->if_name, iface->nd_socket);
-            if(iface->nd_socket != -1) {
-                poll_if[pollnum].fd = iface->nd_socket;
-                poll_if[pollnum].events = POLLIN;
-                poll_if[pollnum].revents= 0;
-                all_if[pollnum] = iface;
-
-                pollnum++;
-            }
 #ifdef GRASP_CLIENT
             if(iface->join_query_client) {
                 if(iface->join_query_client->poll_setup(&poll_if[pollnum])) {
@@ -1122,9 +1120,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                 }
             }
 #endif
-
             iface = iface->next;
-
         }
 
         /* now poll for input */
@@ -1142,24 +1138,26 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
             /* there was a timeout */
         } else if(n > 0) {
             /* there is data ready */
+            time_t now;
+            time(&now);
+
             for(int i=0; i < pollnum && n > 0; i++) {
                 debug->verbose2("checking source %u -> %s\n",
                            i,
                            poll_if[i].revents & POLLIN ? "ready" : "no-data");
-                time_t now;
-                time(&now);
-
                 if(poll_if[i].revents & POLLIN) {
-                    if(all_if[i] != NULL) {
-                        all_if[i]->receive(now);
 #ifdef GRASP_CLIENT
-                    } else if(all_grasp[i] != NULL) {
+                    if (all_grasp[i] != NULL) {
                         all_grasp[i]->process_grasp_reply(now);
+                    } else
 #endif
-                    } else {
+                    {
                         /* got something else */
                         if(poll_if[i].fd == netlink_fd) {
                             empty_socket(debug);
+                        }
+                        if(poll_if[i].fd == nd_socket) {
+                            receive(now, debug);
                         }
                     }
                     n--;
