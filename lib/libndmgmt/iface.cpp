@@ -57,11 +57,6 @@ class rpl_event_queue network_interface::things_to_do;
 
 class network_interface *loopback_interface = NULL;
 
-unsigned char   *network_interface::control_msg_hdr = NULL;
-unsigned int     network_interface::control_msg_hdrlen;
-
-
-
 const uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x01};
 const uint8_t all_rpl_addr[]   = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
 
@@ -183,9 +178,13 @@ bool network_interface::setup()
     if(alive) return true;
 
     alive = true;
+
     add_to_list();
 
-    if(nd_socket != -1) return true;
+    if(nd_socket != -1) {
+        setup_allrpl_membership();
+        return true;
+    }
 
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
     struct icmp6_filter filter;
@@ -266,15 +265,7 @@ bool network_interface::setup()
     }
 #endif
 
-    //setup_allrouters_membership();
     setup_allrpl_membership();
-    struct ipv6_mreq mreq;
-
-    /* make sure that there is an rpl_node entry for ourselves */
-    /* XXX rpl_node should include all this nodes' addresses, on
-     *     all of this nodes' interface
-     */
-
     return true;
 }
 
@@ -775,17 +766,10 @@ void network_interface::receive(const time_t now, rpl_debug *debug)
     int hoplimit;
     struct msghdr mhdr;
     struct iovec iov;
-    struct in6_pktinfo *pkt_info;
-
-    if( ! control_msg_hdr )
-    {
-        control_msg_hdrlen = CMSG_SPACE(sizeof(struct in6_pktinfo)) +
-            CMSG_SPACE(sizeof(int));
-        if ((control_msg_hdr = (unsigned char *)malloc(control_msg_hdrlen)) == NULL) {
-            debug->error("recv_rs_ra: malloc: %s", strerror(errno));
-            return;
-        }
-    }
+    struct in6_pktinfo *pkt_info = NULL;
+    unsigned int     control_msg_hdrlen = CMSG_SPACE(sizeof(struct in6_pktinfo)) +
+        CMSG_SPACE(sizeof(int));
+    unsigned char    control_msg_hdr[control_msg_hdrlen];
 
     iov.iov_len = sizeof(b);
     iov.iov_base = (caddr_t) b;
@@ -1109,6 +1093,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         poll_if[pollnum].fd = nd_socket;
         poll_if[pollnum].events = POLLIN;
         poll_if[pollnum].revents= 0;
+        pollnum++;
 
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
