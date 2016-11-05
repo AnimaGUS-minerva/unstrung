@@ -40,6 +40,7 @@ extern "C" {
 #include "iface.h"
 #include "debug.h"
 #include "fakeiface.h"
+#include "devid.h"
 
 static void usage(void)
 {
@@ -366,7 +367,7 @@ int main(int argc, char *argv[])
     exit(11);
   }
 
-  device_identity di();
+  device_identity *di = new device_identity();
 
   for(int ifnum = optind; ifnum < argc; ifnum++) {
     class pcap_network_interface *iface = NULL;
@@ -380,7 +381,7 @@ int main(int argc, char *argv[])
     iface->setup_lowpan(eui64, eui64len);
 
     /* now send a neighbor solicitation and then start the coap server */
-    iface->send_ns(di);
+    iface->send_ns(*di);
   }
 
   mbedtls_x509_crt_free( bootstrap_cert );
