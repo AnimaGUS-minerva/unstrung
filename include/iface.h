@@ -295,9 +295,6 @@ private:
     time_t		    last_multicast_sec;
     suseconds_t		    last_multicast_usec;
 
-    static unsigned char   *control_msg_hdr;
-    static unsigned int     control_msg_hdrlen;
-
     /* read from single network socket and process result */
     static void             receive(time_t now, rpl_debug *debug);
 

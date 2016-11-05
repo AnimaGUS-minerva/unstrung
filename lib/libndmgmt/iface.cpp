@@ -184,9 +184,13 @@ bool network_interface::setup()
     if(alive) return true;
 
     alive = true;
+
     add_to_list();
 
-    if(nd_socket != -1) return true;
+    if(nd_socket != -1) {
+        setup_allrpl_membership();
+        return true;
+    }
 
     nd_socket = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
     struct icmp6_filter filter;
@@ -270,15 +274,6 @@ bool network_interface::setup()
 #endif
 
     setup_allrpl_membership();
-    setup_allrouters_membership();
-    setup_allhosts_membership();
-    return true;
-}
-
-void network_interface::setup_allhosts_membership(void)
-{
-	struct ipv6_mreq mreq;
-
     return true;
 }
 
@@ -1107,6 +1102,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         poll_if[pollnum].fd = nd_socket;
         poll_if[pollnum].events = POLLIN;
         poll_if[pollnum].revents= 0;
+        pollnum++;
 
         class network_interface *iface = network_interface::all_if;
         while(iface != NULL) {
