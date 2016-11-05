@@ -58,10 +58,10 @@ void network_interface::receive_dao(struct in6_addr from,
     }
     dag_network::format_dagid(dagid_str, sizeof(dagid_str), dao->rpl_instanceid, dagid);
 
-    debug->info_more(" [%s: daoseq:%u%s]\n",
+    debug->info_more(" [%s: daoseq:%u%s%s]\n",
                      dagid_str,
                      dao->rpl_daoseq,
-                     RPL_DAO_K(dao->rpl_flags) ? "dao-ack," : "",
+                     RPL_DAO_K(dao->rpl_flags) ? ",dao-ack" : "",
                      RPL_DAO_K(dao->rpl_flags) ? "" : ",<dag-elided>");
 
     /* XXX if rpl_instanceid is 0, then we are using a default DAG? */

@@ -49,7 +49,7 @@ iface wlan0 sending dio about dag: 42/[2001:db8:661e::1]
 sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
 Processing input file ../INPUTS/27-daoJ-inst42.pcap on if=[1]: wlan0 state: active  faked
 packet 3 is being processed
-  processing dao(44) [42/[2001:db8:661e::1]: daoseq:2dao-ack,]
+  processing dao(44) [42/[2001:db8:661e::1]: daoseq:2,dao-ack]
   new RPL node: fe80::1200:ff:fe64:4a01
   recv DAO rpltarget re: network 2001:db8:1:0:1200:ff:fe64:4a01/128, target fe80::1200:ff:fe64:4a01 (added)
   invoking ip -6 route add 2001:db8:1:0:1200:ff:fe64:4a01/128 via fe80::1200:ff:fe64:4a01 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
