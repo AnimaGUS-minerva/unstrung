@@ -5,7 +5,7 @@ mac_eth0=12:00:00:66:69:01
 if [ -n "$UML_n2_CTL" ]
 then
     net_eth0="eth0=daemon,$mac_eth0,unix,$UML_n2_CTL";
-    kvm_eth0="-net nic,vlan=1,model=virtio,name=En2,macaddr=$mac_eth0 "
+    kvm_eth0="-net nic,vlan=2,model=virtio,name=En2,macaddr=$mac_eth0 "
     kvm_eth0="$kvm_eth0 -net vde,vlan=2,sock=${VDE_DIR}/2";
 else
     net_eth0="eth0=mcast,12:00:00:66:69:01,239.192.0.1,21300"
