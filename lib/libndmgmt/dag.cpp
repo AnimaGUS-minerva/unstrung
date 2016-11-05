@@ -582,6 +582,8 @@ void dag_network::potentially_lower_rank(rpl_node &peer,
     mVersion      = dio->rpl_version;
     mMode         = RPL_DIO_MOP(dio->rpl_mopprf);
 
+    set_dagid(*(dagid_t *)dio->rpl_dagid);
+
     dag_bestparentif = iface;
     dag_bestparent   = &peer;
 
