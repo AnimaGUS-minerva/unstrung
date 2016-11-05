@@ -366,6 +366,8 @@ int main(int argc, char *argv[])
     exit(11);
   }
 
+  device_identity di();
+
   for(int ifnum = optind; ifnum < argc; ifnum++) {
     class pcap_network_interface *iface = NULL;
     const char *ifname = argv[ifnum];
@@ -376,6 +378,9 @@ int main(int argc, char *argv[])
       exit(10);
     }
     iface->setup_lowpan(eui64, eui64len);
+
+    /* now send a neighbor solicitation and then start the coap server */
+    iface->send_ns(di);
   }
 
   mbedtls_x509_crt_free( bootstrap_cert );

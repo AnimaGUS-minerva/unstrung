@@ -827,10 +827,10 @@ void dag_network::receive_dis(network_interface *iface,
     this->mStats[PS_PACKET_RECEIVED]++;
     this->mStats[PS_DIS_PACKET_RECEIVED]++;
 
-    debug->warn("received DIS from %s <timer reset>", b1);
+    debug->warn("received DIS from %s <timer reset>\n", b1);
 
     /* now reset timers, and send out DIO */
-    schedule_dio();
+    schedule_dio(1);
 }
 
 /*
