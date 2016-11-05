@@ -276,7 +276,7 @@ protected:
 
 private:
     int packet_too_short(const char *thing, const int avail, const int needed);
-    int                     nd_socket;
+    static int              nd_socket;  /* a single socket listens on all interfaces */
     int                     recv_cnt;
     int                     error_cnt;
 
@@ -292,11 +292,11 @@ private:
     time_t		    last_multicast_sec;
     suseconds_t		    last_multicast_usec;
 
-    unsigned char          *control_msg_hdr;
-    unsigned int            control_msg_hdrlen;
+    static unsigned char   *control_msg_hdr;
+    static unsigned int     control_msg_hdrlen;
 
-    /* read from our network socket and process result */
-    void receive(time_t now);
+    /* read from single network socket and process result */
+    static void             receive(time_t now, rpl_debug *debug);
 
     /* private helper functions */
     void setup_allrouters_membership(void);
