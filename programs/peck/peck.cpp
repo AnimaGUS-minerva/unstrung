@@ -30,6 +30,7 @@ extern "C" {
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/net.h"
+#include "mbedtls/error.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/x509.h"
 #include "mbedtls/oid.h"
@@ -121,13 +122,16 @@ mbedtls_x509_crt *load_cert_file( const char *ca_file, const char *certfile )
     /*
      * 1.1. Load the certificate(s)
      */
-    printf( "\n  . Loading the certificate(s) ..." );
+    printf( "\n  . Loading the certificate at: %s ...", certfile);
 
     ret = mbedtls_x509_crt_parse_file( cert, certfile );
 
     if( ret < 0 )
       {
-        printf( " failed\n  !  mbedtls_x509_crt_parse_file returned %d\n\n", ret );
+        char errorbuf[256];
+        mbedtls_strerror( ret, errorbuf, sizeof(errorbuf));
+        printf( " failed\n  !  mbedtls_x509_crt_parse_file returned %d: %s\n\n", ret, errorbuf );
+
         mbedtls_x509_crt_free( cert );
         goto exit;
       }
