@@ -4,4 +4,8 @@ then
         mv /sbin/sunshine /sbin/sunshine.run
 fi
 
-/sbin/sunshine.run --dagid ripple -i eth0 -i eth1 --interval 100000 --verbose  --timelog
+# for coredump
+cd /tmp
+ulimit -c unlimited
+
+/sbin/sunshine.run -I 1 -i eth0 -i eth1 --interval 100000 --verbose  --timelog
