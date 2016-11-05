@@ -196,11 +196,12 @@ public:
 	const char *get_dagName(void) {
 	    return mDagName;
 	};
+	void set_dagid(dagid_t dagid);
 	void set_dagid(const char *dagstr);
 	void set_dagid(struct in6_addr addr) {
-            memcpy(this->mDagid, addr.s6_addr, DAGID_LEN);
+            dagid_t *nDagId = (dagid_t *)addr.s6_addr;
+            set_dagid(*nDagId);
         };
-	void set_dagid(dagid_t dagid);
 	unsigned int get_dagRank(void) {
 	    return mMyRank;
 	};
