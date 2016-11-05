@@ -261,8 +261,16 @@ bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
         return false;
     }
 
-    memcpy(this->if_hwaddr, eui64, eui64len);
-    this->if_hwaddr_len = eui64len;
+    switch(this->ifi_type) {
+    case ARPHRD_6LOWPAN:
+        memcpy(this->if_hwaddr, eui64, 8);
+        this->if_hwaddr_len = 8;
+        break;
+    default:
+        memcpy(this->if_hwaddr, eui48, 6);
+        this->if_hwaddr_len = 6;
+        break;
+    }
 }
 
 bool network_interface::set_link_layer64_hw(void)
@@ -273,7 +281,8 @@ bool network_interface::set_link_layer64_hw(void)
     memset(&ifr0, 0, sizeof(ifr0));
     strncpy(ifr0.ifr_name, this->if_name, IFNAMSIZ);
     ifr0.ifr_hwaddr.sa_family = this->get_hatype();
-    memcpy(ifr0.ifr_hwaddr.sa_data, eui64, 8);
+
+    memcpy(ifr0.ifr_hwaddr.sa_data, this->if_hwaddr, this->if_hwaddr_len);
 
     s = socket(PF_PACKET, SOCK_DGRAM, 0);
     if (s < 0) {
