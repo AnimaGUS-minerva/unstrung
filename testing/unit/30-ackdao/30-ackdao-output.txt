@@ -17,13 +17,13 @@ iface1[1]: wlan0
     would invoke cmd: ip -6 route show
 Processing input file1
 packet 1 is being processed
-  processing dao(20) [42/[2001:db8:661e::1]: daoseq:2dao-ack,]
+  processing dao(20) [42/[2001:db8:661e::1]: daoseq:2,dao-ack]
   new RPL node: fe80::216:3eff:fe11:3424
 sending DAOACK about 0 networks, to fe80::216:3eff:fe11:3424
 sending DAOACK on if: wlan0(faked)
 Processing input file2
 packet 2 is being processed
-  processing dao(60) [42/[2001:db8:661e::1]: daoseq:2dao-ack,]
+  processing dao(60) [42/[2001:db8:661e::1]: daoseq:2,dao-ack]
   recv DAO rpltarget re: network 2001:db8:1:0:216:3eff:fe11:3424/128, target fe80::216:3eff:fe11:3424 (added)
   invoking ip -6 route add 2001:db8:1:0:216:3eff:fe11:3424/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add 2001:db8:1:0:216:3eff:fe11:3424/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
@@ -36,7 +36,7 @@ sending DAOACK about 2 networks, to fe80::216:3eff:fe11:3424
 sending DAOACK on if: wlan0(faked)
 Processing input file3
 packet 3 is being processed
-  processing dao(44) [42/[2001:db8:661e::1]: daoseq:2dao-ack,]
+  processing dao(44) [42/[2001:db8:661e::1]: daoseq:2,dao-ack]
   recv DAO rpltarget re: network fd01:203:405:607::1111/128, target fe80::216:3eff:fe11:3424 (added)
   invoking ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
     would invoke cmd: ip -6 route add fd01:203:405:607::1111/128 via fe80::216:3eff:fe11:3424 dev wlan0 src 2001:db8:1:0:216:3eff:fe11:3424
