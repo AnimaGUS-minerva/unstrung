@@ -282,7 +282,11 @@ int main(int argc, char *argv[])
                 iface->setup();
             }
 
-            printf("hatype for: %u\n", iface->get_hatype());
+            /* build a DIS, send it. */
+            if(dag) {
+                iface->send_dis(dag);
+            }
+            //printf("hatype for: %u\n", iface->get_hatype());
             break;
 
         case 'm':
