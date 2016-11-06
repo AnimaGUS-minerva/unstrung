@@ -177,17 +177,18 @@ void network_interface::setup_all_if(){
 
 bool network_interface::setup()
 {
-    debug->verbose("Starting setup for %s\n", this->if_name);
     generate_eui64();
 
     if(alive) return true;
 
     alive = true;
 
+    debug->verbose("Starting setup for %s\n", this->if_name);
     add_to_list();
 
     if(nd_socket != -1) {
         setup_allrpl_membership();
+        setup_allrouters_membership();
         return true;
     }
 
@@ -271,6 +272,7 @@ bool network_interface::setup()
 #endif
 
     setup_allrpl_membership();
+    setup_allrouters_membership();
     return true;
 }
 
