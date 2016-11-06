@@ -78,7 +78,13 @@ public:
         void error(const char *fmt, ...);
         void verbose(const char *fmt, ...);
         void verbose_more(const char *fmt, ...);
-        void verbose2(const char *fmt, ...) { /* nothing */};
+        void verbose2(const char *fmt, ...) {
+#if 1
+          va_list vargs;
+          va_start(vargs, fmt);
+          logv(LOG_DEBUG, fmt, vargs);
+#endif
+        };
         void debug(unsigned int level, const char *fmt, ...);
         void logv(int level, const char *fmt, va_list vargs);
         void logv_more(int level, const char *fmt, va_list vargs);
