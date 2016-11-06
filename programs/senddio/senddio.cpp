@@ -155,6 +155,10 @@ int main(int argc, char *argv[])
                 initted = true;
             }
             iface = (pcap_network_interface *)pcap_network_interface::find_by_name(optarg);
+            if(!iface) {
+                fprintf(stderr, "No interface: %s found\n", optarg);
+                exit(10);
+            }
             break;
 
         case 'w': /* --pcapout */
@@ -241,6 +245,12 @@ int main(int argc, char *argv[])
 
     if(pcapoutfile && iface) {
 	iface->set_pcap_out(pcapoutfile, DLT_EN10MB);
+    }
+
+    if(!iface) {
+        fprintf(stderr, "Must set an interface name\n");
+        usage();
+        exit(1);
     }
 
     if(prefixvalue) {
