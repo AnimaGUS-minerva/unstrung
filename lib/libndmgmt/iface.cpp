@@ -968,6 +968,19 @@ void network_interface::send_raw_icmp(struct in6_addr *dest,
     }
 }
 
+void network_interface::look_for_new_interfaces(rpl_debug *debug)
+{
+    network_interface *iface = network_interface::all_if;
+    while(iface != NULL) {
+        if(!iface->alive && !iface->disabled) {
+            iface->setup();
+
+            dag_network::send_all_dag(iface);
+        }
+    }
+}
+
+
 int network_interface::if_count(void)
 {
     class network_interface *iface = network_interface::all_if;
@@ -1150,6 +1163,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
                         /* got something else */
                         if(poll_if[i].fd == netlink_fd) {
                             empty_socket(debug);
+                            look_for_new_interfaces(debug);
                         }
                         if(poll_if[i].fd == nd_socket) {
                             receive(now, debug);

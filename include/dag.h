@@ -164,6 +164,7 @@ public:
         u_int32_t mStats[PS_MAX];
 	void print_stats(FILE *out, const char *prefix);
 	static void print_all_dagstats(FILE *out, const char *prefix);
+        static void send_all_dag(network_interface *ni);
 
         /* let global stats public */
         static u_int32_t globalStats[PS_MAX];

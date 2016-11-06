@@ -336,6 +336,16 @@ void dag_network::print_all_dagstats(FILE *out, const char *prefix)
     }
 }
 
+void dag_network::send_all_dag(network_interface *ni)
+{
+    class dag_network *dn = dag_network::all_dag;
+    while(dn != NULL) {
+        ni->send_dis(dn);
+        dn = dn->next;
+    }
+}
+
+
 void dag_network::discard_dio(enum packet_stats dr)
 {
     mStats[dr]++;
