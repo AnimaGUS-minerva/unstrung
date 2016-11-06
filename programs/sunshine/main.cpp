@@ -253,10 +253,6 @@ int main(int argc, char *argv[])
 	    dag = new dag_network(instanceID, deb);
 	    dag->set_active();
             dag->set_interval(5000);
-            if(dag->mPrefixSet) {
-                fprintf(stderr, "interface must preceed prefix parameter\n");
-                usage();
-            }
             break;
 
         case 'W':
