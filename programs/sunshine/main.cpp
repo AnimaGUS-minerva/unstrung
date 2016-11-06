@@ -123,6 +123,7 @@ int main(int argc, char *argv[])
     char *ifname = NULL;
     bool verbose = false;
     bool bedaemon = false;
+    bool grounded = false;
     instanceID_t instanceID = 0;
     unsigned int grasp_portnum = 3000;
     char *grasp_registrar = NULL;
@@ -230,6 +231,7 @@ int main(int argc, char *argv[])
             {
             	dag->addselfprefix(iface);
             }
+            grounded = true;
         }
         break;
 
@@ -304,7 +306,7 @@ int main(int argc, char *argv[])
             }
 
             /* build a DIS, send it. */
-            if(dag) {
+            if(dag && !grounded) {
                 iface->send_dis(dag);
             }
             //printf("hatype for: %u\n", iface->get_hatype());
