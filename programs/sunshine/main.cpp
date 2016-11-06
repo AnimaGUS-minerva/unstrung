@@ -273,6 +273,7 @@ int main(int argc, char *argv[])
             iface = network_interface::find_by_name(optarg);
             if(!iface) {
                 deb->log("Can not find interface %s\n", optarg);
+                continue;
             } else {
 		deb->verbose("Setting up interface[%d] %s\n",
 			     iface->get_if_index(),
