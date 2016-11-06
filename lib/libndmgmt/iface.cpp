@@ -67,8 +67,10 @@ int network_interface::nd_socket = -1;
 network_interface::network_interface()
 {
     alive = false;
+    disabled = false;
     debug = NULL;
     node  = NULL;
+    on_list = false;
     join_query_client = NULL;
     this->set_if_name("<unset>");
 }
@@ -76,8 +78,11 @@ network_interface::network_interface()
 network_interface::network_interface(const char *if_name, rpl_debug *deb)
 {
     alive = false;
+    disabled = false;
     debug = NULL;
     node  = NULL;
+    on_list = false;
+
     join_query_client = NULL;
     set_debug(deb);
 
