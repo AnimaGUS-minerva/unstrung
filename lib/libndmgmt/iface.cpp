@@ -58,6 +58,7 @@ class rpl_event_queue network_interface::things_to_do;
 class network_interface *loopback_interface = NULL;
 
 const uint8_t all_hosts_addr[] = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x01};
+const uint8_t all_routers_addr[]={0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x02};
 const uint8_t all_rpl_addr[]   = {0xff,0x02,0,0,0,0,0,0,0,0,0,0,0,0,0,0x1a};
 
 
@@ -188,7 +189,7 @@ bool network_interface::setup()
 
     if(nd_socket != -1) {
         setup_allrpl_membership();
-        setup_allrouters_membership();
+        setup_allhosts_membership();
         return true;
     }
 
@@ -272,8 +273,33 @@ bool network_interface::setup()
 #endif
 
     setup_allrpl_membership();
-    setup_allrouters_membership();
+    setup_allhosts_membership();
     return true;
+}
+
+void network_interface::setup_allhosts_membership(void)
+{
+	struct ipv6_mreq mreq;
+
+	memset(&mreq, 0, sizeof(mreq));
+	mreq.ipv6mr_interface = this->get_if_index();
+
+	/* ipv6-allhosts: ff02::1 */
+        memcpy(&mreq.ipv6mr_multiaddr.s6_addr[0], all_hosts_addr, sizeof(mreq.ipv6mr_multiaddr));
+
+        if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
+        {
+            /* linux-2.6.12-bk4 returns error with HUP signal but keep listening */
+            if (errno != EADDRINUSE)
+            {
+                debug->error("can not join ipv6-allrouters on %s: %s\n",
+                             this->if_name, strerror(errno));
+                alive = false;
+                return;
+            }
+        }
+
+	return;
 }
 
 void network_interface::setup_allrouters_membership(void)
@@ -284,7 +310,7 @@ void network_interface::setup_allrouters_membership(void)
 	mreq.ipv6mr_interface = this->get_if_index();
 
 	/* ipv6-allrouters: ff02::2 */
-        memcpy(&mreq.ipv6mr_multiaddr.s6_addr[0], all_hosts_addr, sizeof(mreq.ipv6mr_multiaddr));
+        memcpy(&mreq.ipv6mr_multiaddr.s6_addr[0], all_routers_addr, sizeof(mreq.ipv6mr_multiaddr));
 
         if (setsockopt(nd_socket, SOL_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
         {
