@@ -52,6 +52,7 @@ const char *dag_network_packet_stat_names[PS_MAX+1]={
     [PS_NEIGHBOUR_JOIN_NEIGHBOUR_SOLICITATION]="Neighbour Solication with ARO for pledge",
     [PS_NEIGHBOUR_JOIN_QUERY_ALREADY_ACCEPTED]="Neighbour Solication w/ARO already accepted",
     [PS_NEIGHBOUR_JOIN_QUERY_ALREADY_DECLINED]="Neighbour Solication w/ARO already declined",
+    [PS_NEIGHBOUR_JOIN_QUERY_NOCONNECTION]="Neighbour Solication w/ARO forced decline, no registrar",
     [PS_MAX]                    = "max reason"
 };
 
