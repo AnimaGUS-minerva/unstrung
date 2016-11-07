@@ -296,6 +296,7 @@ private:
     static void             receive(time_t now, rpl_debug *debug);
 
     /* private helper functions */
+    void setup_allhosts_membership(void);
     void setup_allrouters_membership(void);
     void setup_allrpl_membership(void);
     void check_allrouters_membership(void);
