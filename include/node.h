@@ -25,7 +25,7 @@ class na_construction;
 class rpl_node {
         friend class rpl_less;
 public:
-        rpl_node() { valid = false; name[0]='\0'; self = false; };
+        rpl_node() { zero_node(); };
         rpl_node(const char *ipv6,
                  dag_network *dn, rpl_debug *deb);
         rpl_node(const struct in6_addr v6);
@@ -55,6 +55,7 @@ public:
             calc_name();
         };
         void  markvalid(int index, struct in6_addr v6, rpl_debug *deb) {
+            zero_node();
             nodeip.u.v6.sin6_addr = v6;
             nodeip.u.v6.sin6_family=AF_INET6;
             ifindex = index;
@@ -141,6 +142,8 @@ private:
         dag_network *mDN;          /* should be shared_ptr */
         void       couldBeValid(void);
         void       calc_name(void);
+        void       zero_node(void);
+
 };
 
 class rpl_less {
