@@ -276,6 +276,7 @@ bool network_interface::setup()
 #endif
 
     setup_allrpl_membership();
+    setup_allrouters_membership();
     setup_allhosts_membership();
     return true;
 }
@@ -357,11 +358,13 @@ void network_interface::setup_allrpl_membership(void)
 
 void network_interface::check_allrouters_membership(void)
 {
+	#define ALL_HOSTS_MCAST   "ff020000000000000000000000000001"
 	#define ALL_ROUTERS_MCAST "ff020000000000000000000000000002"
 	#define ALL_RPL_MCAST     "ff02000000000000000000000000001a"
 
 	FILE *fp;
 	unsigned int if_idx, allrouters_ok=0, allrpl_ok=0;
+        bool allhosts_ok = false;
 	char addr[32+1];
 	int ret=0;
         int lineno=0;
@@ -381,6 +384,8 @@ void network_interface::check_allrouters_membership(void)
 #endif
             if (ret == 2) {
                 if (this->if_index == if_idx) {
+                    if (strncmp(addr, ALL_HOSTS_MCAST, sizeof(addr)) == 0)
+                        allhosts_ok = true;
                     if (strncmp(addr, ALL_ROUTERS_MCAST, sizeof(addr)) == 0)
                         allrouters_ok = 1;
                     if (strncmp(addr, ALL_RPL_MCAST, sizeof(addr)) == 0)
@@ -391,13 +396,18 @@ void network_interface::check_allrouters_membership(void)
 
 	fclose(fp);
 
+	if (!allhosts_ok) {
+            debug->info("resetting ipv6-allhosts membership on %s\n", this->if_name);
+            setup_allhosts_membership();
+	}
+
 	if (!allrouters_ok) {
-            printf("resetting ipv6-allrouters membership on %s\n", this->if_name);
+            debug->info("resetting ipv6-allrouters membership on %s\n", this->if_name);
             setup_allrouters_membership();
 	}
 
 	if (!allrpl_ok) {
-            printf("resetting ipv6-rpl membership on %s\n", this->if_name);
+            debug->info("resetting ipv6-rpl membership on %s\n", this->if_name);
             setup_allrpl_membership();
 	}
 
