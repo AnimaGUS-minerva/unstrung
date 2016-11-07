@@ -190,6 +190,7 @@ bool network_interface::setup()
     if(nd_socket != -1) {
         setup_allrpl_membership();
         setup_allhosts_membership();
+        setup_allrouters_membership();
         return true;
     }
 

@@ -24,6 +24,7 @@ extern "C" {
 #include "dag.h"
 
 extern const uint8_t all_hosts_addr[];
+extern const uint8_t all_routers_addr[];
 extern const struct in6_addr all_hosts_inaddr;
 extern const uint8_t all_rpl_addr[];
 
