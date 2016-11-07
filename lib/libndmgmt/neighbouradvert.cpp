@@ -278,7 +278,14 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
 
     if(iface->join_query_client) {
         this->queryId = iface->join_query_client->start_query_for_aro(in_aro_opt->nd_aro_eui64);
+    } else {
+        /* if no connection, then must fail */
+        dag_network::globalStats[PS_NEIGHBOUR_JOIN_QUERY_NOCONNECTION]++;
+        debug->log("no connection to registrar, must decline on if: %s\n",
+                   iface->get_if_name());
+        reply_neighbour_advert(iface, ND_NS_JOIN_DECLINED);
     }
+
     /* reply to query will send return value */
     return;
 }
