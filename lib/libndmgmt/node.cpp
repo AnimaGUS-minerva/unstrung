@@ -23,6 +23,14 @@ extern "C" {
 #include "dag.h"
 #include "grasp.h"
 
+void rpl_node::zero_node(void) {
+    valid = false;
+    name[0]='\0'; self = false;
+    alreadyDeclined = false;
+    alreadyAccepted = false;
+    joinQueryStarted = false;
+}
+
 void rpl_node::set_addr(const char *ipv6) {
     if(inet_pton(AF_INET6, ipv6, &nodeip.u.v6.sin6_addr) == 1) {
         nodeip.u.v6.sin6_family = AF_INET6;
@@ -110,6 +118,7 @@ void rpl_node::makevalid(const struct in6_addr v6,
                          rpl_debug *deb)
 {
     if(!valid) {
+        zero_node();
         nodeip.u.v6.sin6_addr = v6;
 	nodeip.u.v6.sin6_family=AF_INET6;
         mDN    = dn;
