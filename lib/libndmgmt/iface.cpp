@@ -228,7 +228,7 @@ bool network_interface::setup()
         return false;
     }
 
-    val = 255;
+    val = 1;
     err = setsockopt(nd_socket, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &val, sizeof(val));
     if (err < 0)
     {
