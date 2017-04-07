@@ -1,7 +1,7 @@
-#Unstrung quick start guide
+# Unstrung quick start guide
 
 
-###installation
+### Installation
 
 In order to build Unstrung you have to have these libraries installed on your device
 * boost 
@@ -22,7 +22,7 @@ cd unstrung/
 make
 ```
 
-##Quick start:
+## Quick start:
 
 In order to create a DODAG you have to run sunshine
 ```
