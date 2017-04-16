@@ -103,7 +103,7 @@ bool grasp_client::send_cbor(cbor_item_t *cb)
                    length, strerror(errno));
         return false;
     }
-    query_outstanding = false;
+    queries_outstanding++;
 
 #ifdef GRASP_CLIENT_DEBUG
     /* Pretty-print the result */
@@ -250,7 +250,7 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
 
 bool grasp_client::poll_setup(struct pollfd *fd1)
 {
-    if(query_outstanding) {
+    if(queries_outstanding > 0) {
         fd1->fd = this->infd;
         fd1->events = POLLIN;
         return true;
@@ -263,9 +263,9 @@ bool grasp_client::process_grasp_reply(time_t now)
 {
     cbor_item_t *reply = read_cbor();
     if(!reply) {
-        query_outstanding = false;
         return false;
     }
+    --queries_outstanding;
 
     return decode_grasp_reply(reply);
 }
