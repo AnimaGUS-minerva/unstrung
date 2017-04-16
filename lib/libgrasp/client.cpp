@@ -68,6 +68,16 @@ bool grasp_client::open_connection(const char *serverip,
     struct addrinfo *rp;
     int sfd;
     for (rp = res; rp != NULL; rp = rp->ai_next) {
+        switch(rp->ai_family) {
+        case AF_INET:
+            ((struct sockaddr_in *)rp->ai_addr)->sin_port = htons(port);
+            break;
+
+        case AF_INET6:
+            ((struct sockaddr_in6 *)rp->ai_addr)->sin6_port = htons(port);
+            break;
+        }
+
         sfd = socket(rp->ai_family, rp->ai_socktype,
                      rp->ai_protocol);
         if (sfd == -1)
@@ -82,7 +92,9 @@ bool grasp_client::open_connection(const char *serverip,
     }
 
     if (rp == NULL) {               /* No address succeeded */
-        deb->error("Could not connect: %s", strerror(lasterr));
+        deb->error("Could not connect to %s:%d: %s\n",
+                   serverip, port,
+                   strerror(lasterr));
         return false;
     }
 
@@ -214,7 +226,8 @@ grasp_session_id grasp_client::start_query_for_aro(unsigned char eui64[8])
 
 bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
 {
-    if(!cbor_typeof(reply) != CBOR_TYPE_ARRAY) {
+    if(cbor_typeof(reply) != CBOR_TYPE_ARRAY) {
+        deb->info("reply is not array: %d\n", cbor_typeof(reply));
         return false;
     }
 
@@ -222,6 +235,7 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
     unsigned int msgtype = cbor_get_int(msgitem);
 
     if(msgtype != M_END) {
+        deb->info("reply is not M_END\n");
         return false;
     }
 
@@ -230,10 +244,12 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
 
     cbor_item_t *result = cbor_array_get(reply, 2);
     if(!result) {
+        deb->info("result[2] is empty\n");
         return false;
     }
 
-    if(!cbor_typeof(result) != CBOR_TYPE_ARRAY) {
+    if(cbor_typeof(result) != CBOR_TYPE_ARRAY) {
+        deb->info("result[2] is not array\n");
         return false;
     }
 
@@ -243,6 +259,7 @@ bool grasp_client::decode_grasp_reply(cbor_item_t *reply)
         iface->process_grasp_reply(sessionid, (optionnum == O_ACCEPT));
         return true;
     } else {
+        deb->info("option is not present\n");
         return false;
     }
 }
@@ -275,6 +292,7 @@ bool grasp_client::process_grasp_reply(time_t now)
 grasp_session_id grasp_client::generate_random_sessionid(bool init)
 {
     grasp_session_id newrand;
+#if 0
     int ret = mbedtls_ctr_drbg_random(&ctr_drbg, (unsigned char *)&newrand, sizeof(newrand));
     if( ret != 0 )
     {
@@ -289,6 +307,10 @@ grasp_session_id grasp_client::generate_random_sessionid(bool init)
         /* force upper bit to one  */
         newrand |= 0x80000000;
     }
+#else
+    static int lastsession = 123456;
+    newrand = ++lastsession;
+#endif
     return newrand;
 }
 
