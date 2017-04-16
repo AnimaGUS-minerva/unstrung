@@ -59,6 +59,7 @@ class grasp_client {
         this->iface = iface;
         init_query_client(iface);
         init_random();
+        queries_outstanding = 0;
     };
     bool poll_setup(struct pollfd *fd1);
     bool open_connection(const char *serverip, unsigned int port);
@@ -79,7 +80,7 @@ class grasp_client {
     int  infd;
     int  outfd;
     rpl_debug *deb;
-    bool query_outstanding;
+    unsigned int  queries_outstanding;
     network_interface       *iface;
     bool                     entropy_init;
     mbedtls_entropy_context  entropy;
