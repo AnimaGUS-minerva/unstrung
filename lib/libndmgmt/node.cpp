@@ -118,7 +118,6 @@ void rpl_node::makevalid(const struct in6_addr v6,
                          rpl_debug *deb)
 {
     if(!valid) {
-        zero_node();
         nodeip.u.v6.sin6_addr = v6;
 	nodeip.u.v6.sin6_family=AF_INET6;
         mDN    = dn;
