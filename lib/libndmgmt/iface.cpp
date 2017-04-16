@@ -1173,12 +1173,13 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
             time(&now);
 
             for(int i=0; i < pollnum && n > 0; i++) {
-                debug->verbose2("checking source %u -> %s\n",
+                debug->verbose2("%d: checking source %u -> %s\n", n,
                            i,
                            poll_if[i].revents & POLLIN ? "ready" : "no-data");
                 if(poll_if[i].revents & POLLIN) {
 #ifdef GRASP_CLIENT
                     if (all_grasp[i] != NULL) {
+                        debug->verbose2("processing grasp reply\n");
                         all_grasp[i]->process_grasp_reply(now);
                     } else
 #endif
