@@ -25,6 +25,7 @@
 #include "iface.h"
 #include "dag.h"
 #include "unstrung.h"
+#include "grasp.h"
 
 #define OPTION_SYSLOG 0x01
 #define OPTION_STDERR 0x02
@@ -37,6 +38,7 @@ static struct option const longopts[] =
     { "interface", 1, 0, 'i'},
     { "daemon",    0, 0, 'D'},
     { "prefix",    1, NULL, 'p'},
+    { "registrar", 1, NULL, 'r'},
     { "ignore-pio",0, NULL, 'P'},
     { "dao-if-filter",  1, NULL, 'A'},
     { "dao-addr-filter",1, NULL, 'a'},
@@ -67,6 +69,7 @@ void usage()
             "\t [-m]        [--nomulticast]     Disable multicast in DIOs\n"
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
+            "\t [--registrar hostname:port]     set address of GRASP responder on registrar\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
             "\t [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from\n"
             "\t [--dao-addr-filter]   List of prefixes/len to take DAO addresses from\n"
@@ -121,6 +124,8 @@ int main(int argc, char *argv[])
     bool verbose = false;
     bool bedaemon = false;
     instanceID_t instanceID = 0;
+    unsigned int grasp_portnum = 3000;
+    char *grasp_registrar = NULL;
 
     progname = argv[0];
     bool devices_scanned = false;
@@ -153,7 +158,7 @@ int main(int argc, char *argv[])
     }
     devices_scanned=true;
 
-    while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:m?v", longopts, 0)) != EOF) {
+    while((c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:r:m?v", longopts, 0)) != EOF) {
 	switch(c) {
 	default:
 	    fprintf(stderr, "Unknown option: %s\n", argv[optind-1]);
@@ -190,6 +195,18 @@ int main(int argc, char *argv[])
                 if(doze > 0) sleep(doze);
             }
 #endif
+            break;
+
+        case 'r':
+            {
+                char *portstr = strrchr(optarg, ':');
+                if(portstr) {
+                    *portstr = '\0';
+                    portstr++;
+                    grasp_portnum = atoi(portstr);
+                }
+                grasp_registrar = strdup(optarg);
+            }
             break;
 
         case 'p':
@@ -281,6 +298,13 @@ int main(int argc, char *argv[])
 
                 iface->set_debug(deb);
                 iface->setup();
+
+                if(grasp_registrar) {
+                    grasp_client *gc = new grasp_client(deb, iface);
+                    if(gc->open_connection(grasp_registrar, grasp_portnum) != true) {
+                        exit(21);
+                    }
+                }
             }
 
             /* build a DIS, send it. */
