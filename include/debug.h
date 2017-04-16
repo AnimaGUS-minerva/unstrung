@@ -79,7 +79,7 @@ public:
         void verbose(const char *fmt, ...);
         void verbose_more(const char *fmt, ...);
         void verbose2(const char *fmt, ...) {
-#if 1
+#if 0
           va_list vargs;
           va_start(vargs, fmt);
           logv(LOG_DEBUG, fmt, vargs);
