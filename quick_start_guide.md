@@ -4,7 +4,7 @@
 ### Installation
 
 In order to build Unstrung you have to have these libraries installed on your device
-* boost 
+* boost
 * libnl3
 * libpcap
 * libusb
@@ -29,7 +29,7 @@ In order to create a DODAG you have to run sunshine
 cd programms/sunshine
 ./sunshine -i lowpan0 -I 35 --prefix 2607:f018:800:201:c298:e588:4400:1/64 --dagid 0x11112222333344445555666677778888  -W 10000 --verbose -W 10000 --stderr -R 1 -m
 ```
-*ATT:watch out the sequence of arguments,in different order a SIGSEGV0 may occur!*
+*ATT: there are reports that a different sequence of arguments may cause a SEGV. If that occurs, please open an issue.*
 
 | Argument | explanation |
 | ------ | ------ |
