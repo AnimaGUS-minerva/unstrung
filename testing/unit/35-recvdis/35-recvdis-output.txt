@@ -10,3 +10,5 @@ Processing input file
 packet 1 is being processed
  wlan0: received packet from fe80::216:3eff:fe11:3424 -> ff02::1[1] hoplimit=0
 received DIS from fe80::216:3eff:fe11:3424 <timer reset>
+received DIS from fe80::216:3eff:fe11:3424 <timer reset>
+
