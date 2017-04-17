@@ -20,7 +20,7 @@ link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
   . Loading the CA root certificate ... ok (0 skipped)
 
-  . Loading the certificate(s) ...processing tag: a0&80=80 tag_len: 32
+  . Loading the certificate at: mic.pem ...processing tag: a0&80=80 tag_len: 32
  ok
   . Peer certificate information    ...
 printing subject alt name(SAN)
