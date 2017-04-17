@@ -50,6 +50,7 @@ void network_interface::reply_neighbour_advert(struct in6_addr from,
     /* look up the node by from address, if the from is not :: */
     if(memcmp(&in6addr_any, &from, 16)==0) {
         dag_network::globalStats[PS_NEIGHBOUR_UNICAST_SOURCE_UNSPECIFIED]++;
+        debug->info("  unicast source unspecified");
         return;
     }
 
@@ -192,7 +193,9 @@ void rpl_node::reply_neighbour_advert(network_interface *iface,
 
     unsigned int icmp_len = end_neighbour_advert(buildit);
 
-    /* src set to NULL, because we received this via mcast, reply with our address on this iface */
+    /* src set to NULL, because we received this via mcast,
+     *                reply with our address on this iface */
+    //debug->info("sending raw ICMP: %s\n", iface->get_if_name());
     iface->send_raw_icmp(&this->nodeip.u.v6.sin6_addr, NULL, icmp_body, icmp_len);
 }
 
@@ -295,7 +298,8 @@ void network_interface::process_grasp_reply(grasp_session_id gsi, bool success)
     rpl_node *rn = find_neighbour_by_grasp_sessionid(gsi);
     if(rn == NULL) return;
 
-    debug->info("ending query from Registrar for %s", rn->node_name());
+    debug->info("ending query from Registrar for %s with %s\n",
+                rn->node_name(), success ? "accept" : "decline");
 
     rn->set_accepted(success);
     rn->reply_neighbour_advert(this, success ? 0 : ND_NS_JOIN_DECLINED);
