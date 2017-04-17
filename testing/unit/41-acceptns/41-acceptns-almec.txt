@@ -49,4 +49,5 @@ global 0000 (+0000) Neighbour Solication, repeated query from pledge
 global 0000 (+0000) Neighbour Solication with ARO for pledge
 global 0000 (+0000) Neighbour Solication w/ARO already declined
 global 0000 (+0000) Neighbour Solication w/ARO already accepted
+global 0000 (+0000) Neighbour Solication w/ARO forced decline, no registrar
 sending Neighbour Advertisement on if: wlan0(faked)
