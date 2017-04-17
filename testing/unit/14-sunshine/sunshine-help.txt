@@ -8,6 +8,7 @@ Usage: PATH/sunshine [-?] [-i ifname]
 	 [-m]        [--nomulticast]     Disable multicast in DIOs
 	 [--verbose] [--timelog]         Turn on logging (with --time logged)
 	 [--syslog]  [--stderr]          Log to syslog and/or stderr
+	 [--registrar hostname:port]     set address of GRASP responder on registrar
 	 [--ignore-pio]                  Ignore PIOs found in DIO
 	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
 	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from
