@@ -9,8 +9,8 @@ ARCH?=$(shell uname -m)
 # stuff to set... use -m32 by default because of UML testing, should remove this to elsewhere.
 INC=${UNSTRUNG_SRCDIR}/include
 #-I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
-CFLAGS+=-I${INC} -fno-show-column ${CBOR_INCLUDE} ${MBEDTLSH}
-CXXFLAGS+=-I${INC}  -fno-show-column ${CBOR_INCLUDE} ${MBEDTLSH}
+CFLAGS+=-I${INC} -fno-show-column 
+CXXFLAGS+=-I${INC}  -fno-show-column 
 USERLINK?=-g
 USERCPPCOMPILE?=-g -O
 
@@ -31,11 +31,14 @@ CFLAGS+=-DEMBEDDED
 CXXFLAGS+=-DEMBEDDED
 endif
 
-CFLAGS+=-DGRASP_CLIENT
-CXXFLAGS+=-DGRASP_CLIENT
+CFLAGS+= -DGRASP_CLIENT
+CXXFLAGS+= -DGRASP_CLIENT
 
-CFLAGS+=-I${MBEDTLSH}
-CXXFLAGS+=-I${MBEDTLSH}
+CFLAGS+= -I${MBEDTLSH}
+CXXFLAGS+= -I${MBEDTLSH}
+
+CFLAGS+= ${CBOR_INCLUDE}
+CXXFLAGS+= ${CBOR_INCLUDE}
 
 ifeq ($(USE_OBJDIR),true)
 OBJDIR?=OBJ.${ARCH}
