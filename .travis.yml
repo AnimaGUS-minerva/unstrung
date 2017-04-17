@@ -24,7 +24,7 @@ before_install:
 # the cp is because libssl-dev:i386 and libssl-dev:amd64 can not co-exist together due to package
 # incompatibilities, but in fact have no problems in practice.
 install:
-  - "sudo ./install-apt-deps.sh"
+  - "./install-apt-deps.sh"
   - "rvm autolibs enable"
   - "rvm install ruby-2.1.5"
   - "rvm use 2.1.5"

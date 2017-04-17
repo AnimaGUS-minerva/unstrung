@@ -13,6 +13,10 @@ If you use any debian based distro(ex. raspbian) you can install them just by ty
 ```
 sudo apt-get install libboost-all-dev libnl-3-dev libpcap-dev libusb-dev libusb-1.0-0-dev
 ```
+
+The script install-apt-deps.sh can be used to get the most up-to-date set of packages.
+On x86 it will attempt to install gcc-multilib, and install packages for both 32-bit and 64-bit compilations.
+
 *(it takes quite a long time on unpacking libboost1.55-dev,do not kill the process)*
 
 Clone the source repository
