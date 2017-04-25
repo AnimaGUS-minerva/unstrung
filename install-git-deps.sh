@@ -2,20 +2,15 @@
 
 BUILDTOP=`pwd`/stuff
 
+touch Makefile.local
 mkdir -p $BUILDTOP
 cd $BUILDTOP
-[ -d mbedtls ] || git clone -b mcr_add_otherName https://github.com/mcr/mbedtls.git
-(cd mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP . && make && make install )
 
-if [ ! -f $BUILDTOP/include/cbor.h ]
+if [ ! -f $BUILDTOP/mbedtls/Makefile ]
 then
-    if [ ! -d ${BUILDTOP}/libcbor ]; then ( cd $BUILDTOP && git clone https://github.com/mcr/libcbor.git) ; fi
-
-    (cd ${BUILDTOP}/libcbor && cmake . -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP} && make && make install)
+    git clone -b mcr_add_otherName https://github.com/mcr/mbedtls.git
+    (cd $BUILDTOP/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP . && make && make install )
 fi
-
-
-touch Makefile.local
 if grep MBEDTLS Makefile.local
 then
     :
@@ -24,7 +19,14 @@ else
     echo MBEDTLSLIB=${BUILDTOP}/lib              >>Makefile.local
 fi
 
-if grep MBEDTLS Makefile.local
+
+if [ ! -f $BUILDTOP/include/cbor.h ]
+then
+    if [ ! -d ${BUILDTOP}/libcbor ]; then ( cd $BUILDTOP && git clone https://github.com/mcr/libcbor.git) ; fi
+
+    (cd ${BUILDTOP}/libcbor && cmake . -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP} && make && make install)
+fi
+if grep CBOR_INCLUDE Makefile.local
 then
     :
 else
