@@ -66,6 +66,7 @@ vars:
 	@echo USE_OBJDIR: ${USE_OBJDIR}
 	@echo OBJDIR: ${OBJDIR}
 	@echo ARCH: ${ARCH}
+	@echo USERLINK: ${USERLINK}
 
 version:
 	@echo ${PANDORA_VERSION}

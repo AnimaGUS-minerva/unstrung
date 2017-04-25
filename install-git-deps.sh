@@ -36,6 +36,21 @@ if ${USE_WOLFSSL}; then
     fi
 fi
 
+if [ ! -f $BUILDTOP/mbedtls/Makefile ]
+then
+    git clone -b mcr_add_otherName https://github.com/mcr/mbedtls.git
+    (cd $BUILDTOP/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP . && make && make install )
+fi
+
+if grep MBEDTLS Makefile.local
+then
+    :
+else
+    echo MBEDTLSH=-I${BUILDTOP}/include          >>Makefile.local
+    echo MBEDTLSLIB=${BUILDTOP}/lib              >>Makefile.local
+fi
+
+
 if [ ! -f $BUILDTOP/include/cbor.h ]
 then
     if [ ! -d ${BUILDTOP}/libcbor ]; then ( cd $BUILDTOP && git clone https://github.com/mcr/libcbor.git) ; fi
@@ -43,7 +58,7 @@ then
     (cd ${BUILDTOP}/libcbor && cmake . -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP} && make && make install)
 fi
 
-if grep CBOR_LIB Makefile.local
+if grep CBOR_INCLUDE Makefile.local
 then
     :
 else
