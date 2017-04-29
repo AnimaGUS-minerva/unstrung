@@ -12,7 +12,7 @@ INC=${UNSTRUNG_SRCDIR}/include
 CFLAGS+=-I${INC} -fno-show-column
 CXXFLAGS+=-I${INC}  -fno-show-column
 USERLINK?=-g
-USERCPPCOMPILE?=-g -O
+USERCPPCOMPILE?=-g -O0
 
 #ifeq ($(ARCH),x86_64)
 #HOSTFLAGS=-m32
