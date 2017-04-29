@@ -9,10 +9,10 @@ ARCH?=$(shell uname -m)
 # stuff to set... use -m32 by default because of UML testing, should remove this to elsewhere.
 INC=${UNSTRUNG_SRCDIR}/include
 #-I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
-CFLAGS+=-I${INC} -fno-show-column 
-CXXFLAGS+=-I${INC}  -fno-show-column 
+CFLAGS+=-I${INC} -fno-show-column
+CXXFLAGS+=-I${INC}  -fno-show-column
 USERLINK?=-g
-USERCPPCOMPILE?=-g -O
+USERCPPCOMPILE?=-g -O0
 
 #ifeq ($(ARCH),x86_64)
 #HOSTFLAGS=-m32
