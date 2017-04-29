@@ -28,10 +28,14 @@ make
 
 ## Quick start:
 
-In order to create a DODAG you have to run sunshine
+In order to create a DODAG you have to run sunshine.  You'll want to have it
+announce a prefix.   If you have a spare /64 which is routed to you, use it.
+You can use a ULA as well.  Shown below is the documentation prefix.
 ```
 cd programms/sunshine
-./sunshine -i lowpan0 -I 35 --prefix 2607:f018:800:201:c298:e588:4400:1/64 --dagid 0x11112222333344445555666677778888  -W 10000 --verbose -W 10000 --stderr -R 1 -m
+./sunshine -i lowpan0 -I 35 \
+           --prefix 2000:db8:1234:abcd::/64 \
+           --dagid  2000:db8:1234::1 -W 10000 --verbose --stderr -R 1 -m
 ```
 *ATT: there are reports that a different sequence of arguments may cause a SEGV. If that occurs, please open an issue.*
 
