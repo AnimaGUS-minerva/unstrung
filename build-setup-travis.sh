@@ -3,20 +3,23 @@
 set -e
 mkdir -p $HOME/stuff
 BUILDTOP=$(cd $HOME/stuff; pwd)
-ARCH=${ARCH-$(arch)}
+ARCH=${ARCH-$(uname -m)}
 
 case $(arch) in
     x86_64) HOST=x86_64;;
     i386)   HOST=i386;;
+    armv7l) HOST=armv7l;;
 esac
 
 set -x
 
 build64=true
 build32=true
+buildgen=false
 case $1 in
     ONLYARCH=x86_64) build32=false;;
     ONLYARCH=i386)   build64=false;;
+    *) buildgen=true; build32=false; build64=false;;
 esac
 
 if $build32; then
@@ -41,11 +44,21 @@ mkdir -p ${BUILDTOP}/${HOST}
         (cd ${BUILDTOP} && rm -rf i386/mbedtls && mkdir -p i386/mbedtls && cd i386/mbedtls && cmake -DCMAKE_C_FLAGS:STRING=-m32 -DCMAKE_INSTALL_PREFIX=$BUILDTOP/i386 ../../mbedtls && make CFLAGS='-m32 --coverage -g3 -O0' && make install)
     fi
 
+    if $buildgen && [ ! -d "${BUILDTOP}/${ARCH}/mbedtls" ]; then
+        (cd ${BUILDTOP} && rm -rf ${ARCH}/mbedtls && mkdir -p ${ARCH}/mbedtls && cd ${ARCH}/mbedtls && cmake -DCMAKE_INSTALL_PREFIX=$BUILDTOP/${ARCH} ../../mbedtls && make CFLAGS='-coverage -g3 -O0' && make install)
+    fi
+
 LIBPCAP=${BUILDTOP}/host/libpcap-1.8.1/libpcap.a
 if [ ! -x $BUILDTOP/host/tcpdump-4.8.1/tcpdump ]
 then
     if [ ! -d ${BUILDTOP}/libpcap ]; then (cd ${BUILDTOP} && git clone -b libpcap-1.8.1 https://github.com/the-tcpdump-group/libpcap.git ); fi
     if [ ! -d ${BUILDTOP}/tcpdump ]; then (cd ${BUILDTOP} && git clone -b tcpdump-4.8.1 https://github.com/the-tcpdump-group/tcpdump.git ); fi
+
+    if $buildgen && [ ! -d "${BUILDTOP}/${ARCH}/tcpdump-4.8.1/." ]; then
+        (cd ${BUILDTOP} && mkdir -p ${ARCH}/libpcap-1.8.1 && cd ${ARCH}/libpcap-1.8.1 && ../../libpcap/configure --prefix=$HOME/stuff --target=${ARCH}-linux-gnu && make CFLAGS="-fPIC")
+        (cd ${BUILDTOP} && ln -f -s ${ARCH}/libpcap-1.8.1 libpcap && mkdir -p ${ARCH}/tcpdump-4.8.1 && cd ${ARCH}/tcpdump-4.8.1 && ../../tcpdump/configure --prefix=$HOME/stuff --target=${ARCH}-linux-gnu && make CFLAGS="-fPIC")
+        (cd ${BUILDTOP}/${ARCH} && ln -s -f tcpdump-4.8.1 tcpdump )
+    fi
 
     if $build64 && [ ! -d "${BUILDTOP}/x86_64/tcpdump-4.8.1/." ]; then
         (cd ${BUILDTOP} && mkdir -p x86_64/libpcap-1.8.1 && cd x86_64/libpcap-1.8.1 && CFLAGS=-m64 ../../libpcap/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS="-m64 -fPIC")
@@ -77,6 +90,10 @@ then
     if [ ! -d ${BUILDTOP}/libcbor ]; then ( cd $BUILDTOP && git clone https://github.com/mcr/libcbor.git) ; fi
 
     (cd ${BUILDTOP} && mkdir -p ${HOST}/libcbor && cd ${HOST}/libcbor && cmake ../../libcbor -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP} && make && make install)
+
+    if $buildgen && [ ! -d "${BUILDTOP}/${ARCH}/libcbor" ]; then
+        (cd ${BUILDTOP} && mkdir -p ${ARCH}/libcbor && cd ${ARCH}/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS:STRING="-fPIC" -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/${ARCH} && make && make install)
+    fi
 
     if $build64 && [ ! -d "${BUILDTOP}/x86_64/libcbor" ]; then
         (cd ${BUILDTOP} && mkdir -p x86_64/libcbor && cd x86_64/libcbor && cmake ../../libcbor -DCMAKE_C_FLAGS:STRING="-m64 -fPIC" -DCMAKE_INSTALL_PREFIX:PATH=${BUILDTOP}/x86_64 && make && make install)
