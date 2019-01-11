@@ -16,25 +16,27 @@ cache:
   directories:
   - $HOME/stuff
 
+env:
+  global:
+    - PATH=$HOME/bin:$PATH
+
 before_install:
-  - "sudo dpkg --add-architecture i386"
-  - "sudo apt-get update"
-  - "sudo apt-get remove oracle-java7-installer oracle-java8-installer oracle-java9-installer"
+  - sudo dpkg --add-architecture i386
+  - sudo apt-get update
 
 # the cp is because libssl-dev:i386 and libssl-dev:amd64 can not co-exist together due to package
 # incompatibilities, but in fact have no problems in practice.
 install:
-  - "./install-apt-deps.sh"
-  - "rvm autolibs enable"
-  - "rvm install ruby-2.1.5"
-  - "rvm use 2.1.5"
-  - "gem install ronn cbor cbor-diag"
-  - "./build-setup-travis.sh ONLYARCH=x86_64"
-  - "PATH=$HOME/bin:$PATH export PATH"
+  - ./install-apt-deps.sh
+  - rvm autolibs enable
+  - rvm install ruby-2.1.5
+  - rvm use 2.1.5
+  - gem install ronn cbor cbor-diag
+  - ./build-setup-travis.sh ONLYARCH=x86_64
 
 script:
-  - "cat Makefile.local"
-  - "make vars "
-  - "make programs "
-  - "make checkprograms "
-  - "make unitcheck"
+  - cat Makefile.local
+  - make vars
+  - make programs
+  - make checkprograms
+  - make unitcheck
