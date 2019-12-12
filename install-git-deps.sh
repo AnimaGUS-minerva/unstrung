@@ -24,7 +24,7 @@ else
     echo MBEDTLSLIB=${BUILDTOP}/lib              >>Makefile.local
 fi
 
-if grep MBEDTLS Makefile.local
+if grep CBOR_LIB Makefile.local
 then
     :
 else

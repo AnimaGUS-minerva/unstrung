@@ -20,9 +20,11 @@ ONEFILE=peck.c
 OBJS=peck.o
 LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE} ${LIBGRASP}
 LIBS+=${LIBCBOR}
+
+ifeq ($(USE_MBEDTLS),true)
 LIBS+=${MBEDTLSLIB}/libmbedx509.a
 LIBS+=${MBEDTLSLIB}/libmbedcrypto.a
 LIBS+=${MBEDTLSLIB}/libmbedtls.a
-
+endif
 
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.program

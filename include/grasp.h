@@ -1,12 +1,13 @@
 #ifndef _GRASP_H_
 #define _GRASP_H_
 
+#if defined(HAVE_MBEDTLS)
 /* for random number generator for session-id */
 /* see: https://tls.mbed.org/kb/how-to/add-a-random-generator */
 /* kinda gross to suck in all of this just to get the sizes right */
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
-
+#endif
 
 /* forward references */
 class network_interface;

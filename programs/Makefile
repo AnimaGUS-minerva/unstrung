@@ -26,7 +26,10 @@ SUBDIRS=sunshine
 
 # only built utility programs on bigger systems; they are used for testing only
 ifeq ($(EMBEDDED),)
-SUBDIRS+=peck senddio senddao sendnd
+ifeq ($(USE_MBEDTLS),true)
+SUBDIRS+=peck
+endif
+SUBDIRS+=senddio senddao sendnd
 endif
 
 unitcheck:

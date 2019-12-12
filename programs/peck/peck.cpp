@@ -13,6 +13,7 @@ extern "C" {
 
 #include <netinet/ip6.h>
 
+#if defined(HAVE_MBEDTLS)
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -34,6 +35,7 @@ extern "C" {
 #include "mbedtls/ssl.h"
 #include "mbedtls/x509.h"
 #include "mbedtls/oid.h"
+#endif
 
 }
 
@@ -47,10 +49,13 @@ static void usage(void)
     fprintf(stderr, "Usage: peck [--verbose] ifname\n");
     fprintf(stderr, "            [--help] \n");
     fprintf(stderr, "            [--fake] \n");
+#if defined(HAVE_MBEDTLS)
     fprintf(stderr, "            [--mic=filename] [--privmic=filename] [--manuca=filename]\n");
+#endif
     exit(2);
 }
 
+#if defined(HAVE_MBEDTLS)
 extern "C" {
   static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags )
   {
@@ -279,6 +284,7 @@ int extract_eui64_from_cert(unsigned char *eui64,
 
   return -1;
 }
+#endif
 
 
 
