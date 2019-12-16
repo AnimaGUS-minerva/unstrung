@@ -326,11 +326,16 @@ void grasp_client::init_random(void)
     if(!entropy_init) {
         entropy_init = true;
 
+#if defined(HAVE_MBEDTLS)
         /* set up the entropy source */
         mbedtls_entropy_init( &entropy );
 
         //const char *personalization = "unstrung grasp client";
         mbedtls_ctr_drbg_init( &ctr_drbg );
+#endif
+#if defined(HAVE_BOOST_RNG)
+        // assume that it self seeds?
+#endif
     }
 }
 

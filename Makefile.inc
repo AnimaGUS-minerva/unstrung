@@ -9,8 +9,8 @@ ARCH?=$(shell uname -m)
 # stuff to set... use -m32 by default because of UML testing, should remove this to elsewhere.
 INC=${UNSTRUNG_SRCDIR}/include
 #-I${UNSTRUNG_SRCDIR}/../tcpdump-4.6.0
-CFLAGS+=-I${INC} -fno-show-column 
-CXXFLAGS+=-I${INC}  -fno-show-column 
+CFLAGS+=-I${INC} -fno-show-column
+CXXFLAGS+=-I${INC}  -fno-show-column
 USERLINK?=-g
 USERCPPCOMPILE?=-g -O
 
@@ -37,6 +37,10 @@ CXXFLAGS+= -DGRASP_CLIENT
 ifeq ($(USE_MBEDTLS),true)
 CFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
 CXXFLAGS+= ${MBEDTLSH}
+LIBCRYPT=${MBEDTLSLIB}/libmbedtls.a ${MBEDTLSLIB}/libmbedcrypto.a
+else
+# libboost has it already
+LIBCRYPT=
 endif
 
 CFLAGS+= ${CBOR_INCLUDE}
@@ -64,7 +68,6 @@ LIBGRASP=${UNSTRUNG_OBJDIR}/lib/libgrasp/libgrasp.a
 LIBPCAP?=-lpcap $(pcap-config --libs --static)
 LIBPCAP_HOST?=-lpcap
 LIBCBOR=${CBOR_LIB}
-LIBMBEDTLS=${MBEDTLSLIB}/libmbedtls.a ${MBEDTLSLIB}/libmbedcrypto.a
 TCPDUMP?=tcpdump
 
 ifeq ($(EMBEDDED),)

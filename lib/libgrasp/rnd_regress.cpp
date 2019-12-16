@@ -81,11 +81,16 @@ void grasp_client::init_regress_random(void)
 {
     entropy_init = true;
 
+#if defined(HAVE_MBEDTLS)
     mbedtls_ctr_drbg_init( &ctr_drbg );
-
     mbedtls_ctr_drbg_seed_entropy_len( &ctr_drbg, ctr_drbg_self_test_entropy,
                                        (void *) entropy_source_pr, nonce_pers_pr, 16, 32 );
     mbedtls_ctr_drbg_set_prediction_resistance( &ctr_drbg, MBEDTLS_CTR_DRBG_PR_ON );
+#endif
+#if defined(HAVE_BOOST_RNG)
+    ctr_drbg.seed(42u);
+#endif
+
 }
 
 /*

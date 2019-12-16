@@ -49,6 +49,16 @@ enum objective_flags {
   F_SYNCH= 2,
 };
 
+#if defined(HAVE_BOOST_RNG)
+#include <boost/random/linear_congruential.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+#include <boost/random/variate_generator.hpp>
+#include <boost/generator_iterator.hpp>
+
+typedef boost::minstd_rand base_generator_type;
+#endif
+
 typedef u_int32_t grasp_session_id;
 
 class grasp_client {
@@ -84,8 +94,13 @@ class grasp_client {
     unsigned int  queries_outstanding;
     network_interface       *iface;
     bool                     entropy_init;
+#if defined(HAVE_MBEDTLS)
     mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
+#endif
+#if defined(HAVE_BOOST_RNG)
+    base_generator_type      ctr_drbg;
+#endif
 
     void init_random(void);
     void init_query_client(network_interface *iface);
