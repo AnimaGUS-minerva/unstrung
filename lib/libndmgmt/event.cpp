@@ -146,9 +146,10 @@ void rpl_event::printevent(FILE *out)
     gmtime_r(&alarm_time.tv_sec, &tm1);
 
     strftime(b1, sizeof(b1), "%Y-%B-%d %r", &tm1);
-    fprintf(out, "event#%u(%s) at (%s)<%u:%u>, type: %s",
+    fprintf(out, "event#%u(%s) at (%s)<%lu:%lu>, type: %s",
 	    event_number,
-            mReason,  b1, tmp_alarm_time.tv_sec, tmp_alarm_time.tv_usec,
+            mReason,  b1,
+            (unsigned long)tmp_alarm_time.tv_sec, (unsigned long)tmp_alarm_time.tv_usec,
             event_name());
 }
 

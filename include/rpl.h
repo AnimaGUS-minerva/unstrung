@@ -8,9 +8,7 @@
  */
 
 #define PACKED __attribute__((packed))
-extern "C" {
 #include <sys/types.h>
-}
 
 /*
  * DIO: Updated to RFC6550, as published in 2012: section 6. (page 30)

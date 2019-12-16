@@ -30,6 +30,7 @@
 #include <linux/pkt_sched.h>
 #include <time.h>
 #include <sys/time.h>
+#include <limits.h>
 
 
 #include "netlink/utils.h"

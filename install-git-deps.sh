@@ -1,7 +1,7 @@
 #!/bin/sh
 
 BUILDTOP=`pwd`/stuff
-USE_WOLFSSL=true
+USE_WOLFSSL=false
 USE_MBEDTLS=false
 
 touch Makefile.local
