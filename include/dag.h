@@ -79,9 +79,9 @@ public:
          * and prefix (CIDR) patterns for addresses that will be added
          * as locale addresses for DAOs sent from this node.
          */
-        bool set_interface_wildcard(const char *ifname);
-        bool set_interface_filter(const char *filter);
-        bool set_interface_filter(const ip_subnet i6);
+        void set_interface_wildcard(const char *ifname);
+        void set_interface_filter(const char *filter);
+        void set_interface_filter(const ip_subnet i6);
         bool matchesIfWildcard(const char *ifname);
         bool matchesIfPrefix(const ip_address v6);
         bool matchesIfPrefix(const struct in6_addr v6);
@@ -172,7 +172,7 @@ public:
 
         /* some decode routines */
         static const char *mop_decode(unsigned int mop) {
-            switch(mop) {
+            switch(mop & 0x7) {
             case RPL_DIO_NO_DOWNWARD_ROUTES_MAINT: return "no-downward-route-maint";
             case RPL_DIO_NONSTORING:    return "non-storing";
             case RPL_DIO_STORING_NO_MULTICAST: return "storing-no-mcase";
@@ -182,6 +182,7 @@ public:
             case 6:                  return "unknown-mop6";
             case 7:                  return "unknown-mop7";
             }
+            return "unknown";
         };
 
 	static void format_dagid(char *dagidstr,

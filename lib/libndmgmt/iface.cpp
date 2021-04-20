@@ -471,6 +471,7 @@ void network_interface::dump_stats(void)
 static int log_ifstats(network_interface *ni, void *arg)
 {
     ni->dump_stats();
+    return 1; /* return 1 to continue for for all interfaces */
 }
 
 void network_interface::dump_interface_stats(void)

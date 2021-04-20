@@ -73,13 +73,14 @@ network_interface *iface_factory::newnetwork_interface(const char *name, rpl_deb
 int network_interface::nisystem(const char *cmd)
 {
     ::system(cmd);
-
+    return 0;  /* success */
 }
 
 /* used by addprefix() to change system parameters */
 int network_interface::ni_route_show(void)
 {
     nisystem("ip -6 route show");
+    return 0;  /* success */
 }
 
 /* this is wrong, use netlink to set the address later on. */
@@ -142,6 +143,7 @@ bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
     ni_route_show();
+    return true;
 }
 
 /* XXX do this with netlink too  */
@@ -172,6 +174,7 @@ bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
     debug->log("  invoking %s\n", buf);
     nisystem(buf);
     ni_route_show();
+    return true;
 }
 
 /* XXX do this with netlink too  */
@@ -271,6 +274,7 @@ bool network_interface::set_link_layer64(const unsigned char eui64bytes[8],
         this->if_hwaddr_len = 6;
         break;
     }
+    return true;
 }
 
 bool network_interface::set_link_layer64_hw(void)
@@ -385,6 +389,7 @@ int network_interface::gather_linkinfo(const struct sockaddr_nl *who,
     default:
         fprintf(stderr, "ignored nlmsgtype: %u\n", n->nlmsg_type);
     }
+    return 0;
 }
 
 /* from netifd */
@@ -773,6 +778,7 @@ bool network_interface::setup_lowpan(const unsigned char eui64[8],
     this->set_link_layer64(eui64, eui64len);
     this->set_link_layer64_hw();
     this->configure_wpan();
+    return true;
 }
 
 

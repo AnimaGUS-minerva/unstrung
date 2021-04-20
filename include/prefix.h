@@ -63,7 +63,7 @@ public:
         bool is_installed() {
             return installed;
         };
-        bool set_installed(bool installed) {
+        void set_installed(bool installed) {
             installed = true;
         };
 
