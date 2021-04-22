@@ -71,6 +71,7 @@ void dag_network::init_dag(void)
     mBestRank = UINT_MAX;
     mVersion  = 1;
     debug     = NULL;
+    mSendDioEvent = NULL;
     memset(mStats,     0, sizeof(mStats));
     memset(old_mStats, 0, sizeof(old_mStats));
     mMode = RPL_DIO_STORING_MULTICAST;
