@@ -81,6 +81,7 @@ void dag_network::init_dag(void)
     this->add_to_list();
     dag_me = NULL;
     mPrefixSet = false;
+    mIfWildcard_max = 0;
 }
 
 dag_network::dag_network(instanceID_t num, dagid_t n_dagid, rpl_debug *deb)
@@ -1106,10 +1107,12 @@ void dag_network::commit_parent(void)
 void dag_network::set_interface_wildcard(const char *wild)
 {
     if(mIfWildcard_max < DAG_IFWILDCARD_MAX) {
-        int len = strlen(wild);
+        int len = strlen(wild)+1;
         if(len > DAG_IFWILDCARD_LEN-1) len = DAG_IFWILDCARD_LEN;
 
-        memcpy(mIfWildcard[mIfWildcard_max++], wild, len);
+        memcpy(mIfWildcard[mIfWildcard_max], wild, len);
+        mIfWildcard[mIfWildcard_max][len]='\0';
+        mIfWildcard_max++;
     }
 }
 
