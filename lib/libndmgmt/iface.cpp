@@ -72,7 +72,9 @@ network_interface::network_interface()
     debug = NULL;
     node  = NULL;
     on_list = false;
+#ifdef GRASP_CLIENT
     join_query_client = NULL;
+#endif
     this->set_if_name("<unset>");
 }
 
@@ -84,7 +86,9 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
     node  = NULL;
     on_list = false;
 
+#ifdef GRASP_CLIENT
     join_query_client = NULL;
+#endif
     set_debug(deb);
 
     this->set_if_name(if_name);
