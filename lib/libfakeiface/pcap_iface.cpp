@@ -444,7 +444,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
             hwaddr[4]=0x34;        hwaddr[5]=0x24;
 
             fake_linkinfo("wlan0", myindex, &nii, hwaddr,
-                          ARPHRD_ETHER, IFF_BROADCAST);
+                          ARPHRD_ETHER, IFF_BROADCAST|IFF_UP);
         }
 
         /* now send up the IPv6 address for a wlan0 address */
@@ -470,7 +470,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
 
             myindex = ++ifindex;
             fake_linkinfo("lo", myindex, &nii, hwaddr,
-                          ARPHRD_LOOPBACK, IFF_BROADCAST);
+                          ARPHRD_LOOPBACK, IFF_BROADCAST|IFF_UP);
         }
 
         {
