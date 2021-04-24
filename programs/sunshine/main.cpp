@@ -88,7 +88,7 @@ bool check_dag(unsigned char opt, dag_network *dag)
     return true;
 }
 
-const char *pidfilename="/var/run/sunshine.pid";
+const char *pidfilename="/run/sunshine.pid";
 void killanydaemon(void)
 {
     int pid;
@@ -115,6 +115,18 @@ void killanydaemon(void)
     unlink(pidfilename);
 
     exit(0);
+}
+
+void write_pid_file() {
+    FILE *pidfile = fopen(pidfilename, "w");
+    int   mypid = getpid();
+    if(pidfile) {
+        fprintf(pidfile, "%u\n", mypid);
+        fclose(pidfile);
+    } else {
+        fprintf(stderr, "Can not write pid=%u to %s: %s\n",
+                mypid, pidfilename, strerror(errno));
+    }
 }
 
 int main(int argc, char *argv[])
@@ -149,6 +161,7 @@ int main(int argc, char *argv[])
     c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0);
     if(c == OPTION_SLEEP) {
         unsigned int doze=atoi(optarg);
+        write_pid_file();
         if(doze > 0) sleep(doze);
     }
     /* reset argument processor */
@@ -340,15 +353,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    FILE *pidfile = fopen(pidfilename, "w");
-    int   mypid = getpid();
-    if(pidfile) {
-        fprintf(pidfile, "%u\n", mypid);
-        fclose(pidfile);
-    } else {
-        fprintf(stderr, "Can not write pid=%u to %s: %s\n",
-                mypid, pidfilename, strerror(errno));
-    }
+    write_pid_file();
 
     dag->set_debug(deb);
     dag->schedule_dio(IMMEDIATELY);
