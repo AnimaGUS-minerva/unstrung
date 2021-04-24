@@ -138,6 +138,9 @@ ${PROGRAM}: $(OBJS) ${LIBS}
 %.o: ${srcdir}%.cpp
 	${CXX} -c ${CXXFLAGS} $<
 
+%.E: ${srcdir}%.cpp
+	${CXX} -E -c ${CXXFLAGS} $< >$@
+
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.manpages
 
 #%.i: %.c

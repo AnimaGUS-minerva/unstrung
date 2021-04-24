@@ -83,6 +83,9 @@ $(OBJS):	$(HDRS)
 cleanall::
 	rm -rf ${OBJS}
 
+%.E: ${srcdir}%.cpp
+	${CXX} -E -c ${CXXFLAGS} $< >$@
+
 # Gather dependencies caused by explicit #includes within .c files
 depend: ${DISTSRC}
 	@(ls $(DISTSRC) | egrep '\.c$$|\.cpp$$' | xargs gcc -MM ${PORTINCLUDE} ${INCLUDES} ${ALLFLAGS} ) | sed -e 's,${UNSTRUNG_SRCDIR},../..,g' >Makefile.depend.${OSDEP}
