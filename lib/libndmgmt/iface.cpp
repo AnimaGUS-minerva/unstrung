@@ -85,6 +85,8 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
     debug = NULL;
     node  = NULL;
     on_list = false;
+    memset(eui48, 0, sizeof(eui48));
+    memset(eui64, 0, sizeof(eui64));
 
 #ifdef GRASP_CLIENT
     join_query_client = NULL;
