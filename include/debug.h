@@ -50,7 +50,7 @@ public:
           const char *base = strrchr(a_progname, '/');
           if(base == NULL) base = a_progname;
           this->progname[0]='\0';
-          strncat(this->progname, basename(a_progname), sizeof(this->progname));
+          strncat(this->progname, basename(a_progname), sizeof(this->progname)-1);
           syslog_open = false;  /* so that openlog will be called again */
         };
 
