@@ -120,7 +120,7 @@ pcap_network_interface::send_raw_icmp(struct in6_addr *dest,
     unsigned char *layer3 = &packet[14];
     struct ip6_hdr *v6 = (struct ip6_hdr *)layer3;
 
-    v6->ip6_src = link_local();
+    this->get_link_local(&v6->ip6_src);
     if(src) {
         memcpy(&v6->ip6_src, src, 16);
     }

@@ -190,6 +190,11 @@ public:
     bool set_link_layer64_hw(void);
 
     unsigned const char *   get_eui64(void) { return (unsigned const char *)eui64; };
+    void                    get_link_local(struct in6_addr *dst) {
+        /* repeats link_local(). It seems that returning a struct in6_addr fails */
+        link_local();
+        memcpy(dst, &ipv6_link_addr, 16);
+    };
     struct in6_addr         link_local(void) {
         if(!eui64set) generate_eui64();
         return ipv6_link_addr;
