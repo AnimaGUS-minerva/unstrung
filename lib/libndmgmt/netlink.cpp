@@ -535,11 +535,12 @@ int network_interface::del_linkinfo(const struct sockaddr_nl *who,
         return -1;
     }
 
-    network_interface *ni = find_by_ifindex(ifi->ifi_index);
     const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
 
+    network_interface *ni = find_by_ifindex(ifi->ifi_index);
     if(ni == NULL) {
-        deb->info("link deleted[%d]: %s type=%s [ignored]\n",
+        deb->info("link %s[%d]: %s type=%s [ignored]\n",
+                  (ifi->ifi_flags & IFF_UP) ? "deleted" : "down",
                   ni->if_index, ifname,
                   ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
         return 0;
@@ -577,9 +578,15 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         return -1;
     }
 
-    network_interface *ni = find_by_ifindex(ifi->ifi_index);
     const char *ifname = (const char*)RTA_DATA(tb[IFLA_IFNAME]);
 
+    if((ifi->ifi_flags & IFF_UP) == 0) {
+        deb->info("link found[%d]: %s down, ignored\n",
+                  ifi->ifi_index, ifname);
+        return 0;
+    }
+
+    network_interface *ni = find_by_ifindex(ifi->ifi_index);
     if(ni == NULL) {
         ni = iface_maker->newnetwork_interface(ifname, deb);
         ni->if_index = ifi->ifi_index;
