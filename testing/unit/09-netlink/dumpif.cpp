@@ -13,6 +13,8 @@ extern "C" {
 #include <assert.h>
 
 #include "netlink/libnetlink.h"
+#include "netlink/ll_map.h"
+#include "netlink/rt_names.h"
 }
 
 #include "iface.h"
@@ -26,6 +28,39 @@ extern "C" {
 struct rtnl_handle my_rth;
 const char * _SL_ = "dumpif";
 
+static void print_link_flags(FILE *fp, unsigned int flags, unsigned int mdown)
+{
+	if (flags & IFF_UP && !(flags & IFF_RUNNING))
+            fprintf(fp, flags ? "%s," : "%s", "NO-CARRIER");
+	flags &= ~IFF_RUNNING;
+#define _PF(f) if (flags&IFF_##f) {					\
+		flags &= ~IFF_##f ;					\
+		fprintf(fp, flags ? "%s," : "%s", #f); }
+	_PF(LOOPBACK);
+	_PF(BROADCAST);
+	_PF(POINTOPOINT);
+	_PF(MULTICAST);
+	_PF(NOARP);
+	_PF(ALLMULTI);
+	_PF(PROMISC);
+	_PF(MASTER);
+	_PF(SLAVE);
+	_PF(DEBUG);
+	_PF(DYNAMIC);
+	_PF(AUTOMEDIA);
+	_PF(PORTSEL);
+	_PF(NOTRAILERS);
+	_PF(UP);
+	_PF(LOWER_UP);
+	_PF(DORMANT);
+	_PF(ECHO);
+#undef _PF
+	if (flags)
+            fprintf(fp, "%x", flags);
+	if (mdown)
+            fprintf(fp, ",%s", "M-DOWN");
+}
+
 int my_print_linkinfo(const struct sockaddr_nl *who,
                       struct nlmsghdr *n, void *arg)
 {
@@ -34,7 +69,7 @@ int my_print_linkinfo(const struct sockaddr_nl *who,
 	struct rtattr * tb[IFLA_MAX+1];
 	int len = n->nlmsg_len;
 	unsigned m_flag = 0;
-	unsigned char b1[1024];
+	char b1[1024];
 
 	if (n->nlmsg_type != RTM_NEWLINK && n->nlmsg_type != RTM_DELLINK)
 		return 0;
@@ -59,7 +94,7 @@ int my_print_linkinfo(const struct sockaddr_nl *who,
 		if (iflink == 0)
 			fprintf(fp, "@NONE: ");
 		else {
-			fprintf(fp, "@%s: ", ll_idx_n2a(iflink, b1));
+                    fprintf(fp, "@%s: ", (char *)ll_idx_n2a(iflink, b1));
 			m_flag = ll_index_to_flags(iflink);
 			m_flag = !(m_flag & IFF_UP);
 		}
@@ -77,27 +112,29 @@ int my_print_linkinfo(const struct sockaddr_nl *who,
 		fprintf(fp, "master %s ", ll_idx_n2a(*(int*)RTA_DATA(tb[IFLA_MASTER]), b1));
 	}
 #endif
-        print_queuelen((char*)RTA_DATA(tb[IFLA_IFNAME]));
+        //print_queuelen((char*)RTA_DATA(tb[IFLA_IFNAME]));
 
         {
 		fprintf(fp, "%s", _SL_);
 		fprintf(fp, "    link/%s ", ll_type_n2a(ifi->ifi_type, b1, sizeof(b1)));
 
 		if (tb[IFLA_ADDRESS]) {
-			fprintf(fp, "%s", ll_addr_n2a(RTA_DATA(tb[IFLA_ADDRESS]),
-						      RTA_PAYLOAD(tb[IFLA_ADDRESS]),
-						      ifi->ifi_type,
-						      b1, sizeof(b1)));
+                    ll_addr_n2a((unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]),
+                                RTA_PAYLOAD(tb[IFLA_ADDRESS]),
+                                ifi->ifi_type,
+                                b1, sizeof(b1));
+                    fprintf(fp, "%s", b1);
 		}
 		if (tb[IFLA_BROADCAST]) {
 			if (ifi->ifi_flags&IFF_POINTOPOINT)
 				fprintf(fp, " peer ");
 			else
 				fprintf(fp, " brd ");
-			fprintf(fp, "%s", ll_addr_n2a(RTA_DATA(tb[IFLA_BROADCAST]),
-						      RTA_PAYLOAD(tb[IFLA_BROADCAST]),
-						      ifi->ifi_type,
-						      b1, sizeof(b1)));
+			ll_addr_n2a((unsigned char *)RTA_DATA(tb[IFLA_BROADCAST]),
+                                    RTA_PAYLOAD(tb[IFLA_BROADCAST]),
+                                    ifi->ifi_type,
+                                    b1, sizeof(b1));
+			fprintf(fp, "%s", b1);
 		}
 	}
 	if (tb[IFLA_STATS]) {
