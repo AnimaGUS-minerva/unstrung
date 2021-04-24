@@ -279,6 +279,7 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
     dag_network::globalStats[PS_NEIGHBOUR_JOIN_QUERY_STARTED]++;
     /* better send a new query! */
 
+#ifdef GRASP_CLIENT
     if(iface->join_query_client) {
         this->queryId = iface->join_query_client->start_query_for_aro(in_aro_opt->nd_aro_eui64);
     } else {
@@ -288,6 +289,7 @@ void rpl_node::reply_mcast_neighbour_join(network_interface *iface,
                    iface->get_if_name());
         reply_neighbour_advert(iface, ND_NS_JOIN_DECLINED);
     }
+#endif
 
     /* reply to query will send return value */
     return;

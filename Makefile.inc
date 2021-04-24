@@ -5,6 +5,8 @@
 default:: programs
 
 ARCH?=$(shell uname -m)
+GRASP_CLIENT?=false
+USE_MBEDTLS?=false
 
 # stuff to set... use -m32 by default because of UML testing, should remove this to elsewhere.
 INC=${UNSTRUNG_SRCDIR}/include
@@ -32,8 +34,11 @@ CXXFLAGS+=-DEMBEDDED
 endif
 
 # no grasp for now.
-#CFLAGS+= -DGRASP_CLIENT
-#CXXFLAGS+= -DGRASP_CLIENT
+ifeq ($(GRASP_CLIENT),true)
+CFLAGS+= -DGRASP_CLIENT
+CXXFLAGS+= -DGRASP_CLIENT
+LIBGRASP=${UNSTRUNG_OBJDIR}/lib/libgrasp/libgrasp.a
+endif
 
 ifeq ($(USE_MBEDTLS),true)
 CFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS

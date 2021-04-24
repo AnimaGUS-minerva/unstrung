@@ -21,7 +21,10 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 srcdir?=$(shell pwd)
 
-SUBDIRS=libndmgmt libosw libnetlink libgrasp
+SUBDIRS=libndmgmt libosw libnetlink
+ifeq ($(GRASP_CLIENT),true)
+SUBDIRS+=libgrasp
+endif
 ifeq ($(EMBEDDED),)
 SUBDIRS+=libfakeiface
 endif

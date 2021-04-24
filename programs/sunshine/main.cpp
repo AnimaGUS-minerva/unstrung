@@ -297,12 +297,14 @@ int main(int argc, char *argv[])
                 iface->set_debug(deb);
                 iface->setup();
 
+#ifdef GRASP_CLIENT
                 if(grasp_registrar) {
                     grasp_client *gc = new grasp_client(deb, iface);
                     if(gc->open_connection(grasp_registrar, grasp_portnum) != true) {
                         exit(21);
                     }
                 }
+#endif
             }
 
             /* build a DIS, send it. */
