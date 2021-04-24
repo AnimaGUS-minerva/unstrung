@@ -185,10 +185,12 @@ int main(int argc, char *argv[])
         delete dn;
 
         dn = new dag_network(1, d, deb);
+	dn->set_active();
         printf("dag-05 t3\n");        t3(iface);
         delete dn;
 
         dn = new dag_network(1, d, deb);
+	dn->set_active();
         printf("dag-05 t4\n");        t4(iface);
         delete dn;
 
