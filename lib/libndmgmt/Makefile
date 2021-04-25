@@ -33,7 +33,7 @@ SRCS=counter_names.c
 
 #enable to get lots more debugging about semantics.
 #CFLAGS=-DPARSER_TYPE_DEBUG
-CXXFLAGS+=-g -O0
+CXXFLAGS+=-g -O0 -std=c++17
 
 OBJS=${SRCS:.c=.o} ${CXXSRCS:.cpp=.o}
 
