@@ -62,11 +62,15 @@ SUBDIRS+=35-recvdis
 SUBDIRS+=36-peckusage
 SUBDIRS+=37-fmteui
 SUBDIRS+=38-builddaoack
-nSUBDIRS+=39-daoJ
+SUBDIRS+=39-daoJ
 SUBDIRS+=40-build-ns
+ifeq ($(GRASP_CLIENT),true)
 SUBDIRS+=41-acceptns
-SUBDIRS+=42-build-na
 SUBDIRS+=43-sendgrasp
+endif
+SUBDIRS+=42-build-na
+SUBDIRS+=44-dio-ungrounded
+SUBDIRS+=45-extract-eui
 
 checkstop::
 	@for d in $(SUBDIRS) ; \
