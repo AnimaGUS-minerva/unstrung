@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
         hwaddr1[0]=0x00;        hwaddr1[1]=0x11;
         hwaddr1[2]=0x22;        hwaddr1[3]=0x33;
         hwaddr1[4]=0x44;        hwaddr1[5]=0x45;
-        pcap_network_interface::fake_linkinfo("acp0", 10, &nii, hwaddr1, ARPHRD_ETHER, IFF_BROADCAST);
+        pcap_network_interface::fake_linkinfo("acp0", 10, &nii, hwaddr1, ARPHRD_ETHER, IFF_UP|IFF_BROADCAST);
 
         ip_address a1;
         ttoaddr("fd01:0203:0405:0607::1111", 0, AF_INET6, &a1);
