@@ -22,10 +22,12 @@ OBJS=peck.o
 LIBS=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE} ${LIBGRASP}
 LIBS+=${LIBCBOR}
 
+include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
+
 ifeq ($(USE_MBEDTLS),true)
+LIBS+=${LIBIDEVID}
 LIBS+=${MBEDTLSLIB}/libmbedx509.a
 LIBS+=${MBEDTLSLIB}/libmbedcrypto.a
 LIBS+=${MBEDTLSLIB}/libmbedtls.a
 endif
 
-include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
