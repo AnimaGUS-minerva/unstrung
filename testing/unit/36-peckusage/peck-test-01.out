@@ -20,48 +20,41 @@ link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
   . Loading the CA root certificate ... ok (0 skipped)
 
-  . Loading the certificate at: mic.pem ...processing tag: a0&80=80 tag_len: 32
- ok
+  . Loading the certificate at: mic.pem ... ok
   . Peer certificate information    ...
-printing subject alt name(SAN)
-oid: 9 9
       cert. version     : 3
-      serial number     : 01
-      issuer name       : DC=ca, DC=sandelman, CN=Unstrung Highway CA
-      subject name      : DC=ca, DC=sandelman, CN=00-D0-E5-F2-00-01
-      issued  on        : 2016-05-09 18:47:45
+      serial number     : 36:0F:1B:F4
+      issuer name       : CN=highway-test.example.com CA
+      subject name      : serialNumber=00-D0-E5-F2-00-02
+      issued  on        : 2021-04-25 23:19:23
       expires on        : 2999-12-31 00:00:00
-      signed using      : ECDSA with SHA256
+      signed using      : RSA with SHA-256
       EC key size       : 256 bits
       basic constraints : CA=false
-      subject alt name  : 00-D0-E5-F2-00-01
 
   . Verifying X.509 certificate...
 Verify requested for (Depth 1):
 cert. version     : 3
-serial number     : 01
-issuer name       : DC=ca, DC=sandelman, CN=Unstrung Highway CA
-subject name      : DC=ca, DC=sandelman, CN=Unstrung Highway CA
-issued  on        : 2016-05-07 02:36:55
-expires on        : 2018-05-07 02:36:55
-signed using      : ECDSA with SHA256
-EC key size       : 384 bits
+serial number     : 3C:91:29:B2
+issuer name       : CN=highway-test.example.com CA
+subject name      : CN=highway-test.example.com CA
+issued  on        : 2021-04-05 19:36:57
+expires on        : 2021-05-06 05:36:57
+signed using      : RSA with SHA-256
+RSA key size      : 3072 bits
 basic constraints : CA=true
 key usage         : Key Cert Sign, CRL Sign
   This certificate has no flags
 
 Verify requested for (Depth 0):
-printing subject alt name(SAN)
-oid: 9 9
 cert. version     : 3
-serial number     : 01
-issuer name       : DC=ca, DC=sandelman, CN=Unstrung Highway CA
-subject name      : DC=ca, DC=sandelman, CN=00-D0-E5-F2-00-01
-issued  on        : 2016-05-09 18:47:45
+serial number     : 36:0F:1B:F4
+issuer name       : CN=highway-test.example.com CA
+subject name      : serialNumber=00-D0-E5-F2-00-02
+issued  on        : 2021-04-25 23:19:23
 expires on        : 2999-12-31 00:00:00
-signed using      : ECDSA with SHA256
+signed using      : RSA with SHA-256
 EC key size       : 256 bits
 basic constraints : CA=false
-subject alt name  : 00-D0-E5-F2-00-01
   This certificate has no flags
  ok
