@@ -25,7 +25,7 @@ ONEFILE=eui64.cpp
 CFLAGS+=${WERROR}
 
 SRCS =
-CXXSRCS= eui64.cpp
+CXXSRCS= eui64.cpp rfc8994acp.cpp
 
 CXXFLAGS+=-g ${CROSSFLAGS}
 CFLAGS+=-g ${CROSSFLAGS}
