@@ -44,7 +44,8 @@ public:
     int extract_eui64_from_cert(unsigned char *eui64,
                                 char *eui64buf, unsigned int eui64buf_len);
 
-    static bool parse_rfc8994string(const char *prefix, ip_subnet *sn);
+    static bool parse_rfc8994string(const char *prefix, size_t prefix_len, ip_subnet *sn);
+    bool parse_rfc8994cert(ip_subnet *sn);
 
 protected:
     bool                    eui64set;

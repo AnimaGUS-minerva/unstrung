@@ -7,7 +7,7 @@ TESTNAME=extract-eui
 include ${UNSTRUNG_SRCDIR}/Makefile.inc
 include ${srcdir}../Makefile.testing
 
-EXTRALIBS=${LIBIDEVID}
+EXTRALIBS=${LIBIDEVID} ${MBEDTLSLIB}/libmbedx509.a
 
 ${TESTNAME}: ${TESTNAME}.cpp ${INC}/iface.h ${LIBS} ${LIBIDEVID}
 	${CXX} ${CXXFLAGS} -o ${TESTNAME} ${TESTNAME}.cpp ${LDFLAGS}

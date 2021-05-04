@@ -37,7 +37,7 @@ static void t1(void)
   ip_subnet sn;
   memset(&sn, 0, sizeof(sn));
 
-  bool success = device_identity::parse_rfc8994string(inputACP, &sn);
+  bool success = device_identity::parse_rfc8994string(inputACP, strlen(inputACP), &sn);
 
   assert(success);
   assert(sn.maskbits == 128);
@@ -59,6 +59,19 @@ static void t1(void)
   assert(sn.addr.u.v6.sin6_addr.s6_addr[15] == 0x00);
 }
 
+static void t1B(void)
+{
+  /*                              00112233445566778899AABBCCDDEEFF */
+  const char *inputACP = "rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com";
+  ip_subnet sn;
+  memset(&sn, 0, sizeof(sn));
+
+  bool success = device_identity::parse_rfc8994string(inputACP, strlen(inputACP), &sn);
+
+  assert(success);
+  assert(sn.maskbits == 128);
+}
+
 static void t2(void)
 {
   /*                              00112233445566778899AABBCCDDEEFF */
@@ -66,7 +79,7 @@ static void t2(void)
   ip_subnet sn;
   memset(&sn, 0, sizeof(sn));
 
-  bool success = device_identity::parse_rfc8994string(inputACP, &sn);
+  bool success = device_identity::parse_rfc8994string(inputACP, strlen(inputACP), &sn);
   assert(!success);
 }
 
@@ -77,8 +90,25 @@ static void t3(void)
   ip_subnet sn;
   memset(&sn, 0, sizeof(sn));
 
-  bool success = device_identity::parse_rfc8994string(inputACP, &sn);
+  bool success = device_identity::parse_rfc8994string(inputACP, strlen(inputACP), &sn);
   assert(!success);
+}
+
+static void t4(void)
+{
+  /*                              00112233445566778899AABBCCDDEEFF */
+  const char *inputCert= "f202.crt";
+
+  ip_subnet sn;
+  memset(&sn, 0, sizeof(sn));
+
+  device_identity di;
+
+  int loaded = di.load_identity_from_cert(NULL, inputCert);
+  assert(loaded == 0);
+
+  bool success = di.parse_rfc8994cert(&sn);
+  assert(success);
 }
 
 int main(int argc, char *argv[])
@@ -86,8 +116,10 @@ int main(int argc, char *argv[])
   deb = new rpl_debug(false, stdout);
 
   t1();
+  t1B();
   t2();
   t3();
+  t4();
   exit(0);
 }
 

@@ -3,6 +3,8 @@
 .\#*
 *.bak
 *.8.html
+*.o
+*.a
 core
 UMLPOOL
 umlsetup.sh

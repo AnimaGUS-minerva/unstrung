@@ -10,6 +10,7 @@ extern "C" {
 #include <stdlib.h>
 
 #include <netinet/ip6.h>
+#include "hexdump.c"
 }
 
 #include "mbedtls.h"
@@ -37,6 +38,7 @@ extern "C" {
   }
 }
 
+/* returns 0 on success */
 int device_identity::load_identity_from_cert( const char *ca_file, const char *certfile )
 {
     int ret = 0;
@@ -67,21 +69,23 @@ int device_identity::load_identity_from_cert( const char *ca_file, const char *c
        it to the verify function */
     mbedtls_pk_init( &pkey );
 
-    /*
-     * 1.1. Load the trusted CA
-     */
-    mbedtls_printf( "  . Loading the CA root certificate ..." );
-    fflush( stdout );
+    if(ca_file) {
+        /*
+         * 1.1. Load the trusted CA
+         */
+        mbedtls_printf( "  . Loading the CA root certificate ..." );
+        fflush( stdout );
 
-    ret = mbedtls_x509_crt_parse_file( &cacert, ca_file );
+        ret = mbedtls_x509_crt_parse_file( &cacert, ca_file );
 
-    if( ret < 0 )
-    {
-      fprintf(stderr, " failed\n  !  mbedtls_x509_crt_parse returned -0x%x\n\n", -ret );
-      return 1;
+        if( ret < 0 )
+            {
+                fprintf(stderr, " failed\n  !  mbedtls_x509_crt_parse returned -0x%x\n\n", -ret );
+                return 1;
+            }
+
+        mbedtls_printf( " ok (%d skipped)\n", ret );
     }
-
-    mbedtls_printf( " ok (%d skipped)\n", ret );
 
     /*
      * 1.1. Load the certificate(s)
@@ -123,26 +127,27 @@ int device_identity::load_identity_from_cert( const char *ca_file, const char *c
 
     ret = 0;
 
-    /*
-     * 1.3 Verify the certificate
-     */
-    printf( "  . Verifying X.509 certificate..." );
+    if(ca_file) {
+        /*
+         * 1.3 Verify the certificate
+         */
+        printf( "  . Verifying X.509 certificate..." );
 
-    if( ( ret = mbedtls_x509_crt_verify( cert, &cacert, NULL, NULL, &flags,
-                                         my_verify, NULL ) ) != 0 )
-      {
-        char vrfy_buf[512];
+        if( ( ret = mbedtls_x509_crt_verify( cert, &cacert, NULL, NULL, &flags,
+                                             my_verify, NULL ) ) != 0 )
+            {
+                char vrfy_buf[512];
 
-        printf( " failed\n" );
+                printf( " failed\n" );
 
-        mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "  ! ", flags );
+                mbedtls_x509_crt_verify_info( vrfy_buf, sizeof( vrfy_buf ), "  ! ", flags );
 
-        printf( "%s\n", vrfy_buf );
-        goto exit;
-      }
-    else
-      printf( " ok\n" );
-
+                printf( "%s\n", vrfy_buf );
+                goto exit;
+            }
+        else
+            printf( " ok\n" );
+    }
 
 exit:
     mbedtls_x509_crt_free( &cacert );
@@ -158,6 +163,27 @@ exit:
 
     this->cert = cert;
     return 0;
+}
+
+/* true/false about whether it could convert */
+bool device_identity::parse_rfc8994cert(ip_subnet *sn)
+{
+    /* now process the certificate to find the serialNumber from the
+     * subjectName
+     */
+    mbedtls_x509_name *subject = &cert->subject;
+
+    mbedtls_x509_name *sn_attr =
+        mbedtls_asn1_find_named_data( subject,
+                                      MBEDTLS_OID_PKCS9_EMAIL,
+                                      MBEDTLS_OID_SIZE(MBEDTLS_OID_PKCS9_EMAIL));
+
+    if(sn_attr == NULL) {
+        return false;
+    }
+
+
+    return parse_rfc8994string((const char *)sn_attr->val.p, sn_attr->val.len, sn);
 }
 
 int device_identity::extract_eui64_from_cert(unsigned char *eui64,
