@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
               BUILDNUMBER, today);
 
     /* process one argument, if it's --sleep then do that first */
-    c = getopt_long(argc, argv, "KDG:I:R:W:i:hp:?v", longopts, 0);
+    c = getopt_long(argc, argv, "KDG:I:R:W:i:hl:p:?v", longopts, 0);
     if(c == OPTION_SLEEP) {
         unsigned int doze=atoi(optarg);
         write_pid_file();
@@ -234,8 +234,18 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "could not load ldevid certificate from %s\n", optarg);
                 usage();
             }
+            if(!di.parse_rfc8994cert()) {
+                fprintf(stderr, "could not parse ldevid certificate from %s\n", optarg);
+                usage();
+            }
             check_dag(c, dag);
             dag->set_acp_identity(&di);
+            {
+                char sbuf[SUBNETTOT_BUF];
+                subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
+                deb->info("set up prefix from certificate %s with subnet %s",
+                          optarg, sbuf);
+            }
             break;
 
         case 'p':
