@@ -8,8 +8,6 @@ PROGRAM=senddao
 PROGRAMDIR=/sbin
 ONEFILE=senddao.cpp
 OBJS=senddao.o
-LIBS+=${LIBNDMGMT} ${LIBOSW} ${LIBNETLINK} ${LIBFAKEIFACE}
-LIBS+=${LIBGRASP} ${LIBCBOR} ${LIBMBEDTLS} ${LIBCRYPT}
 LDFLAGS+=${LIBPCAP}
 
 include ${UNSTRUNG_SRCDIR}/programs/Makefile.program

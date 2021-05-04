@@ -43,7 +43,9 @@ endif
 ifeq ($(USE_MBEDTLS),true)
 CFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
 CXXFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
-LIBCRYPT=${MBEDTLSLIB}/libmbedtls.a ${MBEDTLSLIB}/libmbedcrypto.a
+LIBCRYPT=${MBEDTLSLIB}/libmbedtls.a
+LIBCRYPT+=${MBEDTLSLIB}/libmbedcrypto.a
+LIBCRYPT+=${MBEDTLSLIB}/libmbedx509.a
 else
 # libboost has it already
 LIBCRYPT=
