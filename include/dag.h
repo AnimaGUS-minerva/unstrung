@@ -5,6 +5,7 @@
 #include "node.h"
 #include "prefix.h"
 #include "debug.h"
+#include "devid.h"
 extern "C" {
     /* for packet_stats enum */
 #include "counter_names.h"
@@ -18,6 +19,7 @@ typedef u_int16_t  instanceID_t;
 
 class rpl_dio;
 class rpl_event;
+class device_identity;
 
 class dag_network {
 public:
@@ -74,6 +76,14 @@ public:
         unsigned int               mMyRank;     /* my rank */
         unsigned int               mBestRank;   /* my best parent */
         bool dag_rank_infinite(void) { return (mBestRank >= RANK_INFINITE); };
+
+        /*
+         * set the acp_identity, which overrides what the /128 that
+         * is announced from self.
+         */
+        void set_acp_identity(device_identity *di) {
+            myDeviceIdentity = di;
+        }
 
         /* this manages and evaluates a list of interface wildcards,
          * and prefix (CIDR) patterns for addresses that will be added
@@ -286,6 +296,8 @@ private:
         char                       mIfWildcard[DAG_IFWILDCARD_MAX][DAG_IFWILDCARD_LEN];
         int                        mIfFilter_max;
         ip_subnet                  mIfFilter[DAG_IFWILDCARD_MAX];
+
+    device_identity *myDeviceIdentity;
 
     /* space to format various messages */
     int append_suboption(unsigned char *buff,

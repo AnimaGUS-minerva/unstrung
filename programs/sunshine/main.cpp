@@ -26,6 +26,7 @@
 #include "dag.h"
 #include "unstrung.h"
 #include "grasp.h"
+#include "devid.h"
 
 #define OPTION_SYSLOG 0x01
 #define OPTION_STDERR 0x02
@@ -42,6 +43,7 @@ static struct option const longopts[] =
     { "ignore-pio",0, NULL, 'P'},
     { "dao-if-filter",  1, NULL, 'A'},
     { "dao-addr-filter",1, NULL, 'a'},
+    { "ldevid",    1, NULL, 'l'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
     { "syslog",    0, NULL,  OPTION_SYSLOG},
@@ -70,6 +72,7 @@ void usage()
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
             "\t [--registrar hostname:port]     set address of GRASP responder on registrar\n"
+            "\t [--ldevid filename]             load certificate with ACP Node Name to configure\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
             "\t [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from\n"
             "\t [--dao-addr-filter]   List of prefixes/len to take DAO addresses from\n"
@@ -136,9 +139,11 @@ int main(int argc, char *argv[])
     bool verbose = false;
     bool bedaemon = false;
     bool grounded = false;
+    int loaded = 0;
     instanceID_t instanceID = 0;
     unsigned int grasp_portnum = 3000;
     char *grasp_registrar = NULL;
+    device_identity di;
 
     progname = argv[0];
     bool devices_scanned = false;
@@ -221,6 +226,16 @@ int main(int argc, char *argv[])
                 }
                 grasp_registrar = strdup(optarg);
             }
+            break;
+
+        case 'l':
+            loaded = di.load_identity_from_cert(NULL, optarg);
+            if(loaded != 0) {
+                fprintf(stderr, "could not load ldevid certificate from %s\n", optarg);
+                usage();
+            }
+            check_dag(c, dag);
+            dag->set_acp_identity(&di);
             break;
 
         case 'p':

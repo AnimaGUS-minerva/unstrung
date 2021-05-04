@@ -15,6 +15,8 @@ extern "C" {
 
 #include "mbedtls.h"
 #include "devid.h"
+#include "dag.h"
+#include "iface.h"
 
 extern "C" {
   static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags )

@@ -20,7 +20,8 @@ extern "C" {
 
 #define HWADDR_MAX 16
 #include "unstrung.h"
-#include "iface.h"
+
+class network_interface;
 
 class device_identity {
 public:
