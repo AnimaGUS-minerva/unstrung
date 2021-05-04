@@ -107,7 +107,7 @@ static void t4(void)
   int loaded = di.load_identity_from_cert(NULL, inputCert);
   assert(loaded == 0);
 
-  bool success = di.parse_rfc8994cert(&sn);
+  bool success = di.parse_rfc8994cert();
   assert(success);
 }
 

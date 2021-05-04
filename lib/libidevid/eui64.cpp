@@ -168,7 +168,7 @@ exit:
 }
 
 /* true/false about whether it could convert */
-bool device_identity::parse_rfc8994cert(ip_subnet *sn)
+bool device_identity::parse_rfc8994cert(void)
 {
     /* now process the certificate to find the serialNumber from the
      * subjectName
@@ -185,7 +185,8 @@ bool device_identity::parse_rfc8994cert(ip_subnet *sn)
     }
 
 
-    return parse_rfc8994string((const char *)sn_attr->val.p, sn_attr->val.len, sn);
+    return parse_rfc8994string((const char *)sn_attr->val.p, sn_attr->val.len,
+                               &this->sn);
 }
 
 int device_identity::extract_eui64_from_cert(unsigned char *eui64,

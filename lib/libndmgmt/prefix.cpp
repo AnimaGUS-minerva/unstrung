@@ -83,10 +83,7 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         struct in6_addr link = iface->link_local();
 
         if(dn->myDeviceIdentity) {
-            ip_subnet sn;
-            dn->myDeviceIdentity->parse_rfc8994cert(&sn);
-
-            link = sn.addr.u.v6.sin6_addr;
+            link = dn->myDeviceIdentity->sn.addr.u.v6.sin6_addr;
         } else {
             /* set upper 64-bits to prefix announced */
             /* was using memcpy, but taking address of rvalue no longer allowed */
