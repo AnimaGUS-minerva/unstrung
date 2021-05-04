@@ -284,6 +284,8 @@ public:
 	ip_subnet               mPrefix;
 	char                    mPrefixName[SUBNETTOT_BUF];
 
+    device_identity *myDeviceIdentity;
+
 private:
         dag_network(void);
 	void init_dag(void);
@@ -296,8 +298,6 @@ private:
         char                       mIfWildcard[DAG_IFWILDCARD_MAX][DAG_IFWILDCARD_LEN];
         int                        mIfFilter_max;
         ip_subnet                  mIfFilter[DAG_IFWILDCARD_MAX];
-
-    device_identity *myDeviceIdentity;
 
     /* space to format various messages */
     int append_suboption(unsigned char *buff,
