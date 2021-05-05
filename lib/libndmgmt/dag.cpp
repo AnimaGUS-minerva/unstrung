@@ -467,6 +467,31 @@ prefix_node *dag_network::add_address(const ip_subnet prefix)
     return &this->dag_announced[prefix];
 }
 
+void dag_network::cfg_new_node(prefix_node *me,
+                               network_interface *iface,
+                               ip_subnet prefix)
+{
+    if(!me->is_installed()) {
+        dao_needed = true;
+        me->set_prefix(prefix);
+        me->set_debug(this->debug);
+
+        if(iface != NULL) {
+            me->configureip(iface, this);
+        }
+
+        if(dag_me == NULL) {
+            dag_me = me;
+        }
+    }
+}
+
+void dag_network::set_acp_identity(device_identity *di) {
+    myDeviceIdentity = di;
+    prefix_node *me = add_address(di->sn);
+    cfg_new_node(me, NULL, di->sn);
+}
+
 void dag_network::add_prefix(rpl_node advertising_peer,
                              network_interface *iface,
                              ip_subnet prefix)
@@ -487,18 +512,8 @@ void dag_network::add_prefix(rpl_node advertising_peer,
     /* next, see if we should configure an address in this prefix */
     if(!mIgnorePio) {
         prefix_node *preMe = add_address(prefix);
-
-        if(!preMe->is_installed()) {
-            dao_needed = true;
-            preMe->set_prefix(prefix);
-            preMe->set_debug(this->debug);
-            preMe->set_announcer(&advertising_peer);
-            preMe->configureip(iface, this);
-
-            if(dag_me == NULL) {
-                dag_me = preMe;
-            }
-        }
+        preMe->set_announcer(&advertising_peer);
+        cfg_new_node(preMe, iface, prefix);
     }
 }
 

@@ -81,9 +81,10 @@ public:
          * set the acp_identity, which overrides what the /128 that
          * is announced from self.
          */
-        void set_acp_identity(device_identity *di) {
-            myDeviceIdentity = di;
-        }
+        void set_acp_identity(device_identity *di);
+        void cfg_new_node(prefix_node *me,
+                          network_interface *iface,
+                          ip_subnet prefix);
 
         /* this manages and evaluates a list of interface wildcards,
          * and prefix (CIDR) patterns for addresses that will be added

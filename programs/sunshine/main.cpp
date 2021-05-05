@@ -243,8 +243,13 @@ int main(int argc, char *argv[])
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
-                deb->info("set up prefix from certificate %s with subnet %s",
+                deb->info("set up prefix from certificate %s with subnet %s\n",
                           optarg, sbuf);
+            }
+            if (!iface) {
+            	dag->add_all_interfaces();
+            } else {
+            	dag->addselfprefix(iface);
             }
             break;
 
@@ -263,10 +268,9 @@ int main(int argc, char *argv[])
             dag->set_prefix(prefix);
             dag->set_grounded(true);
             dag->set_dagrank(1);
-            if (!iface){
+            if (!iface) {
             	dag->add_all_interfaces();
-            }else
-            {
+            } else {
             	dag->addselfprefix(iface);
             }
             grounded = true;
