@@ -1262,7 +1262,7 @@ void network_interface::send_dio_all(dag_network *dag)
      * probably build the same DIO message for all interfaces.
      */
     while(iface != NULL) {
-	if(iface->is_active()) {
+	if(iface->is_active() && !iface->loopbackP()) {
 	    //iface->debug->log("iface %s sending dio about dag: %s\n",
             //                   iface->if_name, dag->get_dagName());
 	    iface->send_dio(dag);
