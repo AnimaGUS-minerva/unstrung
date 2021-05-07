@@ -184,11 +184,11 @@ void network_interface::setup_all_if(){
 
 bool network_interface::setup()
 {
-    debug->verbose("Starting setup for %s\n", this->if_name);
     generate_eui64();
 
     if(alive) return true;
 
+    debug->verbose("Doing multicast setup for %s\n", this->if_name);
     alive = true;
 
     add_to_list();
@@ -1263,8 +1263,8 @@ void network_interface::send_dio_all(dag_network *dag)
      */
     while(iface != NULL) {
 	if(iface->is_active()) {
-	    iface->debug->log("iface %s sending dio about dag: %s\n",
-                              iface->if_name, dag->get_dagName());
+	    //iface->debug->log("iface %s sending dio about dag: %s\n",
+            //                   iface->if_name, dag->get_dagName());
 	    iface->send_dio(dag);
 	}
 	iface = iface->next;
