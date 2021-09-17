@@ -1,8 +1,7 @@
 This test case is similar to 24-daoreply, in that a DIO is received
 from the parent, and then a DAO, and then a DAOACK.
 
-In this case, the initial DIO has been marked as grounded, which
-should cause sunshine to install a default route in the direction
-of the parent.
+In this case, the initial DIO has not been marked as grounded.
+This should cause sunshine to install a route only for the prefix in the PIO(s).
 
 

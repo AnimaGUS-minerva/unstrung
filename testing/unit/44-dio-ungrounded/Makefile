@@ -7,8 +7,7 @@ include ${srcdir}../Makefile.testing
 
 TESTNAME=44-dio-ungrounded
 OUTPUT=daoreply
-OUTPUT1=node-E-dio
-OUTPUT2=node-E-dio
+OUTPUT1=44-node-E-dio
 INCLUDES=../24-daoreply/dioA.cpp ../24-daoreply/daoackA.cpp
 INCLUDES+=${INC}/iface.h ${INC}/dag.h
 
