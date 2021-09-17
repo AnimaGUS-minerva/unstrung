@@ -71,6 +71,7 @@ endif
 SUBDIRS+=42-build-na
 SUBDIRS+=44-dio-ungrounded
 SUBDIRS+=45-extract-eui
+SUBDIRS+=46-method-varargs
 
 checkstop::
 	@for d in $(SUBDIRS) ; \
