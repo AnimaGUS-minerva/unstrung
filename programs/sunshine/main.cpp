@@ -91,7 +91,7 @@ bool check_dag(unsigned char opt, dag_network *dag)
     return true;
 }
 
-const char *pidfilename="/run/sunshine.pid";
+const char *pidfilename="/run/acp/sunshine.pid";
 void killanydaemon(void)
 {
     int pid;
