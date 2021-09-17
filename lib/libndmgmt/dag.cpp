@@ -551,9 +551,7 @@ void dag_network::addselfprefix(network_interface *iface)
 static int addselfprefix_each(network_interface *iface, void *arg)
 {
     dag_network *that = (dag_network *)arg;
-    if(!iface->loopbackP()) {
-        that->addselfprefix(iface);
-    }
+    that->addselfprefix(iface);
     return 1;
 }
 
