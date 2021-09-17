@@ -1,0 +1,10 @@
+This test case is similar to 24-daoreply, in that a DIO is received
+from the parent, and then a DAO, and then a DAOACK.
+
+This node has it's address set via a certificate, and so it does not
+configure an address based upon the DIO's PIO.  It does however:
+
+1) include the configured address in it's DAO.
+2) configure a route via parent for the prefix in the PIO.
+
+
