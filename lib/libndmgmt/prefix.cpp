@@ -83,8 +83,10 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         struct in6_addr link = iface->link_local();
 
         /* set upper 64-bits to prefix announced */
-        memcpy(&link.s6_addr[0],
-               &dn->get_prefix().addr.u.v6.sin6_addr.s6_addr[0], 8);
+        /* was using memcpy, but taking address of rvalue no longer allowed */
+        for(int i=0; i<8; i++) {
+            link.s6_addr[i] = dn->get_prefix().addr.u.v6.sin6_addr.s6_addr[i];
+        }
 
         /* when configuring an IP address on the lo, it should be /128 */
         this->set_prefix(link, 128);
