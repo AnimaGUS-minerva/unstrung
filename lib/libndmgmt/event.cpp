@@ -197,7 +197,7 @@ void rpl_event_queue::printevents(FILE *out, const char *prefix) {
     int i = 0;
     rpl_event_queue_t::iterator one = queue.begin();
 
-    fprintf(out, "event list (%u events)\n", queue.size());
+    fprintf(out, "event list (%lu events)\n", (unsigned long)queue.size());
     while(one != queue.end()) {
 	fprintf(out, "%s%d: ", prefix, i);
 	(*one)->printevent(out);
