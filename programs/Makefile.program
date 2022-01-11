@@ -27,7 +27,7 @@ CFLAGS+= -Wstrict-prototypes
 #CFLAGS+= -Wwrite-strings
 CFLAGS+= -Wbad-function-cast
 
-LIBS?=${PROGLIBS} ${OSWLOGLIB} ${OPENSWANLIB} ${CRYPTOLIBS} ${CBOR_LIB}
+LIBS?=${PROGLIBS} ${OSWLOGLIB} ${OPENSWANLIB} ${LIBCRYPT} ${CBOR_LIB}
 
 CFLAGS+= ${WERROR}
 

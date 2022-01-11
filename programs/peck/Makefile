@@ -13,6 +13,7 @@
 
 UNSTRUNG_SRCDIR?=$(shell cd ../..; pwd)
 srcdir?=${UNSTRUNG_SRCDIR}/programs/peck/
+include ${UNSTRUNG_SRCDIR}/Makefile.inc
 
 PROGRAM=peck
 PROGRAMDIR=/sbin

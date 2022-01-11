@@ -36,7 +36,7 @@ CXXFLAGS+= -DGRASP_CLIENT
 
 ifeq ($(USE_MBEDTLS),true)
 CFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
-CXXFLAGS+= ${MBEDTLSH}
+CXXFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
 LIBCRYPT=${MBEDTLSLIB}/libmbedtls.a ${MBEDTLSLIB}/libmbedcrypto.a
 else
 # libboost has it already
