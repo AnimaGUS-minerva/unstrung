@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
         dag_network *dag = dioA_setup(deb);
 
         dag->set_acp_identity(&di);
+        dag->set_ignore_pio(true);
         dag->add_all_interfaces();
 
         pcap_network_interface *iface = dioA_iface_setup(infile1, dag, deb,outpcap);
