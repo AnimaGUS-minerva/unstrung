@@ -3,6 +3,6 @@ from a node of lower rank, and that we take it as our parent,
 and then emit both a DIO on all interfaces, and more importantly,
 a DAO telling our parent who we are.
 We should then expect to get a DAOACK from the parent.
-
+The DIO is grounded.
 
 
