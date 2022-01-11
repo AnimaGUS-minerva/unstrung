@@ -505,6 +505,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
 int pcap_network_interface::nisystem(const char *cmd)
 {
         debug->log("    would invoke cmd: %s\n", cmd);
+        return 0;
 }
 
 int pcap_network_interface::process_infile(const char *ifname,

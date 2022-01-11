@@ -101,6 +101,7 @@ bool grasp_client::open_connection(const char *serverip,
     freeaddrinfo(res);           /* No longer needed */
     this->infd  = sfd;
     this->outfd = sfd;
+    return true;
 }
 
 

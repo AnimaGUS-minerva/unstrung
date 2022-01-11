@@ -47,6 +47,7 @@ bool grasp_client::open_fake_connection(const char *outfile, const char *infile)
         deb->error("can not open %s for output: %s", outfile, strerror(errno));
         return false;
     }
+    return true;
 }
 
 static const unsigned char entropy_source_pr[96] =
