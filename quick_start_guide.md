@@ -11,7 +11,8 @@ In order to build Unstrung you have to have these libraries installed on your de
 
 If you use any debian based distro(ex. raspbian) you can install them just by typing
 ```
-sudo apt-get install libboost-all-dev libnl-3-dev libpcap-dev libusb-dev libusb-1.0-0-dev
+sudo apt-get install libboost-all-dev libnl-3-dev libpcap-dev \
+                     libusb-dev libusb-1.0-0-dev libcmocka-dev cmake
 ```
 
 The script install-apt-deps.sh can be used to get the most up-to-date set of packages.
