@@ -73,7 +73,6 @@ LIBOSW=${UNSTRUNG_OBJDIR}/lib/libosw/libosw.a
 LIBNETLINK=${UNSTRUNG_OBJDIR}/lib/libnetlink/libnetlinkstrung.a
 LIBIDEVID=${UNSTRUNG_OBJDIR}/lib/libidevid/libidevid.a
 LIBFAKEIFACE=${UNSTRUNG_OBJDIR}/lib/libfakeiface/libfakeiface.a
-LIBGRASP=${UNSTRUNG_OBJDIR}/lib/libgrasp/libgrasp.a
 LIBPCAP?=$(shell pcap-config --libs --static)
 LIBPCAP_HOST?=-lpcap
 LIBCBOR=${CBOR_LIB}
