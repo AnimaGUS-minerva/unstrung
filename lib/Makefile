@@ -22,9 +22,7 @@ include ${UNSTRUNG_SRCDIR}/Makefile.inc
 srcdir?=$(shell pwd)
 
 SUBDIRS=libndmgmt libosw libnetlink
-ifeq ($(USE_MBEDTLS),true)
 SUBDIRS+=libidevid
-endif
 ifeq ($(GRASP_CLIENT),true)
 SUBDIRS+=libgrasp
 endif

@@ -4,7 +4,7 @@
 
 default:: programs
 
-ARCH?=$(shell uname -m)
+ARCH=$(shell uname -m)
 GRASP_CLIENT?=false
 USE_MBEDTLS?=false
 
