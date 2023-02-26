@@ -229,6 +229,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'l':
+#ifdef HAVE_MBEDTLS
             loaded = di.load_identity_from_cert(NULL, optarg);
             if(loaded != 0) {
                 fprintf(stderr, "could not load ldevid certificate from %s\n", optarg);
@@ -251,6 +252,10 @@ int main(int argc, char *argv[])
             } else {
             	dag->addselfprefix(iface);
             }
+#else
+            fprintf(stderr, "sunshine not built with MBEDTLS, can not parse identity from ldevid certificate\n");
+            usage();
+#endif /*  HAVE_MBEDTLS */
             break;
 
         case 'p':

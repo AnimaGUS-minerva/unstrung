@@ -25,7 +25,11 @@ ONEFILE=eui64.cpp
 CFLAGS+=${WERROR}
 
 SRCS =
-CXXSRCS= eui64.cpp rfc8994acp.cpp
+
+CXXSRCS= rfc8994acp.cpp
+ifeq ($(USE_MBEDTLS),true)
+CXXSRCS= eui64.cpp
+endif
 
 CXXFLAGS+=-g ${CROSSFLAGS}
 CFLAGS+=-g ${CROSSFLAGS}

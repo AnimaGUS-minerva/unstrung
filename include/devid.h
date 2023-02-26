@@ -14,8 +14,9 @@ extern "C" {
 #include <linux/if.h>             /* for IFNAMSIZ */
 #include "oswlibs.h"
 
+#ifdef HAVE_MBEDTLS
 #include "mbedtls.h"
-
+#endif
 }
 
 #define HWADDR_MAX 16
@@ -33,6 +34,7 @@ public:
                                unsigned char *buff,
                                unsigned int buff_len);
 
+#ifdef HAVE_MBEDTLS
     /**
      * @brief load a device identity from a certificate
      * This function initializes a device_identity structure from attributes found
@@ -44,9 +46,10 @@ public:
     int load_identity_from_cert(const char *ca_file, const char *certfile);
     int extract_eui64_from_cert(unsigned char *eui64,
                                 char *eui64buf, unsigned int eui64buf_len);
+    bool parse_rfc8994cert(void);
+#endif
 
     static bool parse_rfc8994string(const char *prefix, size_t prefix_len, ip_subnet *sn);
-    bool parse_rfc8994cert(void);
     ip_subnet               sn;
 
 protected:
@@ -55,7 +58,9 @@ protected:
     unsigned char           eui64[8];
 
 private:
+#ifdef HAVE_MBEDTLS
     mbedtls_x509_crt *cert;
+#endif
 };
 
 #endif /* _UNSTRUNG_DEVID_H_ */

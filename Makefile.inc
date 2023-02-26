@@ -47,7 +47,7 @@ LIBCRYPT=${MBEDTLSLIB}/libmbedtls.a
 LIBCRYPT+=${MBEDTLSLIB}/libmbedcrypto.a
 LIBCRYPT+=${MBEDTLSLIB}/libmbedx509.a
 else
-# libboost has it already
+# no mbedtls
 LIBCRYPT=
 endif
 

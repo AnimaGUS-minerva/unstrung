@@ -16,7 +16,6 @@ extern "C" {
 #include <netinet/ip6.h>
 }
 
-#include "mbedtls.h"
 #include "devid.h"
 
 bool device_identity::parse_rfc8994string( const char *prefix,
