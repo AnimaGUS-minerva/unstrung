@@ -54,9 +54,11 @@ bool device_identity::parse_rfc8994string( const char *prefix,
     for(int i=0; i < 16; i++) {
         sn->addr.u.v6.sin6_addr.s6_addr[i] = 0;
         if(plus[0] != '\0' && plus[1] != '\0') {
-            if(sscanf(plus, "%02x", &sn->addr.u.v6.sin6_addr.s6_addr[i]) != 1) {
+            unsigned int onebyte;
+            if(sscanf(plus, "%02x", &onebyte) != 1) {
                 return false;
             }
+            sn->addr.u.v6.sin6_addr.s6_addr[i] = onebyte;
             plus += 2;
         }
     }
