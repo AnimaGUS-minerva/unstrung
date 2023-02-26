@@ -13,45 +13,15 @@ dag.o: dag.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/dio.h \
  ../../include/rplmsg.h \
  ../../include/dao.h
-dao.o: dao.cpp ../../include/pathnames.h \
- ../../include/oswlibs.h \
- ../../include/rpl.h \
- ../../include/iface.h \
- ../../include/oswlibs.h \
- ../../include/rpl.h \
- ../../include/unstrung.h \
- ../../include/prefix.h \
- ../../include/debug.h \
- ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
- ../../include/dag.h \
- ../../include/node.h \
- ../../include/counter_names.h \
- ../../include/dag.h \
- ../../include/dao.h \
- ../../include/rplmsg.h
 daoack.o: daoack.cpp ../../include/pathnames.h \
  ../../include/oswlibs.h \
  ../../include/rpl.h \
@@ -62,18 +32,30 @@ daoack.o: daoack.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/dag.h
+dao.o: dao.cpp ../../include/pathnames.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/iface.h \
+ ../../include/oswlibs.h \
+ ../../include/rpl.h \
+ ../../include/unstrung.h \
+ ../../include/prefix.h \
+ ../../include/debug.h \
+ ../../include/event.h \
+ ../../include/dag.h \
+ ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
+ ../../include/counter_names.h \
+ ../../include/dag.h \
+ ../../include/dao.h \
+ ../../include/rplmsg.h
 debug.o: debug.cpp ../../include/debug.h
 dio.o: dio.cpp ../../include/pathnames.h \
  ../../include/oswlibs.h \
@@ -85,16 +67,10 @@ dio.o: dio.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/dio.h \
@@ -109,16 +85,10 @@ dis.o: dis.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/dis.h \
@@ -132,16 +102,10 @@ event.o: event.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/event.h
 iface.o: iface.cpp ../../include/pathnames.h \
@@ -154,20 +118,13 @@ iface.o: iface.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/dag.h
-ifacefuncs.o: ifacefuncs.cpp \
- ../../include/rpl.h \
+ifacefuncs.o: ifacefuncs.cpp ../../include/rpl.h \
  ../../include/hexdump.c \
  ../../include/iface.h \
  ../../include/pathnames.h \
@@ -177,16 +134,10 @@ ifacefuncs.o: ifacefuncs.cpp \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h
 neighbouradvert.o: neighbouradvert.cpp \
  ../../include/pathnames.h \
@@ -200,19 +151,12 @@ neighbouradvert.o: neighbouradvert.cpp \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
- ../../include/counter_names.h \
+ ../../include/grasp.h \
  ../../include/devid.h \
- ../../include/iface.h
+ ../../include/counter_names.h \
+ ../../include/devid.h
 neighboursolicit.o: neighboursolicit.cpp \
  ../../include/pathnames.h \
  ../../include/oswlibs.h \
@@ -225,21 +169,13 @@ neighboursolicit.o: neighboursolicit.cpp \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
- ../../include/counter_names.h \
+ ../../include/grasp.h \
  ../../include/devid.h \
- ../../include/iface.h
-netlink.o: netlink.cpp \
- ../../include/pathnames.h \
+ ../../include/counter_names.h \
+ ../../include/devid.h
+netlink.o: netlink.cpp ../../include/pathnames.h \
  ../../include/oswlibs.h \
  ../../include/netlink/rt_names.h \
  ../../include/netlink/utils.h \
@@ -254,39 +190,28 @@ netlink.o: netlink.cpp \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/prefix.h
 node.o: node.cpp ../../include/node.h \
  ../../include/pathnames.h \
  ../../include/oswlibs.h \
  ../../include/debug.h \
+ ../../include/grasp.h \
  ../../include/iface.h \
  ../../include/rpl.h \
  ../../include/unstrung.h \
  ../../include/prefix.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
- ../../include/dag.h
+ ../../include/dag.h \
+ ../../include/grasp.h
 peers.o: peers.cpp
 prefix.o: prefix.cpp ../../include/oswlibs.h \
  ../../include/dag.h \
@@ -295,21 +220,15 @@ prefix.o: prefix.cpp ../../include/oswlibs.h \
  ../../include/pathnames.h \
  ../../include/oswlibs.h \
  ../../include/debug.h \
+ ../../include/grasp.h \
  ../../include/prefix.h \
+ ../../include/devid.h \
+ ../../include/unstrung.h \
  ../../include/counter_names.h \
  ../../include/node.h \
  ../../include/prefix.h \
  ../../include/iface.h \
- ../../include/unstrung.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h
 rplmsg.o: rplmsg.cpp ../../include/pathnames.h \
  ../../include/oswlibs.h \
@@ -321,16 +240,10 @@ rplmsg.o: rplmsg.cpp ../../include/pathnames.h \
  ../../include/prefix.h \
  ../../include/debug.h \
  ../../include/event.h \
- ../../include/boost/heap/binomial_heap.hpp \
- ../../include/boost/heap/detail/heap_comparison.hpp \
- ../../include/boost/heap/heap_concepts.hpp \
- ../../include/boost/heap/detail/heap_node.hpp \
- ../../include/boost/heap/detail/stable_heap.hpp \
- ../../include/boost/heap/policies.hpp \
- ../../include/boost/heap/heap_merge.hpp \
- ../../include/boost/heap/detail/tree_iterator.hpp \
  ../../include/dag.h \
  ../../include/node.h \
+ ../../include/grasp.h \
+ ../../include/devid.h \
  ../../include/counter_names.h \
  ../../include/dag.h \
  ../../include/rplmsg.h \
