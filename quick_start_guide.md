@@ -22,7 +22,7 @@ On x86 it will attempt to install gcc-multilib, and install packages for both 32
 
 Clone the source repository
 ```
-git clone https://github.com/mcr/unstrung.git
+git clone https://github.com/AnimaGUS-minerva/unstrung/unstrung.git
 cd unstrung/
 make
 ```
