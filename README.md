@@ -62,10 +62,10 @@ Web site:
     http://unstrung.sandelman.ca/
 
 Github:
-    http://github.com/mcr/unstrung.git/
+    http://github.com/ANIMAgus-minerva/unstrung.git/
 
 to subscribe to mailing list:
-    https://lists.sandelman.ca/mailman/listinfo/unstrung-hackers
+    https://lists.sandelman.ca/mailman3/postorius/lists/unstrung-hackers.lists.sandelman.ca/
 
 ====== OpenWRT
 
@@ -104,7 +104,7 @@ it will overwrite your Makefile.local.
 
 
 Michael Richardson <mcr@sandelman.ca>,
-Ottawa, Ontario, October 2009-2015.
+Ottawa, Ontario, October 2009-2023.
 
 
 
