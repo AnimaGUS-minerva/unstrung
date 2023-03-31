@@ -469,8 +469,8 @@ int network_interface::adddel_ipinfo(const struct sockaddr_nl *who,
 
     switch(iai->ifa_family) {
     case AF_INET6:
-        addr = (unsigned char *)RTA_DATA(addrattr);
-        if(addr) {
+        if(addrattr) {
+            addr = (unsigned char *)RTA_DATA(addrattr);
             addrlen = RTA_PAYLOAD(addrattr);
             if(addrlen > sizeof(ni->if_addr)) addrlen=sizeof(ni->if_addr);
 
@@ -621,8 +621,8 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
     ni->ifi_type = ifi->ifi_type;
     switch(ifi->ifi_type) {
     case ARPHRD_ETHER:
-        addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
-        if(addr) {
+        if(tb[IFLA_ADDRESS]) {
+            addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
             ni->set_eui48(addr, addrlen);
             break;
@@ -630,8 +630,8 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
 
     case ARPHRD_IEEE802154:
     case ARPHRD_6LOWPAN:
-        addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
-        if(addr) {
+        if(tb[IFLA_ADDRESS]) {
+            addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
             ni->set_eui64(addr, addrlen);
             break;
