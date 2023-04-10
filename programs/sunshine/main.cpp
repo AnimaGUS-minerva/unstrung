@@ -19,6 +19,7 @@
 #include <getopt.h>
 #include <sysexits.h>
 #include <time.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
 
@@ -91,6 +92,7 @@ bool check_dag(unsigned char opt, dag_network *dag)
     return true;
 }
 
+const char *piddirname ="/run/acp";
 const char *pidfilename="/run/acp/sunshine.pid";
 void killanydaemon(void)
 {
@@ -121,6 +123,13 @@ void killanydaemon(void)
 }
 
 void write_pid_file() {
+
+    if(mkdir(piddirname, 0775) != EEXIST) {
+        fprintf(stderr, "Can not create PID directory %s: %s\n",
+                piddirname, strerror(errno));
+        exit(10);
+    }
+
     FILE *pidfile = fopen(pidfilename, "w");
     int   mypid = getpid();
     if(pidfile) {
