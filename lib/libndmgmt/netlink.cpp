@@ -586,6 +586,12 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         return 0;
     }
 
+    if((ifi->ifi_flags & IFF_RUNNING) == 0) {
+        deb->info("link found[%d]: %s no carrier, ignored\n",
+                  ifi->ifi_index, ifname);
+        return 0;
+    }
+
     network_interface *ni = find_by_ifindex(ifi->ifi_index);
     if(ni == NULL) {
         ni = iface_maker->newnetwork_interface(ifname, deb);

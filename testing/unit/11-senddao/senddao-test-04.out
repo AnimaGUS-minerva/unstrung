@@ -6,6 +6,7 @@ ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 Creating PCAP interface: lo
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
+link found[3]: virbr0 no carrier, ignored
   new RPL node: fe80::1200:ff:fe64:6423
   invoking ip -6 route add 2001:db8::abcd:2/128 via fe80::1200:ff:fe64:6423 dev wlan0 src 2001:db8::abcd:1
     would invoke cmd: ip -6 route add 2001:db8::abcd:2/128 via fe80::1200:ff:fe64:6423 dev wlan0 src 2001:db8::abcd:1

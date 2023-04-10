@@ -6,6 +6,7 @@ ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 Creating PCAP interface: lo
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
+link found[3]: virbr0 no carrier, ignored
   new RPL node: fe80::216:3eff:fe22:4455
 sending DAOACK on if: wlan0(faked)
 26-builddaoack tests finished

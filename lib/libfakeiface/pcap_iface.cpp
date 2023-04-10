@@ -444,7 +444,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
             hwaddr[4]=0x34;        hwaddr[5]=0x24;
 
             fake_linkinfo("wlan0", myindex, &nii, hwaddr,
-                          ARPHRD_ETHER, IFF_BROADCAST|IFF_UP);
+                          ARPHRD_ETHER, IFF_BROADCAST|IFF_UP|IFF_RUNNING);
         }
 
         /* now send up the IPv6 address for a wlan0 address */
@@ -470,7 +470,7 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
 
             myindex = ++ifindex;
             fake_linkinfo("lo", myindex, &nii, hwaddr,
-                          ARPHRD_LOOPBACK, IFF_BROADCAST|IFF_UP);
+                          ARPHRD_LOOPBACK, IFF_BROADCAST|IFF_UP|IFF_RUNNING);
         }
 
         {
@@ -499,6 +499,35 @@ void pcap_network_interface::scan_devices(rpl_debug *deb, bool setup)
             myindex = ++ifindex;
             fake_linkinfo("wlan1", myindex, &nii, hwaddr, ARPHRD_ETHER, IFF_BROADCAST);
         }
+
+        /* now a bridge device that has no carrier, should get ignored */
+        {
+            unsigned char hwaddr[6];
+            hwaddr[0]=0xc0;        hwaddr[1]=0x00;
+            hwaddr[2]=0x7f;        hwaddr[3]=0xab;
+            hwaddr[4]=0x00;        hwaddr[5]=0x02;
+
+            myindex = ++ifindex;
+            fake_linkinfo("virbr0", myindex, &nii, hwaddr,
+                          ARPHRD_LOOPBACK, IFF_BROADCAST|IFF_UP);
+            /* NOT: Not IFF_RUNNING */
+        }
+
+        {
+            /* now send up the IPv6 address */
+            unsigned char addr6[16];
+            addr6[0] = 0x20;                addr6[1] = 0x00;
+            addr6[2] = 0x0d;                addr6[3] = 0xb8;
+            addr6[4] = 0x00;                addr6[5] = 0x00;
+            addr6[6] = 0x00;                addr6[7] = 0x02;
+            addr6[8] = 0x00;                addr6[9] = 0x03;
+            addr6[10]= 0x00;                addr6[11]= 0x04;
+            addr6[12]= 0x00;                addr6[13]= 0x05;
+            addr6[14]= 0x00;                addr6[15]= 0x06;
+            fake_addrinfo(myindex,  RT_SCOPE_HOST, &nii, addr6);
+        }
+
+
 }
 
 /* used by addprefix() to change system parameters */
