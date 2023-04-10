@@ -59,7 +59,9 @@ SUBDIRS+=32-daoreply-onlyif
 SUBDIRS+=33-newifdao
 SUBDIRS+=34-builddis
 SUBDIRS+=35-recvdis
+ifeq ($(USE_MBEDTLS),true)
 SUBDIRS+=36-peckusage
+endif
 SUBDIRS+=37-fmteui
 SUBDIRS+=38-builddaoack
 SUBDIRS+=39-daoJ
@@ -70,7 +72,9 @@ SUBDIRS+=43-sendgrasp
 endif
 SUBDIRS+=42-build-na
 SUBDIRS+=44-dio-ungrounded
+ifeq ($(USE_MBEDTLS),true)
 SUBDIRS+=45-extract-eui
+endif
 SUBDIRS+=46-method-varargs
 
 checkstop::
