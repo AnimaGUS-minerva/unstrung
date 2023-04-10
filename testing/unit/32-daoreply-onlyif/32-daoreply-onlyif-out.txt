@@ -41,9 +41,5 @@ packet 2 is being processed
 Scheduling dio in 2 ms
 inserting event #2 at 1073741824/3024 0
 invoked doit(send_dio) on rpl_event (if_name=none)
-iface acp0 sending dio about dag: 42/[2001:db8:661e::1]
 sending DIO on if: acp0 for prefix: 2001:db8:1::/48
-iface lo sending dio about dag: 42/[2001:db8:661e::1]
-sending DIO on if: lo for prefix: 2001:db8:1::/48
-iface wlan0 sending dio about dag: 42/[2001:db8:661e::1]
 sending DIO on if: wlan0 for prefix: 2001:db8:1::/48
