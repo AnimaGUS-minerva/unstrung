@@ -122,9 +122,9 @@ void killanydaemon(void)
     exit(0);
 }
 
-void write_pid_file() {
-
-    if(mkdir(piddirname, 0775) != EEXIST) {
+void write_pid_file()
+{
+    if(mkdir(piddirname, 0775) == -1 && errno != EEXIST) {
         fprintf(stderr, "Can not create PID directory %s: %s\n",
                 piddirname, strerror(errno));
         exit(10);
