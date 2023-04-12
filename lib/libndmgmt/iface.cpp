@@ -856,7 +856,9 @@ void network_interface::receive(const time_t now, rpl_debug *debug)
          * is the accurate view of where it was received, so we have to
          * switch interfaces if this->ifindex != ifindex
          */
-        debug->info("picking if_index [%u]\n", recv_ifindex);
+        if(debug->flag_set(RPL_DEBUG_NETINPUT)) {
+            debug->verbose("packet received on if_index [%u]\n", recv_ifindex);
+        }
         network_interface *iface = find_by_ifindex(recv_ifindex);
 
         if(iface) {
