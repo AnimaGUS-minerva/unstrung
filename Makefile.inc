@@ -98,7 +98,7 @@ TAGS clean ${NEEDCHECK} programs checkprograms install::
 	done; exit $$err
 endif
 
-env:
+env::
 	@env | sed -e "s/'/'\\\\''/g" -e "s/\([^=]*\)=\(.*\)/\1='\2'/"
 
 TAGS::
