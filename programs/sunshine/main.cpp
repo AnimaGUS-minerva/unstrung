@@ -387,6 +387,13 @@ int main(int argc, char *argv[])
 	usage();
     }
 
+    /* if no identity has been loaded, then make one up for self,
+     * if we are the root
+     */
+    if(loaded == 0 && grounded) {
+        dag->add_all_interfaces();
+    }
+
     /* should check for already running instance before stomping PID file */
 
     if(bedaemon) {
