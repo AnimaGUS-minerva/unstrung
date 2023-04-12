@@ -120,6 +120,7 @@ bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
     const char *srcstring = "";
     char srcbuf[ADDRTOT_BUF];
 
+    debug->warn("add_parent_route_to_prefix\n");
     subnettot(&prefix, 0, pbuf, sizeof(pbuf));
     addrtot(&parent.node_address(), 0, nhbuf, sizeof(nhbuf));
 
@@ -166,6 +167,7 @@ bool network_interface::add_null_route_to_prefix(const ip_subnet &prefix)
     char buf[1024];
     char pbuf[SUBNETTOT_BUF];
 
+    debug->warn("add_null_route_to_prefix\n");
     subnettot(&prefix, 0, pbuf, sizeof(pbuf));
 
     snprintf(buf, 1024,
