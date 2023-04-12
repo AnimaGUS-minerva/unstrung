@@ -55,8 +55,6 @@ public:
     // setup the object, open sockets, etc.
     bool setup(void);
     static void setup_all_if(void);
-    // actually, makes no sense, as conn to registrar must be
-    // one per interface.
 
     int errors(void) {
         return error_cnt;
