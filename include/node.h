@@ -132,6 +132,7 @@ protected:
         bool              alreadyDeclined;
         bool              alreadyAccepted;
         bool              joinQueryStarted;
+        bool              installed;
 
 private:
         bool       valid;

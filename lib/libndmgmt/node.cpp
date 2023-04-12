@@ -25,6 +25,7 @@ extern "C" {
 
 void rpl_node::zero_node(void) {
     valid = false;
+    installed = false;
     name[0]='\0'; self = false;
     alreadyDeclined = false;
     alreadyAccepted = false;
@@ -137,8 +138,11 @@ void rpl_node::add_route_via_node(ip_subnet &prefix, network_interface *iface)
     // dao_needed = true;
 
     assert(mDN->dag_me != NULL);
-    iface->add_route_to_node(prefix, this,
-                             mDN->dag_me->prefix_number().addr);
+    if(!this->installed) {
+        iface->add_route_to_node(prefix, this,
+                                 mDN->dag_me->prefix_number().addr);
+        this->installed = true;
+    }
 }
 
 rpl_node *network_interface::find_neighbour_by_grasp_sessionid(grasp_session_id gsi)
