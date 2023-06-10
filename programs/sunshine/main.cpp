@@ -45,6 +45,7 @@ static struct option const longopts[] =
     { "dao-if-filter",  1, NULL, 'A'},
     { "dao-addr-filter",1, NULL, 'a'},
     { "ldevid",    1, NULL, 'l'},
+    { "iid",       1, NULL, 'd'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
     { "syslog",    0, NULL,  OPTION_SYSLOG},
@@ -73,7 +74,8 @@ void usage()
             "\t [--verbose] [--timelog]         Turn on logging (with --time logged)\n"
             "\t [--syslog]  [--stderr]          Log to syslog and/or stderr\n"
             "\t [--registrar hostname:port]     set address of GRASP responder on registrar\n"
-            "\t [--ldevid filename]             load certificate with ACP Node Name to configure\n"
+            "\t [--ldevid filename]             load certificate with ACP Node Name to configure IID\n"
+            "\t [--iid ipv6]                    setup the lower bits of the IPv6, the IID\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
             "\t [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from\n"
             "\t [--dao-addr-filter]   List of prefixes/len to take DAO addresses from\n"
@@ -153,6 +155,7 @@ int main(int argc, char *argv[])
     unsigned int grasp_portnum = 3000;
     char *grasp_registrar = NULL;
     device_identity di;
+    err_t e1 = NULL;
 
     progname = argv[0];
     bool devices_scanned = false;
@@ -253,7 +256,7 @@ int main(int argc, char *argv[])
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
-                deb->info("set up prefix from certificate %s with subnet %s\n",
+                deb->info("set up IID from certificate %s with subnet %s\n",
                           optarg, sbuf);
             }
             if (!iface) {
@@ -265,6 +268,29 @@ int main(int argc, char *argv[])
             fprintf(stderr, "sunshine not built with MBEDTLS, can not parse identity from ldevid certificate\n");
             usage();
 #endif /*  HAVE_MBEDTLS */
+            break;
+
+        case 'd':
+            check_dag(c, dag);
+            e1 = ttosubnet(optarg, 0, AF_INET6, &di.sn);
+            if(e1 != NULL) {
+                deb->info("failed to parse %s as IPv6 subnet: %s\n",
+                          optarg, e1);
+                usage();
+                break;
+            }
+            dag->set_acp_identity(&di);
+            {
+                char sbuf[SUBNETTOT_BUF];
+                subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
+                deb->info("set up IID from certificate %s with subnet %s\n",
+                          optarg, sbuf);
+            }
+            if (!iface) {
+            	dag->add_all_interfaces();
+            } else {
+            	dag->addselfprefix(iface);
+            }
             break;
 
         case 'p':
