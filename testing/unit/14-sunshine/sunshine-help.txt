@@ -9,7 +9,8 @@ Usage: PATH/sunshine [-?] [-i ifname]
 	 [--verbose] [--timelog]         Turn on logging (with --time logged)
 	 [--syslog]  [--stderr]          Log to syslog and/or stderr
 	 [--registrar hostname:port]     set address of GRASP responder on registrar
-	 [--ldevid filename]             load certificate with ACP Node Name to configure
+	 [--ldevid filename]             load certificate with ACP Node Name to configure IID
+	 [--iid ipv6]                    setup the lower bits of the IPv6, the IID
 	 [--ignore-pio]                  Ignore PIOs found in DIO
 	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
 	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from
