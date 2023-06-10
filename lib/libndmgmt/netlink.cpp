@@ -120,7 +120,7 @@ bool network_interface::add_parent_route_to_prefix(const ip_subnet &prefix,
     const char *srcstring = "";
     char srcbuf[ADDRTOT_BUF];
 
-    debug->warn("add_parent_route_to_prefix\n");
+    //debug->warn("add_parent_route_to_prefix\n");
     subnettot(&prefix, 0, pbuf, sizeof(pbuf));
     addrtot(&parent.node_address(), 0, nhbuf, sizeof(nhbuf));
 
