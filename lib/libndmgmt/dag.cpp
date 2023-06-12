@@ -536,6 +536,7 @@ void dag_network::addselfprefix(network_interface *iface)
 
     prefix_node &pre = this->dag_prefixes[mPrefix];
 
+    this->debug->warn("self installed: %u\n", pre.is_installed());
     if(!pre.is_installed()) {
         dao_needed = true;
         pre.set_prefix(mPrefix);
@@ -551,6 +552,7 @@ void dag_network::addselfprefix(network_interface *iface)
 static int addselfprefix_each(network_interface *iface, void *arg)
 {
     dag_network *that = (dag_network *)arg;
+    that->debug->warn("selfprefix: %s\n", iface->get_if_name());
     that->addselfprefix(iface);
     return 1;
 }
