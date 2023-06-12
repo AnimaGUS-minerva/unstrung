@@ -184,9 +184,9 @@ void network_interface::setup_all_if(){
 
 bool network_interface::setup()
 {
-    generate_eui64();
-
     if(alive) return true;
+
+    generate_eui64();
 
     debug->verbose("Doing multicast setup for %s\n", this->if_name);
     alive = true;
