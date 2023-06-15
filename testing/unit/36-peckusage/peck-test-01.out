@@ -11,49 +11,51 @@ link found[1]: wlan0 type=ether (active new) faked
 ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
-  . Loading the CA root certificate ... failed
+link found[3]: virbr0 no carrier, ignored
+  . Loading the CA root certificate from /boot/manufacturer.pem... failed
   !  mbedtls_x509_crt_parse returned -0x3e00
 
 link found[1]: wlan0 type=ether (active new) faked
 ip found[1]: wlan0 scope=253 address=fe80::1000:ff:fe64:6423
 link found[2]: lo type=loopback (active new) faked
 ip found[2]: lo scope=254 address=::1
-  . Loading the CA root certificate ... ok (0 skipped)
+link found[3]: virbr0 no carrier, ignored
+  . Loading the CA root certificate from vendor_secp384r1.crt... ok (0 skipped)
 
   . Loading the certificate at: mic.pem ... ok
   . Peer certificate information    ...
       cert. version     : 3
-      serial number     : 36:0F:1B:F4
-      issuer name       : CN=highway-test.example.com CA
+      serial number     : 38:4B:75:FB
+      issuer name       : DC=ca, DC=sandelman, CN=highway-test.example.com CA
       subject name      : serialNumber=00-D0-E5-F2-00-02
-      issued  on        : 2021-04-25 23:19:23
+      issued  on        : 2023-06-15 11:52:10
       expires on        : 2999-12-31 00:00:00
-      signed using      : RSA with SHA-256
+      signed using      : ECDSA with SHA256
       EC key size       : 256 bits
       basic constraints : CA=false
 
   . Verifying X.509 certificate...
 Verify requested for (Depth 1):
 cert. version     : 3
-serial number     : 3C:91:29:B2
-issuer name       : CN=highway-test.example.com CA
-subject name      : CN=highway-test.example.com CA
-issued  on        : 2021-04-05 19:36:57
-expires on        : 2021-05-06 05:36:57
-signed using      : RSA with SHA-256
-RSA key size      : 3072 bits
+serial number     : 18:B0:6B:93
+issuer name       : DC=ca, DC=sandelman, CN=highway-test.example.com CA
+subject name      : DC=ca, DC=sandelman, CN=highway-test.example.com CA
+issued  on        : 2023-06-15 11:48:47
+expires on        : 2025-06-14 11:48:47
+signed using      : ECDSA with SHA256
+EC key size       : 384 bits
 basic constraints : CA=true
 key usage         : Key Cert Sign, CRL Sign
   This certificate has no flags
 
 Verify requested for (Depth 0):
 cert. version     : 3
-serial number     : 36:0F:1B:F4
-issuer name       : CN=highway-test.example.com CA
+serial number     : 38:4B:75:FB
+issuer name       : DC=ca, DC=sandelman, CN=highway-test.example.com CA
 subject name      : serialNumber=00-D0-E5-F2-00-02
-issued  on        : 2021-04-25 23:19:23
+issued  on        : 2023-06-15 11:52:10
 expires on        : 2999-12-31 00:00:00
-signed using      : RSA with SHA-256
+signed using      : ECDSA with SHA256
 EC key size       : 256 bits
 basic constraints : CA=false
   This certificate has no flags
