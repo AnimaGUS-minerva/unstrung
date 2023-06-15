@@ -75,7 +75,7 @@ int device_identity::load_identity_from_cert( const char *ca_file, const char *c
         /*
          * 1.1. Load the trusted CA
          */
-        mbedtls_printf( "  . Loading the CA root certificate ..." );
+        mbedtls_printf( "  . Loading the CA root certificate from %s..." , ca_file);
         fflush( stdout );
 
         ret = mbedtls_x509_crt_parse_file( &cacert, ca_file );
