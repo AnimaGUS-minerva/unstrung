@@ -259,11 +259,6 @@ int main(int argc, char *argv[])
                 deb->info("set up IID from certificate %s with subnet %s\n",
                           optarg, sbuf);
             }
-            if (!iface) {
-            	dag->add_all_interfaces();
-            } else {
-            	dag->addselfprefix(iface);
-            }
 #else
             fprintf(stderr, "sunshine not built with MBEDTLS, can not parse identity from ldevid certificate\n");
             usage();
@@ -287,11 +282,6 @@ int main(int argc, char *argv[])
                 deb->info("set up IID from %s giving subnet %s\n",
                           optarg, sbuf);
             }
-            if (!iface) {
-            	dag->add_all_interfaces();
-            } else {
-            	dag->addselfprefix(iface);
-            }
             break;
 
         case 'p':
@@ -309,11 +299,6 @@ int main(int argc, char *argv[])
             dag->set_prefix(prefix);
             dag->set_grounded(true);
             dag->set_dagrank(1);
-            if (!iface) {
-            	dag->add_all_interfaces();
-            } else {
-            	dag->addselfprefix(iface);
-            }
             grounded = true;
         }
         break;
@@ -402,6 +387,12 @@ int main(int argc, char *argv[])
             dag->set_nomulticast();
             break;
 	}
+    }
+
+    if (!iface) {
+        dag->add_all_interfaces();
+    } else {
+        dag->addselfprefix(iface);
     }
 
     if(!iface) {
