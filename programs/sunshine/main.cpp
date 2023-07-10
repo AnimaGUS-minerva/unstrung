@@ -272,18 +272,19 @@ int main(int argc, char *argv[])
 
         case 'd':
             check_dag(c, dag);
-            e1 = ttosubnet(optarg, 0, AF_INET6, &di.sn);
+            e1 = ttoaddr(optarg, 0, AF_INET6, &di.sn.addr);
             if(e1 != NULL) {
                 deb->info("failed to parse %s as IPv6 subnet: %s\n",
                           optarg, e1);
                 usage();
                 break;
             }
+            di.sn.maskbits = 128;
             dag->set_acp_identity(&di);
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
-                deb->info("set up IID from certificate %s with subnet %s\n",
+                deb->info("set up IID from %s giving subnet %s\n",
                           optarg, sbuf);
             }
             if (!iface) {
