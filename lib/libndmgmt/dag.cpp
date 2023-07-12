@@ -487,6 +487,11 @@ void dag_network::cfg_new_node(prefix_node *me,
     }
 }
 
+/*
+ * the ACP identity is a full IPv6 address that this node will known as
+ * setting this overrides any concept of pulling/creating identities from
+ * the EUI-48, or OUI address on the interfaces.
+ */
 void dag_network::set_acp_identity(device_identity *di) {
     myDeviceIdentity = di;
     prefix_node *me = add_address(di->sn);
