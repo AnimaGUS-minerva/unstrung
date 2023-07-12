@@ -59,6 +59,7 @@ void prefix_node::set_prefix(ip_subnet prefix)
 {
     mPrefix = prefix;
     name[0]='\0';
+    //this->verbose_log("setting prefix, invalidating name");
     valid = true;
     installed = false;
 }
@@ -68,6 +69,7 @@ const char *prefix_node::node_name() {
         if(name[0]) return name;
 
         subnettot(&mPrefix, 0, name, sizeof(name));
+        //this->verbose_log("formatting prefix: %s", name);
         return name;
     } else {
         return "<prefix-not-valid>";
