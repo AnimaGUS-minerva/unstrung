@@ -436,10 +436,10 @@ void dag_network::add_childnode(rpl_node          *announcing_peer,
     prefix_node &pre = this->dag_children[prefix];
     char b1[256];
     subnettot(&prefix, 0, b1, 256);
+    pre.set_debug(this->debug);
 
     if(!pre.is_installed()) {
         dao_needed = true;
-        pre.set_debug(this->debug);
         pre.set_prefix(prefix);
         pre.set_announcer(announcing_peer);
 
@@ -472,9 +472,10 @@ void dag_network::cfg_new_node(prefix_node *me,
                                ip_subnet prefix)
 {
     if(!me->is_installed()) {
+        me->set_debug(this->debug);
+
         dao_needed = true;
         me->set_prefix(prefix);
-        me->set_debug(this->debug);
 
         if(iface != NULL) {
             me->configureip(iface, this);
@@ -497,11 +498,11 @@ void dag_network::add_prefix(rpl_node advertising_peer,
                              ip_subnet prefix)
 {
     prefix_node &pre = this->dag_prefixes[prefix];
+    pre.set_debug(this->debug);
 
     if(!pre.is_installed()) {
         this->set_prefix(prefix);
         pre.set_prefix(prefix);
-        pre.set_debug(this->debug);
         pre.set_installed(true);
         pre.set_announcer(&advertising_peer);
         dao_needed = true;
@@ -535,12 +536,12 @@ void dag_network::addselfprefix(network_interface *iface)
     me->markself(iface->get_if_index());
 
     prefix_node &pre = this->dag_prefixes[mPrefix];
+    pre.set_debug(this->debug);
 
     //this->debug->warn("self installed: %u\n", pre.is_installed());
     if(!pre.is_installed()) {
         dao_needed = true;
         pre.set_prefix(mPrefix);
-        pre.set_debug(this->debug);
         pre.set_announcer(me);
         pre.configureip(iface, this);
         if(dag_me == NULL) {

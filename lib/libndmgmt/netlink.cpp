@@ -190,6 +190,7 @@ bool network_interface::add_route_to_node(const ip_subnet &prefix,
     char sbuf[SUBNETTOT_BUF];
 
     prefix_node &n = ipv6_prefix_list[prefix];
+    n.set_debug(debug);
     n.set_prefix(prefix);
 
     subnettot(&n.prefix_number(), 0, pbuf, sizeof(pbuf));

@@ -24,6 +24,7 @@ public:
         prefix_node() {
             valid     = false;
             installed = false;
+            debug     = NULL;
         };
         prefix_node(rpl_debug *deb, rpl_node *announcer, ip_subnet sub);
         prefix_node(rpl_debug *deb, const struct in6_addr v6, const int prefixlen);
@@ -75,6 +76,8 @@ protected:
             va_list vargs;
             va_start(vargs,fmt);
 
+            /* maybe should be assert() */
+            if(!debug) { return; }
             debug->logv(LOG_INFO, fmt, vargs);
             va_end(vargs);
         };
