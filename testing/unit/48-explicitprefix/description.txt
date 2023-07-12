@@ -1,0 +1,4 @@
+This test case validates that we can set an explicit IID to form the prefix
+from a DIO's PIO.
+
+
