@@ -45,6 +45,7 @@ static struct option const longopts[] =
     { "dao-if-filter",  1, NULL, 'A'},
     { "dao-addr-filter",1, NULL, 'a'},
     { "ldevid",    1, NULL, 'l'},
+    { "ipv6",      1, NULL, '6'},
     { "iid",       1, NULL, 'd'},
     { "instance",  1, NULL, 'I'},
     { "instanceid",1, NULL, 'I'},
@@ -265,11 +266,11 @@ int main(int argc, char *argv[])
 #endif /*  HAVE_MBEDTLS */
             break;
 
-        case 'd':
+        case '6':
             check_dag(c, dag);
             e1 = ttoaddr(optarg, 0, AF_INET6, &di.sn.addr);
             if(e1 != NULL) {
-                deb->info("failed to parse %s as IPv6 subnet: %s\n",
+                deb->info("failed to parse %s as IPv6 address: %s\n",
                           optarg, e1);
                 usage();
                 break;
@@ -279,7 +280,7 @@ int main(int argc, char *argv[])
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
-                deb->info("set up IID from %s giving subnet %s\n",
+                deb->info("set up IPv6 from %s giving address %s\n",
                           optarg, sbuf);
             }
             break;

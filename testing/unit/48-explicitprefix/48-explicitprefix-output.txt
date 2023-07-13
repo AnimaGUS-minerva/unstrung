@@ -11,9 +11,9 @@ link found[3]: virbr0 no carrier, ignored
     would invoke cmd: ip -6 route show
   new RPL node: fe80::1000:ff:fe64:6423
   peer '<ME>fe80::1000:ff:fe64:6423' announces prefix: 2001:db8:1::/48
-  adding prefix: 2001:db8:1:0:216:3eff:fe11:3424/128 learnt from iface: wlan0
-  invoking ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr del 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-  invoking ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
-    would invoke cmd: ip -6 addr add 2001:db8:1:0:216:3eff:fe11:3424/128 dev lo
+  adding prefix: 2001:db8:2::3333/128 learnt from iface: wlan0
+  invoking ip -6 addr del 2001:db8:2::3333/128 dev lo
+    would invoke cmd: ip -6 addr del 2001:db8:2::3333/128 dev lo
+  invoking ip -6 addr add 2001:db8:2::3333/128 dev lo
+    would invoke cmd: ip -6 addr add 2001:db8:2::3333/128 dev lo
     would invoke cmd: ip -6 route show

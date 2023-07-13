@@ -1,0 +1,104 @@
+sunshine - light up RPL DAG
+===========================
+
+## SYNOPSIS
+       sunshine
+
+## EXAMPLES
+       sunshine --dagid  funfun0 --interface  eth1 --prefix  2001:db8:0001::/48 --interval  30000 --rank  1 --timelog --verbose
+
+       sunshine --dagid  funfun0 --interface  eth0 --interval  60000 --timelog --verbose
+
+       sunshine --dagid  funfun0 --interface  wlan0 --ignore-pio --dao-if-filter acp* --dao-addr-filter  fd04:ec6f:d73f::/48 --timelog --verbose
+
+## DESCRIPTION
+
+sunshine is a routing daemon that runs on an Routing over Low Power (RPL) node that intends to forward packets, and act as a grounded node in an RPL DAG.
+
+Upon invokation, it will scan the system for all interfaces (ignoring any with IPv6 disabled).
+It will then open sockets on each interface and listen for ICMPv6 packets with the
+RPL code (0x9B).
+RFC6550 documents the various types, but the important ones are: DIO (0x01), DAO (0x02).
+
+One node is designated the Directed Acyclig Graph (DAG) root.
+This node is usually provided with a prefix to announce using the --prefix option.
+This node is also usually given the explicit rank of 1.
+
+Other nodes listen for ICMPv6 messages (DIOs) which are multicast from the DAG root, and respond with DAO messages providing upwards messages as to what addresses they wish the announce.  Each node, (in storing mode with multicast, currently the only mode implemented by unstrung) also listens to DAOs from nodes further down the DAG.
+
+## OPTIONS
+
+* `-i` <ifname>
+Run RPL on interface <ifname>.  Can be listed multiple time to invoke on multiple interfaces. If not specified, then all active interfaces will be used, and new ones will be enabled when they become visible.
+
+* `--dao-if-filter`=<regex>
+Only accept messages on the list interfaces provided.  A glob may be provided.
+This option may be repeated multiple times, up to 8 times, with names up to 32 characters.
+This option differs from `-i` in that the interface does not need to exist when the daemon starts.
+
+* `--dao-addr-filter`=<subnet>
+Only accept messages from interfaces that have a particular IPv6 prefix (in standard CIDR notation).
+This effectively acts as a filter of which interfaces will be active.
+Up to 8 prefixes may be provided (DAG_IFWILDCARD_MAX).
+
+* `--prefix`=<subnet>
+This option is used on the DAG root to specify a prefix (usually a /64) that will be announced via DIO messages, in the PIO option.
+In general, nodes receiving this prefix will configure an address (typically the lower 64-bits, the IID) and then announce that address using a DAO message.
+
+* `--dagid`=<dagid>
+The DODAG ID to announce. This can be a hex value formatted as an IPv6 address (128-bits), or it may be a string, in which it is translated in ASCII, and the first 128-bits used as the DODAG ID.
+Each DODAG ID represents a unique root instance, and there can be more than one of them in a single DAG.
+
+* `--rank`=rank
+The initial rank to announce with.  This is specified on the DAG root, and is almost always one (1).
+
+* `--instanceid`=num
+The (global) instance number to announce.  This is an integer between 0 and 127.
+Local Instance IDs are not supported by sunshine.
+The instanceID is the primary distinguisher between DODAGs.
+A network could have multiple instances running at the same time, but sunshine only supports one.
+
+* `--interval`=msec
+The number of miliseconds between DIO announcements.
+This is the default trickle time value.
+
+* `--nomulticast`
+For testing purposes, and some othe reasons, it is possible to turn off multicast in DIOs.
+
+* `--verbose`
+Increment the verbosity of messages.
+
+* `--timelog`
+Include the date in messages, which is useful if the messages are not going to syslog.
+
+* `--syslog`
+Log to the system logger using syslog(3).
+
+* `--stderr`
+Log to stderr.  It is possible to log to both destinations at the same time.
+
+* `--registrar`=**hostname:port**
+Set address of GRASP responder on registrar.
+This is experimental and does not much yet.
+
+* `--ldevid`=<filename>
+This loads an LDevID certificate, and it inteprets it according to RFC8994.
+The resulting prefix that is found in the otherName extension is used to set the nodes prefix, rather than deriving one from the EUI/OUI and PIO.
+
+* `--iid`=<ipv6>
+This overrides the EUI that is normally discovered from an active interface and sets it to the IID represented by the IPv6 value. Typically, only the right-most bits are set, so the IPv6 is something like <::3333>.
+
+* `--ignore-pio`
+This forces the PIO to be ignored, which is implied by `--ldevid`
+
+* `--sleep`=<secs>
+Sleep secs before trying to talk to network.  This is typically done to allow a debugger to attach.
+
+## SEE ALSO
+
+## HISTORY
+       started for the Pandora Unstrung project <https:://unstrung.sandelman.ca> by Michael Richardson around 2009-11-09
+
+# BUGS
+       Many
+

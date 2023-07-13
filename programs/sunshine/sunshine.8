@@ -1,60 +1,72 @@
-'\" t
-.\"     Title: sunshine
-.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
-.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
-.\"      Date: 04/26/2016
-.\"    Manual: [FIXME: manual]
-.\"    Source: [FIXME: source]
-.\"  Language: English
-.\"
-.TH "SUNSHINE" "8" "04/26/2016" "[FIXME: source]" "[FIXME: manual]"
-.\" -----------------------------------------------------------------
-.\" * Define some portability stuff
-.\" -----------------------------------------------------------------
-.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.\" http://bugs.debian.org/507673
-.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
-.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.ie \n(.g .ds Aq \(aq
-.el       .ds Aq '
-.\" -----------------------------------------------------------------
-.\" * set default formatting
-.\" -----------------------------------------------------------------
-.\" disable hyphenation
-.nh
-.\" disable justification (adjust text to left margin only)
-.ad l
-.\" -----------------------------------------------------------------
-.\" * MAIN CONTENT STARTS HERE *
-.\" -----------------------------------------------------------------
+.\" generated with Ronn-NG/v0.9.1
+.\" http://github.com/apjanke/ronn-ng/tree/0.9.1
+.TH "SUNSHINE" "8" "July 2023" ""
 .SH "NAME"
-sunshine \- light up RPL DAG
+\fBsunshine\fR \- light up RPL DAG
 .SH "SYNOPSIS"
-.HP \w'\fBsunshine\fR\ 'u
-\fBsunshine\fR interface [\fIwlan0\fR] dagid [\fI0xabcd1234abcd1234\fR] prefix [\fIfd01:abcd::/32\fR] rank [\fI1\fR] instanceid [\fI1\fR] interval [\fI20000\fR] ignore\-pio dao\-if\-filter [\fIacp*\fR] dao\-addr\-filter [\fIfd01::/16\fR] syslog stderr
+.nf
+   sunshine
+.fi
 .SH "EXAMPLES"
-.HP \w'\fBsunshine\fR\ 'u
-\fBsunshine\fR \-\-dagid \fIfunfun0\fR \-\-interface \fIeth1\fR \-\-prefix \fI2001:db8:0001::/48\fR \-\-interval \fI30000\fR \-\-rank \fI1\fR \-\-timelog \-\-verbose
-.HP \w'\fBsunshine\fR\ 'u
-\fBsunshine\fR \-\-dagid \fIfunfun0\fR \-\-interface \fIeth0\fR \-\-interval \fI60000\fR \-\-timelog \-\-verbose
-.HP \w'\fBsunshine\fR\ 'u
-\fBsunshine\fR \-\-dagid \fIfunfun0\fR \-\-interface \fIwlan0\fR \-\-ignore\-pio \-\-dao\-if\-filter \fIacp*\fR \-\-dao\-addr\-filter \fIfd04:ec6f:d73f::/48\fR \-\-timelog \-\-verbose
+.nf
+   sunshine \-\-dagid  funfun0 \-\-interface  eth1 \-\-prefix  2001:db8:0001::/48 \-\-interval  30000 \-\-rank  1 \-\-timelog \-\-verbose
+
+   sunshine \-\-dagid  funfun0 \-\-interface  eth0 \-\-interval  60000 \-\-timelog \-\-verbose
+
+   sunshine \-\-dagid  funfun0 \-\-interface  wlan0 \-\-ignore\-pio \-\-dao\-if\-filter acp* \-\-dao\-addr\-filter  fd04:ec6f:d73f::/48 \-\-timelog \-\-verbose
+.fi
 .SH "DESCRIPTION"
-.PP
-\fIsunshine\fR
-is a daemon that runs on an RPL node that intends to forward packets, and act as a grounded node in an RPL DAG\&.
-.SH "FILES"
-.PP
-file1
+sunshine is a routing daemon that runs on an Routing over Low Power (RPL) node that intends to forward packets, and act as a grounded node in an RPL DAG\.
+.P
+Upon invokation, it will scan the system for all interfaces (ignoring any with IPv6 disabled)\. It will then open sockets on each interface and listen for ICMPv6 packets with the RPL code (0x9B)\. RFC6550 documents the various types, but the important ones are: DIO (0x01), DAO (0x02)\.
+.P
+One node is designated the Directed Acyclig Graph (DAG) root\. This node is usually provided with a prefix to announce using the \-\-prefix option\. This node is also usually given the explicit rank of 1\.
+.P
+Other nodes listen for ICMPv6 messages (DIOs) which are multicast from the DAG root, and respond with DAO messages providing upwards messages as to what addresses they wish the announce\. Each node, (in storing mode with multicast, currently the only mode implemented by unstrung) also listens to DAOs from nodes further down the DAG\.
+.SH "OPTIONS"
+.IP "\[ci]" 4
+\fB\-i\fR \fIifname\fR Run RPL on interface \fIifname\fR\. Can be listed multiple time to invoke on multiple interfaces\. If not specified, then all active interfaces will be used, and new ones will be enabled when they become visible\.
+.IP "\[ci]" 4
+\fB\-\-dao\-if\-filter\fR=\fIregex\fR Only accept messages on the list interfaces provided\. A glob may be provided\. This option may be repeated multiple times, up to 8 times, with names up to 32 characters\. This option differs from \fB\-i\fR in that the interface does not need to exist when the daemon starts\.
+.IP "\[ci]" 4
+\fB\-\-dao\-addr\-filter\fR=\fIsubnet\fR Only accept messages from interfaces that have a particular IPv6 prefix (in standard CIDR notation)\. This effectively acts as a filter of which interfaces will be active\. Up to 8 prefixes may be provided (DAG_IFWILDCARD_MAX)\.
+.IP "\[ci]" 4
+\fB\-\-prefix\fR=\fIsubnet\fR This option is used on the DAG root to specify a prefix (usually a /64) that will be announced via DIO messages, in the PIO option\. In general, nodes receiving this prefix will configure an address (typically the lower 64\-bits, the IID) and then announce that address using a DAO message\.
+.IP "\[ci]" 4
+\fB\-\-dagid\fR=\fIdagid\fR The DODAG ID to announce\. This can be a hex value formatted as an IPv6 address (128\-bits), or it may be a string, in which it is translated in ASCII, and the first 128\-bits used as the DODAG ID\. Each DODAG ID represents a unique root instance, and there can be more than one of them in a single DAG\.
+.IP "\[ci]" 4
+\fB\-\-rank\fR=rank The initial rank to announce with\. This is specified on the DAG root, and is almost always one (1)\.
+.IP "\[ci]" 4
+\fB\-\-instanceid\fR=num The (global) instance number to announce\. This is an integer between 0 and 127\. Local Instance IDs are not supported by sunshine\. The instanceID is the primary distinguisher between DODAGs\. A network could have multiple instances running at the same time, but sunshine only supports one\.
+.IP "\[ci]" 4
+\fB\-\-interval\fR=msec The number of miliseconds between DIO announcements\. This is the default trickle time value\.
+.IP "\[ci]" 4
+\fB\-\-nomulticast\fR For testing purposes, and some othe reasons, it is possible to turn off multicast in DIOs\.
+.IP "\[ci]" 4
+\fB\-\-verbose\fR Increment the verbosity of messages\.
+.IP "\[ci]" 4
+\fB\-\-timelog\fR Include the date in messages, which is useful if the messages are not going to syslog\.
+.IP "\[ci]" 4
+\fB\-\-syslog\fR Log to the system logger using syslog(3)\.
+.IP "\[ci]" 4
+\fB\-\-stderr\fR Log to stderr\. It is possible to log to both destinations at the same time\.
+.IP "\[ci]" 4
+\fB\-\-registrar\fR=\fBhostname:port\fR Set address of GRASP responder on registrar\. This is experimental and does not much yet\.
+.IP "\[ci]" 4
+\fB\-\-ldevid\fR=\fIfilename\fR This loads an LDevID certificate, and it inteprets it according to RFC8994\. The resulting prefix that is found in the otherName extension is used to set the nodes prefix, rather than deriving one from the EUI/OUI and PIO\.
+.IP "\[ci]" 4
+\fB\-\-iid\fR=\fIipv6\fR This overrides the EUI that is normally discovered from an active interface and sets it to the IID represented by the IPv6 value\. Typically, only the right\-most bits are set, so the IPv6 is something like <::3333>\.
+.IP "\[ci]" 4
+\fB\-\-ignore\-pio\fR This forces the PIO to be ignored, which is implied by \fB\-\-ldevid\fR
+.IP "\[ci]" 4
+\fB\-\-sleep\fR=\fIsecs\fR Sleep secs before trying to talk to network\. This is typically done to allow a debugger to attach\.
+.IP "" 0
 .SH "SEE ALSO"
-.PP
-\fBping6\fR(8),
-.SH "DIAGNOSTICS"
-.PP
-All output from the commands
 .SH "HISTORY"
-.PP
-Written for the Pandora Unstrung project <\m[blue]\fBhttp://unstrung\&.sandelman\&.ca\fR\m[]> by Michael Richardson around 2009\-11\-09
-.SH "BUGS"
-.PP
-No known bugs\&.
+.nf
+   started for the Pandora Unstrung project <https:://unstrung\.sandelman\.ca> by Michael Richardson around 2009\-11\-09
+.fi
+.nf
+   Many
+.fi
+

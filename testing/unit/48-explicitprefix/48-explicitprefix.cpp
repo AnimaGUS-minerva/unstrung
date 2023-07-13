@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "iface.h"
 
 #include "fakeiface.h"
@@ -9,7 +10,10 @@ int main(int argc, char *argv[])
         pcap_network_interface *iface = NULL;
         pcap_network_interface *iface2 = NULL;
         struct in6_addr iface_src2;
+        err_t e1;
+        device_identity di;
 
+        memset(&di, 0, sizeof(di));
         rpl_debug *deb = new rpl_debug(true, stdout);
         inet_pton(AF_INET6, "fe80::1000:ff:fe64:6423", &iface_src2);
 
@@ -27,6 +31,12 @@ int main(int argc, char *argv[])
         err_t e = ttosubnet("2001:db8:0001::/48", 0, AF_INET6, &prefix);
 	dn->set_active();
 	dn->set_debug(deb);
+
+        e1 = ttoaddr("2001:db8:0002::3333", 0, AF_INET6, &di.sn.addr);
+        assert(e1 == NULL);
+        di.sn.maskbits = 128;
+        dn->set_acp_identity(&di);
+
         dn->set_prefix(prefix);
         dn->set_prefixlifetime(12);
         dn->set_grounded(true);
