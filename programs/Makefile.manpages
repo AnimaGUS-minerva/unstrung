@@ -9,9 +9,6 @@ ifneq ($(strip $(XMLTO)),)
 %.5: %.5.xml
 	${XMLTO} man $<
 
-%.5: %.5.ronn
-	${XMLTO} man $<
-
 %.1: %.1.xml
 	${XMLTO} man $<
 endif
