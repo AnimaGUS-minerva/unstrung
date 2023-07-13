@@ -87,7 +87,12 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
                       dn->prefix_name());
 
     if(!installed) {
-        struct in6_addr link = iface->link_local();
+        struct in6_addr link;
+        if(dn->mIID_is_set) {
+            link = dn->mIID.u.v6.sin6_addr;
+        } else {
+            link = iface->link_local();
+        }
 
         if(dn->myDeviceIdentity) {
             link = dn->myDeviceIdentity->sn.addr.u.v6.sin6_addr;

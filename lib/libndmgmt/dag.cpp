@@ -498,6 +498,15 @@ void dag_network::set_acp_identity(device_identity *di) {
     cfg_new_node(me, NULL, di->sn);
 }
 
+/*
+ * the IID value is a partial IPv6 address that this node will known as.
+ * This must be combined with a PIO as received.
+ */
+void dag_network::set_explicit_iid(device_identity *di) {
+    mIID = di->sn.addr;
+    mIID_is_set = true;
+}
+
 void dag_network::add_prefix(rpl_node advertising_peer,
                              network_interface *iface,
                              ip_subnet prefix)

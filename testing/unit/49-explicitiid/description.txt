@@ -1,0 +1,5 @@
+This test case validates that we can set an explicit IID for the node, and
+that it will get combined with the received PIO.
+
+
+

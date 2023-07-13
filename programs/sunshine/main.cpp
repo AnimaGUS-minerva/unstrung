@@ -266,6 +266,25 @@ int main(int argc, char *argv[])
 #endif /*  HAVE_MBEDTLS */
             break;
 
+        case 'd':
+            check_dag(c, dag);
+            e1 = ttoaddr(optarg, 0, AF_INET6, &di.sn.addr);
+            if(e1 != NULL) {
+                deb->info("failed to parse %s as IPv6 address: %s\n",
+                          optarg, e1);
+                usage();
+                break;
+            }
+            di.sn.maskbits = 128;
+            dag->set_explicit_iid(&di);
+            {
+                char sbuf[SUBNETTOT_BUF];
+                subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
+                deb->info("set up IID from %s giving IID %s\n",
+                          optarg, sbuf);
+            }
+            break;
+
         case '6':
             check_dag(c, dag);
             e1 = ttoaddr(optarg, 0, AF_INET6, &di.sn.addr);

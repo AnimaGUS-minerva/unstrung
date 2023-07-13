@@ -82,6 +82,10 @@ public:
          * is announced from self.
          */
         void set_acp_identity(device_identity *di);
+
+        /* this just overrides the auto-discovery of IID from EUI-48/64 */
+        void set_explicit_iid(device_identity *di);
+
         void cfg_new_node(prefix_node *me,
                           network_interface *iface,
                           ip_subnet prefix);
@@ -285,7 +289,11 @@ public:
 	ip_subnet               mPrefix;
 	char                    mPrefixName[SUBNETTOT_BUF];
 
-    device_identity *myDeviceIdentity;
+        device_identity *myDeviceIdentity;
+
+        /* identity used in this DAG */
+        bool                    mIID_is_set;   /* if true, then mIID is valid */
+        ip_address              mIID;          /* some bits that will be used for the IID */
 
 private:
         dag_network(void);
@@ -357,7 +365,7 @@ private:
 	/* RiPpLe statistics */
 	enum RPL_DIO_MOP        mMode;
 	unsigned short          mDTSN;
-	unsigned short 			mDAOSequence;
+	unsigned short 		mDAOSequence;
 	unsigned int            mInstanceid;
 	unsigned int            mLifetime;      /* dag lifetime */
 	unsigned int            mVersion;
