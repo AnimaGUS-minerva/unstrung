@@ -464,7 +464,10 @@ prefix_node *dag_network::add_address(const ip_address addr)
 
 prefix_node *dag_network::add_address(const ip_subnet prefix)
 {
-    return &this->dag_announced[prefix];
+    prefix_node *p = &this->dag_announced[prefix];
+    p->set_prefix(prefix);
+    p->set_debug(this->debug);
+    return p;
 }
 
 void dag_network::cfg_new_node(prefix_node *me,
