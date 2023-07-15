@@ -294,8 +294,8 @@ bool dag_network::notify_new_interface(network_interface *one)
 
             announced = true;
             prefix_node *n = dn->add_address(one->node->node_address());
-            n->set_prefix(one->if_addr, 128);
             n->set_debug(dn->debug);
+            n->set_prefix(one->if_addr, 128);
             dn->debug->info("added %s to DAG %s\n",
                           one->node->node_name(),
                           dn->get_dagName());
