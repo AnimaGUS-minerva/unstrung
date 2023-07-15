@@ -70,6 +70,7 @@ void dag_network::init_dag(void)
     mMyRank   = UINT_MAX;
     mBestRank = UINT_MAX;
     mVersion  = 1;
+    mIgnorePio = false;
     debug     = NULL;
     mSendDioEvent = NULL;
     mSendDaoEvent = NULL;
@@ -530,6 +531,7 @@ void dag_network::add_prefix(rpl_node advertising_peer,
     /* next, see if we should configure an address in this prefix */
     if(!mIgnorePio) {
         prefix_node *preMe = add_address(prefix);
+        //fprintf(stderr, "add_prefix: %s iface: %p\n", preMe->node_name(), iface);
         preMe->set_announcer(&advertising_peer);
         cfg_new_node(preMe, iface, prefix);
     }

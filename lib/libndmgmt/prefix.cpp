@@ -79,6 +79,7 @@ const char *prefix_node::node_name() {
 void prefix_node::configureip(network_interface *iface, dag_network *dn)
 {
     if(dn->mIgnorePio) {
+        this->verbose_log("PIO ignored");
         return;
     }
 
