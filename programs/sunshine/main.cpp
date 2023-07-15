@@ -280,8 +280,7 @@ int main(int argc, char *argv[])
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
-                deb->info("set up IID from %s giving IID %s\n",
-                          optarg, sbuf);
+                deb->info("seting up IID as %s\n", sbuf);
             }
             break;
 
