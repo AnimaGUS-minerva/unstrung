@@ -443,15 +443,16 @@ void dag_network::add_childnode(rpl_node          *announcing_peer,
         dao_needed = true;
         pre.set_prefix(prefix);
         pre.set_announcer(announcing_peer);
+        pre.set_dn(this);
 
-        announcing_peer->add_route_via_node(prefix, iface);
+        //debug->info("installing prefix\n");
+        pre.add_route_via_node(iface);
         set_dao_needed();
-        pre.set_installed(true);
     }
 #if 0
-    debug->verbose("added child node %s/%s from %s\n",
-                   b1, pre.node_name(),
-                   announcing_peer->node_name());
+    debug->info("added child node %s/%s from %s\n",
+                b1, pre.node_name(),
+                announcing_peer->node_name());
 #endif
 }
 
@@ -1053,7 +1054,7 @@ void dag_network::receive_dao(network_interface *iface,
         /* need to look at dag_members, and see if the child node already
          * exists, and add if not
          */
-        debug->verbose("  recv DAO rpltarget re: network %s, target %s (added)\n",
+        debug->info("  recv DAO rpltarget re: network %s, target %s (added)\n",
                        addrfound, peer->node_name());
 
         add_childnode(peer, iface, prefix);
@@ -1062,7 +1063,7 @@ void dag_network::receive_dao(network_interface *iface,
 
     /* now send a DAO-ACK back this the node, using the interface it arrived on, if asked to. */
     if(RPL_DAO_K(dao->rpl_flags)) {
-        debug->verbose("sending DAOACK about %u networks, to %s\n",
+        debug->info("sending DAOACK about %u networks, to %s\n",
                        addrcount, peer->node_name());
         iface->send_daoack(*peer, *this, dao->rpl_daoseq);
     }

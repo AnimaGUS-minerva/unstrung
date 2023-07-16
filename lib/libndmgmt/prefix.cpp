@@ -129,6 +129,18 @@ void prefix_node::markself(dag_network *dn, ip_subnet prefix)
     set_prefix(prefix);
 }
 
+void prefix_node::add_route_via_node(network_interface *iface)
+{
+    //debug->info("  prefix %p installed: %u from: %p\n", this, this->installed, this->announced_from);
+    if(!this->installed) {
+        iface->add_route_to_node(this->mPrefix, this->announced_from,
+                                 mDN->dag_me->prefix_number().addr);
+        this->installed = true;
+    }
+}
+
+
+
 /*
  * Local Variables:
  * c-basic-offset:4

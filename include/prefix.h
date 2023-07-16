@@ -67,6 +67,7 @@ public:
         void set_installed(bool installed) {
             installed = true;
         };
+        void add_route_via_node(network_interface *iface);
 
 protected:
         ip_subnet    mPrefix;

@@ -96,8 +96,6 @@ public:
         void reply_neighbour_advert(network_interface *iface,
                                     unsigned int success);
 
-        void add_route_via_node(ip_subnet &prefix, network_interface *iface);
-
         bool join_declined(void) { return !joinQueryStarted && alreadyDeclined; };
         bool join_accepted(void) { return !joinQueryStarted && alreadyAccepted; };
         void set_accepted(bool accepted) {
@@ -132,7 +130,6 @@ protected:
         bool              alreadyDeclined;
         bool              alreadyAccepted;
         bool              joinQueryStarted;
-        bool              installed;
 
 private:
         bool       valid;
