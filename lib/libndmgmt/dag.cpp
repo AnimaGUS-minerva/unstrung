@@ -84,6 +84,7 @@ void dag_network::init_dag(void)
     this->add_to_list();
     dag_me = NULL;
     mPrefixSet = false;
+    mPrefixName[0] = '\0';
     mIfWildcard_max = 0;
 }
 
@@ -134,7 +135,7 @@ void dag_network::set_prefix(const struct in6_addr v6, const int prefixlen)
     mPrefix.addr.u.v6.sin6_port = 0;
     memcpy((void *)&mPrefix.addr.u.v6.sin6_addr, (void *)&v6, 16);
     mPrefix.maskbits  = prefixlen;
-    mPrefixName[0]='\0';
+    mPrefixName[0]='\0';   /* erase cached copy of prefix as a string */
     mPrefixSet = true;
 }
 
@@ -160,7 +161,8 @@ void dag_network::set_prefix(const ip_subnet prefix)
 }
 
 const char *dag_network::prefix_name() {
-    if(mPrefixName[0] == '\0') {
+
+    if(mPrefixName[0] == '\0' && mPrefix.addr.u.v6.sin6_family != 0) {
         subnettot(&mPrefix, 0, mPrefixName, sizeof(mPrefixName));
     }
     return mPrefixName;
