@@ -485,6 +485,10 @@ void dag_network::cfg_new_node(prefix_node *me,
         me->set_prefix(prefix);
 
         if(iface != NULL) {
+            this->debug->verbose("  peer '%s' announces prefix: %s\n",
+                                 me->get_announcer() ? me->get_announcer()->node_name() : "<none>",
+                                 this->prefix_name());
+
             me->configureip(iface, this);
         }
 
