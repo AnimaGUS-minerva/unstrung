@@ -76,6 +76,8 @@ network_interface::network_interface()
     join_query_client = NULL;
 #endif
     this->set_if_name("<unset>");
+    recv_cnt = 0;
+    error_cnt = 0;
 }
 
 network_interface::network_interface(const char *if_name, rpl_debug *deb)
@@ -94,6 +96,9 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
     set_debug(deb);
 
     this->set_if_name(if_name);
+    recv_cnt = 0;
+    error_cnt = 0;
+
 }
 
 void network_interface::set_if_name(const char *if_name)
