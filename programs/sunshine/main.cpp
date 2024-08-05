@@ -77,6 +77,7 @@ void usage()
             "\t [--registrar hostname:port]     set address of GRASP responder on registrar\n"
             "\t [--ldevid filename]             load certificate with ACP Node Name to configure IID\n"
             "\t [--iid ipv6]                    setup the lower bits of the IPv6, the IID\n"
+            "\t [--ipv6 ipv6]                   set the IP address for this system\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
             "\t [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from\n"
             "\t [--dao-addr-filter]   List of prefixes/len to take DAO addresses from\n"
@@ -277,6 +278,7 @@ int main(int argc, char *argv[])
             }
             di.sn.maskbits = 128;
             dag->set_explicit_iid(&di);
+            loaded = 1;
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
@@ -295,6 +297,7 @@ int main(int argc, char *argv[])
             }
             di.sn.maskbits = 128;
             dag->set_acp_identity(&di);
+            loaded = 1;
             {
                 char sbuf[SUBNETTOT_BUF];
                 subnettot(&di.sn, 0, sbuf, sizeof(sbuf));
@@ -410,7 +413,7 @@ int main(int argc, char *argv[])
 
     if (!iface) {
         dag->add_all_interfaces();
-    } else {
+    } else if (grounded && loaded) {
         dag->addselfprefix(iface);
     }
 
