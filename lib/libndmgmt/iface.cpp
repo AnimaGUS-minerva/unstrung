@@ -99,7 +99,7 @@ network_interface::network_interface(const char *if_name, rpl_debug *deb)
 void network_interface::set_if_name(const char *if_name)
 {
     this->if_name[0]=0;
-    strncat(this->if_name, if_name, sizeof(this->if_name));
+    strncat(this->if_name, if_name, sizeof(this->if_name)-1);
 }
 
 void network_interface::generate_linkaddr(void)
