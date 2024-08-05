@@ -1,0 +1,34 @@
+PANDORA unstrung version VERSION starting at TODAY
+set up IID from certificate hostcert.pem with subnet fd73:9fc2:3c34:4011:2233:4455:0:300/128
+Usage: PATH/sunshine [-?] [-i ifname]
+	 [-p prefix] [--prefix prefix]   announce this IPv6 prefix in the destination option
+	 [-G dagid]  [--dagid dagid]     DAGid to use to announce, string or hexn
+	 [-R rank]   [--rank rank]       Initial rank to announce with
+	 [-I num]    [--instanceid num]  Instance ID (number)
+	 [-W msec]   [--interval msec]   Number of miliseconds between DIO
+	 [-m]        [--nomulticast]     Disable multicast in DIOs
+	 [--verbose] [--timelog]         Turn on logging (with --time logged)
+	 [--syslog]  [--stderr]          Log to syslog and/or stderr
+	 [--registrar hostname:port]     set address of GRASP responder on registrar
+	 [--ldevid filename]             load certificate with ACP Node Name to configure IID
+	 [--iid ipv6]                    setup the lower bits of the IPv6, the IID
+	 [--ignore-pio]                  Ignore PIOs found in DIO
+	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
+	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from
+	 [--sleep=secs]                  sleep secs before trying to talk to network
+
+  . Loading the certificate at: hostcert.pem ...processing tag: 81&80=80 tag_len: 57
+ ok
+  . Peer certificate information    ...
+printing subject alt name(SAN)
+      cert. version     : 3
+      serial number     : 55:01:47:F0
+      issuer name       : DC=ca, DC=sandelman, CN=fountain-test.example.com Unstrung Fountain Root CA
+      subject name      : emailAddress=rfc8994+fd739fc23c3440112233445500000300+@acp.example.com
+      issued  on        : 2021-05-07 19:21:21
+      expires on        : 2999-12-31 00:00:00
+      signed using      : RSA with SHA-256
+      RSA key size      : 2048 bits
+      basic constraints : CA=false
+      subject alt name  : 
+
