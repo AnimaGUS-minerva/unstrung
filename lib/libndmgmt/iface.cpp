@@ -986,7 +986,7 @@ void network_interface::look_for_new_interfaces(rpl_debug *debug)
 {
     network_interface *iface = network_interface::all_if;
     while(iface != NULL) {
-	if(iface->is_active() && !iface->loopbackP() && !iface->disabled) {
+	if(!iface->is_active() && !iface->loopbackP() && !iface->disabled) {
             iface->setup();
 
             dag_network::send_all_dag(iface);
