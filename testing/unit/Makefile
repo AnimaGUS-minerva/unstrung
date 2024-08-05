@@ -76,6 +76,7 @@ ifeq ($(USE_MBEDTLS),true)
 SUBDIRS+=45-extract-eui
 endif
 SUBDIRS+=46-method-varargs
+SUBDIRS+=50-sunshine-root
 
 checkstop::
 	@for d in $(SUBDIRS) ; \
