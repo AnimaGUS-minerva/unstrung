@@ -1270,8 +1270,8 @@ void network_interface::send_dio_all(dag_network *dag)
      */
     while(iface != NULL) {
 	if(iface->is_active() && !iface->loopbackP()) {
-	    //iface->debug->log("iface %s sending dio about dag: %s\n",
-            //                   iface->if_name, dag->get_dagName());
+	    iface->debug->log("iface %s sending dio about dag: %s\n",
+                               iface->if_name, dag->get_dagName());
 	    iface->send_dio(dag);
 	}
 	iface = iface->next;
