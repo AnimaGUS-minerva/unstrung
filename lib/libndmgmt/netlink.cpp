@@ -568,6 +568,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
     FILE *fp = stdout;
     struct rtattr * tb[IFLA_MAX+1];
     int len = n->nlmsg_len;
+    bool hasL2 = false;
     unsigned m_flag = 0;
     SPRINT_BUF(b1);
 
@@ -634,6 +635,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
             addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
             ni->set_eui48(addr, addrlen);
+            hasL2 = true;
             break;
         }
 
@@ -643,6 +645,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
             addr = (unsigned char *)RTA_DATA(tb[IFLA_ADDRESS]);
             addrlen = RTA_PAYLOAD(tb[IFLA_ADDRESS]);
             ni->set_eui64(addr, addrlen);
+            hasL2 = true;
             break;
         }
 
@@ -650,6 +653,10 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         loopback_interface = ni;
         ni->loopback = true;
         return 0;
+
+    case ARPHRD_NONE:
+        /* such as xfrmtun interfaces, which have no L2 or MAC address */
+        break;
 
     default:
         deb->log("   ignoring address type: %d\n", ifi->ifi_type);
@@ -660,7 +667,7 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
         ni->if_maxmtu =  *(int*)RTA_DATA(tb[IFLA_MTU]);
     }
 
-    if (!ni->eui64set){
+    if (!ni->eui64set && hasL2){
     	/* must be a new mac address */
     	memcpy(ni->eui48, addr, addrlen);
 
@@ -670,8 +677,8 @@ int network_interface::add_linkinfo(const struct sockaddr_nl *who,
 
     SPRINT_BUF(b2);
     deb->log("   adding as new interface %s/%s\n",
-             ni->eui48_str(b1,sizeof(b1)),
-             ni->eui64_str(b2,sizeof(b2)));
+             hasL2 ? ni->eui48_str(b1,sizeof(b1)) : "none",
+             hasL2 ? ni->eui64_str(b2,sizeof(b2)) : "none");
 
     return 0;
 }
