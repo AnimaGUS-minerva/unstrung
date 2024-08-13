@@ -109,7 +109,6 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
                           node_name(),
                           iface->get_if_name());
 
-
         if(iface->addprefix(dn, *this)) {
             installed = true;
         }

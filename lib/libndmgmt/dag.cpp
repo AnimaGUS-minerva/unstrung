@@ -285,6 +285,17 @@ bool dag_network::matchesIfPrefix(const ip_address v6)
     return false;
 }
 
+/* send a spurious DAO message on all interfaces, used in debugging */
+void dag_network::repair_dao_send(void)
+{
+    for(class dag_network *dn = dag_network::all_dag;
+        dn != NULL;
+        dn = dn->next) {
+            dn->dao_needed = true;
+            dn->maybe_send_dao();
+    }
+}
+
 bool dag_network::notify_new_interface(network_interface *one)
 {
     bool announced = false;

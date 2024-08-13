@@ -42,7 +42,8 @@ public:
                                                      const char *dagid,
                                                      rpl_debug *debug,
                                                      bool watching);
-        static void init_stats(void);
+    static void init_stats(void);
+    static void repair_dao_send(void);
 
         int cmp_dag(dagid_t n_dagid) {
                 return memcmp(mDagid, n_dagid, DAGID_LEN);
