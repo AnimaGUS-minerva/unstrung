@@ -10,7 +10,7 @@ include ${srcdir}../Makefile.testing
 EXTRALIBS=${LIBIDEVID}
 
 ${TESTNAME}: ${TESTNAME}.cpp ${INC}/iface.h ${LIBS} ${LIBIDEVID}
-	${CXX} ${CXXFLAGS} -o ${TESTNAME} ${TESTNAME}.cpp ${LDFLAGS}
+	${CXX} ${CXXFLAGS} -o ${TESTNAME} ${TESTNAME}.cpp ${LDFLAGS} ${LIBS}
 
 check::	${TESTNAME}
 	./${TESTNAME}
