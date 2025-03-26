@@ -179,7 +179,7 @@ bool device_identity::parse_rfc8994cert(void)
      */
     mbedtls_x509_name *subject = &cert->subject;
 
-    mbedtls_asn1_named_data *sn_attr =
+    const mbedtls_asn1_named_data *sn_attr =
         mbedtls_asn1_find_named_data( subject,
                                       MBEDTLS_OID_PKCS9_EMAIL,
                                       MBEDTLS_OID_SIZE(MBEDTLS_OID_PKCS9_EMAIL));
