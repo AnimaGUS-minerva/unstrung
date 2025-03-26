@@ -9,6 +9,7 @@ RAWPCAP=../OUTPUTS/43-sendgrasp-out.pcap
 RAWPCAPOUT=../OUTPUTS/43-sendgrasp-out.txt
 RAWGRASPOUT=../OUTPUTS/43-grasp-pretty.txt
 
+ifeq ($(GRASP_CLIENT),true)
 43-sendgrasp: 43-sendgrasp.cpp ${LIBS}
 	${CXX} ${CXXFLAGS} -DRAWPCAP=\"${RAWPCAP}\" -o 43-sendgrasp 43-sendgrasp.cpp ${LDFLAGS} ${LIBS} ${CBOR_LIB}
 
@@ -19,6 +20,11 @@ check::	43-sendgrasp
 	@mkdir -p ../OUTPUTS
 	./43-sendgrasp 2>&1 | tee ../OUTPUTS/43-sendgrasp-out.raw | diff -B - 43-sendgrasp-out.txt
 	-cbor2pretty.rb ../OUTPUTS/43-6join-grasp.dump | tee ${RAWGRASPOUT} | diff -B - 43-grasp-out.txt
+else
+check::
+	echo Not running/testing, no GRASP.
+	@true
+endif
 
 clean::
 	@rm -rf 43-sendgrasp *.o
