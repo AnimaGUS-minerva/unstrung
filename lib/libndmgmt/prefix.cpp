@@ -76,7 +76,7 @@ const char *prefix_node::node_name() {
     }
 };
 
-void prefix_node::configureip(network_interface *iface, dag_network *dn)
+void prefix_node::configureip(network_interface *iface, dag_network *dn, bool announceif)
 {
     if(dn->mIgnorePio) {
         this->verbose_log("    PIO ignored\n");
@@ -105,9 +105,14 @@ void prefix_node::configureip(network_interface *iface, dag_network *dn)
         this->set_prefix(link, 128);
         //this->set_prefix(link, dn->get_prefix().maskbits);
 
-        this->verbose_log("  adding prefix: %s learnt from iface: %s\n",
-                          node_name(),
-                          iface->get_if_name());
+        if(announceif) {
+            this->verbose_log("  adding prefix: %s learnt from iface: %s\n",
+                              node_name(),
+                              iface->get_if_name());
+        } else {
+            this->verbose_log("  adding prefix: %s (manually configured)\n",
+                              node_name());
+        }
 
         if(iface->addprefix(dn, *this)) {
             installed = true;

@@ -500,7 +500,7 @@ void dag_network::cfg_new_node(prefix_node *me,
                                  me->get_announcer() ? me->get_announcer()->node_name() : "<none>",
                                  this->prefix_name());
 
-            me->configureip(iface, this);
+            me->configureip(iface, this, true);
         }
 
         if(dag_me == NULL) {
@@ -582,7 +582,7 @@ void dag_network::addselfprefix(network_interface *iface, bool announceif)
         dao_needed = true;
         pre.set_prefix(mPrefix);
         pre.set_announcer(me);
-        pre.configureip(iface, this);
+        pre.configureip(iface, this, announceif);
         if(dag_me == NULL) {
             dag_me = &pre;
         }
