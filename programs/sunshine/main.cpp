@@ -52,6 +52,7 @@ static struct option const longopts[] =
     { "syslog",    0, NULL,  OPTION_SYSLOG},
     { "stderr",    0, NULL,  OPTION_STDERR},
     { "sleep",     1, NULL,  OPTION_SLEEP},
+    { "die-after-init", 0, NULL, 'n'},
     { "interval",  1, NULL, 'W'},
     { "dagid",     1, NULL, 'G'},
     { "rank",      1, NULL, 'R'},
@@ -79,6 +80,7 @@ void usage()
             "\t [--iid ipv6]                    setup the lower bits of the IPv6, the IID\n"
             "\t [--ipv6 ipv6]                   set the IP address for this system\n"
             "\t [--ignore-pio]                  Ignore PIOs found in DIO\n"
+            "\t [--die-after-init]              For testing, just do all configuration, then exit\n"
             "\t [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from\n"
             "\t [--dao-addr-filter]   List of prefixes/len to take DAO addresses from\n"
             "\t [--sleep=secs]                  sleep secs before trying to talk to network\n"
@@ -152,6 +154,7 @@ int main(int argc, char *argv[])
     bool verbose = false;
     bool bedaemon = false;
     bool grounded = false;
+    bool justkidding = false;
     int loaded = 0;
     instanceID_t instanceID = 0;
     unsigned int grasp_portnum = 3000;
@@ -203,6 +206,10 @@ int main(int argc, char *argv[])
 
         case 'D':
             bedaemon = true;
+            break;
+
+        case 'n':
+            justkidding = true;
             break;
 
         case 'K':
@@ -447,6 +454,11 @@ int main(int argc, char *argv[])
 
     dag->set_debug(deb);
     dag->schedule_dio(IMMEDIATELY);
+
+    if(justkidding) {
+        fprintf(stderr, "stopping before main loop\n");
+        exit(0);
+    }
 
     network_interface::main_loop(stderr, deb);
 
