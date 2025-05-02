@@ -133,7 +133,13 @@ void write_pid_file()
     if(mkdir(piddirname, 0775) == -1 && errno != EEXIST) {
         fprintf(stderr, "Can not create PID directory %s: %s\n",
                 piddirname, strerror(errno));
-        exit(10);
+
+        /* proceed anyway if EPERM */
+        if(errno != EPERM) {
+            exit(10);
+        } else {
+            return;
+        }
     }
 
     FILE *pidfile = fopen(pidfilename, "w");
