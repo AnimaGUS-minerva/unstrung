@@ -427,7 +427,7 @@ int main(int argc, char *argv[])
     if (!iface) {
         dag->add_all_interfaces();
     } else if (grounded && loaded) {
-        dag->addselfprefix(iface);
+        dag->addselfprefix(iface, false);
     }
 
     if(!iface) {

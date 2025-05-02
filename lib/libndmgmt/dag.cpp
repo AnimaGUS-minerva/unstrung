@@ -560,13 +560,15 @@ void dag_network::add_prefix(rpl_node advertising_peer,
  * does all of the appropriate configuration.
  * It should be used on ROOT nodes.
  *
+ * If announceif is true, then the interface name used will be indicated.
+ *
  * There is another case where a DAO is going to be emitted out
  * an interface different than where the DIO received was, and that
  * case is not yet dealt with here.
  *
  * This is also used by senddao to initialize self.
  */
-void dag_network::addselfprefix(network_interface *iface)
+void dag_network::addselfprefix(network_interface *iface, bool announceif)
 {
     rpl_node *me = find_or_make_member(iface->if_addr);
     me->makevalid(iface->if_addr, this, this->debug);
@@ -591,7 +593,7 @@ static int addselfprefix_each(network_interface *iface, void *arg)
 {
     dag_network *that = (dag_network *)arg;
     //that->debug->warn("selfprefix: %s\n", iface->get_if_name());
-    that->addselfprefix(iface);
+    that->addselfprefix(iface, true);
     return 1;
 }
 

@@ -149,7 +149,7 @@ public:
         void add_prefix(rpl_node peer,
                            network_interface *iface,
                            ip_subnet prefix);
-	void addselfprefix(network_interface *iface);
+        void addselfprefix(network_interface *iface, bool announceif);
         unsigned int prefixcount(void) {
             return dag_prefixes.size();
         };
