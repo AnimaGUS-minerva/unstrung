@@ -444,6 +444,7 @@ int main(int argc, char *argv[])
      * if we are the root
      */
     if(loaded == 0 && grounded) {
+	deb->info("setting up self identity, announcing as DODAG root\n");
         dag->add_all_interfaces();
     }
 
