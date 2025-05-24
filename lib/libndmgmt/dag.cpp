@@ -86,6 +86,11 @@ void dag_network::init_dag(void)
     mPrefixSet = false;
     mPrefixName[0] = '\0';
     mIfWildcard_max = 0;
+    dag_parent = NULL;
+    dag_parentif = NULL;
+    dag_lastparent = NULL;
+    dag_bestparent = NULL;
+    dag_bestparentif = NULL;
 }
 
 dag_network::dag_network(instanceID_t num, dagid_t n_dagid, rpl_debug *deb)
@@ -699,9 +704,11 @@ void dag_network::send_dao(void)
     while(pi != dag_children.end()) {
 	prefix_node &pm = pi->second;
 
+        const char *name = "unknown";
+        if(dag_bestparent) { name = dag_bestparent->node_name(); };
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
                        cnt, pm.node_name(),
-                       mDagName, dag_bestparent->node_name(),
+                       mDagName, name,
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
         cnt++;
         pi++;
