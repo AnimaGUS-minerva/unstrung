@@ -62,13 +62,13 @@ then
     fi
 
     if $buildgen && [ ! -d "${BUILDTOP}/${ARCH}/tcpdump-${LIBPCAP_TAG}/." ]; then
-        (cd ${BUILDTOP} && mkdir -p ${ARCH}/libpcap-${PCAP_TAG} && cd ${ARCH}/libpcap-${PCAP_TAG} && ../../libpcap/configure --prefix=$HOME/stuff --target=${ARCH}-linux-gnu && make CFLAGS="-fPIC")
+        (cd ${BUILDTOP} && mkdir -p ${ARCH}/libpcap-${PCAP_TAG} && cd ${ARCH}/libpcap-${PCAP_TAG} && ../../libpcap/configure --prefix=$HOME/stuff --disable-rdma --target=${ARCH}-linux-gnu && make CFLAGS="-fPIC")
         (cd ${BUILDTOP} && ln -f -s ${ARCH}/libpcap-${PCAP_TAG} libpcap && mkdir -p ${ARCH}/tcpdump-${LIBPCAP_TAG} && cd ${ARCH}/tcpdump-${LIBPCAP_TAG} && ../../tcpdump/configure --prefix=$HOME/stuff --target=${ARCH}-linux-gnu && make CFLAGS="-fPIC")
         (cd ${BUILDTOP}/${ARCH} && ln -s -f tcpdump-${LIBPCAP_TAG} tcpdump )
     fi
 
     if $build64 && [ ! -d "${BUILDTOP}/x86_64/tcpdump-${LIBPCAP_TAG}/." ]; then
-        (cd ${BUILDTOP} && mkdir -p x86_64/libpcap-${PCAP_TAG} && cd x86_64/libpcap-${PCAP_TAG} && CFLAGS=-m64 ../../libpcap/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS="-m64 -fPIC")
+        (cd ${BUILDTOP} && mkdir -p x86_64/libpcap-${PCAP_TAG} && cd x86_64/libpcap-${PCAP_TAG} && CFLAGS=-m64 ../../libpcap/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu --disable-rdma && make LDFLAGS=-m64 CFLAGS="-m64 -fPIC")
         (cd ${BUILDTOP} && ln -f -s x86_64/libpcap-${PCAP_TAG} libpcap && mkdir -p x86_64/tcpdump-${LIBPCAP_TAG} && cd x86_64/tcpdump-${LIBPCAP_TAG} && CFLAGS=-m64 ../../tcpdump/configure --prefix=$HOME/stuff --target=x86_64-linux-gnu && make LDFLAGS=-m64 CFLAGS="-m64 -fPIC")
         (cd ${BUILDTOP}/x86_64 && ln -s -f tcpdump-${LIBPCAP_TAG} tcpdump )
     fi
