@@ -55,7 +55,7 @@ void test_debug::logv(int level, const char *fmt, ...)
 
         char tbuf[64];
         strftime(tbuf, sizeof(tbuf), "%F-%T", &tm1);
-        fprintf(stdout, "[%s.%u] ", tbuf, tv1.tv_usec/1000);
+        fprintf(stdout, "[%s.%ld] ", tbuf, tv1.tv_usec/1000);
     }
     if(flag) {
         vfprintf(stdout, fmt, vargs);

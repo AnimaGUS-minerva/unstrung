@@ -27,8 +27,6 @@ include ${UNSTRUNG_SRCDIR}/programs/Makefile.program
 ifeq ($(USE_MBEDTLS),true)
 CXXFLAGS+=-DHAVE_MBEDTLS
 LIBS+=${LIBIDEVID}
-LIBS+=${MBEDTLSLIB}/libmbedx509.a
-LIBS+=${MBEDTLSLIB}/libmbedcrypto.a
-LIBS+=${MBEDTLSLIB}/libmbedtls.a
+LIBS+=${LIBCRYPT}
 endif
 

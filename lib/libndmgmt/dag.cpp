@@ -86,6 +86,11 @@ void dag_network::init_dag(void)
     mPrefixSet = false;
     mPrefixName[0] = '\0';
     mIfWildcard_max = 0;
+    dag_parent = NULL;
+    dag_parentif = NULL;
+    dag_lastparent = NULL;
+    dag_bestparent = NULL;
+    dag_bestparentif = NULL;
 }
 
 dag_network::dag_network(instanceID_t num, dagid_t n_dagid, rpl_debug *deb)
@@ -283,6 +288,17 @@ bool dag_network::matchesIfPrefix(const ip_address v6)
         if(matched) return true;
     }
     return false;
+}
+
+/* send a spurious DAO message on all interfaces, used in debugging */
+void dag_network::repair_dao_send(void)
+{
+    for(class dag_network *dn = dag_network::all_dag;
+        dn != NULL;
+        dn = dn->next) {
+            dn->dao_needed = true;
+            dn->maybe_send_dao();
+    }
 }
 
 bool dag_network::notify_new_interface(network_interface *one)
@@ -489,7 +505,7 @@ void dag_network::cfg_new_node(prefix_node *me,
                                  me->get_announcer() ? me->get_announcer()->node_name() : "<none>",
                                  this->prefix_name());
 
-            me->configureip(iface, this);
+            me->configureip(iface, this, true);
         }
 
         if(dag_me == NULL) {
@@ -549,13 +565,15 @@ void dag_network::add_prefix(rpl_node advertising_peer,
  * does all of the appropriate configuration.
  * It should be used on ROOT nodes.
  *
+ * If announceif is true, then the interface name used will be indicated.
+ *
  * There is another case where a DAO is going to be emitted out
  * an interface different than where the DIO received was, and that
  * case is not yet dealt with here.
  *
  * This is also used by senddao to initialize self.
  */
-void dag_network::addselfprefix(network_interface *iface)
+void dag_network::addselfprefix(network_interface *iface, bool announceif)
 {
     rpl_node *me = find_or_make_member(iface->if_addr);
     me->makevalid(iface->if_addr, this, this->debug);
@@ -569,7 +587,7 @@ void dag_network::addselfprefix(network_interface *iface)
         dao_needed = true;
         pre.set_prefix(mPrefix);
         pre.set_announcer(me);
-        pre.configureip(iface, this);
+        pre.configureip(iface, this, announceif);
         if(dag_me == NULL) {
             dag_me = &pre;
         }
@@ -580,7 +598,7 @@ static int addselfprefix_each(network_interface *iface, void *arg)
 {
     dag_network *that = (dag_network *)arg;
     //that->debug->warn("selfprefix: %s\n", iface->get_if_name());
-    that->addselfprefix(iface);
+    that->addselfprefix(iface, true);
     return 1;
 }
 
@@ -686,9 +704,11 @@ void dag_network::send_dao(void)
     while(pi != dag_children.end()) {
 	prefix_node &pm = pi->second;
 
+        const char *name = "unknown";
+        if(dag_bestparent) { name = dag_bestparent->node_name(); };
         debug->verbose("SENDING[%u] dao about %s for %s to: %s on if=%s\n",
                        cnt, pm.node_name(),
-                       mDagName, dag_bestparent->node_name(),
+                       mDagName, name,
                        dag_bestparentif ? dag_bestparentif->get_if_name():"unknown");
         cnt++;
         pi++;

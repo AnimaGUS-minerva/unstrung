@@ -9,6 +9,7 @@ RAWPCAP=../OUTPUTS/41-acceptns-out.pcap
 RAWPCAPOUT=../OUTPUTS/41-acceptns-out.txt
 RAWPCAPOUT2=../OUTPUTS/41-acceptns-almec-out.txt
 
+ifeq ($(GRASP_CLIENT),true)
 41-acceptns: 41-acceptns.cpp ${LIBS}
 	${CXX} ${CXXFLAGS} -DRAWPCAP=\"${RAWPCAP}\" -o 41-acceptns 41-acceptns.cpp ${LDFLAGS} ${LIBS}
 
@@ -24,6 +25,12 @@ check::	41-acceptns
 	./41-acceptns ../INPUTS/nodeM-ns.pcap Yfe80::216:3eff:fe11:3424 2>&1 | tee ../OUTPUTS/41-acceptns-out-accepted.raw | diff -B - 41-acceptns-out-accepted.txt
 	./41-acceptns ../INPUTS/nodeM-ns.pcap 2>&1 | tee ../OUTPUTS/41-acceptns-out.raw | diff -B - 41-acceptns-out.txt
 	${TCPDUMP} -t -v -v -n -r ${RAWPCAP} | tee ${RAWPCAPOUT} | diff -B - 41-acceptns-capture.txt
+
+else
+check::
+	echo Not running/testing, no GRASP.
+	@true
+endif
 
 clean::
 	@rm -rf 41-acceptns *.o

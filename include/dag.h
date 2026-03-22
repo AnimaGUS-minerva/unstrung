@@ -42,7 +42,8 @@ public:
                                                      const char *dagid,
                                                      rpl_debug *debug,
                                                      bool watching);
-        static void init_stats(void);
+    static void init_stats(void);
+    static void repair_dao_send(void);
 
         int cmp_dag(dagid_t n_dagid) {
                 return memcmp(mDagid, n_dagid, DAGID_LEN);
@@ -148,7 +149,7 @@ public:
         void add_prefix(rpl_node peer,
                            network_interface *iface,
                            ip_subnet prefix);
-	void addselfprefix(network_interface *iface);
+        void addselfprefix(network_interface *iface, bool announceif);
         unsigned int prefixcount(void) {
             return dag_prefixes.size();
         };

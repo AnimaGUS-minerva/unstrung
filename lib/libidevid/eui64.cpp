@@ -18,6 +18,10 @@ extern "C" {
 #include "dag.h"
 #include "iface.h"
 
+#define MBEDTLS_OID_PEN                        MBEDTLS_OID_ISO_IDENTIFIED_ORG MBEDTLS_OID_ORG_DOD "\x01\x04\x01"
+#define MBEDTLS_OID_ORG_SANDELMAN              "\x82\xEE\x52"  /* {sandelman(46930)} */
+#define MBEDTLS_OID_EUI64                      MBEDTLS_OID_PEN MBEDTLS_OID_ORG_SANDELMAN "\x01" /* .1 */
+
 extern "C" {
   static int my_verify( void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags )
   {
@@ -75,7 +79,7 @@ int device_identity::load_identity_from_cert( const char *ca_file, const char *c
         /*
          * 1.1. Load the trusted CA
          */
-        mbedtls_printf( "  . Loading the CA root certificate from %s..." , ca_file);
+        printf( "  . Loading the CA root certificate from %s..." , ca_file);
         fflush( stdout );
 
         ret = mbedtls_x509_crt_parse_file( &cacert, ca_file );
@@ -86,7 +90,7 @@ int device_identity::load_identity_from_cert( const char *ca_file, const char *c
                 return 1;
             }
 
-        mbedtls_printf( " ok (%d skipped)\n", ret );
+        printf( " ok (%d skipped)\n", ret );
     }
 
     /*
@@ -175,7 +179,7 @@ bool device_identity::parse_rfc8994cert(void)
      */
     mbedtls_x509_name *subject = &cert->subject;
 
-    mbedtls_x509_name *sn_attr =
+    const mbedtls_asn1_named_data *sn_attr =
         mbedtls_asn1_find_named_data( subject,
                                       MBEDTLS_OID_PKCS9_EMAIL,
                                       MBEDTLS_OID_SIZE(MBEDTLS_OID_PKCS9_EMAIL));

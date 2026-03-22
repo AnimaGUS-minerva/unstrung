@@ -43,9 +43,13 @@ endif
 ifeq ($(USE_MBEDTLS),true)
 CFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
 CXXFLAGS+= ${MBEDTLSH} -DHAVE_MBEDTLS
+ifeq ($(strip $(MBEDTLSLIB)),)
+LIBCRYPT=-lmbedtls -lmbedcrypto -lmbedx509
+else
 LIBCRYPT=${MBEDTLSLIB}/libmbedtls.a
 LIBCRYPT+=${MBEDTLSLIB}/libmbedcrypto.a
 LIBCRYPT+=${MBEDTLSLIB}/libmbedx509.a
+endif
 else
 # no mbedtls
 LIBCRYPT=
@@ -80,7 +84,7 @@ TCPDUMP?=tcpdump
 
 ifeq ($(EMBEDDED),)
 # needed by fake interface library
-EXTRALIBS:=${LIBPCAP} ${EXTRALIBPATHS} -lusb -lpthread
+EXTRALIBS:=${LIBPCAP} ${EXTRALIBPATHS} -lpthread
 endif
 
 NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../amd64/tcpdump -lnetdissect

@@ -11,6 +11,7 @@ Usage: PATH/sunshine [-?] [-i ifname]
 	 [--registrar hostname:port]     set address of GRASP responder on registrar
 	 [--ldevid filename]             load certificate with ACP Node Name to configure IID
 	 [--iid ipv6]                    setup the lower bits of the IPv6, the IID
+	 [--ipv6 ipv6]                   set the IP address for this system
 	 [--ignore-pio]                  Ignore PIOs found in DIO
 	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
 	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from

@@ -132,7 +132,7 @@ int dag_network::build_prefix_dioopt(ip_subnet prefix)
     diodp->rpl_dio_valid_lifetime = htonl(this->mDio_lifetime);
     diodp->rpl_dio_preferred_lifetime = htonl(this->mDio_lifetime);
     diodp->rpl_dio_prefixlen = prefix.maskbits;
-    for(int i=0; i < (prefix.maskbits+7)/8; i++) {
+    for(int i=0; i < (prefix.maskbits+7)/8 && i <= 128; i++) {
         diodp->rpl_dio_prefix[i]=prefix.addr.u.v6.sin6_addr.s6_addr[i];
     }
 

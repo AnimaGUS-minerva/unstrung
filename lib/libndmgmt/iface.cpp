@@ -1014,6 +1014,7 @@ void network_interface::terminating(void) {
 }
 
 /* this runs the next event, even if it is not time yet */
+/* XXX used in regression tests to avoid waiting */
 bool network_interface::force_next_event(void) {
     rpl_event *re = things_to_do.next_event();
 
@@ -1193,6 +1194,7 @@ void network_interface::main_loop(FILE *verbose, rpl_debug *debug)
         }
 	if(signal_usr1) {
             scan_devices(debug, true);
+            dag_network::repair_dao_send();
 	    signal_usr1 = false;
 	}
 	if(signal_usr2) {

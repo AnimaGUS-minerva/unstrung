@@ -12,15 +12,14 @@ Usage: PATH/sunshine [-?] [-i ifname]
 	 [--registrar hostname:port]     set address of GRASP responder on registrar
 	 [--ldevid filename]             load certificate with ACP Node Name to configure IID
 	 [--iid ipv6]                    setup the lower bits of the IPv6, the IID
+	 [--ipv6 ipv6]                   set the IP address for this system
 	 [--ignore-pio]                  Ignore PIOs found in DIO
 	 [--dao-if-filter]     List of interfaces (glob permitted) to take DAO addresses from
 	 [--dao-addr-filter]   List of prefixes/len to take DAO addresses from
 	 [--sleep=secs]                  sleep secs before trying to talk to network
 
-  . Loading the certificate at: hostcert.pem ...processing tag: 81&80=80 tag_len: 57
- ok
+  . Loading the certificate at: hostcert.pem ... ok
   . Peer certificate information    ...
-printing subject alt name(SAN)
       cert. version     : 3
       serial number     : 55:01:47:F0
       issuer name       : DC=ca, DC=sandelman, CN=fountain-test.example.com Unstrung Fountain Root CA
@@ -30,5 +29,6 @@ printing subject alt name(SAN)
       signed using      : RSA with SHA-256
       RSA key size      : 2048 bits
       basic constraints : CA=false
-      subject alt name  : 
+      subject alt name  :
+          <unsupported>
 
