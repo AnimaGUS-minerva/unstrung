@@ -84,7 +84,7 @@ TCPDUMP?=tcpdump
 
 ifeq ($(EMBEDDED),)
 # needed by fake interface library
-EXTRALIBS:=${LIBPCAP} ${EXTRALIBPATHS} -lusb -lpthread
+EXTRALIBS:=${LIBPCAP} ${EXTRALIBPATHS} -lpthread
 endif
 
 NETDISSECTLIB?=-L${UNSTRUNG_SRCDIR}/../amd64/tcpdump -lnetdissect
